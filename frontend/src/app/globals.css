@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Scrapbook Canvas ── */
+  --color-canvas: #FBF8F2;
+  --color-surface: #FFFDF9;
+  --color-surface-muted: #F2E8DC;
+
+  /* ── Ink Hierarchy ── */
+  --color-ink: #241E19;
+  --color-ink-secondary: #5C5248;
+  --color-ink-inverse: #FFFDF9;
+
+  /* ── Structural ── */
+  --color-border: #2E2824;
+  --color-border-soft: #D4C9BA;
+
+  /* ── Terracotta (Primary) ── */
+  --color-terracotta: #C85A32;
+  --color-terracotta-hover: #B34A24;
+  --color-terracotta-light: #FCEFE9;
+
+  /* ── Tea Green (Secondary) ── */
+  --color-tea: #2B593F;
+  --color-tea-hover: #214732;
+  --color-tea-light: #EAF3EC;
+
+  /* ── Marigold (Accent) ── */
+  --color-marigold: #D97706;
+  --color-marigold-hover: #B45309;
+  --color-marigold-light: #FEF3C7;
+
+  /* ── Brick Red (Alert) ── */
+  --color-brick: #A63232;
+  --color-brick-light: #FBEBEB;
+
+  /* ── Fonts ── */
+  --font-serif: "Fraunces", "Georgia", serif;
+  --font-sans: "Atkinson Hyperlegible", "Noto Sans Devanagari", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* ── Base ── */
+html {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+/* ── Paper texture overlay ── */
+.paper-texture {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CHUNKY 3D MECHANICAL BUTTON — Primary interaction element
+   ══════════════════════════════════════════════════════════════ */
+.btn-chunky {
+  --btn-bg: #C85A32;
+  background-color: var(--btn-bg);
+  color: #FFFFFF;
+  border: 4px solid #1E1711;
+  border-radius: 16px;
+  box-shadow: 0px 5px 0px #1E1711;
+  transform: translateY(0px);
+  transition: transform 0.08s ease-in-out, box-shadow 0.08s ease-in-out, background-color 0.15s ease;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+.btn-chunky:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 7px 0px #1E1711;
+}
+.btn-chunky:active,
+.btn-chunky[data-pressed="true"] {
+  transform: translateY(5px);
+  box-shadow: 0px 0px 0px #1E1711;
+}
+.btn-chunky:focus-visible {
+  outline: 5px dashed #D97706;
+  outline-offset: 6px;
+}
+/* Variant: Tea Green */
+.btn-chunky-tea {
+  --btn-bg: #2B593F;
+}
+/* Variant: Marigold */
+.btn-chunky-marigold {
+  --btn-bg: #D97706;
+}
+/* Variant: Outline / Secondary */
+.btn-chunky-outline {
+  --btn-bg: #FFFDF9;
+  color: #241E19;
+}
+/* Size: XL */
+.btn-chunky-xl {
+  min-height: 56px;
+  padding: 14px 28px;
+  font-size: 1.125rem;
+  border-radius: 14px;
+}
+/* Size: 2XL */
+.btn-chunky-2xl {
+  min-height: 76px;
+  padding: 20px 32px;
+  font-size: 1.25rem;
+  border-radius: 18px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LEGACY BUTTON (kept for patient pages)
+   ══════════════════════════════════════════════════════════════ */
+.btn-tactile {
+  border: 3px solid var(--color-border);
+  box-shadow: 4px 4px 0px var(--color-border);
+  transition: all 0.1s ease;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  min-height: 64px;
+  padding: 16px 32px;
+  font-size: 1.125rem;
+  border-radius: 12px;
+}
+.btn-tactile:hover {
+  box-shadow: 5px 5px 0px var(--color-border);
+  transform: translate(-1px, -1px);
+}
+.btn-tactile:active {
+  box-shadow: 0px 0px 0px var(--color-border);
+  transform: translate(4px, 4px);
+}
+
+/* ── Scrapbook Card ── */
+.scrapbook-card {
+  border: 3px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 4px 4px 0px var(--color-border);
+  background: var(--color-surface);
+  padding: 24px;
+}
+
+/* ── Polaroid Frame ── */
+.polaroid {
+  background: var(--color-surface);
+  border: 3px solid var(--color-border);
+  border-radius: 4px;
+  padding: 12px 12px 40px 12px;
+  box-shadow: 3px 3px 0px var(--color-border);
+}
+
+/* ── Water glass fill animation ── */
+@keyframes fill-water {
+  from { height: 0%; }
+  to { height: var(--fill); }
+}
+.water-fill {
+  animation: fill-water 0.8s ease-out forwards;
+}
+
+/* ── Gentle pulse for "due now" ── */
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.pulse-gentle {
+  animation: gentle-pulse 2s ease-in-out infinite;
+}
+
+/* ── Radial countdown timer ── */
+.radial-timer {
+  stroke-dasharray: 283;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+}
+
+/* ── Wooden frame for puzzle grid ── */
+.wood-frame {
+  border: 4px solid #8B6914;
+  border-radius: 8px;
+  box-shadow:
+    inset 2px 2px 4px rgba(139, 105, 20, 0.3),
+    4px 4px 0px var(--color-border);
+  background: linear-gradient(135deg, #F5E6C8 0%, #EDD9B3 100%);
+}
+
+/* ── Glowing footsteps ── */
+@keyframes glow-footstep {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+.footstep {
+  animation: glow-footstep 0.6s ease-out forwards;
+}
+
+/* ── Speaking animation ── */
+@keyframes speak-wave {
+  0%, 100% { height: 8px; }
+  50% { height: 20px; }
+}
+.speak-bar {
+  animation: speak-wave 0.4s ease-in-out infinite;
+}
+.speak-bar:nth-child(2) { animation-delay: 0.1s; }
+.speak-bar:nth-child(3) { animation-delay: 0.2s; }
+.speak-bar:nth-child(4) { animation-delay: 0.1s; }
+
+/* ── Connectivity badge pulse ── */
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(43, 89, 63, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(43, 89, 63, 0); }
+}
+.status-online {
+  animation: status-pulse 2s ease-in-out infinite;
+}
