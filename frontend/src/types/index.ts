@@ -71,3 +71,43 @@ export interface Language {
   label: string;
   full: string;
 }
+
+export interface Relative {
+  name: string;
+  relationship: string;
+  photoUrl: string;
+  notes: string;
+  fileRef?: File;
+}
+
+export interface LifeStory {
+  occupation: string;
+  lifeEvents: { event: string; year: string; photoUrl?: string }[];
+  interests: string[];
+  favoriteMusic: string;
+  culturalBackground: string;
+  preferredLanguage: string;
+  joyNote: string;
+}
+
+export interface LandmarkEntry {
+  name: string;
+  description: string;
+  emoji: string;
+  photoUrl?: string;
+  fileRef?: File;
+}
+
+export interface FullPatient extends Patient {
+  dateOfBirth: string;
+  gender: string;
+  phone: string;
+  relationship: string;
+  diagnosisDate: string;
+  cognitiveScore: string;
+  medications: string[];
+  physicianNotes: string;
+  relatives: Relative[];
+  lifeStory: LifeStory;
+  landmarks: LandmarkEntry[];
+}

@@ -1,0 +1,151 @@
+export interface Relative {
+  name: string;
+  relationship: string;
+  photoUrl: string;
+  notes: string;
+  fileRef?: File;
+}
+
+export interface LifeEvent {
+  event: string;
+  year: string;
+  photoUrl?: string;
+}
+
+export interface LifeStory {
+  occupation: string;
+  lifeEvents: LifeEvent[];
+  interests: string[];
+  favoriteMusic: string;
+  culturalBackground: string;
+  preferredLanguage: string;
+  joyNote: string;
+}
+
+export interface LandmarkEntry {
+  name: string;
+  description: string;
+  emoji: string;
+  photoUrl?: string;
+  fileRef?: File;
+}
+
+export interface DiagnosticData {
+  diagnosis: string;
+  diagnosisDate: string;
+  cognitiveScore: string;
+  cognitiveScoreType: string;
+  medications: string[];
+  physicianNotes: string;
+  physicianName: string;
+}
+
+export interface IntakeFormData {
+  personal: {
+    fullName: string;
+    dateOfBirth: string;
+    gender: string;
+    phone: string;
+    relationship: string;
+  };
+  diagnostic: {
+    file: File | null;
+    fileName: string;
+    extractedData: DiagnosticData | null;
+    isProcessing: boolean;
+    skipped: boolean;
+  };
+  relatives: Relative[];
+  lifeStory: LifeStory;
+  landmarks: LandmarkEntry[];
+}
+
+export const EMPTY_FORM: IntakeFormData = {
+  personal: {
+    fullName: "",
+    dateOfBirth: "",
+    gender: "",
+    phone: "",
+    relationship: "",
+  },
+  diagnostic: {
+    file: null,
+    fileName: "",
+    extractedData: null,
+    isProcessing: false,
+    skipped: false,
+  },
+  relatives: [],
+  lifeStory: {
+    occupation: "",
+    lifeEvents: [
+      { event: "Marriage", year: "" },
+      { event: "Retirement", year: "" },
+    ],
+    interests: [],
+    favoriteMusic: "",
+    culturalBackground: "",
+    preferredLanguage: "",
+    joyNote: "",
+  },
+  landmarks: [
+    { name: "Home", description: "Where we live", emoji: "🏠" },
+    { name: "Local Market", description: "Where we shop", emoji: "🍵" },
+    { name: "Temple", description: "Place of worship", emoji: "🛕" },
+    { name: "Clinic", description: "Doctor's office", emoji: "🏥" },
+  ],
+};
+
+export const GENDER_OPTIONS = ["Male", "Female", "Other"];
+
+export const RELATIONSHIP_OPTIONS = [
+  "Spouse",
+  "Child",
+  "Sibling",
+  "Parent",
+  "Self",
+  "Other",
+];
+
+export const INTEREST_OPTIONS = [
+  "Music",
+  "Sports",
+  "Cooking",
+  "Gardening",
+  "Reading",
+  "Travel",
+  "Religious",
+  "Art",
+  "Other",
+];
+
+export const LANGUAGE_OPTIONS = [
+  { code: "en", label: "English" },
+  { code: "as", label: "Assamese" },
+  { code: "hi", label: "Hindi" },
+  { code: "mni", label: "Meitei" },
+];
+
+export const RELATIVE_RELATIONSHIP_OPTIONS = [
+  "Daughter",
+  "Son",
+  "Spouse",
+  "Grandchild",
+  "Sibling",
+  "Friend",
+  "Other",
+];
+
+export const LANDMARK_EMOJIS = [
+  "🏠", "🍵", "🛕", "🏥", "🏫", "🌳", "🚌", "🏪",
+  "🏛️", "⛰️", "🌇", "🏖️", "🎪", "🚉", "🏦", "📿",
+  "🕌", "⛩️", "🏞️", "🎑", "🏤", "🏩", "🏰",
+  "🗼", "🗽", "🗿", "🏗️", "🛤️", "🌉", "🌃", "💒",
+];
+
+export const SCORE_TYPE_OPTIONS = ["MMSE", "MoCA", "Other"];
+
+export const SCORE_MAX: Record<string, number> = {
+  MMSE: 30,
+  MoCA: 30,
+};

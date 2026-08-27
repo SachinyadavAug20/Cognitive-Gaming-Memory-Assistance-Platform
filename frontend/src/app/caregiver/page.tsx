@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PATIENTS } from "@/data/caregiverData";
 import { AlertBanner } from "@/components/caregiver/AlertBanner";
 import { PatientCard } from "@/components/caregiver/PatientCard";
+import { ChunkyButton } from "@/components/ui/ChunkyButton";
 
 export default function CaregiverDashboard() {
   return (
@@ -14,9 +15,16 @@ export default function CaregiverDashboard() {
             </h1>
             <p className="text-ink-inverse/60 text-xs mt-0.5">Monitor cognitive health for your patients</p>
           </div>
-          <Link href="/" className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-sm transition-colors">
-            ← Home
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/caregiver/add-patient">
+              <ChunkyButton variant="marigold" size="xl">
+                + Add Patient
+              </ChunkyButton>
+            </Link>
+            <Link href="/" className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-sm transition-colors">
+              ← Home
+            </Link>
+          </div>
         </div>
       </div>
 
