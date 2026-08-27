@@ -5,17 +5,10 @@ import Link from "next/link";
 import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
 import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
+import { GameHeader } from "@/components/layout/GameHeader";
+import { LANDMARKS, ROUTE } from "@/data/wayfindingData";
 
 type Phase = "explore" | "recall";
-
-const LANDMARKS = [
-  { id: "home", emoji: "🏠", name: "Home", desc: "Assam-type house" },
-  { id: "stall", emoji: "🍵", name: "Tea Stall", desc: "Ranjan Dai's shop" },
-  { id: "namghar", emoji: "🛕", name: "Namghar", desc: "Village prayer hall" },
-  { id: "clinic", emoji: "🏥", name: "Clinic", desc: "Dr. Baruah's clinic" },
-];
-
-const ROUTE = [0, 1, 2, 3];
 
 export default function WayfindingGame() {
   const [phase, setPhase] = useState<Phase>("explore");
@@ -58,23 +51,7 @@ export default function WayfindingGame() {
 
   return (
     <div className="min-h-screen pb-8">
-      {/* ── Header ── */}
-      <div className="bg-tea border-b-4 border-border px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link
-            href="/patient"
-            className="text-ink-inverse/80 hover:text-ink-inverse font-bold text-lg transition-colors"
-          >
-            ← Back
-          </Link>
-          <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink-inverse">
-            Remember the Way
-          </h1>
-          <div className="font-bold text-lg text-ink-inverse">
-            Score: {score}
-          </div>
-        </div>
-      </div>
+      <GameHeader title="Remember the Way" score={score} backHref="/patient" bgColor="bg-tea" />
 
       <div className="max-w-3xl mx-auto px-6 mt-8 space-y-8">
         {/* ── Map View ── */}

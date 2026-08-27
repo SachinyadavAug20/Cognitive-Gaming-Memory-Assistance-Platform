@@ -5,14 +5,10 @@ import Link from "next/link";
 import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
 import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
+import { GameHeader } from "@/components/layout/GameHeader";
+import { PIECES, FAMILY_MEMBERS, CORRECT_INDEX } from "@/data/puzzleData";
 
 type Stage = "presentation" | "puzzle" | "recognition";
-
-const GRID_SIZE = 3;
-const PIECES = GRID_SIZE * GRID_SIZE;
-
-const FAMILY_MEMBERS = ["Daughter Meena", "Doctor Baruah"];
-const CORRECT_INDEX = 0;
 
 export default function PuzzleGame() {
   const [stage, setStage] = useState<Stage>("presentation");
@@ -58,23 +54,7 @@ export default function PuzzleGame() {
 
   return (
     <div className="min-h-screen pb-8">
-      {/* ── Header Bar ── */}
-      <div className="bg-terracotta border-b-4 border-border px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link
-            href="/patient"
-            className="text-ink-inverse/80 hover:text-ink-inverse font-bold text-lg transition-colors"
-          >
-            ← Back
-          </Link>
-          <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink-inverse">
-            Memory Pieces
-          </h1>
-          <div className="font-bold text-lg text-ink-inverse">
-            Score: {score}
-          </div>
-        </div>
-      </div>
+      <GameHeader title="Memory Pieces" score={score} backHref="/patient" bgColor="bg-terracotta" />
 
       <div className="max-w-3xl mx-auto px-6 mt-8 space-y-8">
         {/* ── Stage 1: Photo Presentation ── */}

@@ -1,0 +1,22 @@
+import type { Reminder } from "@/types";
+import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+
+interface ReminderRowProps {
+  reminder: Reminder;
+}
+
+export function ReminderRow({ reminder }: ReminderRowProps) {
+  return (
+    <ScrapbookCard className="flex items-center gap-3 !p-3">
+      <span className="text-2xl shrink-0">{reminder.emoji}</span>
+      <div className="flex-1 min-w-0">
+        <div className="font-bold text-sm text-ink leading-tight">{reminder.title}</div>
+        <div className="text-ink-secondary text-xs">{reminder.time}</div>
+      </div>
+      <StatusBadge status={reminder.status}>
+        {reminder.status === "completed" ? "Done" : reminder.status === "due" ? "Now" : "Later"}
+      </StatusBadge>
+    </ScrapbookCard>
+  );
+}

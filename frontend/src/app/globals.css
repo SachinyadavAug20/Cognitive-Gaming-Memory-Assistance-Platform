@@ -1,40 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Scrapbook Canvas ── */
-  --color-canvas: #FBF8F2;
-  --color-surface: #FFFDF9;
-  --color-surface-muted: #F2E8DC;
+  /* ── Clean Anti-Glare Canvas (Linen Porcelain & Crisp Surface) ── */
+  --color-canvas: #FAF7F2;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F2ECE1;
 
-  /* ── Ink Hierarchy ── */
-  --color-ink: #241E19;
-  --color-ink-secondary: #5C5248;
-  --color-ink-inverse: #FFFDF9;
+  /* ── Ink Hierarchy (Exceeds WCAG AAA 7:1 Contrast) ── */
+  --color-ink: #16120E;
+  --color-ink-secondary: #4A4036;
+  --color-ink-inverse: #FFFFFF;
 
-  /* ── Structural ── */
-  --color-border: #2E2824;
-  --color-border-soft: #D4C9BA;
+  /* ── Structural Borders ── */
+  --color-border: #16120E;
+  --color-border-soft: #D9CEBF;
 
-  /* ── Terracotta (Primary) ── */
-  --color-terracotta: #C85A32;
-  --color-terracotta-hover: #B34A24;
-  --color-terracotta-light: #FCEFE9;
+  /* ── Attention-Span Anchor: Vibrant Sunburst Saffron (Primary CTA) ── */
+  --color-marigold: #E66A00;
+  --color-marigold-hover: #CC5A00;
+  --color-marigold-light: #FFF0DB;
 
-  /* ── Tea Green (Secondary) ── */
-  --color-tea: #2B593F;
-  --color-tea-hover: #214732;
-  --color-tea-light: #EAF3EC;
+  /* ── Reminiscence Persimmon / Coral (Patient Memory Games) ── */
+  --color-terracotta: #D4441C;
+  --color-terracotta-hover: #BA3610;
+  --color-terracotta-light: #FEECE6;
 
-  /* ── Marigold (Accent) ── */
-  --color-marigold: #D97706;
-  --color-marigold-hover: #B45309;
-  --color-marigold-light: #FEF3C7;
+  /* ── Restorative Tea Forest Green (Caregiver / Status Grounding) ── */
+  --color-tea: #1B663E;
+  --color-tea-hover: #145030;
+  --color-tea-light: #E7F4EC;
 
-  /* ── Brick Red (Alert) ── */
-  --color-brick: #A63232;
-  --color-brick-light: #FBEBEB;
+  /* ── Wayfinding Cerulean (Navigation Accent) ── */
+  --color-sky: #1362B8;
+  --color-sky-light: #E8F2FC;
 
-  /* ── Fonts ── */
+  /* ── Alert & Attention Tags ── */
+  --color-brick: #C5221F;
+  --color-brick-light: #FDE8E8;
+
+  /* ── Fonts (Preserved) ── */
   --font-serif: "Fraunces", "Georgia", serif;
   --font-sans: "Atkinson Hyperlegible", "Noto Sans Devanagari", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
@@ -59,12 +63,12 @@ html {
    CHUNKY 3D MECHANICAL BUTTON — Primary interaction element
    ══════════════════════════════════════════════════════════════ */
 .btn-chunky {
-  --btn-bg: #C85A32;
+  --btn-bg: #E66A00;
   background-color: var(--btn-bg);
   color: #FFFFFF;
-  border: 4px solid #1E1711;
+  border: 4px solid #16120E;
   border-radius: 16px;
-  box-shadow: 0px 5px 0px #1E1711;
+  box-shadow: 0px 5px 0px #16120E;
   transform: translateY(0px);
   transition: transform 0.08s ease-in-out, box-shadow 0.08s ease-in-out, background-color 0.15s ease;
   font-weight: 800;
@@ -79,29 +83,34 @@ html {
 }
 .btn-chunky:hover {
   transform: translateY(-2px);
-  box-shadow: 0px 7px 0px #1E1711;
+  box-shadow: 0px 7px 0px #16120E;
 }
 .btn-chunky:active,
 .btn-chunky[data-pressed="true"] {
   transform: translateY(5px);
-  box-shadow: 0px 0px 0px #1E1711;
+  box-shadow: 0px 0px 0px #16120E;
 }
 .btn-chunky:focus-visible {
-  outline: 5px dashed #D97706;
+  outline: 5px dashed #E66A00;
   outline-offset: 6px;
 }
-/* Variant: Tea Green */
+/* Variant: Tea Green (Caregiver) */
 .btn-chunky-tea {
-  --btn-bg: #2B593F;
+  --btn-bg: #1B663E;
 }
-/* Variant: Marigold */
-.btn-chunky-marigold {
-  --btn-bg: #D97706;
+/* Variant: Terracotta Coral (Patient Memory) */
+.btn-chunky-terracotta {
+  --btn-bg: #D4441C;
+}
+/* Variant: Sky (Wayfinding) */
+.btn-chunky-sky {
+  --btn-bg: #1362B8;
 }
 /* Variant: Outline / Secondary */
 .btn-chunky-outline {
-  --btn-bg: #FFFDF9;
-  color: #241E19;
+  --btn-bg: #FFFFFF;
+  color: #16120E;
+  border-color: #16120E;
 }
 /* Size: XL */
 .btn-chunky-xl {
@@ -219,8 +228,8 @@ html {
 
 /* ── Connectivity badge pulse ── */
 @keyframes status-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(43, 89, 63, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(43, 89, 63, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(27, 102, 62, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(27, 102, 62, 0); }
 }
 .status-online {
   animation: status-pulse 2s ease-in-out infinite;
