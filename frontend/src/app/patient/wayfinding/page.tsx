@@ -7,10 +7,12 @@ import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { LANDMARKS, ROUTE } from "@/data/wayfindingData";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Phase = "explore" | "recall";
 
 export default function WayfindingGame() {
+  const { t, locale } = useTranslation();
   const [phase, setPhase] = useState<Phase>("explore");
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightedSteps, setHighlightedSteps] = useState<number[]>([0]);
@@ -22,7 +24,6 @@ export default function WayfindingGame() {
   const advanceExplore = useCallback(() => {
     const next = currentStep + 1;
     if (next >= ROUTE.length) {
-      // Done exploring, start recall
       setPhase("recall");
       setRecallStep(1);
       return;
@@ -51,20 +52,18 @@ export default function WayfindingGame() {
 
   return (
     <div className="min-h-screen pb-8">
-      <GameHeader title="Remember the Way" score={score} backHref="/patient" bgColor="bg-tea" />
+      <GameHeader title={t("wayfinding.title")} score={score} backHref="/patient" bgColor="bg-tea" />
 
       <div className="max-w-3xl mx-auto px-6 mt-8 space-y-8">
         {/* ── Map View ── */}
         <ScrapbookCard className="!p-6">
           <div className="bg-tea-light rounded-xl p-6 relative">
-            {/* Village path */}
             <div className="flex items-center justify-between relative">
               {LANDMARKS.map((lm, i) => {
                 const isActive = highlightedSteps.includes(i);
                 const isCurrent = phase === "explore" && i === currentStep;
                 return (
                   <div key={lm.id} className="flex flex-col items-center gap-2 flex-1 relative">
-                    {/* Connection line */}
                     {i > 0 && (
                       <div
                         className={`absolute top-8 right-1/2 w-full h-1 rounded ${
@@ -74,7 +73,6 @@ export default function WayfindingGame() {
                         }`}
                       />
                     )}
-                    {/* Landmark node */}
                     <div
                       className={`relative z-10 w-16 h-16 md:w-20 md:h-20 rounded-2xl border-3 flex items-center justify-center text-3xl md:text-4xl transition-all ${
                         isCurrent
@@ -106,23 +104,23 @@ export default function WayfindingGame() {
         {phase === "explore" && (
           <div className="space-y-6 text-center">
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink">
-              Follow the path from Home to Clinic
+              {t("wayfinding.explore")}
             </h2>
             <p className="text-ink-secondary text-lg">
-              Step {currentStep + 1} of {ROUTE.length}:{" "}
+              {t("wayfinding.step", { current: String(currentStep + 1), total: String(ROUTE.length) })}:{" "}
               <strong>{LANDMARKS[currentStep].name}</strong>
             </p>
 
             <AudioPrompt
               text={`You are at ${LANDMARKS[currentStep].name}. Next, you walk to ${currentStep + 1 < ROUTE.length ? LANDMARKS[currentStep + 1].name : "the clinic"}. Remember this route.`}
-              lang="en-US"
-              label="Listen to directions"
+              lang={locale === "en" ? "en-US" : `${locale}-IN`}
+              label={t("audio.listenToDirections")}
             />
 
             <BigButton variant="terracotta" size="xl" onClick={advanceExplore}>
               {currentStep + 1 < ROUTE.length
-                ? `Walk to ${LANDMARKS[currentStep + 1].name} →`
-                : "I remember the route!"}
+                ? t("wayfinding.walkTo", { name: LANDMARKS[currentStep + 1].name })
+                : t("wayfinding.reached")}
             </BigButton>
           </div>
         )}
@@ -131,15 +129,15 @@ export default function WayfindingGame() {
         {phase === "recall" && !completed && (
           <div className="space-y-6 text-center">
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink">
-              Where do we go next?
+              {t("wayfinding.recall")}
             </h2>
             <p className="text-ink-secondary text-lg">
-              After <strong>{LANDMARKS[recallStep - 1].name}</strong>, where do we go?
+              {t("wayfinding.recall.desc", { prev: LANDMARKS[recallStep - 1].name })}
             </p>
 
             <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
               {LANDMARKS.map((lm, i) => {
-                if (i === recallStep - 1) return null; // Can't go back to same
+                if (i === recallStep - 1) return null;
                 const isSelected = selectedAnswer === i;
                 const isCorrect = i === recallStep;
                 return (
@@ -177,14 +175,14 @@ export default function WayfindingGame() {
           <div className="space-y-6 text-center">
             <div className="text-6xl">🏆</div>
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-3xl text-ink">
-              You remembered the whole route!
+              {t("wayfinding.complete")}
             </h2>
             <p className="text-xl text-ink-secondary">
-              Score: <strong className="text-terracotta">{score}</strong> points
+              {t("wayfinding.score", { score: String(score), total: String(ROUTE.length * 20) })}
             </p>
             <Link href="/patient">
               <BigButton variant="terracotta" size="xl">
-                ← Back Home
+                {t("puzzle.backHome")}
               </BigButton>
             </Link>
           </div>

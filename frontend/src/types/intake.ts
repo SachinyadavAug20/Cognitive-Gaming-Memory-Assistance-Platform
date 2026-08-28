@@ -30,6 +30,13 @@ export interface LandmarkEntry {
   fileRef?: File;
 }
 
+export interface DomainDetail {
+  needs_help: boolean;
+  evidence: string | null;
+}
+
+export type ClinicalDomains = Record<string, DomainDetail>;
+
 export interface DiagnosticData {
   diagnosis: string;
   diagnosisDate: string;
@@ -38,6 +45,9 @@ export interface DiagnosticData {
   medications: string[];
   physicianNotes: string;
   physicianName: string;
+  score?: number | null;
+  maxScore?: number | null;
+  domains?: ClinicalDomains;
 }
 
 export interface IntakeFormData {
@@ -121,9 +131,31 @@ export const INTEREST_OPTIONS = [
 
 export const LANGUAGE_OPTIONS = [
   { code: "en", label: "English" },
-  { code: "as", label: "Assamese" },
-  { code: "hi", label: "Hindi" },
-  { code: "mni", label: "Meitei" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "as", label: "অসমীয়া" },
+  { code: "bn", label: "বাংলা" },
+  { code: "mni", label: "মৈতৈলোন্" },
+  { code: "kha", label: "Khasi" },
+  { code: "lus", label: "Mizo" },
+  { code: "nep", label: "नेपाली" },
+  { code: "brx", label: "बड़ो" },
+  { code: "trl", label: "Kokborok" },
+  { code: "ta", label: "தமிழ்" },
+  { code: "te", label: "తెలుగు" },
+  { code: "mr", label: "मराठी" },
+  { code: "ml", label: "മലയാളം" },
+  { code: "kn", label: "ಕನ್ನಡ" },
+  { code: "gu", label: "ગુજરાતી" },
+  { code: "pa", label: "ਪੰਜਾਬੀ" },
+  { code: "od", label: "ଓଡ଼ିଆ" },
+  { code: "ur", label: "اردو" },
+  { code: "mai", label: "मैथिली" },
+  { code: "sat", label: "ᱥᱟᱨᱤᱡ" },
+  { code: "sd", label: "سنڌي" },
+  { code: "ks", label: "कश्मीरी" },
+  { code: "dog", label: "डोगरी" },
+  { code: "kok", label: "कोंकणी" },
+  { code: "sa", label: "संस्कृतम्" },
 ];
 
 export const RELATIVE_RELATIONSHIP_OPTIONS = [

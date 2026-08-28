@@ -6,8 +6,11 @@ import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { ReminderRow } from "@/components/patient/ReminderRow";
 import { HydrationTracker } from "@/components/patient/HydrationTracker";
 import { ExerciseBanner } from "@/components/patient/ExerciseBanner";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PatientHome() {
+  const { t, locale } = useTranslation();
+
   return (
     <div className="min-h-[100vh] pb-4 md:overflow-hidden flex flex-col">
       <div className="bg-terracotta border-b-4 border-border px-4 py-2.5 md:px-6">
@@ -17,14 +20,14 @@ export default function PatientHome() {
           </div>
           <div className="flex-1 min-w-0">
             <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink-inverse leading-tight">
-              Good Morning, Dadu!
+              {t("patient.greeting")}
             </h1>
-            <p className="text-ink-inverse/80 text-sm">Wednesday, 26 August</p>
+            <p className="text-ink-inverse/80 text-sm">{t("patient.date")}</p>
           </div>
           <AudioPrompt
-            text="Good Morning, Dadu! It is Wednesday, 26th August. You have 2 tasks remaining today."
-            lang="en-US"
-            label="Listen"
+            text={t("patient.audio.greeting")}
+            lang={locale === "en" ? "en-US" : `${locale}-IN`}
+            label={t("audio.listen")}
             size="md"
           />
         </div>
@@ -33,7 +36,7 @@ export default function PatientHome() {
       <div className="max-w-3xl mx-auto px-4 space-y-3 mt-3 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
         <section>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-lg text-ink mb-2">
-            Today&apos;s Schedule
+            {t("patient.schedule")}
           </h2>
           <div className="space-y-2">
             {REMINDERS.map((r) => (
@@ -48,35 +51,35 @@ export default function PatientHome() {
 
         <section>
           <ExerciseBanner
-            label="Daily Exercise"
+            label={t("patient.exercise.daily")}
             labelColor="text-marigold"
             bgColor="bg-marigold-light"
             emoji="🧠"
-            title="Play Today's Memory Game"
-            description="Level 2 • 5 Minutes • With photos of your family"
+            title={t("patient.exercise.daily.title")}
+            description={t("patient.exercise.daily.desc")}
             href="/patient/puzzle"
-            buttonText="Start Exercise"
+            buttonText={t("patient.exercise.daily.cta")}
             buttonVariant="terracotta"
           />
         </section>
 
         <section>
           <ExerciseBanner
-            label="Bonus Exercise"
+            label={t("patient.exercise.bonus")}
             labelColor="text-tea"
             bgColor="bg-tea-light"
             emoji="🗺️"
-            title="Remember the Way"
-            description="Navigate familiar routes through the village. 8 minutes."
+            title={t("patient.exercise.bonus.title")}
+            description={t("patient.exercise.bonus.desc")}
             href="/patient/wayfinding"
-            buttonText="Start Wayfinding"
+            buttonText={t("patient.exercise.bonus.cta")}
             buttonVariant="tea"
           />
         </section>
 
         <div className="pt-1 pb-2">
           <Link href="/" className="inline-flex items-center gap-1.5 text-ink-secondary hover:text-ink font-bold text-sm transition-colors">
-            ← Back to Home
+            {t("patient.back")}
           </Link>
         </div>
       </div>

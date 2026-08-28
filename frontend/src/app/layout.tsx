@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Atkinson_Hyperlegible, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const fraunces = Fraunces({
   variable: "--font-serif",
@@ -37,7 +38,9 @@ export default function RootLayout({
       className={`${fraunces.variable} ${atkinson.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-canvas text-ink paper-texture">
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

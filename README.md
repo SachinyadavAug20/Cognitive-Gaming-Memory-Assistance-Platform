@@ -86,14 +86,3 @@ Backend: `http://localhost:8080` | Frontend: `http://localhost:3000`
 3. Start backend: `cd backend && ./mvnw spring-boot:run`
 4. Start frontend: `cd frontend && npm run dev`
 
-### Ollama Setup
-
-```bash
-ollama pull llama3.2:3b
-# Ollama runs on http://localhost:11434 by default
-```
-
-## Team
-
-- **Sachin Yadav**
-- **Prince Sharma**

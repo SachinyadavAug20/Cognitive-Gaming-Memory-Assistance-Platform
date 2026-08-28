@@ -110,4 +110,12 @@ export interface FullPatient extends Patient {
   relatives: Relative[];
   lifeStory: LifeStory;
   landmarks: LandmarkEntry[];
+  domains?: ClinicalDomains;
 }
+
+export interface DomainDetail {
+  needs_help: boolean;
+  evidence: string | null;
+}
+
+export type ClinicalDomains = Record<string, DomainDetail>;

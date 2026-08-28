@@ -1,30 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
-import { LANGUAGES, ROUTINE } from "@/data/homeData";
+import { ROUTINE } from "@/data/homeData";
 import { Navbar } from "@/components/layout/Navbar";
 import { PortalCard } from "@/components/home/PortalCard";
 import { GamePreviewTile } from "@/components/home/GamePreviewTile";
 import { RoutineItem } from "@/components/home/RoutineItem";
 import { FooterBar } from "@/components/home/FooterBar";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Home() {
-  const [lang, setLang] = useState("en");
-  const [isOnline] = useState(true);
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-[100vh] flex flex-col md:overflow-hidden">
-      <Navbar lang={lang} onLangChange={setLang} isOnline={isOnline} languages={LANGUAGES} />
+      <Navbar />
 
       <main className="flex-1 px-4 py-3 md:px-6 md:py-3 overflow-y-auto md:overflow-y-hidden">
         <div className="max-w-6xl mx-auto space-y-3">
           <div className="text-center md:text-left">
             <h1 className="font-[family-name:var(--font-serif)] font-bold text-2xl md:text-3xl text-ink leading-tight">
-              Good Day! 🌞
+              {t("home.greeting")} 🌞
             </h1>
             <p className="text-base md:text-lg text-ink-secondary">
-              Ready for your daily memory exercises?
+              {t("home.ready")}
             </p>
           </div>
 
@@ -33,9 +32,9 @@ export default function Home() {
               <PortalCard
                 headerBg="bg-terracotta"
                 emoji="🧑‍🦳"
-                title="I am a Patient"
-                subtitle="মই এজন ৰোগী"
-                description="Start your daily memory games, view reminders, and track your progress."
+                title={t("home.patient.title")}
+                subtitle={t("home.patient.subtitle")}
+                description={t("home.patient.description")}
                 href="/patient"
                 actionButton={
                   <ChunkyButton
@@ -49,7 +48,7 @@ export default function Home() {
                     }
                     className="w-full text-lg md:text-xl"
                   >
-                    START TODAY&apos;S EXERCISES →
+                    {t("home.patient.cta")}
                   </ChunkyButton>
                 }
               >
@@ -65,9 +64,9 @@ export default function Home() {
               <PortalCard
                 headerBg="bg-tea"
                 emoji="👨‍⚕️"
-                title="Caregiver &amp; Health Worker"
-                subtitle="ASHA / PHC Portal"
-                description="Monitor patient progress, upload family photos, manage medications."
+                title={t("home.caregiver.title")}
+                subtitle={t("home.caregiver.subtitle")}
+                description={t("home.caregiver.description")}
                 href="/caregiver"
                 actionButton={
                   <ChunkyButton
@@ -81,21 +80,21 @@ export default function Home() {
                     }
                     className="w-full text-base"
                   >
-                    OPEN DASHBOARD
+                    {t("home.caregiver.cta")}
                   </ChunkyButton>
                 }
               >
                 <div className="space-y-2 flex-1">
                   <div className="flex items-center justify-between bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
-                    <span className="font-bold text-sm text-ink">Patients</span>
+                    <span className="font-bold text-sm text-ink">{t("home.caregiver.patients")}</span>
                     <span className="font-bold text-tea text-base">3</span>
                   </div>
                   <div className="flex items-center justify-between bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
-                    <span className="font-bold text-sm text-ink">Sessions Today</span>
+                    <span className="font-bold text-sm text-ink">{t("home.caregiver.sessions")}</span>
                     <span className="font-bold text-terracotta text-base">5</span>
                   </div>
                   <div className="flex items-center justify-between bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
-                    <span className="font-bold text-sm text-ink">Alerts</span>
+                    <span className="font-bold text-sm text-ink">{t("home.caregiver.alerts")}</span>
                     <span className="font-bold text-brick text-base">1</span>
                   </div>
                 </div>
@@ -105,7 +104,7 @@ export default function Home() {
 
           <section>
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-lg text-ink mb-2">
-              Today&apos;s Routine
+              {t("home.routine")}
             </h2>
             <div className="grid sm:grid-cols-3 gap-3">
               {ROUTINE.map((item) => (

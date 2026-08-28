@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import type { Language } from "@/types";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface NavbarProps {
-  lang: string;
-  onLangChange: (code: string) => void;
-  isOnline: boolean;
-  languages: Language[];
+  isOnline?: boolean;
 }
 
-export function Navbar({ lang, onLangChange, isOnline, languages }: NavbarProps) {
+export function Navbar({ isOnline = true }: NavbarProps) {
+  const { t } = useTranslation();
+
   return (
     <header className="w-full bg-canvas border-b-2 border-border/10 py-3 px-6">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -29,26 +29,15 @@ export function Navbar({ lang, onLangChange, isOnline, languages }: NavbarProps)
         <div className="flex items-center gap-3">
           <div className={`hidden sm:flex items-center gap-2 px-3 py-1.5 border-2 border-border rounded-xl text-xs font-bold shadow-[0_2px_0_var(--color-border)] ${isOnline ? "bg-tea-light text-tea" : "bg-marigold-light text-marigold"}`}>
             <span className={`w-2.5 h-2.5 rounded-full ${isOnline ? "bg-tea animate-pulse" : "bg-marigold"}`} />
-            {isOnline ? "Online" : "Offline"}
+            {isOnline ? t("nav.online") : t("nav.offline")}
           </div>
 
-          <div className="flex items-center gap-1 bg-surface-muted p-1 border-2 border-border rounded-xl shadow-[0_2px_0_var(--color-border)]">
-            {languages.map((l) => (
-              <button key={l.code} onClick={() => onLangChange(l.code)}
-                title={l.full}
-                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition-all ${
-                  lang === l.code
-                    ? "bg-marigold text-white shadow-sm"
-                    : "text-ink-secondary hover:bg-white/80"
-                }`}
-              >{l.label}</button>
-            ))}
-          </div>
+          <LanguageSelector compact />
 
           <Link href="tel:108">
             <button className="flex items-center gap-2 px-4 py-2 bg-brick hover:bg-[#A31815] text-white font-extrabold text-sm border-2 border-border rounded-xl shadow-[0_3px_0_var(--color-border)] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer min-h-[44px]">
               <span className="text-base">🚨</span>
-              <span>SOS HELP</span>
+              <span>{t("nav.sos")}</span>
             </button>
           </Link>
         </div>

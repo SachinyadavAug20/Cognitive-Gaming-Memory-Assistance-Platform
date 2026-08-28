@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 
 interface AudioPromptProps {
   text: string;
-  lang?: "en-US" | "hi-IN" | "as-IN";
+  lang?: string;
   label?: string;
   size?: "md" | "lg";
 }

@@ -7,10 +7,12 @@ import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { PIECES, FAMILY_MEMBERS, CORRECT_INDEX } from "@/data/puzzleData";
+import { useTranslation } from "@/hooks/useTranslation";
 
 type Stage = "presentation" | "puzzle" | "recognition";
 
 export default function PuzzleGame() {
+  const { t, locale } = useTranslation();
   const [stage, setStage] = useState<Stage>("presentation");
   const [countdown, setCountdown] = useState(10);
   const [pieces, setPieces] = useState<number[]>(
@@ -54,7 +56,7 @@ export default function PuzzleGame() {
 
   return (
     <div className="min-h-screen pb-8">
-      <GameHeader title="Memory Pieces" score={score} backHref="/patient" bgColor="bg-terracotta" />
+      <GameHeader title={t("puzzle.title")} score={score} backHref="/patient" bgColor="bg-terracotta" />
 
       <div className="max-w-3xl mx-auto px-6 mt-8 space-y-8">
         {/* ── Stage 1: Photo Presentation ── */}
@@ -96,8 +98,8 @@ export default function PuzzleGame() {
               </p>
               <AudioPrompt
                 text="Look at this photo carefully. This is your daughter Meena, taken in Shillong. Remember her face and the background."
-                lang="en-US"
-                label="Listen to Story"
+                lang={locale === "en" ? "en-US" : `${locale}-IN`}
+                label={t("audio.listenToStory")}
               />
             </div>
           </div>
@@ -108,10 +110,10 @@ export default function PuzzleGame() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink mb-2">
-                Put the photo back together!
+                {t("puzzle.puzzle")}
               </h2>
               <p className="text-ink-secondary text-lg">
-                Tap a piece below, then tap where it goes.
+                {t("puzzle.puzzle.desc")}
               </p>
             </div>
 
@@ -141,7 +143,7 @@ export default function PuzzleGame() {
             {/* Piece tray */}
             <div>
               <p className="text-sm font-bold text-ink-secondary mb-2 uppercase tracking-wider">
-                Available Pieces
+                {t("puzzle.pieces")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {pieces.map((p) => (
@@ -169,12 +171,12 @@ export default function PuzzleGame() {
                 size="lg"
                 onClick={() => setShowHint(!showHint)}
               >
-                {showHint ? "Hide Hint" : "Show Hint"}
+                {showHint ? t("puzzle.hint.hide") : t("puzzle.hint.show")}
               </BigButton>
               <AudioPrompt
                 text="Tap a piece number below, then tap where it should go in the grid above."
-                lang="en-US"
-                label="How to Play"
+                lang={locale === "en" ? "en-US" : `${locale}-IN`}
+                label={t("audio.howToPlay")}
                 size="lg"
               />
             </div>
@@ -186,7 +188,7 @@ export default function PuzzleGame() {
           <div className="space-y-6 text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-3xl text-ink">
-              Wonderful! You assembled the photo!
+              {t("puzzle.correct")}
             </h2>
 
             <ScrapbookCard variant="polaroid" className="max-w-sm mx-auto">
@@ -194,7 +196,7 @@ export default function PuzzleGame() {
                 👨‍👩‍👧
               </div>
               <p className="font-[family-name:var(--font-serif)] text-center text-lg text-ink mt-2 font-semibold">
-                Who is in this photo?
+                {t("puzzle.recognition")}
               </p>
             </ScrapbookCard>
 
@@ -225,12 +227,12 @@ export default function PuzzleGame() {
               <div className="space-y-4">
                 <p className="text-xl font-bold text-ink">
                   {recognized === CORRECT_INDEX
-                    ? "Correct! That is your daughter Meena!"
-                    : "Not quite — that was Meena, your daughter."}
+                    ? t("puzzle.correct")
+                    : t("puzzle.incorrect")}
                 </p>
                 <Link href="/patient">
                   <BigButton variant="terracotta" size="xl">
-                    ← Back Home
+                    {t("puzzle.backHome")}
                   </BigButton>
                 </Link>
               </div>

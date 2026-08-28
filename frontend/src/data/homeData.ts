@@ -1,11 +1,4 @@
-import type { Language, RoutineItem } from "@/types";
-
-export const LANGUAGES: Language[] = [
-  { code: "en", label: "ENG", full: "English" },
-  { code: "as", label: "অস", full: "অসমীয়া" },
-  { code: "hi", label: "हि", full: "हिन्दी" },
-  { code: "mni", label: "মৈ", full: "Meitei" },
-];
+import type { RoutineItem } from "@/types";
 
 export const ROUTINE: RoutineItem[] = [
   { emoji: "💊", title: "Morning Medicine", time: "8:00 AM", status: "completed" },
