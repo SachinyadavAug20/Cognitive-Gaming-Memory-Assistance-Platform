@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import { FileUploadZone } from "./FileUploadZone";
 import type { DiagnosticData, ClinicalDomains, SubscaleScore } from "@/types/intake";
 
@@ -16,7 +15,6 @@ interface StepDiagnosticReportProps {
   onFileSelect: (file: File) => void;
   onAnalyze: () => void;
   onSkip: () => void;
-  onEditField: (field: string, value: string) => void;
 }
 
 const CATEGORY_GROUPS: Record<string, string[]> = {
@@ -59,21 +57,21 @@ const CATEGORY_ICONS: Record<string, string> = {
 
 function severityColor(level: string): string {
   switch (level) {
-    case "None": return "bg-[#1E5136] text-white";
-    case "Mild": return "bg-[#D97706] text-white";
-    case "Moderate": return "bg-[#C24E26] text-white";
-    case "Severe": return "bg-[#9B1C1C] text-white";
-    default: return "bg-[#6B7280] text-white";
+    case "None": return "bg-tea text-white";
+    case "Mild": return "bg-marigold text-white";
+    case "Moderate": return "bg-terracotta text-white";
+    case "Severe": return "bg-brick text-white";
+    default: return "bg-gray-500 text-white";
   }
 }
 
 function barColor(needsHelp: boolean, level?: string): string {
-  if (!needsHelp) return "bg-[#1E5136]";
+  if (!needsHelp) return "bg-tea";
   switch (level) {
-    case "Severe": return "bg-[#9B1C1C]";
-    case "Moderate": return "bg-[#C24E26]";
-    case "Mild": return "bg-[#D97706]";
-    default: return "bg-[#6B7280]";
+    case "Severe": return "bg-brick";
+    case "Moderate": return "bg-terracotta";
+    case "Mild": return "bg-marigold";
+    default: return "bg-gray-500";
   }
 }
 
@@ -83,24 +81,7 @@ export function StepDiagnosticReport({
   onFileSelect,
   onAnalyze,
   onSkip,
-  onEditField,
 }: StepDiagnosticReportProps) {
-  const [editingField, setEditingField] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState("");
-
-  const handleEdit = useCallback((field: string, currentValue: string) => {
-    setEditingField(field);
-    setEditValue(currentValue);
-  }, []);
-
-  const handleSave = useCallback(
-    (field: string) => {
-      onEditField(field, editValue);
-      setEditingField(null);
-    },
-    [editValue, onEditField]
-  );
-
   const preview = data.file ? URL.createObjectURL(data.file) : undefined;
   const ext = data.extractedData;
   const domains: ClinicalDomains = ext?.domains || {};

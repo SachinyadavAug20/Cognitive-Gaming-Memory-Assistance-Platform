@@ -168,37 +168,6 @@ export function IntakeWizard() {
     }));
   }, []);
 
-  const handleEditDiagnosticField = useCallback(
-    (field: string, value: string) => {
-      setFormData((prev) => {
-        if (!prev.diagnostic.extractedData) return prev;
-        if (field === "medications") {
-          return {
-            ...prev,
-            diagnostic: {
-              ...prev.diagnostic,
-              extractedData: {
-                ...prev.diagnostic.extractedData,
-                medications: value.split("\n").filter(Boolean),
-              },
-            },
-          };
-        }
-        return {
-          ...prev,
-          diagnostic: {
-            ...prev.diagnostic,
-            extractedData: {
-              ...prev.diagnostic.extractedData,
-              [field]: value,
-            },
-          },
-        };
-      });
-    },
-    []
-  );
-
   // Step 3: Family handlers
   const handleAddRelative = useCallback(() => {
     setFormData((prev) => ({
@@ -468,7 +437,6 @@ export function IntakeWizard() {
             onFileSelect={handleFileSelect}
             onAnalyze={handleAnalyze}
             onSkip={handleSkipDiagnostic}
-            onEditField={handleEditDiagnosticField}
           />
         )}
 

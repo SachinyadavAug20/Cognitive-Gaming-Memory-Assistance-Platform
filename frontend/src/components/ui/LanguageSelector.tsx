@@ -8,31 +8,28 @@ const SUPPORTED_LANGUAGES = [
   { code: "hi", label: "हिन्दी", full: "Hindi" },
   { code: "as", label: "অসমীয়া", full: "Assamese" },
   { code: "mr", label: "मराठी", full: "Marathi" },
-];
+] as const;
 
-export function LanguageSelector({ className = "" }: { className?: string; compact?: boolean }) {
+export function LanguageSelector({ className = "" }: { className?: string }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
-  function switchLocale(code: string) {
-    router.replace(pathname, { locale: code });
-  }
-
   return (
-    <div className={`flex items-center gap-1 bg-[#F2ECE1] p-1 border-2 border-[#16120E] rounded-xl shadow-[0_2px_0_#16120E] ${className}`}>
-      {SUPPORTED_LANGUAGES.map((l) => (
+    <div className={`flex items-center gap-1 bg-surface-muted p-1 border-2 border-border rounded-xl shadow-[0_2px_0_var(--color-border)] ${className}`}>
+      {SUPPORTED_LANGUAGES.map((lang) => (
         <button
-          key={l.code}
-          onClick={() => switchLocale(l.code)}
-          title={l.full}
+          key={lang.code}
+          type="button"
+          onClick={() => router.replace(pathname, { locale: lang.code })}
+          title={lang.full}
           className={`px-3 py-1 text-xs font-black rounded-lg transition-all cursor-pointer ${
-            locale === l.code
-              ? "bg-[#E66A00] text-white shadow-sm"
-              : "text-[#4A4036] hover:bg-white/80"
+            locale === lang.code
+              ? "bg-marigold text-white shadow-sm"
+              : "text-ink-secondary hover:bg-white/80"
           }`}
         >
-          {l.label}
+          {lang.label}
         </button>
       ))}
     </div>

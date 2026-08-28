@@ -16,7 +16,7 @@ export default function PuzzleGame() {
   const locale = useLocale();
   const [stage, setStage] = useState<Stage>("presentation");
   const [countdown, setCountdown] = useState(10);
-  const [pieces, setPieces] = useState<number[]>(
+  const [pieces] = useState<number[]>(
     () => Array.from({ length: PIECES }, (_, i) => i).sort(() => Math.random() - 0.5)
   );
   const [selectedPiece, setSelectedPiece] = useState<number | null>(null);

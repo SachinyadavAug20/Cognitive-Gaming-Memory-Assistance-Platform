@@ -32,7 +32,7 @@ export function Navbar({ isOnline = true }: NavbarProps) {
             {isOnline ? t("online") : t("offline")}
           </div>
 
-          <LanguageSelector compact />
+          <LanguageSelector />
 
           <Link href="tel:108">
             <button className="flex items-center gap-2 px-4 py-2 bg-brick hover:bg-[#A31815] text-white font-extrabold text-sm border-2 border-border rounded-xl shadow-[0_3px_0_var(--color-border)] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer min-h-[44px]">

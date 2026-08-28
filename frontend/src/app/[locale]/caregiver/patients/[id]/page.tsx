@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MOCK_PATIENT, SESSIONS, TREND_DATA } from "@/data/caregiverData";
-import { TrendChart } from "@/components/ui/TrendChart";
+import { TrendChart } from "@/components/caregiver/TrendChart";
 import { CognitiveScoreCard } from "@/components/caregiver/CognitiveScoreCard";
 import { SessionHistoryTable } from "@/components/caregiver/SessionHistoryTable";
 import { MemoryVault } from "@/components/caregiver/MemoryVault";
