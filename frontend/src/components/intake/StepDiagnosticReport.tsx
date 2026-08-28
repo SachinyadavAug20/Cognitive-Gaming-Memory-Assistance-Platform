@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { FileUploadZone } from "./FileUploadZone";
 import type { DiagnosticData, ClinicalDomains, SubscaleScore } from "@/types/intake";
 
@@ -18,15 +19,21 @@ interface StepDiagnosticReportProps {
 }
 
 const CATEGORY_GROUPS: Record<string, string[]> = {
-  "Cognitive Functions": [
+  categoryCognitive: [
     "memory", "attention", "executive_function", "orientation", "language", "visuospatial", "decision_making",
   ],
-  "Activities of Daily Living (IADLs)": [
+  categoryIadls: [
     "medication_management", "financial_management", "navigation", "meal_preparation", "driving", "household_tasks",
   ],
-  "Behavioral & Mood Markers": [
+  categoryBehavioral: [
     "apathy", "agitation", "social_withdrawal", "sleep_disturbance",
   ],
+};
+
+const DOMAIN_ICONS: Record<string, string> = {
+  categoryCognitive: "🧠",
+  categoryIadls: "🏠",
+  categoryBehavioral: "🌿",
 };
 
 const DOMAIN_LABELS: Record<string, string> = {
@@ -47,12 +54,6 @@ const DOMAIN_LABELS: Record<string, string> = {
   agitation: "Agitation",
   social_withdrawal: "Social Withdrawal",
   sleep_disturbance: "Sleep Disturbance",
-};
-
-const CATEGORY_ICONS: Record<string, string> = {
-  "Cognitive Functions": "🧠",
-  "Activities of Daily Living (IADLs)": "🏠",
-  "Behavioral & Mood Markers": "🌿",
 };
 
 function severityColor(level: string): string {
@@ -82,6 +83,7 @@ export function StepDiagnosticReport({
   onAnalyze,
   onSkip,
 }: StepDiagnosticReportProps) {
+  const t = useTranslations("intake.medical");
   const preview = data.file ? URL.createObjectURL(data.file) : undefined;
   const ext = data.extractedData;
   const domains: ClinicalDomains = ext?.domains || {};
@@ -91,10 +93,10 @@ export function StepDiagnosticReport({
     <div className="space-y-6">
       <div className="text-center space-y-1">
         <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          Diagnostic Report
+          {t("title")}
         </h2>
         <p className="text-ink-secondary text-base">
-          Upload any medical report. Our AI will extract quantified clinical scores and domain assessments.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -102,8 +104,8 @@ export function StepDiagnosticReport({
         <FileUploadZone
           accept=".pdf"
           maxSizeMB={10}
-          label="Drop PDF here or click to browse"
-          description="Upload the patient's diagnostic report (MMSE, MoCA, or similar)"
+          label={t("upload.label")}
+          description={t("upload.desc")}
           onFileSelect={onFileSelect}
           currentFile={data.file}
           preview={preview}
@@ -116,19 +118,19 @@ export function StepDiagnosticReport({
           onClick={onAnalyze}
           className="w-full min-h-[56px] rounded-xl bg-marigold text-white border-3 border-border font-bold text-lg hover:bg-marigold-hover transition-colors"
         >
-          Analyze Report
+          {t("analyze")}
         </button>
       )}
 
       {ext && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-ink text-lg">Extracted Clinical Data</h3>
+            <h3 className="font-bold text-ink text-lg">{t("extracted")}</h3>
             <button
               onClick={() => onFileSelect(data.file!)}
               className="text-sm text-sky font-bold hover:underline"
             >
-              Upload different file
+              {t("replace")}
             </button>
           </div>
 
@@ -136,7 +138,7 @@ export function StepDiagnosticReport({
           <div className="border-3 border-[#16120E] rounded-2xl bg-white p-5 shadow-[4px_4px_0_#16120E] space-y-4">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-3">
               <div className="flex-1 min-w-0">
-                <span className="text-xs font-black uppercase tracking-wider text-[#D4441C]">Diagnosis</span>
+                <span className="text-xs font-black uppercase tracking-wider text-[#D4441C]">{t("diagnosis")}</span>
                 <h3 className="text-xl md:text-2xl font-[family-name:var(--font-serif)] font-black text-[#16120E] leading-tight">
                   {ext.diagnosis || "Not Specified"}
                 </h3>
@@ -160,7 +162,7 @@ export function StepDiagnosticReport({
               {/* Score Badge */}
               <div className="px-4 py-3 bg-[#FEF3C7] border-2 border-[#16120E] rounded-xl text-center shadow-[0_2px_0_#16120E] flex-shrink-0">
                 <span className="text-[10px] font-black text-[#16120E] block uppercase">
-                  {ext.testType || "MMSE"} Score
+                  {ext.testType || "MMSE"} {t("score")}
                 </span>
                 <span className="text-3xl font-black text-[#E66A00]">
                   {ext.score ?? "--"}
@@ -194,7 +196,7 @@ export function StepDiagnosticReport({
             {ext.medications && ext.medications.length > 0 && (
               <div className="border-t-2 border-[#D9CEBF] pt-3">
                 <span className="text-xs font-black uppercase tracking-wider text-[#16120E]">
-                  Active Prescriptions ({ext.medications.length})
+                  {t("activePrescriptions", { count: ext.medications.length })}
                 </span>
                 <div className="flex flex-wrap gap-2 mt-1.5">
                   {ext.medications.map((med, idx) => (
@@ -213,7 +215,7 @@ export function StepDiagnosticReport({
             {ext.physicianNotes && (
               <div className="border-t-2 border-[#D9CEBF] pt-3">
                 <span className="text-xs font-black uppercase tracking-wider text-[#16120E]">
-                  Clinical Summary
+                  {t("clinicalSummary")}
                 </span>
                 <p className="text-sm text-[#4A4036] font-medium mt-1 leading-relaxed">
                   {ext.physicianNotes}
@@ -226,7 +228,7 @@ export function StepDiagnosticReport({
           {Object.keys(subscales).length > 0 && (
             <div className="border-3 border-[#16120E] rounded-2xl bg-white p-5 shadow-[4px_4px_0_#16120E]">
               <h4 className="font-[family-name:var(--font-serif)] font-black text-lg text-[#16120E] mb-3">
-                Standardized Subscale Scores
+                {t("subscales")}
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 {Object.entries(subscales).map(([key, val]) => (
@@ -255,15 +257,15 @@ export function StepDiagnosticReport({
               <div className="flex items-center justify-between border-b-2 border-[#D9CEBF] pb-3">
                 <div>
                   <h4 className="font-[family-name:var(--font-serif)] font-black text-xl text-[#16120E]">
-                    17-Domain Clinical Assessment
+                    {t("assessment")}
                   </h4>
                   <p className="text-xs font-semibold text-[#4A4036]">
-                    Quantified deficit breakdown extracted by local AI
+                    {t("assessmentDesc")}
                   </p>
                 </div>
                 <div className="flex gap-3 text-[10px] font-bold">
                   <span className="flex items-center gap-1">
-                    <span className="w-3 h-3 rounded-full bg-[#1E5136]" /> Intact
+                    <span className="w-3 h-3 rounded-full bg-[#1E5136]" /> {t("intact")}
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded-full bg-[#D97706]" /> Mild
@@ -277,10 +279,10 @@ export function StepDiagnosticReport({
                 </div>
               </div>
 
-              {Object.entries(CATEGORY_GROUPS).map(([categoryTitle, domainKeys]) => (
-                <div key={categoryTitle} className="space-y-2.5">
+              {Object.entries(CATEGORY_GROUPS).map(([categoryKey, domainKeys]) => (
+                <div key={categoryKey} className="space-y-2.5">
                   <h5 className="font-bold text-sm text-[#16120E] uppercase tracking-wide">
-                    {CATEGORY_ICONS[categoryTitle]} {categoryTitle}
+                    {DOMAIN_ICONS[categoryKey]} {t(categoryKey as "categoryCognitive" | "categoryIadls" | "categoryBehavioral")}
                   </h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {domainKeys.map((key) => {
@@ -301,7 +303,7 @@ export function StepDiagnosticReport({
                             <span
                               className={`px-2 py-0.5 rounded text-[10px] font-black border border-[#16120E] flex-shrink-0 ${severityColor(item.impairment_level)}`}
                             >
-                              {item.impairment_level || (isImpaired ? "Impaired" : "Intact")}
+                              {item.impairment_level || (isImpaired ? t("impaired") : t("intact"))}
                             </span>
                           </div>
 
@@ -313,7 +315,7 @@ export function StepDiagnosticReport({
                             />
                           </div>
                           <span className="text-[10px] font-black text-[#4A4036] text-right">
-                            {item.score_pct}% retained
+                            {t("retained", { pct: item.score_pct.toString() })}
                           </span>
 
                           {item.evidence && (
@@ -336,7 +338,7 @@ export function StepDiagnosticReport({
         onClick={onSkip}
         className="w-full min-h-[56px] rounded-xl border-3 border-border-soft bg-surface text-ink-secondary font-bold text-lg hover:bg-surface-muted transition-colors"
       >
-        {ext ? "Continue without report" : "I don&apos;t have a report — skip this step"}
+        {ext ? t("continue") : t("skip")}
       </button>
 
       {errors.skipped && (

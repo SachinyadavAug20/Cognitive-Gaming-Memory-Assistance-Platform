@@ -90,12 +90,70 @@
     "addPatient": "+ ৰোগী যোগ কৰক",
     "yourPatients": "আপোনাৰ ৰোগী"
   },
+  "options": {
+    "gender": {
+      "male": "পুৰুষ",
+      "female": "মহিলা",
+      "other": "অন্য"
+    },
+    "relationship": {
+      "spouse": "স্বামী/স্ত্ৰী",
+      "child": "সন্তান",
+      "sibling": "ভাই/ভনী",
+      "parent": "পিতা/মাতা",
+      "self": "নিজে",
+      "other": "অন্য"
+    },
+    "relativeRelationship": {
+      "daughter": "জাই",
+      "son": "পুত্ৰ",
+      "spouse": "স্বামী/স্ত্ৰী",
+      "grandchild": "নাত-নাতনী",
+      "sibling": "ভাই/ভনী",
+      "friend": "বন্ধু",
+      "other": "অন্য"
+    },
+    "interests": {
+      "music": "সংগীত",
+      "sports": "খেল",
+      "cooking": "ৰান্ধনি",
+      "gardening": "বগিচা",
+      "reading": "পঠন",
+      "travel": "ভ্ৰমণ",
+      "religious": "ধৰ্মীয়",
+      "art": "শিল্প",
+      "other": "অন্য"
+    },
+    "status": {
+      "done": "হৈছে",
+      "now": "এতিয়া",
+      "later": "পিছত"
+    },
+    "metrics": {
+      "memory": "স্মৃতি",
+      "spatial": "স্থানিক",
+      "reaction": "প্ৰতিক্ৰিয়া",
+      "lastSession": "শেষ অধিবেশন"
+    }
+  },
+  "game": {
+    "back": "← পিছলৈ",
+    "score": "স্কোৰ: {score}"
+  },
   "intake": {
     "step": "পদক্ষেপ {current} / {total}",
     "back": "← পিছলৈ",
     "continue": "আগবঢ়াওক →",
     "submit": "ৰোগী প্ৰফাইল সৃষ্টি কৰক ✓",
-    "creating": "প্ৰফাইল সৃষ্টি হৈ আছে...",
+    "creating": "স্থানীয় AI দ্বাৰা মেডিকেল প্ৰতিবেদন বিশ্লেষণ হৈ আছে...",
+    "wizard": {
+      "personal": "ব্যক্তিগত তথ্য",
+      "medical": "মেডিকেল প্ৰতিবেদন",
+      "family": "পৰিয়াল",
+      "life": "জীৱন কাহিনী",
+      "places": "স্থান",
+      "review": "পৰ্য্যালোচনা"
+    },
     "complete": {
       "title": "ৰোগী প্ৰফাইল সৃষ্টি হ'ল!",
       "desc": "{name} ক আপোনাৰ ৰোগীত যোগ কৰা হৈছে। খেল আৰু কাৰ্য এতিয়া ব্যক্তিগত হৈ আছে।",
@@ -118,7 +176,7 @@
     },
     "medical": {
       "title": "ৰোগ নিৰ্ণয় প্ৰতিবেদন",
-      "subtitle": "যিকোনো মেডিকেল প্ৰতিবেদন আপলোড কৰক। আমাৰ AI ইয়াক পঢ়িব আৰু মেডিকেল বিৱৰণ ভৰি দিব।",
+      "subtitle": "যিকোনো মেডিকেল প্ৰতিবেদন আপলোড কৰক। আমাৰ AI পৰিমাণগত ক্লিনিকেল স্কোৰ আৰু ড'মেইন মূল্যায়ন উদ্ধাৰ কৰিব।",
       "upload": {
         "label": "PDF ইয়াত সুমুৱাওক বা ব্ৰাউজ কৰিবলৈ ক্লিক কৰক",
         "desc": "ৰোগীৰ ৰোগ নিৰ্ণয় প্ৰতিবেদন আপলোড কৰক (MMSE, MoCA, বা সদৃশ)"
@@ -126,14 +184,25 @@
       "analyze": "প্ৰতিবেদন বিশ্লেষণ কৰক",
       "skip": "মোৰ পিছত প্ৰতিবেদন নাই — এই পদক্ষেপ এৰি দিয়ক",
       "continue": "প্ৰতিবেদন নোহোৱাকৈ আগবঢ়াওক",
-      "extracted": "উদ্ধাৰ কৰা তথ্য",
+      "extracted": "উদ্ধাৰ কৰা ক্লিনিকেল ডেটা",
       "replace": "বেলেগ ফাইল আপলোড কৰক",
       "diagnosis": "ৰোগ নিৰ্ণয়",
       "date": "ৰোগ নিৰ্ণয়ৰ তাৰিখ",
       "score": "সংজ্ঞানাত্মক স্কোৰ",
       "medications": "ওষুধ",
       "notes": "ডাক্তৰৰ মন্তব্য",
-      "physician": "ডাক্তৰ"
+      "physician": "ডাক্তৰ",
+      "subscales": "মানকীকৃত সাবস্কেল স্কোৰ",
+      "assessment": "17-ড'মেইন ক্লিনিকেল মূল্যায়ন",
+      "assessmentDesc": "স্থানীয় AI দ্বাৰা উদ্ধাৰ কৰা পৰিমাণগত ঘাটতা বিৱৰণ",
+      "intact": "সঠিক",
+      "impaired": "প্ৰভাৱিত",
+      "retained": "{pct}% অৱশিষ্ট",
+      "clinicalSummary": "ক্লিনিকেল সাৰাংশ",
+      "activePrescriptions": "সক্ৰিয় প্ৰেস্ক্ৰিপশন ({count})",
+      "categoryCognitive": "সংজ্ঞানাত্মক কাৰ্য",
+      "categoryIadls": "দৈনিক জীৱন কাৰ্য (IADLs)",
+      "categoryBehavioral": "আচৰণগত আৰু মুড মাৰ্কাৰ"
     },
     "family": {
       "title": "পৰিয়াল আৰু আত্মীয়",
@@ -203,7 +272,25 @@
       "life": "জীৱন কাহিনী আৰু আগ্ৰহ",
       "places": "পৰিচিত স্থান",
       "noReport": "কোনো প্ৰতিবেদন আপলোড কৰা হোৱা নাই — এৰি দিয়া হৈছে",
-      "noFamily": "কোনো পৰিয়ালৰ সদস্য যোগ কৰা হোৱা নাই"
+      "noFamily": "কোনো পৰিয়ালৰ সদস্য যোগ কৰা হোৱা নাই",
+      "fieldName": "নাম",
+      "fieldDob": "জন্ম তাৰিখ",
+      "fieldGender": "লিংগ",
+      "fieldPhone": "ফোন",
+      "fieldRelationship": "সম্পৰ্ক",
+      "fieldDiagnosis": "ৰোগ নিৰ্ণয়",
+      "fieldDate": "তাৰিখ",
+      "fieldScore": "সংজ্ঞানাত্মক স্কোৰ",
+      "fieldMedications": "ওষুধ",
+      "fieldPhysician": "ডাক্তৰ",
+      "fieldOccupation": "পেশা",
+      "fieldLanguage": "ভাষা",
+      "fieldInterests": "আগ্ৰহ",
+      "fieldMusic": "প্ৰিয় সংগীত",
+      "fieldLifeEvents": "জীৱন ঘটনা",
+      "fieldJoy": "কি আনন্দ দিয়ে",
+      "noneSelected": "কোনোটো নিৰ্বাচন কৰা হোৱা নাই",
+      "notSpecified": "নিৰ্দিষ্ট কৰা হোৱা নাই"
     }
   },
   "common": {

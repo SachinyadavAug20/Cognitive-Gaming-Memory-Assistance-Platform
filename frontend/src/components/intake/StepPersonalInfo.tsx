@@ -1,6 +1,9 @@
 "use client";
 
-import { GENDER_OPTIONS, RELATIONSHIP_OPTIONS } from "@/types/intake";
+import { useTranslations } from "next-intl";
+
+const GENDER_KEYS = ["male", "female", "other"] as const;
+const RELATIONSHIP_KEYS = ["spouse", "child", "sibling", "parent", "self", "other"] as const;
 
 interface StepPersonalInfoProps {
   data: {
@@ -15,14 +18,18 @@ interface StepPersonalInfoProps {
 }
 
 export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoProps) {
+  const t = useTranslations("intake.personal");
+  const tGender = useTranslations("options.gender");
+  const tRel = useTranslations("options.relationship");
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
         <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          About the Patient
+          {t("title")}
         </h2>
         <p className="text-ink-secondary text-base">
-          We need a few basics to set up the patient&apos;s profile and tailor games to their level.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -30,14 +37,14 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         {/* Full Name */}
         <div>
           <label htmlFor="fullName" className="block font-bold text-ink mb-1.5">
-            Full Name <span className="text-brick">*</span>
+            {t("name.label")} <span className="text-brick">*</span>
           </label>
           <input
             id="fullName"
             type="text"
             value={data.fullName}
             onChange={(e) => onChange("fullName", e.target.value)}
-            placeholder="e.g., Ramesh Dutta"
+            placeholder={t("name.placeholder")}
             aria-describedby={errors.fullName ? "err-fullName" : undefined}
             className={`w-full min-h-[56px] px-4 rounded-xl border-3 bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors ${
               errors.fullName ? "border-brick" : "border-border-soft"
@@ -53,7 +60,7 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         {/* Date of Birth */}
         <div>
           <label htmlFor="dob" className="block font-bold text-ink mb-1.5">
-            Date of Birth <span className="text-brick">*</span>
+            {t("dob")} <span className="text-brick">*</span>
           </label>
           <input
             id="dob"
@@ -75,23 +82,23 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         {/* Gender */}
         <div>
           <label className="block font-bold text-ink mb-1.5">
-            Gender <span className="text-brick">*</span>
+            {t("gender")} <span className="text-brick">*</span>
           </label>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Gender">
-            {GENDER_OPTIONS.map((option) => (
+            {GENDER_KEYS.map((key) => (
               <button
-                key={option}
+                key={key}
                 type="button"
                 role="radio"
-                aria-checked={data.gender === option}
-                onClick={() => onChange("gender", option)}
+                aria-checked={data.gender === key}
+                onClick={() => onChange("gender", key)}
                 className={`min-h-[56px] px-6 rounded-xl border-3 font-bold text-lg transition-all ${
-                  data.gender === option
+                  data.gender === key
                     ? "bg-marigold text-white border-border"
                     : "bg-surface text-ink border-border-soft hover:border-border hover:bg-surface-muted"
                 }`}
               >
-                {option}
+                {tGender(key)}
               </button>
             ))}
           </div>
@@ -105,14 +112,14 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         {/* Phone Number */}
         <div>
           <label htmlFor="phone" className="block font-bold text-ink mb-1.5">
-            Phone Number <span className="text-brick">*</span>
+            {t("phone.label")} <span className="text-brick">*</span>
           </label>
           <input
             id="phone"
             type="tel"
             value={data.phone}
             onChange={(e) => onChange("phone", e.target.value)}
-            placeholder="e.g., 9876543210"
+            placeholder={t("phone.placeholder")}
             aria-describedby={errors.phone ? "err-phone" : undefined}
             className={`w-full min-h-[56px] px-4 rounded-xl border-3 bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors ${
               errors.phone ? "border-brick" : "border-border-soft"
@@ -128,23 +135,23 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         {/* Relationship */}
         <div>
           <label className="block font-bold text-ink mb-1.5">
-            Who is filling this form? <span className="text-brick">*</span>
+            {t("relationship")} <span className="text-brick">*</span>
           </label>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Relationship">
-            {RELATIONSHIP_OPTIONS.map((option) => (
+            {RELATIONSHIP_KEYS.map((key) => (
               <button
-                key={option}
+                key={key}
                 type="button"
                 role="radio"
-                aria-checked={data.relationship === option}
-                onClick={() => onChange("relationship", option)}
+                aria-checked={data.relationship === key}
+                onClick={() => onChange("relationship", key)}
                 className={`min-h-[56px] px-5 rounded-xl border-3 font-bold transition-all ${
-                  data.relationship === option
+                  data.relationship === key
                     ? "bg-tea text-white border-border"
                     : "bg-surface text-ink border-border-soft hover:border-border hover:bg-surface-muted"
                 }`}
               >
-                {option}
+                {tRel(key)}
               </button>
             ))}
           </div>

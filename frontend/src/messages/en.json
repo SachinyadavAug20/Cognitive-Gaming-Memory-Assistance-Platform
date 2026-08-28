@@ -95,7 +95,15 @@
     "back": "← Back",
     "continue": "Continue →",
     "submit": "Create Patient Profile ✓",
-    "creating": "Creating Profile...",
+    "creating": "Analyzing Medical Report with Local AI...",
+    "wizard": {
+      "personal": "Personal Info",
+      "medical": "Medical Report",
+      "family": "Family",
+      "life": "Life Story",
+      "places": "Places",
+      "review": "Review"
+    },
     "complete": {
       "title": "Patient Profile Created!",
       "desc": "{name} has been added to your patients. Games and activities are now being personalized.",
@@ -118,7 +126,7 @@
     },
     "medical": {
       "title": "Diagnostic Report",
-      "subtitle": "Upload any medical report. Our AI will read it and fill in the medical details for you.",
+      "subtitle": "Upload any medical report. Our AI will extract quantified clinical scores and domain assessments.",
       "upload": {
         "label": "Drop PDF here or click to browse",
         "desc": "Upload the patient's diagnostic report (MMSE, MoCA, or similar)"
@@ -126,14 +134,25 @@
       "analyze": "Analyze Report",
       "skip": "I don't have a report — skip this step",
       "continue": "Continue without report",
-      "extracted": "Extracted Information",
+      "extracted": "Extracted Clinical Data",
       "replace": "Upload different file",
       "diagnosis": "Diagnosis",
       "date": "Date of Diagnosis",
       "score": "Cognitive Score",
       "medications": "Medications",
       "notes": "Physician Notes",
-      "physician": "Physician"
+      "physician": "Physician",
+      "subscales": "Standardized Subscale Scores",
+      "assessment": "17-Domain Clinical Assessment",
+      "assessmentDesc": "Quantified deficit breakdown extracted by local AI",
+      "intact": "Intact",
+      "impaired": "Impaired",
+      "retained": "{pct}% retained",
+      "clinicalSummary": "Clinical Summary",
+      "activePrescriptions": "Active Prescriptions ({count})",
+      "categoryCognitive": "Cognitive Functions",
+      "categoryIadls": "Activities of Daily Living (IADLs)",
+      "categoryBehavioral": "Behavioral & Mood Markers"
     },
     "family": {
       "title": "Family & Relatives",
@@ -195,7 +214,7 @@
     },
     "review": {
       "title": "Review & Submit",
-      "subtitle": "Please check that everything looks right before we create the patient's profile.",
+      "subtitle": "Please check that everything looks right before we create the patient&apos;s profile.",
       "edit": "Edit",
       "personal": "Personal Information",
       "medical": "Medical Report",
@@ -203,8 +222,76 @@
       "life": "Life Story & Interests",
       "places": "Familiar Places",
       "noReport": "No report uploaded — skipped",
-      "noFamily": "No family members added"
+      "noFamily": "No family members added",
+      "fieldName": "Name",
+      "fieldDob": "Date of Birth",
+      "fieldGender": "Gender",
+      "fieldPhone": "Phone",
+      "fieldRelationship": "Relationship",
+      "fieldDiagnosis": "Diagnosis",
+      "fieldDate": "Date",
+      "fieldScore": "Cognitive Score",
+      "fieldMedications": "Medications",
+      "fieldPhysician": "Physician",
+      "fieldOccupation": "Occupation",
+      "fieldLanguage": "Language",
+      "fieldInterests": "Interests",
+      "fieldMusic": "Favorite Music",
+      "fieldLifeEvents": "Life Events",
+      "fieldJoy": "What brings joy",
+      "noneSelected": "None selected",
+      "notSpecified": "Not specified"
     }
+  },
+  "options": {
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "relationship": {
+      "spouse": "Spouse",
+      "child": "Child",
+      "sibling": "Sibling",
+      "parent": "Parent",
+      "self": "Self",
+      "other": "Other"
+    },
+    "relativeRelationship": {
+      "daughter": "Daughter",
+      "son": "Son",
+      "spouse": "Spouse",
+      "grandchild": "Grandchild",
+      "sibling": "Sibling",
+      "friend": "Friend",
+      "other": "Other"
+    },
+    "interests": {
+      "music": "Music",
+      "sports": "Sports",
+      "cooking": "Cooking",
+      "gardening": "Gardening",
+      "reading": "Reading",
+      "travel": "Travel",
+      "religious": "Religious",
+      "art": "Art",
+      "other": "Other"
+    },
+    "status": {
+      "done": "Done",
+      "now": "Now",
+      "later": "Later"
+    },
+    "metrics": {
+      "memory": "Memory",
+      "spatial": "Spatial",
+      "reaction": "Reaction",
+      "lastSession": "Last session"
+    }
+  },
+  "game": {
+    "back": "← Back",
+    "score": "Score: {score}"
   },
   "common": {
     "required": "*",

@@ -90,12 +90,70 @@
     "addPatient": "+ मरीज़ जोड़ें",
     "yourPatients": "आपके मरीज़"
   },
+  "options": {
+    "gender": {
+      "male": "पुरुष",
+      "female": "महिला",
+      "other": "अन्य"
+    },
+    "relationship": {
+      "spouse": "जीवनसाथी",
+      "child": "बच्चा",
+      "sibling": "भाई/बहन",
+      "parent": "माता-पिता",
+      "self": "स्वयं",
+      "other": "अन्य"
+    },
+    "relativeRelationship": {
+      "daughter": "बेटी",
+      "son": "बेटा",
+      "spouse": "जीवनसाथी",
+      "grandchild": "पोता/पोती",
+      "sibling": "भाई/बहन",
+      "friend": "मित्र",
+      "other": "अन्य"
+    },
+    "interests": {
+      "music": "संगीत",
+      "sports": "खेल",
+      "cooking": "खाना बनाना",
+      "gardening": "बागवानी",
+      "reading": "पढ़ना",
+      "travel": "यात्रा",
+      "religious": "धार्मिक",
+      "art": "कला",
+      "other": "अन्य"
+    },
+    "status": {
+      "done": "हो गया",
+      "now": "अभी",
+      "later": "बाद में"
+    },
+    "metrics": {
+      "memory": "स्मृति",
+      "spatial": "स्थानिक",
+      "reaction": "प्रतिक्रिया",
+      "lastSession": "अंतिम सत्र"
+    }
+  },
+  "game": {
+    "back": "← वापस",
+    "score": "स्कोर: {score}"
+  },
   "intake": {
     "step": "चरण {current} / {total}",
     "back": "← वापस",
     "continue": "आगे →",
     "submit": "मरीज़ प्रोफ़ाइल बनाएँ ✓",
-    "creating": "प्रोफ़ाइल बन रही है...",
+    "creating": "स्थानीय AI से मेडिकल रिपोर्ट का विश्लेषण हो रहा है...",
+    "wizard": {
+      "personal": "व्यक्तिगत जानकारी",
+      "medical": "मेडिकल रिपोर्ट",
+      "family": "परिवार",
+      "life": "जीवन कहानी",
+      "places": "स्थान",
+      "review": "समीक्षा"
+    },
     "complete": {
       "title": "मरीज़ प्रोफ़ाइल बन गई!",
       "desc": "{name} को आपके मरीज़ों में जोड़ दिया गया है। खेल और गतिविधियाँ अब व्यक्तिगत हो रही हैं।",
@@ -118,7 +176,7 @@
     },
     "medical": {
       "title": "निदान रिपोर्ट",
-      "subtitle": "कोई भी मेडिकल रिपोर्ट अपलोड करें। हमारा AI इसे पढ़ेगा और मेडिकल विवरण भर देगा।",
+      "subtitle": "कोई भी मेडिकल रिपोर्ट अपलोड करें। हमारा AI मात्रात्मक क्लिनिकल स्कोर और डोमेन मूल्यांकन निकालेगा।",
       "upload": {
         "label": "PDF यहाँ डालें या ब्राउज़ करने के लिए क्लिक करें",
         "desc": "मरीज़ की निदान रिपोर्ट अपलोड करें (MMSE, MoCA, या समान)"
@@ -126,14 +184,25 @@
       "analyze": "रिपोर्ट का विश्लेषण करें",
       "skip": "मेरे पास रिपोर्ट नहीं है — इस चरण को छोड़ें",
       "continue": "रिपोर्ट के बिना आगे बढ़ें",
-      "extracted": "निकाली गई जानकारी",
+      "extracted": "निकाला गया क्लिनिकल डेटा",
       "replace": "अलग फ़ाइल अपलोड करें",
       "diagnosis": "निदान",
       "date": "निदान की तिथि",
       "score": "संज्ञानात्मक स्कोर",
       "medications": "दवाइयाँ",
       "notes": "डॉक्टर की टिप्पणी",
-      "physician": "डॉक्टर"
+      "physician": "डॉक्टर",
+      "subscales": "मानकीकृत सबस्केल स्कोर",
+      "assessment": "17-डोमेन क्लिनिकल मूल्यांकन",
+      "assessmentDesc": "स्थानीय AI द्वारा निकाला गया मात्रात्मक घाटा विवरण",
+      "intact": "सही",
+      "impaired": "प्रभावित",
+      "retained": "{pct}% शेष",
+      "clinicalSummary": "क्लिनिकल सारांश",
+      "activePrescriptions": "सक्रिय प्रिस्क्रिप्शन ({count})",
+      "categoryCognitive": "संज्ञानात्मक कार्य",
+      "categoryIadls": "दैनिक जीवन क्रियाएँ (IADLs)",
+      "categoryBehavioral": "व्यवहारगत और मूड मार्कर"
     },
     "family": {
       "title": "परिवार और रिश्तेदार",
@@ -203,7 +272,25 @@
       "life": "जीवन कहानी और रुचियाँ",
       "places": "परिचित स्थान",
       "noReport": "कोई रिपोर्ट अपलोड नहीं की — छोड़ दिया",
-      "noFamily": "कोई परिवार का सदस्य नहीं जोड़ा"
+      "noFamily": "कोई परिवार का सदस्य नहीं जोड़ा",
+      "fieldName": "नाम",
+      "fieldDob": "जन्म तिथि",
+      "fieldGender": "लिंग",
+      "fieldPhone": "फ़ोन",
+      "fieldRelationship": "रिश्ता",
+      "fieldDiagnosis": "निदान",
+      "fieldDate": "तिथि",
+      "fieldScore": "संज्ञानात्मक स्कोर",
+      "fieldMedications": "दवाइयाँ",
+      "fieldPhysician": "डॉक्टर",
+      "fieldOccupation": "व्यवसाय",
+      "fieldLanguage": "भाषा",
+      "fieldInterests": "रुचियाँ",
+      "fieldMusic": "पसंदीदा संगीत",
+      "fieldLifeEvents": "जीवन घटनाएँ",
+      "fieldJoy": "क्या खुशी देता है",
+      "noneSelected": "कोई नहीं चुना",
+      "notSpecified": "निर्दिष्ट नहीं"
     }
   },
   "common": {

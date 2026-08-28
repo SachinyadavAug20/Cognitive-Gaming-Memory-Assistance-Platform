@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { DynamicList } from "./DynamicList";
 import { LANDMARK_EMOJIS } from "@/types/intake";
 import type { LandmarkEntry } from "@/types/intake";
@@ -20,14 +21,16 @@ export function StepFamiliarPlaces({
   onRemove,
   onUpdate,
 }: StepFamiliarPlacesProps) {
+  const t = useTranslations("intake.places");
+
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
         <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          Familiar Places
+          {t("title")}
         </h2>
         <p className="text-ink-secondary text-base">
-          Add places the patient knows well. These are used in the Wayfinding game — the patient practices navigating routes through familiar locations.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -43,8 +46,8 @@ export function StepFamiliarPlaces({
         onRemove={onRemove}
         onUpdate={onUpdate}
         minItems={3}
-        addLabel="Add a Place"
-        emptyMessage="Add at least 3 landmarks for the Wayfinding game."
+        addLabel={t("add")}
+        emptyMessage={t("empty")}
         renderItem={(landmark, index) => (
           <LandmarkCard
             landmark={landmark}
@@ -66,6 +69,9 @@ function LandmarkCard({
   const [photoPreview, setPhotoPreview] = useState<string | null>(
     landmark.photoUrl || null
   );
+  const tName = useTranslations("intake.places.name");
+  const tDesc = useTranslations("intake.places.desc");
+  const tIcon = useTranslations("intake.places");
 
   const handlePhoto = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,14 +128,14 @@ function LandmarkCard({
             type="text"
             value={landmark.name}
             onChange={(e) => onUpdate({ ...landmark, name: e.target.value })}
-            placeholder="Place name (e.g., Kamakhya Temple)"
+            placeholder={tName("placeholder")}
             className="w-full min-h-[48px] px-3 rounded-lg border-3 border-border-soft bg-surface text-ink font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
           />
           <input
             type="text"
             value={landmark.description}
             onChange={(e) => onUpdate({ ...landmark, description: e.target.value })}
-            placeholder="Description (e.g., Where we pray every morning)"
+            placeholder={tDesc("placeholder")}
             className="w-full min-h-[48px] px-3 rounded-lg border-3 border-border-soft bg-surface text-ink text-sm font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
           />
         </div>
@@ -138,7 +144,7 @@ function LandmarkCard({
       {/* Emoji selector — inline scrollable row */}
       <div>
         <p className="text-xs font-bold text-ink-secondary mb-1.5 uppercase tracking-wider">
-          Choose an icon
+          {tIcon("icon")}
         </p>
         <div
           className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1"

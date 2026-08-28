@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ProgressBar } from "./ProgressBar";
 import { StepPersonalInfo } from "./StepPersonalInfo";
 import { StepDiagnosticReport } from "./StepDiagnosticReport";
@@ -17,14 +18,7 @@ import type { IntakeFormData, Relative, LandmarkEntry } from "@/types/intake";
 const STORAGE_KEY = "intake:draft";
 const DEBOUNCE_MS = 300;
 
-const STEP_META = [
-  { label: "Personal Info", icon: "👤" },
-  { label: "Medical Report", icon: "🏥" },
-  { label: "Family", icon: "👨‍👩‍👧" },
-  { label: "Life Story", icon: "📖" },
-  { label: "Places", icon: "📍" },
-  { label: "Review", icon: "✅" },
-];
+const STEP_ICONS = ["👤", "🏥", "👨‍👩‍👧", "📖", "📍", "✅"];
 
 function loadSavedDraft(): IntakeFormData {
   try {
@@ -45,6 +39,8 @@ function loadSavedDraft(): IntakeFormData {
 
 export function IntakeWizard() {
   const router = useRouter();
+  const t = useTranslations("intake");
+  const tWizard = useTranslations("intake.wizard");
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<IntakeFormData>(loadSavedDraft);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -53,6 +49,15 @@ export function IntakeWizard() {
   const [patientId, setPatientId] = useState<number | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const STEP_META = [
+    { label: tWizard("personal"), icon: STEP_ICONS[0] },
+    { label: tWizard("medical"), icon: STEP_ICONS[1] },
+    { label: tWizard("family"), icon: STEP_ICONS[2] },
+    { label: tWizard("life"), icon: STEP_ICONS[3] },
+    { label: tWizard("places"), icon: STEP_ICONS[4] },
+    { label: tWizard("review"), icon: STEP_ICONS[5] },
+  ];
 
   // Auto-save to localStorage
   useEffect(() => {
@@ -386,11 +391,10 @@ export function IntakeWizard() {
       <div className="text-center space-y-6 py-12">
         <div className="text-6xl">🎉</div>
         <h2 className="font-[family-name:var(--font-serif)] text-3xl font-bold text-ink">
-          Patient Profile Created!
+          {t("complete.title")}
         </h2>
         <p className="text-ink-secondary text-lg max-w-md mx-auto">
-          <strong>{formData.personal.fullName}</strong> has been added to your patients.
-          Games and activities are now being personalized.
+          <strong>{formData.personal.fullName}</strong> {t("complete.desc", { name: formData.personal.fullName })}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {patientId && (
@@ -405,7 +409,7 @@ export function IntakeWizard() {
             variant="tea"
             onClick={() => router.push("/caregiver")}
           >
-            Back to Dashboard
+            {t("complete.dashboard")}
           </ChunkyButton>
         </div>
       </div>
@@ -477,7 +481,7 @@ export function IntakeWizard() {
       <div className="flex gap-3 mt-8 pt-6 border-t-3 border-border-soft">
         {currentStep > 0 && (
           <ChunkyButton variant="outline" onClick={handleBack}>
-            ← Back
+            {t("back")}
           </ChunkyButton>
         )}
 
@@ -485,7 +489,7 @@ export function IntakeWizard() {
 
         {currentStep < STEP_META.length - 1 ? (
           <ChunkyButton variant="terracotta" onClick={handleNext}>
-            Continue →
+            {t("continue")}
           </ChunkyButton>
         ) : (
           <ChunkyButton
@@ -493,7 +497,7 @@ export function IntakeWizard() {
             onClick={handleSubmit}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Analyzing Medical Report with Local AI..." : "Create Patient Profile ✓"}
+            {isSubmitting ? t("creating") : t("submit")}
           </ChunkyButton>
         )}
       </div>

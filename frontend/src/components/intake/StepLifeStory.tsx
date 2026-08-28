@@ -1,7 +1,10 @@
 "use client";
 
-import { INTEREST_OPTIONS, LANGUAGE_OPTIONS } from "@/types/intake";
+import { useTranslations } from "next-intl";
+import { LANGUAGE_OPTIONS } from "@/types/intake";
 import type { LifeStory, LifeEvent } from "@/types/intake";
+
+const INTEREST_KEYS = ["music", "sports", "cooking", "gardening", "reading", "travel", "religious", "art", "other"] as const;
 
 interface StepLifeStoryProps {
   data: LifeStory;
@@ -10,6 +13,9 @@ interface StepLifeStoryProps {
 }
 
 export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
+  const t = useTranslations("intake.life");
+  const tInterest = useTranslations("options.interests");
+
   const toggleInterest = (interest: string) => {
     const current = data.interests;
     const updated = current.includes(interest)
@@ -38,24 +44,24 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
     <div className="space-y-6">
       <div className="text-center space-y-1">
         <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          Life Story & Interests
+          {t("title")}
         </h2>
         <p className="text-ink-secondary text-base">
-          These details help us create personalized games and reminiscence activities.
+          {t("subtitle")}
         </p>
       </div>
 
       {/* Occupation */}
       <div>
         <label htmlFor="occupation" className="block font-bold text-ink mb-1.5">
-          Occupation
+          {t("occupation.label")}
         </label>
         <input
           id="occupation"
           type="text"
           value={data.occupation}
           onChange={(e) => onChange("occupation", e.target.value)}
-          placeholder="e.g., School teacher, farmer"
+          placeholder={t("occupation.placeholder")}
           className="w-full min-h-[56px] px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
         />
       </div>
@@ -63,7 +69,7 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       {/* Life Events */}
       <div>
         <label className="block font-bold text-ink mb-1.5">
-          Key Life Events
+          {t("events.label")}
         </label>
         <div className="space-y-2">
           {data.lifeEvents.map((event, i) => (
@@ -72,14 +78,14 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
                 type="text"
                 value={event.event}
                 onChange={(e) => updateLifeEvent(i, "event", e.target.value)}
-                placeholder="Event"
+                placeholder={t("events.event.placeholder")}
                 className="flex-1 min-h-[48px] px-3 rounded-lg border-3 border-border-soft bg-surface text-ink font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
               />
               <input
                 type="text"
                 value={event.year}
                 onChange={(e) => updateLifeEvent(i, "year", e.target.value)}
-                placeholder="Year"
+                placeholder={t("events.year.placeholder")}
                 className="w-24 min-h-[48px] px-3 rounded-lg border-3 border-border-soft bg-surface text-ink font-medium text-center placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
               />
               <button
@@ -95,7 +101,7 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
             onClick={addLifeEvent}
             className="w-full min-h-[48px] rounded-lg border-3 border-dashed border-border-soft bg-surface text-ink-secondary font-bold text-sm hover:border-border hover:bg-surface-muted transition-colors"
           >
-            + Add Life Event
+            {t("events.add")}
           </button>
         </div>
       </div>
@@ -103,21 +109,21 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       {/* Interests */}
       <div>
         <label className="block font-bold text-ink mb-1.5">
-          Interests & Hobbies
+          {t("interests")}
         </label>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Interests">
-          {INTEREST_OPTIONS.map((interest) => (
+          {INTEREST_KEYS.map((key) => (
             <button
-              key={interest}
+              key={key}
               type="button"
-              onClick={() => toggleInterest(interest)}
+              onClick={() => toggleInterest(key)}
               className={`min-h-[48px] px-4 rounded-xl border-3 font-bold transition-all ${
-                data.interests.includes(interest)
+                data.interests.includes(key)
                   ? "bg-terracotta text-white border-border"
                   : "bg-surface text-ink border-border-soft hover:border-border hover:bg-surface-muted"
               }`}
             >
-              {interest}
+              {tInterest(key)}
             </button>
           ))}
         </div>
@@ -126,14 +132,14 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       {/* Favorite Music */}
       <div>
         <label htmlFor="music" className="block font-bold text-ink mb-1.5">
-          Favorite Music or Artists
+          {t("music.label")}
         </label>
         <input
           id="music"
           type="text"
           value={data.favoriteMusic}
           onChange={(e) => onChange("favoriteMusic", e.target.value)}
-          placeholder="e.g., Bhupen Hazarika songs"
+          placeholder={t("music.placeholder")}
           className="w-full min-h-[56px] px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
         />
       </div>
@@ -141,14 +147,14 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       {/* Cultural Background */}
       <div>
         <label htmlFor="culture" className="block font-bold text-ink mb-1.5">
-          Cultural Background
+          {t("culture.label")}
         </label>
         <input
           id="culture"
           type="text"
           value={data.culturalBackground}
           onChange={(e) => onChange("culturalBackground", e.target.value)}
-          placeholder="e.g., Assamese, Bihu traditions"
+          placeholder={t("culture.placeholder")}
           className="w-full min-h-[56px] px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
         />
       </div>
@@ -156,7 +162,7 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       {/* Preferred Language */}
       <div>
         <label className="block font-bold text-ink mb-1.5">
-          Preferred Language <span className="text-brick">*</span>
+          {t("language")} <span className="text-brick">*</span>
         </label>
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Preferred language">
           {LANGUAGE_OPTIONS.map((lang) => (
@@ -186,13 +192,13 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       {/* Joy Note */}
       <div>
         <label htmlFor="joy" className="block font-bold text-ink mb-1.5">
-          What brings them joy?
+          {t("joy.label")}
         </label>
         <textarea
           id="joy"
           value={data.joyNote}
           onChange={(e) => onChange("joyNote", e.target.value)}
-          placeholder="e.g., She lights up when looking at old family photos..."
+          placeholder={t("joy.placeholder")}
           rows={3}
           className="w-full px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors resize-none"
         />

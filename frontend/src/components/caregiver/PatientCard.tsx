@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { Patient } from "@/types";
 import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
 import { ScoreBar } from "@/components/caregiver/ScoreBar";
@@ -8,6 +11,8 @@ interface PatientCardProps {
 }
 
 export function PatientCard({ patient }: PatientCardProps) {
+  const t = useTranslations("options.metrics");
+
   return (
     <ScrapbookCard className="!p-4 py-5 hover:translate-x-[-2px] hover:translate-y-[-2px] transition-transform cursor-pointer">
       <div className="flex flex-col md:flex-row md:items-center gap-3">
@@ -20,7 +25,7 @@ export function PatientCard({ patient }: PatientCardProps) {
             <p className="text-ink-secondary text-xs">
               Age {patient.age} &bull; {patient.diagnosis}
             </p>
-            <p className="text-ink-secondary text-[11px]">Last session: {patient.lastSession}</p>
+            <p className="text-ink-secondary text-[11px]">{t("lastSession")}: {patient.lastSession}</p>
           </div>
         </div>
         <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold border-2 self-start md:self-center shrink-0 ${TREND_COLORS[patient.trend]}`}>
@@ -28,9 +33,9 @@ export function PatientCard({ patient }: PatientCardProps) {
         </span>
       </div>
       <div className="grid grid-cols-3 gap-3 mt-2 pt-2 border-t-2 border-border-soft">
-        <ScoreBar label="Memory" value={patient.scores.memory} color="bg-tea" size="sm" />
-        <ScoreBar label="Spatial" value={patient.scores.spatial} color="bg-terracotta" size="sm" />
-        <ScoreBar label="Reaction" value={patient.scores.reaction} color="bg-marigold" size="sm" />
+        <ScoreBar label={t("memory")} value={patient.scores.memory} color="bg-tea" size="sm" />
+        <ScoreBar label={t("spatial")} value={patient.scores.spatial} color="bg-terracotta" size="sm" />
+        <ScoreBar label={t("reaction")} value={patient.scores.reaction} color="bg-marigold" size="sm" />
       </div>
     </ScrapbookCard>
   );

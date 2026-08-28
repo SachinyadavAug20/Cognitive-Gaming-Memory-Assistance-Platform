@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { Reminder } from "@/types";
 import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -7,6 +10,14 @@ interface ReminderRowProps {
 }
 
 export function ReminderRow({ reminder }: ReminderRowProps) {
+  const t = useTranslations("options.status");
+
+  const statusLabel = reminder.status === "completed"
+    ? t("done")
+    : reminder.status === "due"
+      ? t("now")
+      : t("later");
+
   return (
     <ScrapbookCard className="flex items-center gap-3 !p-3">
       <span className="text-2xl shrink-0">{reminder.emoji}</span>
@@ -15,7 +26,7 @@ export function ReminderRow({ reminder }: ReminderRowProps) {
         <div className="text-ink-secondary text-xs">{reminder.time}</div>
       </div>
       <StatusBadge status={reminder.status}>
-        {reminder.status === "completed" ? "Done" : reminder.status === "due" ? "Now" : "Later"}
+        {statusLabel}
       </StatusBadge>
     </ScrapbookCard>
   );

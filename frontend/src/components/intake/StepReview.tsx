@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import type { IntakeFormData } from "@/types/intake";
 import { LANGUAGE_OPTIONS } from "@/types/intake";
 
@@ -9,6 +10,7 @@ interface StepReviewProps {
 }
 
 export function StepReview({ data, onEditStep }: StepReviewProps) {
+  const t = useTranslations("intake.review");
   const langLabel =
     LANGUAGE_OPTIONS.find((l) => l.code === data.lifeStory.preferredLanguage)
       ?.label || data.lifeStory.preferredLanguage;
@@ -17,56 +19,57 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
     <div className="space-y-6">
       <div className="text-center space-y-1">
         <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          Review & Submit
+          {t("title")}
         </h2>
         <p className="text-ink-secondary text-base">
-          Please check that everything looks right before we create the patient&apos;s profile.
+          {t("subtitle")}
         </p>
       </div>
 
       {/* Personal Info */}
-      <ReviewSection title="Personal Information" icon="👤" onEdit={() => onEditStep(0)}>
-        <ReviewRow label="Name" value={data.personal.fullName} />
-        <ReviewRow label="Date of Birth" value={data.personal.dateOfBirth} />
-        <ReviewRow label="Gender" value={data.personal.gender} />
-        <ReviewRow label="Phone" value={data.personal.phone} />
-        <ReviewRow label="Relationship" value={data.personal.relationship} />
+      <ReviewSection title={t("personal")} icon="👤" editLabel={t("edit")} onEdit={() => onEditStep(0)}>
+        <ReviewRow label={t("fieldName")} value={data.personal.fullName} />
+        <ReviewRow label={t("fieldDob")} value={data.personal.dateOfBirth} />
+        <ReviewRow label={t("fieldGender")} value={data.personal.gender} />
+        <ReviewRow label={t("fieldPhone")} value={data.personal.phone} />
+        <ReviewRow label={t("fieldRelationship")} value={data.personal.relationship} />
       </ReviewSection>
 
       {/* Medical Report */}
-      <ReviewSection title="Medical Report" icon="🏥" onEdit={() => onEditStep(1)}>
+      <ReviewSection title={t("medical")} icon="🏥" editLabel={t("edit")} onEdit={() => onEditStep(1)}>
         {data.diagnostic.extractedData ? (
           <>
             <ReviewRow
-              label="Diagnosis"
+              label={t("fieldDiagnosis")}
               value={data.diagnostic.extractedData.diagnosis}
             />
             <ReviewRow
-              label="Date"
+              label={t("fieldDate")}
               value={data.diagnostic.extractedData.dateOfDiagnosis}
             />
             <ReviewRow
-              label="Cognitive Score"
+              label={t("fieldScore")}
               value={`${data.diagnostic.extractedData.score ?? "--"}/${data.diagnostic.extractedData.maxScore ?? 30} (${data.diagnostic.extractedData.testType})`}
             />
             <ReviewRow
-              label="Medications"
+              label={t("fieldMedications")}
               value={data.diagnostic.extractedData.medications.join(", ") || "None"}
             />
             <ReviewRow
-              label="Physician"
+              label={t("fieldPhysician")}
               value={data.diagnostic.extractedData.examiningPhysician || "—"}
             />
           </>
         ) : (
-          <p className="text-ink-secondary italic">No report uploaded — skipped</p>
+          <p className="text-ink-secondary italic">{t("noReport")}</p>
         )}
       </ReviewSection>
 
       {/* Family Members */}
       <ReviewSection
-        title="Family & Relatives"
+        title={t("family")}
         icon="👨‍👩‍👧"
+        editLabel={t("edit")}
         onEdit={() => onEditStep(2)}
         count={data.relatives.length}
       >
@@ -93,25 +96,25 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
             ))}
           </div>
         ) : (
-          <p className="text-ink-secondary italic">No family members added</p>
+          <p className="text-ink-secondary italic">{t("noFamily")}</p>
         )}
       </ReviewSection>
 
       {/* Life Story */}
-      <ReviewSection title="Life Story & Interests" icon="📖" onEdit={() => onEditStep(3)}>
-        <ReviewRow label="Occupation" value={data.lifeStory.occupation || "Not specified"} />
-        <ReviewRow label="Language" value={langLabel} />
+      <ReviewSection title={t("life")} icon="📖" editLabel={t("edit")} onEdit={() => onEditStep(3)}>
+        <ReviewRow label={t("fieldOccupation")} value={data.lifeStory.occupation || t("notSpecified")} />
+        <ReviewRow label={t("fieldLanguage")} value={langLabel} />
         <ReviewRow
-          label="Interests"
-          value={data.lifeStory.interests.join(", ") || "None selected"}
+          label={t("fieldInterests")}
+          value={data.lifeStory.interests.join(", ") || t("noneSelected")}
         />
         <ReviewRow
-          label="Favorite Music"
-          value={data.lifeStory.favoriteMusic || "Not specified"}
+          label={t("fieldMusic")}
+          value={data.lifeStory.favoriteMusic || t("notSpecified")}
         />
         {data.lifeStory.lifeEvents.length > 0 && (
           <ReviewRow
-            label="Life Events"
+            label={t("fieldLifeEvents")}
             value={data.lifeStory.lifeEvents
               .filter((e) => e.event)
               .map((e) => `${e.event} (${e.year})`)
@@ -119,14 +122,15 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
           />
         )}
         {data.lifeStory.joyNote && (
-          <ReviewRow label="What brings joy" value={data.lifeStory.joyNote} />
+          <ReviewRow label={t("fieldJoy")} value={data.lifeStory.joyNote} />
         )}
       </ReviewSection>
 
       {/* Familiar Places */}
       <ReviewSection
-        title="Familiar Places"
+        title={t("places")}
         icon="📍"
+        editLabel={t("edit")}
         onEdit={() => onEditStep(4)}
         count={data.landmarks.length}
       >
@@ -149,12 +153,14 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
 function ReviewSection({
   title,
   icon,
+  editLabel,
   onEdit,
   count,
   children,
 }: {
   title: string;
   icon: string;
+  editLabel: string;
   onEdit: () => void;
   count?: number;
   children: React.ReactNode;
@@ -175,7 +181,7 @@ function ReviewSection({
           onClick={onEdit}
           className="text-sky font-bold text-sm hover:underline"
         >
-          Edit
+          {editLabel}
         </button>
       </div>
       <div className="p-4 space-y-2">{children}</div>
