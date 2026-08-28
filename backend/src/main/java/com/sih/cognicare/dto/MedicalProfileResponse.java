@@ -14,14 +14,29 @@ import java.util.Map;
 @Builder
 public class MedicalProfileResponse {
     private String diagnosis;
+    private String icd10;
     private String dateOfDiagnosis;
+    private String examiningPhysician;
+    private String clinicOrHospital;
     private String clinicalStage;
     private Integer recommendedStartDifficulty;
     private String llmSummary;
     private String testType;
     private Integer mmseScore;
     private Integer maxScore;
+    private String mtaScore;
+    private String fazekasGrade;
     private String impairedDomains;
     private List<String> medications;
+    private Map<String, SubscaleScoreDto> subscaleScores;
     private Map<String, DomainAssessment> domains;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SubscaleScoreDto {
+        private int score;
+        private int max;
+    }
 }

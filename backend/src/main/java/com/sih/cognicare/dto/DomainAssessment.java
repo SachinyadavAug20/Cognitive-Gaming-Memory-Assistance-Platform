@@ -9,5 +9,7 @@ import lombok.*;
 @Builder
 public class DomainAssessment {
     private boolean needsHelp;
+    private String impairmentLevel;
+    private int scorePct;
     private String evidence;
 }

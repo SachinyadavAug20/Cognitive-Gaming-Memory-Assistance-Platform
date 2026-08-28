@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sih.cognicare.dto.DomainAssessment;
+import com.sih.cognicare.dto.MedicalProfileResponse;
 import com.sih.cognicare.model.MedicalProfile;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -73,8 +74,7 @@ public class MedicalReportService {
         String truncated = pdfText.length() > 8000 ? pdfText.substring(0, 8000) : pdfText;
 
         String prompt = """
-                You are an expert clinical neurologist and geriatric assessment specialist.
-                Analyze the following patient medical report and extract structured diagnostic metrics, active medications, and a comprehensive 17-domain functional/cognitive assessment into STRICT JSON.
+                You are a senior clinical neuropsychologist. Thoroughly analyze the medical assessment report text below and extract structured diagnostic metrics, clinical subscale scores, medications, biomarkers, and a 17-domain quantified deficit breakdown into STRICT JSON.
 
                 Text:
                 \"\"\"
@@ -83,34 +83,46 @@ public class MedicalReportService {
 
                 Return ONLY valid JSON matching this exact structure:
                 {
-                  "diagnosis": "string (e.g. Major Neurocognitive Disorder due to probable Alzheimer's Disease)",
-                  "dateOfDiagnosis": "string (e.g. 08/20/2026)",
+                  "diagnosis": "string (e.g., Major Neurocognitive Disorder due to probable Alzheimer's Disease)",
+                  "icd10": "string or null (e.g., G30.9 / F02.80)",
+                  "dateOfDiagnosis": "string (e.g., 08/20/2026)",
+                  "examiningPhysician": "string (e.g., Dr. Sarah Jenkins, MD)",
+                  "clinicOrHospital": "string (e.g., St. Jude Medical Center)",
                   "testType": "MMSE" | "MoCA" | "General Diagnostic" | "Unknown",
-                  "score": number or null,
+                  "totalScore": number or null,
                   "maxScore": number or null,
                   "stage": "Mild Cognitive Impairment" | "Early Dementia" | "Moderate Dementia" | "Severe Dementia",
                   "recommendedStartLevel": 1 | 2 | 3,
-                  "medications": ["list", "of", "all", "active", "prescriptions"],
-                  "physicianNotes": "Concise summary including MRI/imaging and neurological exam findings",
+                  "mtaScore": "string or null (e.g., Grade 3)",
+                  "fazekasGrade": "string or null (e.g., Grade 1)",
+                  "activeMedications": ["list", "of", "all", "current", "and", "newly", "prescribed", "medications"],
+                  "subscaleScores": {
+                    "orientation": { "score": 5, "max": 10 },
+                    "registration": { "score": 3, "max": 3 },
+                    "attention_calculation": { "score": 2, "max": 5 },
+                    "recall": { "score": 0, "max": 3 },
+                    "language_visuospatial": { "score": 9, "max": 9 }
+                  },
                   "domains": {
-                    "memory": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "attention": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "executive_function": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "orientation": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "language": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "visuospatial": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "decision_making": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "medication_management": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "financial_management": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "navigation": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "meal_preparation": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "driving": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "household_tasks": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "apathy": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "agitation": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "social_withdrawal": { "needs_help": boolean, "evidence": "direct quote or null" },
-                    "sleep_disturbance": { "needs_help": boolean, "evidence": "direct quote or null" }
-                  }
+                    "memory": { "needs_help": true, "impairment_level": "Severe", "score_pct": 0, "evidence": "Recall: 0/3 (Unable to recall 3 words after 5-minute delay)" },
+                    "attention": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 40, "evidence": "Attention & Calculation (Serial 7s): 2/5" },
+                    "executive_function": { "needs_help": true, "impairment_level": "Severe", "score_pct": 25, "evidence": "Significant executive dysfunction" },
+                    "orientation": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 50, "evidence": "Orientation: 5/10" },
+                    "language": { "needs_help": false, "impairment_level": "None", "score_pct": 100, "evidence": "Intact" },
+                    "visuospatial": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 35, "evidence": "Clock Drawing Test distortion" },
+                    "decision_making": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 40, "evidence": "Difficulty managing finances" },
+                    "medication_management": { "needs_help": true, "impairment_level": "Severe", "score_pct": 0, "evidence": "Dependent on caregiver" },
+                    "financial_management": { "needs_help": true, "impairment_level": "Severe", "score_pct": 0, "evidence": "Difficulty managing finances" },
+                    "navigation": { "needs_help": true, "impairment_level": "Severe", "score_pct": 20, "evidence": "Confusion while driving" },
+                    "meal_preparation": { "needs_help": true, "impairment_level": "Severe", "score_pct": 10, "evidence": "Dependent on caregiver" },
+                    "driving": { "needs_help": true, "impairment_level": "Severe", "score_pct": 0, "evidence": "Advised against driving" },
+                    "household_tasks": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 30, "evidence": "Dependent on caregiver" },
+                    "apathy": { "needs_help": true, "impairment_level": "Mild", "score_pct": 50, "evidence": "Mild apathy reported" },
+                    "agitation": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 40, "evidence": "Sundowning" },
+                    "social_withdrawal": { "needs_help": true, "impairment_level": "Mild", "score_pct": 50, "evidence": "Social withdrawal" },
+                    "sleep_disturbance": { "needs_help": true, "impairment_level": "Moderate", "score_pct": 40, "evidence": "Nighttime agitation" }
+                  },
+                  "clinicalSummary": "2-sentence neurological impression."
                 }""".formatted(truncated);
 
         Map<String, Object> request = new HashMap<>();
@@ -144,10 +156,20 @@ public class MedicalReportService {
             JsonNode node = objectMapper.readTree(jsonResponse);
 
             profile.setDiagnosis(node.has("diagnosis") ? node.get("diagnosis").asText(null) : null);
+            profile.setIcd10(node.has("icd10") ? node.get("icd10").asText(null) : null);
             profile.setDateOfDiagnosis(node.has("dateOfDiagnosis") ? node.get("dateOfDiagnosis").asText(null) : null);
+            profile.setExaminingPhysician(node.has("examiningPhysician") ? node.get("examiningPhysician").asText(null) : null);
+            profile.setClinicOrHospital(node.has("clinicOrHospital") ? node.get("clinicOrHospital").asText(null) : null);
             profile.setTestType(node.has("testType") ? node.get("testType").asText("Unknown") : "Unknown");
-            profile.setMmseScore(node.has("score") && !node.get("score").isNull() ? node.get("score").asInt() : null);
-            profile.setMaxScore(node.has("maxScore") && !node.get("maxScore").isNull() ? node.get("maxScore").asInt() : null);
+
+            if (node.has("totalScore") && !node.get("totalScore").isNull()) {
+                profile.setMmseScore(node.get("totalScore").asInt());
+            } else if (node.has("score") && !node.get("score").isNull()) {
+                profile.setMmseScore(node.get("score").asInt());
+            }
+            if (node.has("maxScore") && !node.get("maxScore").isNull()) {
+                profile.setMaxScore(node.get("maxScore").asInt());
+            }
 
             String stage = node.has("stage") ? node.get("stage").asText("Undetermined") : "Undetermined";
             profile.setClinicalStage(mapStage(stage));
@@ -155,29 +177,46 @@ public class MedicalReportService {
             int startLevel = node.has("recommendedStartLevel") ? node.get("recommendedStartLevel").asInt(1) : 1;
             profile.setRecommendedStartDifficulty(Math.max(1, Math.min(3, startLevel)));
 
-            if (node.has("medications") && node.get("medications").isArray()) {
+            profile.setMtaScore(node.has("mtaScore") ? node.get("mtaScore").asText(null) : null);
+            profile.setFazekasGrade(node.has("fazekasGrade") ? node.get("fazekasGrade").asText(null) : null);
+
+            if (node.has("activeMedications") && node.get("activeMedications").isArray()) {
+                List<String> meds = objectMapper.convertValue(node.get("activeMedications"),
+                        objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+                profile.setMedicationsJson(objectMapper.writeValueAsString(meds));
+            } else if (node.has("medications") && node.get("medications").isArray()) {
                 List<String> meds = objectMapper.convertValue(node.get("medications"),
                         objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
                 profile.setMedicationsJson(objectMapper.writeValueAsString(meds));
             }
 
             String physicianNotes = node.has("physicianNotes") ? node.get("physicianNotes").asText("") : "";
-            String summary = node.has("clinicalSummary") ? node.get("clinicalSummary").asText("") : "";
-            String llmSummary = physicianNotes.isEmpty() ? summary : physicianNotes;
+            String clinicalSummary = node.has("clinicalSummary") ? node.get("clinicalSummary").asText("") : "";
+            String llmSummary = !clinicalSummary.isEmpty() ? clinicalSummary : physicianNotes;
             profile.setLlmSummary(llmSummary);
+
+            if (node.has("subscaleScores") && node.get("subscaleScores").isObject()) {
+                profile.setSubscaleScoresJson(objectMapper.writeValueAsString(
+                        objectMapper.convertValue(node.get("subscaleScores"),
+                                new TypeReference<Map<String, MedicalProfileResponse.SubscaleScoreDto>>() {})));
+            }
 
             if (node.has("domains") && node.get("domains").isObject()) {
                 Map<String, DomainAssessment> domains = new LinkedHashMap<>();
                 node.get("domains").fields().forEachRemaining(entry -> {
-                    JsonNode domainNode = entry.getValue();
+                    JsonNode d = entry.getValue();
                     DomainAssessment assessment = DomainAssessment.builder()
-                            .needsHelp(domainNode.has("needs_help") && domainNode.get("needs_help").asBoolean())
-                            .evidence(domainNode.has("evidence") ? domainNode.get("evidence").asText(null) : null)
+                            .needsHelp(d.has("needs_help") && d.get("needs_help").asBoolean())
+                            .impairmentLevel(d.has("impairment_level") ? d.get("impairment_level").asText("Unknown") : "Unknown")
+                            .scorePct(d.has("score_pct") ? d.get("score_pct").asInt(0) : 0)
+                            .evidence(d.has("evidence") ? d.get("evidence").asText(null) : null)
                             .build();
                     domains.put(entry.getKey(), assessment);
                 });
                 profile.setClinicalDomainsJson(objectMapper.writeValueAsString(domains));
             }
+
+            profile.setDetailedAnalysisJson(jsonResponse);
 
             return profile;
         } catch (Exception e) {
@@ -192,13 +231,20 @@ public class MedicalReportService {
         profile.setTestType("Unknown");
         profile.setLlmSummary(summary);
         profile.setDiagnosis(null);
+        profile.setIcd10(null);
         profile.setDateOfDiagnosis(null);
+        profile.setExaminingPhysician(null);
+        profile.setClinicOrHospital(null);
         profile.setMmseScore(null);
         profile.setMaxScore(null);
+        profile.setMtaScore(null);
+        profile.setFazekasGrade(null);
         profile.setImpairedDomains(null);
         profile.setPrimaryDeficits(null);
         profile.setMedicationsJson("[]");
         profile.setClinicalDomainsJson("{}");
+        profile.setSubscaleScoresJson("{}");
+        profile.setDetailedAnalysisJson(null);
         return profile;
     }
 

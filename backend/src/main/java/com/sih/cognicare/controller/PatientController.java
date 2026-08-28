@@ -248,17 +248,33 @@ public class PatientController {
             }
         }
 
+        Map<String, MedicalProfileResponse.SubscaleScoreDto> subscaleScores = Map.of();
+        if (mp.getSubscaleScoresJson() != null && !mp.getSubscaleScoresJson().isBlank()) {
+            try {
+                subscaleScores = objectMapper.readValue(mp.getSubscaleScoresJson(),
+                        new TypeReference<Map<String, MedicalProfileResponse.SubscaleScoreDto>>() {});
+            } catch (Exception e) {
+                log.warn("Could not deserialize subscale scores: {}", e.getMessage());
+            }
+        }
+
         return MedicalProfileResponse.builder()
                 .diagnosis(mp.getDiagnosis())
+                .icd10(mp.getIcd10())
                 .dateOfDiagnosis(mp.getDateOfDiagnosis())
+                .examiningPhysician(mp.getExaminingPhysician())
+                .clinicOrHospital(mp.getClinicOrHospital())
                 .clinicalStage(mp.getClinicalStage())
                 .recommendedStartDifficulty(mp.getRecommendedStartDifficulty())
                 .llmSummary(mp.getLlmSummary())
                 .testType(mp.getTestType())
                 .mmseScore(mp.getMmseScore())
                 .maxScore(mp.getMaxScore())
+                .mtaScore(mp.getMtaScore())
+                .fazekasGrade(mp.getFazekasGrade())
                 .impairedDomains(mp.getImpairedDomains())
                 .medications(medications)
+                .subscaleScores(subscaleScores)
                 .domains(domains)
                 .build();
     }

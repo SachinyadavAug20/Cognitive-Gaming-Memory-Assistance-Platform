@@ -24,7 +24,13 @@ public class MedicalProfile {
 
     private String diagnosis;
 
+    private String icd10;
+
     private String dateOfDiagnosis;
+
+    private String examiningPhysician;
+
+    private String clinicOrHospital;
 
     private String testType;
 
@@ -34,13 +40,17 @@ public class MedicalProfile {
 
     private String clinicalStage;
 
-    @Column(columnDefinition = "TEXT")
-    private String primaryDeficits;
-
     private Integer recommendedStartDifficulty;
+
+    private String mtaScore;
+
+    private String fazekasGrade;
 
     @Column(columnDefinition = "TEXT")
     private String llmSummary;
+
+    @Column(columnDefinition = "TEXT")
+    private String primaryDeficits;
 
     @Column(columnDefinition = "TEXT")
     private String impairedDomains;
@@ -50,4 +60,10 @@ public class MedicalProfile {
 
     @Column(columnDefinition = "TEXT")
     private String clinicalDomainsJson;
+
+    @Column(columnDefinition = "TEXT")
+    private String subscaleScoresJson;
+
+    @Column(columnDefinition = "TEXT")
+    private String detailedAnalysisJson;
 }
