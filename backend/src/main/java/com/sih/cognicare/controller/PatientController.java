@@ -112,6 +112,33 @@ public class PatientController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping(value = "/patients/analyze-pdf", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<MedicalProfileResponse> analyzePdfOnly(
+            @RequestPart("reportFile") MultipartFile reportFile) {
+        if (reportFile == null || reportFile.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("preview-report-", ".pdf");
+            reportFile.transferTo(tempFile);
+
+            MedicalProfile profile = new MedicalProfile();
+            medicalReportService.analyzeReport(tempFile, profile);
+
+            MedicalProfileResponse response = toMedicalProfileResponse(profile);
+            return ResponseEntity.ok(response);
+        } catch (IOException e) {
+            log.error("Failed to analyze PDF preview: {}", e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        } finally {
+            if (tempFile != null && tempFile.exists()) {
+                tempFile.delete();
+            }
+        }
+    }
+
     @GetMapping("/uploads/{path:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String path) {
         Resource resource = fileStorageService.loadFile(path);
