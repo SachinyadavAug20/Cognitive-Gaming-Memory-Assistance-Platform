@@ -85,26 +85,50 @@ public class MedicalReportService {
     private String callOllama(String pdfText) throws IOException {
         RestTemplate restTemplate = createRestTemplate();
 
-	String prompt = """
-    Extract clinical data from the report into the exact JSON structure below.
+	
+        String prompt = """
+    Extract clinical information from the report below into STRICT JSON.
 
-    STRICT RULES:
-    - Use ONLY information explicitly present in the report.
-    - NEVER guess, infer, calculate, or hallucinate.
-    - Missing information = null, [], or the schema's neutral value.
-    - Diagnosis and ICD-10: extract only if explicitly stated. Never derive them.
-    - Date, physician, hospital/clinic, and active medications: extract only when clearly identified.
-    - Test type: identify MMSE/MoCA only if explicitly stated.
-    - Scores: copy exactly as reported. Never estimate or calculate missing scores.
-    - MTA/Fazekas: extract only if explicitly reported. Never infer from imaging descriptions.
-    - Stage: use only an explicitly stated or clearly equivalent stage. Never infer severity.
-    - Domains: mark impairment only when explicitly supported by the report. Missing evidence = no impairment.
-    - Evidence: exact report wording, maximum 5 words. Never create evidence.
-    - score_pct: only when score and maximum are explicitly available.
-    - recommendedStartLevel: 1=MCI, 2=Early Dementia, 3=Moderate/Severe Dementia; unclear stage=1.
-    - Return ONLY valid JSON. No explanation. No extra keys.
+    ACCURACY RULES:
+    - Use ONLY information explicitly stated in the report. Never guess, infer, hallucinate, or use outside medical knowledge.
+    - If information is not stated, return null, [], or the neutral value required by the JSON structure.
+    - Do not convert symptoms, medications, imaging findings, or test scores into a diagnosis unless the diagnosis is explicitly stated.
+    - Extract dates, physician names, hospital/clinic names, medications, diagnoses, ICD-10 codes, test names, and scores only when clearly identified in the report.
+    - For multiple values, select the value clearly associated with the patient's primary assessment.
+    - Active medications means medications explicitly identified as current/active; exclude discontinued or historical medications.
+    - Do not calculate scores or percentages unless the required score and maximum are explicitly provided.
+    - Do not combine scores from different tests.
 
-    REPORT:
+    TEST / SCORE:
+    - Identify MMSE or MoCA only when explicitly mentioned.
+    - Extract totalScore and maxScore exactly as reported.
+    - Extract subscale scores only when explicitly reported.
+    - Never estimate missing scores.
+
+    DIAGNOSIS / STAGE:
+    - Extract the diagnosis and ICD-10 exactly when explicitly stated.
+    - Extract the clinical stage only when explicitly stated or clearly expressed using an equivalent term.
+    - Do not infer dementia severity from symptoms, age, medications, imaging, or scores alone.
+    - recommendedStartLevel: 1 = Mild Cognitive Impairment, 2 = Early Dementia, 3 = Moderate/Severe Dementia. If stage cannot be reliably established, use 1.
+
+    MTA / FAZEKAS:
+    - Extract MTA score and Fazekas grade only when explicitly reported.
+    - Never calculate or infer them from imaging descriptions.
+
+    DOMAINS:
+    - Mark a domain impaired only when the report provides explicit evidence.
+    - If explicitly normal/intact/independent: needs_help=false, impairment_level="None".
+    - If there is no evidence: needs_help=false, impairment_level="None", evidence="".
+    - Do not treat an untested domain as impaired.
+    - score_pct must only be provided when an explicit score and maximum are available.
+    - Evidence must be a direct quote from the report and under 5 words.
+
+    OUTPUT:
+    - Return ONLY valid JSON.
+    - Do not add explanations, markdown, or extra keys.
+    - Follow the exact JSON structure below.
+
+    Report:
     \"\"\"%s\"\"\"
 
     Respond ONLY with this exact JSON structure:
@@ -150,7 +174,7 @@ public class MedicalReportService {
       },
       "clinicalSummary": "1-sentence summary"
     }
-    """.formatted(pdfText);  
+    """.formatted(pdfText);
 
         Map<String, Object> request = new HashMap<>();
         request.put("model", MODEL);
