@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ProgressBar } from "./ProgressBar";
 import { StepPersonalInfo } from "./StepPersonalInfo";
@@ -13,43 +13,42 @@ import { StepReview } from "./StepReview";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { api } from "@/lib/api";
 import { EMPTY_FORM } from "@/types/intake";
-import type { IntakeFormData, Relative, LandmarkEntry } from "@/types/intake";
+import type { IntakeFormData, Relative, LandmarkEntry, ClinicalDomains } from "@/types/intake";
 
-const STORAGE_KEY = "intake:draft";
-const DEBOUNCE_MS = 300;
+const STORAGE_KEY = "cognicare:intake:draft";
 
 const STEP_ICONS = ["👤", "🏥", "👨‍👩‍👧", "📖", "📍", "✅"];
 
-function loadSavedDraft(): IntakeFormData {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return {
-        ...EMPTY_FORM,
-        ...parsed,
-        diagnostic: { ...EMPTY_FORM.diagnostic, ...parsed.diagnostic, file: null },
-      };
-    }
-  } catch {
-    // Ignore corrupted data
-  }
-  return EMPTY_FORM;
-}
-
 export function IntakeWizard() {
-  const router = useRouter();
   const t = useTranslations("intake");
-  const tWizard = useTranslations("intake.wizard");
+  const router = useRouter();
+
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<IntakeFormData>(loadSavedDraft);
+  const [formData, setFormData] = useState<IntakeFormData>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          ...EMPTY_FORM,
+          ...parsed,
+          diagnostic: { ...EMPTY_FORM.diagnostic, ...parsed.diagnostic, file: null },
+        };
+      }
+    } catch {
+      // Ignore corrupted data
+    }
+    return EMPTY_FORM;
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [patientId, setPatientId] = useState<number | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const tWizard = useTranslations("intake.wizard");
   const STEP_META = [
     { label: tWizard("personal"), icon: STEP_ICONS[0] },
     { label: tWizard("medical"), icon: STEP_ICONS[1] },
@@ -59,7 +58,6 @@ export function IntakeWizard() {
     { label: tWizard("review"), icon: STEP_ICONS[5] },
   ];
 
-  // Auto-save to localStorage
   useEffect(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => {
@@ -71,16 +69,16 @@ export function IntakeWizard() {
           landmarks: formData.landmarks.map(({ fileRef: _, ...l }) => l),
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-      } catch {
-        // Ignore storage errors
+      } catch (e) {
+        console.warn("Could not auto-save draft", e);
       }
-    }, DEBOUNCE_MS);
+    }, 600);
+
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     };
   }, [formData]);
 
-  // Focus management on step change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentStep]);
@@ -103,9 +101,21 @@ export function IntakeWizard() {
     []
   );
 
-  // Step 2: Diagnostic handlers
   const handleFileSelect = useCallback(
-    async (file: File) => {
+    async (file: File | null) => {
+      if (!file) {
+        setFormData((prev) => ({
+          ...prev,
+          diagnostic: {
+            ...prev.diagnostic,
+            file: null,
+            fileName: "",
+            isProcessing: false,
+          },
+        }));
+        return;
+      }
+
       setFormData((prev) => ({
         ...prev,
         diagnostic: {
@@ -118,34 +128,55 @@ export function IntakeWizard() {
       }));
 
       try {
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const base64 = (reader.result as string).split(",")[1];
-          try {
-            const res = await fetch("/api/analyze-report", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ pdfBase64: base64 }),
-            });
-            if (!res.ok) throw new Error("Analysis failed");
-            const data = await res.json();
-            setFormData((prev) => ({
-              ...prev,
-              diagnostic: {
-                ...prev.diagnostic,
-                extractedData: data,
-                isProcessing: false,
-              },
-            }));
-          } catch {
-            setFormData((prev) => ({
-              ...prev,
-              diagnostic: { ...prev.diagnostic, isProcessing: false },
-            }));
-          }
-        };
-        reader.readAsDataURL(file);
-      } catch {
+        const payload = new FormData();
+        payload.append("reportFile", file);
+
+        const response = await api.postMultipart<{
+          diagnosis?: string | null;
+          icd10?: string | null;
+          dateOfDiagnosis?: string | null;
+          examiningPhysician?: string | null;
+          clinicOrHospital?: string | null;
+          clinicalStage?: string | null;
+          recommendedStartDifficulty?: number | null;
+          llmSummary?: string | null;
+          testType?: string | null;
+          mmseScore?: number | null;
+          maxScore?: number | null;
+          mtaScore?: string | null;
+          fazekasGrade?: string | null;
+          medications?: string[];
+          subscaleScores?: Record<string, { score: number; max: number }>;
+          domains?: ClinicalDomains;
+        }>("/patients/analyze-pdf", payload);
+
+        setFormData((prev) => ({
+          ...prev,
+          diagnostic: {
+            ...prev.diagnostic,
+            extractedData: {
+              diagnosis: response.diagnosis || "Undetermined Diagnosis",
+              icd10: response.icd10 || undefined,
+              dateOfDiagnosis: response.dateOfDiagnosis || new Date().toISOString().split("T")[0],
+              examiningPhysician: response.examiningPhysician || undefined,
+              clinicOrHospital: response.clinicOrHospital || undefined,
+              testType: response.testType || "Unknown",
+              score: response.mmseScore ?? null,
+              maxScore: response.maxScore ?? 30,
+              stage: response.clinicalStage || "Mild Cognitive Impairment",
+              recommendedStartLevel: response.recommendedStartDifficulty || 1,
+              mtaScore: response.mtaScore || undefined,
+              fazekasGrade: response.fazekasGrade || undefined,
+              medications: response.medications || [],
+              subscaleScores: response.subscaleScores || undefined,
+              domains: response.domains || undefined,
+              physicianNotes: response.llmSummary || "",
+            },
+            isProcessing: false,
+          },
+        }));
+      } catch (err) {
+        console.error("PDF analysis failed:", err);
         setFormData((prev) => ({
           ...prev,
           diagnostic: { ...prev.diagnostic, isProcessing: false },
@@ -173,7 +204,6 @@ export function IntakeWizard() {
     }));
   }, []);
 
-  // Step 3: Family handlers
   const handleAddRelative = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
@@ -191,14 +221,16 @@ export function IntakeWizard() {
     }));
   }, []);
 
-  const handleUpdateRelative = useCallback((index: number, item: Relative) => {
-    setFormData((prev) => ({
-      ...prev,
-      relatives: prev.relatives.map((r, i) => (i === index ? item : r)),
-    }));
-  }, []);
+  const handleUpdateRelative = useCallback(
+    (index: number, item: Relative) => {
+      setFormData((prev) => ({
+        ...prev,
+        relatives: prev.relatives.map((r, i) => (i === index ? item : r)),
+      }));
+    },
+    []
+  );
 
-  // Step 4: Life story handler
   const handleLifeStoryChange = useCallback(
     (field: string, value: string | string[] | { event: string; year: string }[]) => {
       setFormData((prev) => {
@@ -220,7 +252,6 @@ export function IntakeWizard() {
     []
   );
 
-  // Step 5: Landmark handlers
   const handleAddLandmark = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
@@ -248,7 +279,6 @@ export function IntakeWizard() {
     []
   );
 
-  // Validation
   const validateStep = useCallback(
     (step: number): Record<string, string> => {
       const errs: Record<string, string> = {};
@@ -317,15 +347,13 @@ export function IntakeWizard() {
         photoIndex: r.fileRef ? i : null,
       }));
 
-      const landmarksWithIndex = formData.landmarks.map((l, i) => {
-        const photoOffset = formData.relatives.length;
-        return {
-          name: l.name,
-          description: l.description,
-          emoji: l.emoji,
-          photoIndex: l.fileRef ? photoOffset + i : null,
-        };
-      });
+      const photoOffset = formData.relatives.filter((r) => r.fileRef).length;
+      const landmarksWithIndex = formData.landmarks.map((l, i) => ({
+        name: l.name,
+        description: l.description,
+        emoji: l.emoji,
+        photoIndex: l.fileRef ? photoOffset + i : null,
+      }));
 
       const dataBlob = {
         personal: formData.personal,
@@ -352,27 +380,17 @@ export function IntakeWizard() {
         formDataPayload.append("reportFile", formData.diagnostic.file);
       }
 
-      const photos: File[] = [];
-      for (const relative of formData.relatives) {
-        if (relative.fileRef) {
-          photos.push(relative.fileRef);
-        }
+      for (const r of formData.relatives) {
+        if (r.fileRef) formDataPayload.append("photos", r.fileRef);
       }
-      for (const landmark of formData.landmarks) {
-        if (landmark.fileRef) {
-          photos.push(landmark.fileRef);
-        }
-      }
-      for (const photo of photos) {
-        formDataPayload.append("photos", photo);
+      for (const l of formData.landmarks) {
+        if (l.fileRef) formDataPayload.append("photos", l.fileRef);
       }
 
-      const response = await api.postMultipart<{
-        patientId: number;
-        medicalProfile: { clinicalStage: string; recommendedStartDifficulty: number; llmSummary: string };
-        familyCount: number;
-        placesCount: number;
-      }>("/patients/onboard", formDataPayload);
+      const response = await api.postMultipart<{ patientId: number }>(
+        "/patients/onboard",
+        formDataPayload
+      );
 
       setIsSubmitting(false);
       setIsComplete(true);
@@ -394,7 +412,7 @@ export function IntakeWizard() {
           {t("complete.title")}
         </h2>
         <p className="text-ink-secondary text-lg max-w-md mx-auto">
-          <strong>{formData.personal.fullName}</strong> {t("complete.desc", { name: formData.personal.fullName })}
+          {t("complete.desc", { name: formData.personal.fullName || "The patient" })}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           {patientId && (
@@ -477,7 +495,6 @@ export function IntakeWizard() {
         )}
       </div>
 
-      {/* Navigation */}
       <div className="flex gap-3 mt-8 pt-6 border-t-3 border-border-soft">
         {currentStep > 0 && (
           <ChunkyButton variant="outline" onClick={handleBack}>

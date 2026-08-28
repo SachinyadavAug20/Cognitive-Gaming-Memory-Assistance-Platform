@@ -7,7 +7,7 @@ interface FileUploadZoneProps {
   maxSizeMB: number;
   label: string;
   description: string;
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File | null) => void;
   currentFile?: File | null;
   preview?: string;
   isProcessing?: boolean;

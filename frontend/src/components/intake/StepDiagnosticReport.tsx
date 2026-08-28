@@ -13,7 +13,7 @@ interface StepDiagnosticReportProps {
     skipped: boolean;
   };
   errors: Record<string, string>;
-  onFileSelect: (file: File) => void;
+  onFileSelect: (file: File | null) => void;
   onAnalyze: () => void;
   onSkip: () => void;
 }
