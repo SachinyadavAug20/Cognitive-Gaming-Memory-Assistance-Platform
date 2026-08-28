@@ -24,13 +24,13 @@ public class MedicalReportService {
     private static final String OLLAMA_URL = "http://localhost:11434/api/generate";
     private static final String MODEL = "qwen2.5:1.5b";
     private static final int MIN_TEXT_LENGTH = 50;
-    private static final int TIMEOUT_MS = 180_000;
+    private static final int TIMEOUT_MS = 300_000;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private RestTemplate createRestTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(15_000);
+        factory.setConnectTimeout(20_000);
         factory.setReadTimeout(TIMEOUT_MS);
         return new RestTemplate(factory);
     }
@@ -50,7 +50,7 @@ public class MedicalReportService {
         }
 
         try {
-            log.info("Extracted {} chars from PDF, sending to Ollama for analysis", extractedText.length());
+            log.info("Extracted {} chars from PDF, preprocessing for optimized inference", extractedText.length());
             String cleanedText = preprocessClinicalText(extractedText);
             String ollamaResponse = callOllama(cleanedText);
             return parseAndApplyResponse(ollamaResponse, profile);
@@ -67,10 +67,17 @@ public class MedicalReportService {
         }
     }
 
+    /**
+     * Aggressively compacts text to minimize input token processing time on CPU
+     */
     private String preprocessClinicalText(String text) {
-        String cleaned = text.replaceAll("(?m)^[ \\t]*\\r?\\n", "").trim();
-        if (cleaned.length() > 3500) {
-            cleaned = cleaned.substring(0, 3500);
+        String cleaned = text.replaceAll("\\r", "")
+                            .replaceAll("[ \\t]+", " ")
+                            .replaceAll("\\n{2,}", "\n")
+                            .trim();
+
+        if (cleaned.length() > 2500) {
+            cleaned = cleaned.substring(0, 2500);
         }
         return cleaned;
     }
@@ -79,16 +86,16 @@ public class MedicalReportService {
         RestTemplate restTemplate = createRestTemplate();
 
         String prompt = """
-            You are a clinical geriatric neurologist. Analyze the report and extract structured metrics into STRICT JSON. Keep all evidence quotes under 8 words.
+            Analyze this clinical report and extract findings into STRICT JSON. Keep evidence quotes under 5 words.
 
             Report:
             \"\"\"%s\"\"\"
 
-            Respond ONLY with a single valid JSON object in this exact schema:
+            Respond ONLY with this exact JSON structure:
             {
               "diagnosis": "string",
               "icd10": "string or null",
-              "dateOfDiagnosis": "YYYY-MM-DD or readable date",
+              "dateOfDiagnosis": "date string",
               "examiningPhysician": "string or null",
               "clinicOrHospital": "string or null",
               "testType": "MMSE" | "MoCA" | "General Diagnostic" | "Unknown",
@@ -98,7 +105,7 @@ public class MedicalReportService {
               "recommendedStartLevel": 1 | 2 | 3,
               "mtaScore": "string or null",
               "fazekasGrade": "string or null",
-              "activeMedications": ["list", "of", "medications"],
+              "activeMedications": ["medication 1", "medication 2"],
               "subscaleScores": {
                 "orientation": { "score": number, "max": number },
                 "registration": { "score": number, "max": number },
@@ -107,25 +114,25 @@ public class MedicalReportService {
                 "language_visuospatial": { "score": number, "max": number }
               },
               "domains": {
-                "memory": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "attention": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "executive_function": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "orientation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "language": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "visuospatial": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "decision_making": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "medication_management": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "financial_management": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "navigation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "meal_preparation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "driving": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "household_tasks": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "apathy": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "agitation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "social_withdrawal": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" },
-                "sleep_disturbance": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "brief quote or null" }
+                "memory": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "attention": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "executive_function": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "orientation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "language": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "visuospatial": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "decision_making": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "medication_management": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "financial_management": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "navigation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "meal_preparation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "driving": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "household_tasks": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "apathy": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "agitation": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "social_withdrawal": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" },
+                "sleep_disturbance": { "needs_help": boolean, "impairment_level": "None"|"Mild"|"Moderate"|"Severe", "score_pct": number, "evidence": "quote" }
               },
-              "clinicalSummary": "2-sentence summary"
+              "clinicalSummary": "1-sentence summary"
             }
             """.formatted(pdfText);
 
@@ -136,7 +143,7 @@ public class MedicalReportService {
         request.put("stream", false);
         request.put("options", Map.of(
             "temperature", 0.0,
-            "num_predict", 2500
+            "num_predict", 1800
         ));
 
         HttpHeaders headers = new HttpHeaders();
@@ -201,9 +208,6 @@ public class MedicalReportService {
         }
     }
 
-    /**
-     * Safety net: Automatically closes unclosed quotes, brackets, and braces if generation gets truncated
-     */
     private String repairJsonIfTruncated(String json) {
         if (json.endsWith("}")) return json;
 
