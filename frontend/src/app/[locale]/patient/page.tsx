@@ -6,10 +6,11 @@ import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { ReminderRow } from "@/components/patient/ReminderRow";
 import { HydrationTracker } from "@/components/patient/HydrationTracker";
 import { ExerciseBanner } from "@/components/patient/ExerciseBanner";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function PatientHome() {
-  const { t, locale } = useTranslation();
+  const t = useTranslations("patient");
+  const locale = useLocale();
 
   return (
     <div className="min-h-[100vh] pb-4 md:overflow-hidden flex flex-col">
@@ -20,14 +21,14 @@ export default function PatientHome() {
           </div>
           <div className="flex-1 min-w-0">
             <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink-inverse leading-tight">
-              {t("patient.greeting")}
+              {t("greeting")}
             </h1>
-            <p className="text-ink-inverse/80 text-sm">{t("patient.date")}</p>
+            <p className="text-ink-inverse/80 text-sm">{t("date")}</p>
           </div>
           <AudioPrompt
-            text={t("patient.audio.greeting")}
+            text={t("audio.greeting")}
             lang={locale === "en" ? "en-US" : `${locale}-IN`}
-            label={t("audio.listen")}
+            label="Listen"
             size="md"
           />
         </div>
@@ -36,7 +37,7 @@ export default function PatientHome() {
       <div className="max-w-3xl mx-auto px-4 space-y-3 mt-3 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
         <section>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-lg text-ink mb-2">
-            {t("patient.schedule")}
+            {t("schedule")}
           </h2>
           <div className="space-y-2">
             {REMINDERS.map((r) => (
@@ -51,35 +52,35 @@ export default function PatientHome() {
 
         <section>
           <ExerciseBanner
-            label={t("patient.exercise.daily")}
+            label={t("exercise.daily.label")}
             labelColor="text-marigold"
             bgColor="bg-marigold-light"
             emoji="🧠"
-            title={t("patient.exercise.daily.title")}
-            description={t("patient.exercise.daily.desc")}
+            title={t("exercise.daily.title")}
+            description={t("exercise.daily.desc")}
             href="/patient/puzzle"
-            buttonText={t("patient.exercise.daily.cta")}
+            buttonText={t("exercise.daily.cta")}
             buttonVariant="terracotta"
           />
         </section>
 
         <section>
           <ExerciseBanner
-            label={t("patient.exercise.bonus")}
+            label={t("exercise.bonus.label")}
             labelColor="text-tea"
             bgColor="bg-tea-light"
             emoji="🗺️"
-            title={t("patient.exercise.bonus.title")}
-            description={t("patient.exercise.bonus.desc")}
+            title={t("exercise.bonus.title")}
+            description={t("exercise.bonus.desc")}
             href="/patient/wayfinding"
-            buttonText={t("patient.exercise.bonus.cta")}
+            buttonText={t("exercise.bonus.cta")}
             buttonVariant="tea"
           />
         </section>
 
         <div className="pt-1 pb-2">
           <Link href="/" className="inline-flex items-center gap-1.5 text-ink-secondary hover:text-ink font-bold text-sm transition-colors">
-            {t("patient.back")}
+            {t("back")}
           </Link>
         </div>
       </div>

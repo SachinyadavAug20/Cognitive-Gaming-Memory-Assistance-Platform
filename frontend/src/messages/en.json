@@ -1,163 +1,231 @@
 {
-  "home.greeting": "Good Day!",
-  "home.ready": "Ready for your daily memory exercises?",
-  "home.patient.title": "I am a Patient",
-  "home.patient.subtitle": "Patient Portal",
-  "home.patient.description": "Start your daily memory games, view reminders, and track your progress.",
-  "home.patient.cta": "START TODAY'S EXERCISES →",
-  "home.caregiver.title": "Caregiver & Health Worker",
-  "home.caregiver.subtitle": "ASHA / PHC Portal",
-  "home.caregiver.description": "Monitor patient progress, upload family photos, manage medications.",
-  "home.caregiver.cta": "OPEN DASHBOARD",
-  "home.caregiver.patients": "Patients",
-  "home.caregiver.sessions": "Sessions Today",
-  "home.caregiver.alerts": "Alerts",
-  "home.routine": "Today's Routine",
-  "home.routine.medicine": "Morning Medicine",
-  "home.routine.water": "Water Reminder",
-  "home.routine.family": "Family Photos",
-
-  "nav.online": "Online",
-  "nav.offline": "Offline",
-  "nav.sos": "SOS HELP",
-
-  "patient.greeting": "Good Morning, Dadu!",
-  "patient.date": "Wednesday, 26 August",
-  "patient.audio.greeting": "Good Morning, Dadu! It is Wednesday, 26th August. You have 2 tasks remaining today.",
-  "patient.schedule": "Today's Schedule",
-  "patient.exercise.daily": "Daily Exercise",
-  "patient.exercise.daily.title": "Play Today's Memory Game",
-  "patient.exercise.daily.desc": "Level 2 \u2022 5 Minutes \u2022 With photos of your family",
-  "patient.exercise.daily.cta": "Start Exercise",
-  "patient.exercise.bonus": "Bonus Exercise",
-  "patient.exercise.bonus.title": "Remember the Way",
-  "patient.exercise.bonus.desc": "Navigate familiar routes through the village. 8 minutes.",
-  "patient.exercise.bonus.cta": "Start Wayfinding",
-  "patient.back": "\u2190 Back to Home",
-
-  "puzzle.title": "Memory Pieces",
-  "puzzle.presentation": "Remember this photo carefully...",
-  "puzzle.puzzle": "Put the photo back together!",
-  "puzzle.puzzle.desc": "Tap a piece below, then tap where it goes.",
-  "puzzle.pieces": "Available Pieces",
-  "puzzle.hint.show": "Show Hint",
-  "puzzle.hint.hide": "Hide Hint",
-  "puzzle.howToPlay": "How to Play",
-  "puzzle.recognition": "Who is in this photo?",
-  "puzzle.correct": "Correct! That is your daughter Meena!",
-  "puzzle.incorrect": "Not quite \u2014 that was Meena, your daughter.",
-  "puzzle.backHome": "\u2190 Back Home",
-
-  "wayfinding.title": "Remember the Way",
-  "wayfinding.explore": "Explore the Route",
-  "wayfinding.step": "Step {current} of {total}",
-  "wayfinding.listen": "Listen to directions",
-  "wayfinding.walkTo": "Walk to {name} \u2192",
-  "wayfinding.reached": "I remember the route!",
-  "wayfinding.recall": "Where do we go next?",
-  "wayfinding.recall.desc": "After {prev}, where do we go?",
-  "wayfinding.complete": "Wonderful! You remembered the route!",
-  "wayfinding.score": "Your score: {score}/{total}",
-
-  "caregiver.title": "Caregiver Dashboard",
-  "caregiver.subtitle": "Monitor cognitive health for your patients",
-  "caregiver.addPatient": "+ Add Patient",
-  "caregiver.yourPatients": "Your Patients",
-
-  "intake.step": "Step {current} of {total}",
-  "intake.back": "\u2190 Back",
-  "intake.continue": "Continue \u2192",
-  "intake.submit": "Create Patient Profile \u2713",
-  "intake.creating": "Creating Profile...",
-  "intake.complete.title": "Patient Profile Created!",
-  "intake.complete.desc": "{name} has been added to your patients. Games and activities are now being personalized.",
-  "intake.complete.dashboard": "Back to Dashboard",
-
-  "intake.personal.title": "About the Patient",
-  "intake.personal.subtitle": "We need a few basics to set up the patient's profile and tailor games to their level.",
-  "intake.personal.name": "Full Name",
-  "intake.personal.dob": "Date of Birth",
-  "intake.personal.gender": "Gender",
-  "intake.personal.phone": "Phone Number",
-  "intake.personal.relationship": "Who is filling this form?",
-  "intake.personal.name.placeholder": "e.g., Ramesh Dutta",
-  "intake.personal.phone.placeholder": "e.g., 9876543210",
-
-  "intake.medical.title": "Diagnostic Report",
-  "intake.medical.subtitle": "Upload any medical report. Our AI will read it and fill in the medical details for you.",
-  "intake.medical.upload": "Drop PDF here or click to browse",
-  "intake.medical.upload.desc": "Upload the patient's diagnostic report (MMSE, MoCA, or similar)",
-  "intake.medical.analyze": "Analyze Report",
-  "intake.medical.skip": "I don't have a report \u2014 skip this step",
-  "intake.medical.continue": "Continue without report",
-  "intake.medical.extracted": "Extracted Information",
-  "intake.medical.replace": "Upload different file",
-  "intake.medical.diagnosis": "Diagnosis",
-  "intake.medical.date": "Date of Diagnosis",
-  "intake.medical.score": "Cognitive Score",
-  "intake.medical.medications": "Medications",
-  "intake.medical.notes": "Physician Notes",
-  "intake.medical.physician": "Physician",
-
-  "intake.family.title": "Family & Relatives",
-  "intake.family.subtitle": "Add the people important to the patient. Their photos and names are used in the Memory Pieces game.",
-  "intake.family.add": "Add Family Member",
-  "intake.family.empty": "Add at least one family member to help with the Memory Pieces game.",
-  "intake.family.name.placeholder": "Name (e.g., Meena)",
-  "intake.family.notes.placeholder": "Notes (e.g., Lives in Guwahati, visits every Sunday)",
-  "intake.family.remove": "\u2715 Remove this family member",
-
-  "intake.life.title": "Life Story & Interests",
-  "intake.life.subtitle": "These details help us create personalized games and reminiscence activities.",
-  "intake.life.occupation": "Occupation",
-  "intake.life.occupation.placeholder": "e.g., School teacher, farmer",
-  "intake.life.events": "Key Life Events",
-  "intake.life.events.add": "+ Add Life Event",
-  "intake.life.events.event.placeholder": "Event",
-  "intake.life.events.year.placeholder": "Year",
-  "intake.life.interests": "Interests & Hobbies",
-  "intake.life.music": "Favorite Music or Artists",
-  "intake.life.music.placeholder": "e.g., Bhupen Hazarika songs",
-  "intake.life.culture": "Cultural Background",
-  "intake.life.culture.placeholder": "e.g., Assamese, Bihu traditions",
-  "intake.life.language": "Preferred Language",
-  "intake.life.joy": "What brings them joy?",
-  "intake.life.joy.placeholder": "e.g., She lights up when looking at old family photos...",
-
-  "intake.places.title": "Familiar Places",
-  "intake.places.subtitle": "Add places the patient knows well. These are used in the Wayfinding game \u2014 the patient practices navigating routes through familiar locations.",
-  "intake.places.add": "Add a Place",
-  "intake.places.empty": "Add at least 3 landmarks for the Wayfinding game.",
-  "intake.places.name.placeholder": "Place name (e.g., Kamakhya Temple)",
-  "intake.places.desc.placeholder": "Description (e.g., Where we pray every morning)",
-  "intake.places.icon": "Choose an icon",
-
-  "intake.review.title": "Review & Submit",
-  "intake.review.subtitle": "Please check that everything looks right before we create the patient's profile.",
-  "intake.review.edit": "Edit",
-  "intake.review.personal": "Personal Information",
-  "intake.review.medical": "Medical Report",
-  "intake.review.family": "Family & Relatives",
-  "intake.review.life": "Life Story & Interests",
-  "intake.review.places": "Familiar Places",
-  "intake.review.noReport": "No report uploaded \u2014 skipped",
-  "intake.review.noFamily": "No family members added",
-
-  "common.required": "*",
-  "common.edit": "Edit",
-  "common.save": "Save",
-  "common.cancel": "Cancel",
-  "common.remove": "Remove",
-  "common.add": "Add",
-  "common.upload": "Upload",
-  "common.analyzing": "Analyzing report...",
-  "common.analyzing.desc": "This takes about 30 seconds",
-  "common.maxSize": "Max {size}MB",
-  "common.pdfOnly": "PDF only",
-  "common.imagesOnly": "Images only",
-
-  "audio.listen": "Listen",
-  "audio.howToPlay": "How to Play",
-  "audio.listenToStory": "Listen to Story",
-  "audio.listenToDirections": "Listen to directions"
+  "home": {
+    "greeting": "Good Day!",
+    "ready": "Ready for your daily memory exercises?",
+    "routine": {
+      "label": "Today's Routine",
+      "medicine": "Morning Medicine",
+      "water": "Water Reminder",
+      "family": "Family Photos"
+    },
+    "patient": {
+      "title": "I am a Patient",
+      "subtitle": "Patient Portal",
+      "description": "Start your daily memory games, view reminders, and track your progress.",
+      "cta": "START TODAY'S EXERCISES →"
+    },
+    "caregiver": {
+      "title": "Caregiver & Health Worker",
+      "subtitle": "ASHA / PHC Portal",
+      "description": "Monitor patient progress, upload family photos, manage medications.",
+      "cta": "OPEN DASHBOARD",
+      "patients": "Patients",
+      "sessions": "Sessions Today",
+      "alerts": "Alerts"
+    }
+  },
+  "nav": {
+    "online": "Online",
+    "offline": "Offline",
+    "sos": "SOS HELP"
+  },
+  "patient": {
+    "greeting": "Good Morning, Dadu!",
+    "date": "Wednesday, 26 August",
+    "schedule": "Today's Schedule",
+    "back": "← Back to Home",
+    "audio": {
+      "greeting": "Good Morning, Dadu! It is Wednesday, 26th August. You have 2 tasks remaining today."
+    },
+    "exercise": {
+      "daily": {
+        "label": "Daily Exercise",
+        "title": "Play Today's Memory Game",
+        "desc": "Level 2 • 5 Minutes • With photos of your family",
+        "cta": "Start Exercise"
+      },
+      "bonus": {
+        "label": "Bonus Exercise",
+        "title": "Remember the Way",
+        "desc": "Navigate familiar routes through the village. 8 minutes.",
+        "cta": "Start Wayfinding"
+      }
+    }
+  },
+  "puzzle": {
+    "title": "Memory Pieces",
+    "presentation": "Remember this photo carefully...",
+    "puzzle": {
+      "label": "Put the photo back together!",
+      "desc": "Tap a piece below, then tap where it goes."
+    },
+    "pieces": "Available Pieces",
+    "howToPlay": "How to Play",
+    "recognition": "Who is in this photo?",
+    "correct": "Correct! That is your daughter Meena!",
+    "incorrect": "Not quite — that was Meena, your daughter.",
+    "backHome": "← Back Home",
+    "hint": {
+      "show": "Show Hint",
+      "hide": "Hide Hint"
+    }
+  },
+  "wayfinding": {
+    "title": "Remember the Way",
+    "explore": "Explore the Route",
+    "step": "Step {current} of {total}",
+    "listen": "Listen to directions",
+    "walkTo": "Walk to {name} →",
+    "reached": "I remember the route!",
+    "recall": {
+      "label": "Where do we go next?",
+      "desc": "After {prev}, where do we go?"
+    },
+    "complete": "Wonderful! You remembered the route!",
+    "score": "Your score: {score}/{total}"
+  },
+  "caregiver": {
+    "title": "Caregiver Dashboard",
+    "subtitle": "Monitor cognitive health for your patients",
+    "addPatient": "+ Add Patient",
+    "yourPatients": "Your Patients"
+  },
+  "intake": {
+    "step": "Step {current} of {total}",
+    "back": "← Back",
+    "continue": "Continue →",
+    "submit": "Create Patient Profile ✓",
+    "creating": "Creating Profile...",
+    "complete": {
+      "title": "Patient Profile Created!",
+      "desc": "{name} has been added to your patients. Games and activities are now being personalized.",
+      "dashboard": "Back to Dashboard"
+    },
+    "personal": {
+      "title": "About the Patient",
+      "subtitle": "We need a few basics to set up the patient's profile and tailor games to their level.",
+      "name": {
+        "label": "Full Name",
+        "placeholder": "e.g., Ramesh Dutta"
+      },
+      "dob": "Date of Birth",
+      "gender": "Gender",
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "e.g., 9876543210"
+      },
+      "relationship": "Who is filling this form?"
+    },
+    "medical": {
+      "title": "Diagnostic Report",
+      "subtitle": "Upload any medical report. Our AI will read it and fill in the medical details for you.",
+      "upload": {
+        "label": "Drop PDF here or click to browse",
+        "desc": "Upload the patient's diagnostic report (MMSE, MoCA, or similar)"
+      },
+      "analyze": "Analyze Report",
+      "skip": "I don't have a report — skip this step",
+      "continue": "Continue without report",
+      "extracted": "Extracted Information",
+      "replace": "Upload different file",
+      "diagnosis": "Diagnosis",
+      "date": "Date of Diagnosis",
+      "score": "Cognitive Score",
+      "medications": "Medications",
+      "notes": "Physician Notes",
+      "physician": "Physician"
+    },
+    "family": {
+      "title": "Family & Relatives",
+      "subtitle": "Add the people important to the patient. Their photos and names are used in the Memory Pieces game.",
+      "add": "Add Family Member",
+      "empty": "Add at least one family member to help with the Memory Pieces game.",
+      "remove": "✕ Remove this family member",
+      "name": {
+        "placeholder": "Name (e.g., Meena)"
+      },
+      "notes": {
+        "placeholder": "Notes (e.g., Lives in Guwahati, visits every Sunday)"
+      }
+    },
+    "life": {
+      "title": "Life Story & Interests",
+      "subtitle": "These details help us create personalized games and reminiscence activities.",
+      "occupation": {
+        "label": "Occupation",
+        "placeholder": "e.g., School teacher, farmer"
+      },
+      "events": {
+        "label": "Key Life Events",
+        "add": "+ Add Life Event",
+        "event": {
+          "placeholder": "Event"
+        },
+        "year": {
+          "placeholder": "Year"
+        }
+      },
+      "interests": "Interests & Hobbies",
+      "music": {
+        "label": "Favorite Music or Artists",
+        "placeholder": "e.g., Bhupen Hazarika songs"
+      },
+      "culture": {
+        "label": "Cultural Background",
+        "placeholder": "e.g., Assamese, Bihu traditions"
+      },
+      "language": "Preferred Language",
+      "joy": {
+        "label": "What brings them joy?",
+        "placeholder": "e.g., She lights up when looking at old family photos..."
+      }
+    },
+    "places": {
+      "title": "Familiar Places",
+      "subtitle": "Add places the patient knows well. These are used in the Wayfinding game — the patient practices navigating routes through familiar locations.",
+      "add": "Add a Place",
+      "empty": "Add at least 3 landmarks for the Wayfinding game.",
+      "icon": "Choose an icon",
+      "name": {
+        "placeholder": "Place name (e.g., Kamakhya Temple)"
+      },
+      "desc": {
+        "placeholder": "Description (e.g., Where we pray every morning)"
+      }
+    },
+    "review": {
+      "title": "Review & Submit",
+      "subtitle": "Please check that everything looks right before we create the patient's profile.",
+      "edit": "Edit",
+      "personal": "Personal Information",
+      "medical": "Medical Report",
+      "family": "Family & Relatives",
+      "life": "Life Story & Interests",
+      "places": "Familiar Places",
+      "noReport": "No report uploaded — skipped",
+      "noFamily": "No family members added"
+    }
+  },
+  "common": {
+    "required": "*",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "add": "Add",
+    "upload": "Upload",
+    "analyzing": {
+      "label": "Analyzing report...",
+      "desc": "This takes about 30 seconds"
+    },
+    "maxSize": "Max {size}MB",
+    "pdfOnly": "PDF only",
+    "imagesOnly": "Images only"
+  },
+  "audio": {
+    "listen": "Listen",
+    "howToPlay": "How to Play",
+    "listenToStory": "Listen to Story",
+    "listenToDirections": "Listen to directions"
+  }
 }

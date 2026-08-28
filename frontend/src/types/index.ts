@@ -113,9 +113,11 @@ export interface FullPatient extends Patient {
   domains?: ClinicalDomains;
 }
 
-export interface DomainDetail {
+export interface DomainMetric {
   needs_help: boolean;
+  impairment_level: "None" | "Mild" | "Moderate" | "Severe";
+  score_pct: number;
   evidence: string | null;
 }
 
-export type ClinicalDomains = Record<string, DomainDetail>;
+export type ClinicalDomains = Record<string, DomainMetric>;

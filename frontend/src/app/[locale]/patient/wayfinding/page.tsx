@@ -7,12 +7,13 @@ import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { LANDMARKS, ROUTE } from "@/data/wayfindingData";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslations, useLocale } from "next-intl";
 
 type Phase = "explore" | "recall";
 
 export default function WayfindingGame() {
-  const { t, locale } = useTranslation();
+  const t = useTranslations("wayfinding");
+  const locale = useLocale();
   const [phase, setPhase] = useState<Phase>("explore");
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightedSteps, setHighlightedSteps] = useState<number[]>([0]);
@@ -52,7 +53,7 @@ export default function WayfindingGame() {
 
   return (
     <div className="min-h-screen pb-8">
-      <GameHeader title={t("wayfinding.title")} score={score} backHref="/patient" bgColor="bg-tea" />
+      <GameHeader title={t("title")} score={score} backHref="/patient" bgColor="bg-tea" />
 
       <div className="max-w-3xl mx-auto px-6 mt-8 space-y-8">
         {/* ── Map View ── */}
@@ -104,23 +105,23 @@ export default function WayfindingGame() {
         {phase === "explore" && (
           <div className="space-y-6 text-center">
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink">
-              {t("wayfinding.explore")}
+              {t("explore")}
             </h2>
             <p className="text-ink-secondary text-lg">
-              {t("wayfinding.step", { current: String(currentStep + 1), total: String(ROUTE.length) })}:{" "}
+              {t("step", { current: String(currentStep + 1), total: String(ROUTE.length) })}:{" "}
               <strong>{LANDMARKS[currentStep].name}</strong>
             </p>
 
             <AudioPrompt
               text={`You are at ${LANDMARKS[currentStep].name}. Next, you walk to ${currentStep + 1 < ROUTE.length ? LANDMARKS[currentStep + 1].name : "the clinic"}. Remember this route.`}
               lang={locale === "en" ? "en-US" : `${locale}-IN`}
-              label={t("audio.listenToDirections")}
+              label="Listen to directions"
             />
 
             <BigButton variant="terracotta" size="xl" onClick={advanceExplore}>
               {currentStep + 1 < ROUTE.length
-                ? t("wayfinding.walkTo", { name: LANDMARKS[currentStep + 1].name })
-                : t("wayfinding.reached")}
+                ? t("walkTo", { name: LANDMARKS[currentStep + 1].name })
+                : t("reached")}
             </BigButton>
           </div>
         )}
@@ -129,10 +130,10 @@ export default function WayfindingGame() {
         {phase === "recall" && !completed && (
           <div className="space-y-6 text-center">
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink">
-              {t("wayfinding.recall")}
+              {t("recall.label")}
             </h2>
             <p className="text-ink-secondary text-lg">
-              {t("wayfinding.recall.desc", { prev: LANDMARKS[recallStep - 1].name })}
+              {t("recall.desc", { prev: LANDMARKS[recallStep - 1].name })}
             </p>
 
             <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
@@ -175,14 +176,14 @@ export default function WayfindingGame() {
           <div className="space-y-6 text-center">
             <div className="text-6xl">🏆</div>
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-3xl text-ink">
-              {t("wayfinding.complete")}
+              {t("complete")}
             </h2>
             <p className="text-xl text-ink-secondary">
-              {t("wayfinding.score", { score: String(score), total: String(ROUTE.length * 20) })}
+              {t("score", { score: String(score), total: String(ROUTE.length * 20) })}
             </p>
             <Link href="/patient">
               <BigButton variant="terracotta" size="xl">
-                {t("puzzle.backHome")}
+                {t("title")}
               </BigButton>
             </Link>
           </div>

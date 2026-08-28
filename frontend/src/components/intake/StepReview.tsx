@@ -43,11 +43,11 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
             />
             <ReviewRow
               label="Date"
-              value={data.diagnostic.extractedData.diagnosisDate}
+              value={data.diagnostic.extractedData.dateOfDiagnosis}
             />
             <ReviewRow
               label="Cognitive Score"
-              value={`${data.diagnostic.extractedData.cognitiveScore}/${data.diagnostic.extractedData.cognitiveScoreType === "MMSE" ? "30" : "30"} (${data.diagnostic.extractedData.cognitiveScoreType})`}
+              value={`${data.diagnostic.extractedData.score ?? "--"}/${data.diagnostic.extractedData.maxScore ?? 30} (${data.diagnostic.extractedData.testType})`}
             />
             <ReviewRow
               label="Medications"
@@ -55,7 +55,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
             />
             <ReviewRow
               label="Physician"
-              value={data.diagnostic.extractedData.physicianName}
+              value={data.diagnostic.extractedData.examiningPhysician || "—"}
             />
           </>
         ) : (

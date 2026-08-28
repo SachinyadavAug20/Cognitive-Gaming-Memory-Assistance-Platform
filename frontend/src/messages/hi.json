@@ -1,163 +1,231 @@
 {
-  "home.greeting": "नमस्ते!",
-  "home.ready": "आज के स्मृति अभ्यास के लिए तैयार?",
-  "home.patient.title": "मैं एक मरीज़ हूँ",
-  "home.patient.subtitle": "मरीज़ पोर्टल",
-  "home.patient.description": "अपनी दैनिक स्मृति खेल शुरू करें, अनुस्मारक देखें और अपनी प्रगति ट्रैक करें।",
-  "home.patient.cta": "आज का अभ्यास शुरू करें →",
-  "home.caregiver.title": "देखभालकर्ता और स्वास्थ्य कार्यकर्ता",
-  "home.caregiver.subtitle": "ASHA / PHC पोर्टल",
-  "home.caregiver.description": "मरीज़ की प्रगति की निगरानी करें, परिवार की फ़ोटो अपलोड करें, दवाइयाँ प्रबंधित करें।",
-  "home.caregiver.cta": "डैशबोर्ड खोलें",
-  "home.caregiver.patients": "मरीज़",
-  "home.caregiver.sessions": "आज के सत्र",
-  "home.caregiver.alerts": "अलर्ट",
-  "home.routine": "आज की दिनचर्या",
-  "home.routine.medicine": "सुबह की दवाई",
-  "home.routine.water": "पानी का अनुस्मारक",
-  "home.routine.family": "परिवार की फ़ोटो",
-
-  "nav.online": "ऑनलाइन",
-  "nav.offline": "ऑफ़लाइन",
-  "nav.sos": "आपातकाल सहायता",
-
-  "patient.greeting": "सुप्रभात, दादू!",
-  "patient.date": "बुधवार, 26 अगस्त",
-  "patient.audio.greeting": "सुप्रभात, दादू! आज बुधवार, 26 अगस्त है। आज आपके पास 2 काम बाकी हैं।",
-  "patient.schedule": "आज का कार्यक्रम",
-  "patient.exercise.daily": "दैनिक अभ्यास",
-  "patient.exercise.daily.title": "आज का स्मृति खेल खेलें",
-  "patient.exercise.daily.desc": "स्तर 2 \u2022 5 मिनट \u2022 अपने परिवार की फ़ोटो के साथ",
-  "patient.exercise.daily.cta": "अभ्यास शुरू करें",
-  "patient.exercise.bonus": "बोनस अभ्यास",
-  "patient.exercise.bonus.title": "रास्ता याद रखें",
-  "patient.exercise.bonus.desc": "गाँव में परिचित रास्तों पर चलें। 8 मिनट।",
-  "patient.exercise.bonus.cta": "वेफ़ाइंडिंग शुरू करें",
-  "patient.back": "\u2190 घर वापस जाएँ",
-
-  "puzzle.title": "स्मृति टुकड़े",
-  "puzzle.presentation": "इस फ़ोटो को ध्यान से याद रखें...",
-  "puzzle.puzzle": "फ़ोटो को फिर से जोड़ें!",
-  "puzzle.puzzle.desc": "नीचे एक टुकड़ा चुनें, फिर उसे सही जगह पर रखें।",
-  "puzzle.pieces": "उपलब्ध टुकड़े",
-  "puzzle.hint.show": "संकेत दिखाएँ",
-  "puzzle.hint.hide": "संकेत छुपाएँ",
-  "puzzle.howToPlay": "कैसे खेलें",
-  "puzzle.recognition": "इस फ़ोटो में कौन है?",
-  "puzzle.correct": "सही! यह आपकी बेटी मीना है!",
-  "puzzle.incorrect": "नहीं \u2014 यह मीना थी, आपकी बेटी।",
-  "puzzle.backHome": "\u2190 घर वापस जाएँ",
-
-  "wayfinding.title": "रास्ता याद रखें",
-  "wayfinding.explore": "रूट का पता लगाएँ",
-  "wayfinding.step": "चरण {current} / {total}",
-  "wayfinding.listen": "निर्देश सुनें",
-  "wayfinding.walkTo": "{name} पर चलें \u2192",
-  "wayfinding.reached": "मुझे रास्ता याद है!",
-  "wayfinding.recall": "अगले कहाँ जाएँ?",
-  "wayfinding.recall.desc": "{prev} के बाद, कहाँ जाएँ?",
-  "wayfinding.complete": "बहुत बढ़िया! आपने पूरा रास्ता याद रखा!",
-  "wayfinding.score": "आपका स्कोर: {score}/{total}",
-
-  "caregiver.title": "देखभालकर्ता डैशबोर्ड",
-  "caregiver.subtitle": "अपने मरीज़ों के संज्ञानात्मक स्वास्थ्य की निगरानी करें",
-  "caregiver.addPatient": "+ मरीज़ जोड़ें",
-  "caregiver.yourPatients": "आपके मरीज़",
-
-  "intake.step": "चरण {current} / {total}",
-  "intake.back": "\u2190 वापस",
-  "intake.continue": "आगे \u2192",
-  "intake.submit": "मरीज़ प्रोफ़ाइल बनाएँ \u2713",
-  "intake.creating": "प्रोफ़ाइल बन रही है...",
-  "intake.complete.title": "मरीज़ प्रोफ़ाइल बन गई!",
-  "intake.complete.desc": "{name} को आपके मरीज़ों में जोड़ दिया गया है। खेल और गतिविधियाँ अब व्यक्तिगत हो रही हैं।",
-  "intake.complete.dashboard": "डैशबोर्ड पर वापस जाएँ",
-
-  "intake.personal.title": "मरीज़ के बारे में",
-  "intake.personal.subtitle": "मरीज़ की प्रोफ़ाइल सेट करने और खेलों को उनके स्तर के अनुसार बनाने के लिए कुछ बुनियादी जानकारी चाहिए।",
-  "intake.personal.name": "पूरा नाम",
-  "intake.personal.dob": "जन्म तिथि",
-  "intake.personal.gender": "लिंग",
-  "intake.personal.phone": "फ़ोन नंबर",
-  "intake.personal.relationship": "यह फ़ॉर्म कौन भर रहा है?",
-  "intake.personal.name.placeholder": "जैसे, रमेश दत्ता",
-  "intake.personal.phone.placeholder": "जैसे, 9876543210",
-
-  "intake.medical.title": "निदान रिपोर्ट",
-  "intake.medical.subtitle": "कोई भी मेडिकल रिपोर्ट अपलोड करें। हमारा AI इसे पढ़ेगा और मेडिकल विवरण भर देगा।",
-  "intake.medical.upload": "PDF यहाँ डालें या ब्राउज़ करने के लिए क्लिक करें",
-  "intake.medical.upload.desc": "मरीज़ की निदान रिपोर्ट अपलोड करें (MMSE, MoCA, या समान)",
-  "intake.medical.analyze": "रिपोर्ट का विश्लेषण करें",
-  "intake.medical.skip": "मेरे पास रिपोर्ट नहीं है \u2014 इस चरण को छोड़ें",
-  "intake.medical.continue": "रिपोर्ट के बिना आगे बढ़ें",
-  "intake.medical.extracted": "निकाली गई जानकारी",
-  "intake.medical.replace": "अलग फ़ाइल अपलोड करें",
-  "intake.medical.diagnosis": "निदान",
-  "intake.medical.date": "निदान की तिथि",
-  "intake.medical.score": "संज्ञानात्मक स्कोर",
-  "intake.medical.medications": "दवाइयाँ",
-  "intake.medical.notes": "डॉक्टर की टिप्पणी",
-  "intake.medical.physician": "डॉक्टर",
-
-  "intake.family.title": "परिवार और रिश्तेदार",
-  "intake.family.subtitle": "मरीज़ के लिए महत्वपूर्ण लोगों को जोड़ें। उनकी फ़ोटो और नाम स्मृति टुकड़े खेल में उपयोग होते हैं।",
-  "intake.family.add": "परिवार का सदस्य जोड़ें",
-  "intake.family.empty": "स्मृति टुकड़े खेल में मदद के लिए कम से कम एक परिवार का सदस्य जोड़ें।",
-  "intake.family.name.placeholder": "नाम (जैसे, मीना)",
-  "intake.family.notes.placeholder": "नोट्स (जैसे, गुवाहाटी में रहती है, हर रविवार आती है)",
-  "intake.family.remove": "\u2715 यह परिवार का सदस्य हटाएँ",
-
-  "intake.life.title": "जीवन कहानी और रुचियाँ",
-  "intake.life.subtitle": "ये विवरण व्यक्तिगत खेल और स्मरण गतिविधियाँ बनाने में मदद करते हैं।",
-  "intake.life.occupation": "व्यवसाय",
-  "intake.life.occupation.placeholder": "जैसे, स्कूल शिक्षक, किसान",
-  "intake.life.events": "प्रमुख जीवन घटनाएँ",
-  "intake.life.events.add": "+ जीवन घटना जोड़ें",
-  "intake.life.events.event.placeholder": "घटना",
-  "intake.life.events.year.placeholder": "वर्ष",
-  "intake.life.interests": "रुचियाँ और शौक",
-  "intake.life.music": "पसंदीदा संगीत या कलाकार",
-  "intake.life.music.placeholder": "जैसे, भूपेन हज़ारिका के गाने",
-  "intake.life.culture": "सांस्कृतिक पृष्ठभूमि",
-  "intake.life.culture.placeholder": "जैसे, असमिया, बिहू परंपराएँ",
-  "intake.life.language": "पसंदीदा भाषा",
-  "intake.life.joy": "उन्हें क्या खुशी देता है?",
-  "intake.life.joy.placeholder": "जैसे, पुराने परिवार की फ़ोटो देखकर वह खिल उठती हैं...",
-
-  "intake.places.title": "परिचित स्थान",
-  "intake.places.subtitle": "ऐसे स्थान जोड़ें जो मरीज़ अच्छी तरह जानते हैं। ये वेफ़ाइंडिंग खेल में उपयोग होते हैं।",
-  "intake.places.add": "एक स्थान जोड़ें",
-  "intake.places.empty": "वेफ़ाइंडिंग खेल के लिए कम से कम 3 स्थान जोड़ें।",
-  "intake.places.name.placeholder": "स्थान का नाम (जैसे, कामाख्या मंदिर)",
-  "intake.places.desc.placeholder": "विवरण (जैसे, जहाँ हर सुबह प्रार्थना करते हैं)",
-  "intake.places.icon": "एक आइकन चुनें",
-
-  "intake.review.title": "समीक्षा और जमा करें",
-  "intake.review.subtitle": "कृपया जाँच लें कि सब कुछ सही है इससे पहले कि हम मरीज़ की प्रोफ़ाइल बनाएँ।",
-  "intake.review.edit": "संपादित करें",
-  "intake.review.personal": "व्यक्तिगत जानकारी",
-  "intake.review.medical": "निदान रिपोर्ट",
-  "intake.review.family": "परिवार और रिश्तेदार",
-  "intake.review.life": "जीवन कहानी और रुचियाँ",
-  "intake.review.places": "परिचित स्थान",
-  "intake.review.noReport": "कोई रिपोर्ट अपलोड नहीं की \u2014 छोड़ दिया",
-  "intake.review.noFamily": "कोई परिवार का सदस्य नहीं जोड़ा",
-
-  "common.required": "*",
-  "common.edit": "संपादित करें",
-  "common.save": "सहेजें",
-  "common.cancel": "रद्द करें",
-  "common.remove": "हटाएँ",
-  "common.add": "जोड़ें",
-  "common.upload": "अपलोड करें",
-  "common.analyzing": "रिपोर्ट का विश्लेषण हो रहा है...",
-  "common.analyzing.desc": "इसमें लगभग 30 सेकंड लगते हैं",
-  "common.maxSize": "अधिकतम {size}MB",
-  "common.pdfOnly": "केवल PDF",
-  "common.imagesOnly": "केवल चित्र",
-
-  "audio.listen": "सुनें",
-  "audio.howToPlay": "कैसे खेलें",
-  "audio.listenToStory": "कहानी सुनें",
-  "audio.listenToDirections": "निर्देश सुनें"
+  "home": {
+    "greeting": "नमस्ते!",
+    "ready": "आज के स्मृति अभ्यास के लिए तैयार?",
+    "routine": {
+      "label": "आज की दिनचर्या",
+      "medicine": "सुबह की दवाई",
+      "water": "पानी का अनुस्मारक",
+      "family": "परिवार की फ़ोटो"
+    },
+    "patient": {
+      "title": "मैं एक मरीज़ हूँ",
+      "subtitle": "मरीज़ पोर्टल",
+      "description": "अपनी दैनिक स्मृति खेल शुरू करें, अनुस्मारक देखें और अपनी प्रगति ट्रैक करें।",
+      "cta": "आज का अभ्यास शुरू करें →"
+    },
+    "caregiver": {
+      "title": "देखभालकर्ता और स्वास्थ्य कार्यकर्ता",
+      "subtitle": "ASHA / PHC पोर्टल",
+      "description": "मरीज़ की प्रगति की निगरानी करें, परिवार की फ़ोटो अपलोड करें, दवाइयाँ प्रबंधित करें।",
+      "cta": "डैशबोर्ड खोलें",
+      "patients": "मरीज़",
+      "sessions": "आज के सत्र",
+      "alerts": "अलर्ट"
+    }
+  },
+  "nav": {
+    "online": "ऑनलाइन",
+    "offline": "ऑफ़लाइन",
+    "sos": "आपातकाल सहायता"
+  },
+  "patient": {
+    "greeting": "सुप्रभात, दादू!",
+    "date": "बुधवार, 26 अगस्त",
+    "schedule": "आज का कार्यक्रम",
+    "back": "← घर वापस जाएँ",
+    "audio": {
+      "greeting": "सुप्रभात, दादू! आज बुधवार, 26 अगस्त है। आज आपके पास 2 काम बाकी हैं।"
+    },
+    "exercise": {
+      "daily": {
+        "label": "दैनिक अभ्यास",
+        "title": "आज का स्मृति खेल खेलें",
+        "desc": "स्तर 2 • 5 मिनट • अपने परिवार की फ़ोटो के साथ",
+        "cta": "अभ्यास शुरू करें"
+      },
+      "bonus": {
+        "label": "बोनस अभ्यास",
+        "title": "रास्ता याद रखें",
+        "desc": "गाँव में परिचित रास्तों पर चलें। 8 मिनट।",
+        "cta": "वेफ़ाइंडिंग शुरू करें"
+      }
+    }
+  },
+  "puzzle": {
+    "title": "स्मृति टुकड़े",
+    "presentation": "इस फ़ोटो को ध्यान से याद रखें...",
+    "puzzle": {
+      "label": "फ़ोटो को फिर से जोड़ें!",
+      "desc": "नीचे एक टुकड़ा चुनें, फिर उसे सही जगह पर रखें।"
+    },
+    "pieces": "उपलब्ध टुकड़े",
+    "howToPlay": "कैसे खेलें",
+    "recognition": "इस फ़ोटो में कौन है?",
+    "correct": "सही! यह आपकी बेटी मीना है!",
+    "incorrect": "नहीं — यह मीना थी, आपकी बेटी।",
+    "backHome": "← घर वापस जाएँ",
+    "hint": {
+      "show": "संकेत दिखाएँ",
+      "hide": "संकेत छुपाएँ"
+    }
+  },
+  "wayfinding": {
+    "title": "रास्ता याद रखें",
+    "explore": "रूट का पता लगाएँ",
+    "step": "चरण {current} / {total}",
+    "listen": "निर्देश सुनें",
+    "walkTo": "{name} पर चलें →",
+    "reached": "मुझे रास्ता याद है!",
+    "recall": {
+      "label": "अगले कहाँ जाएँ?",
+      "desc": "{prev} के बाद, कहाँ जाएँ?"
+    },
+    "complete": "बहुत बढ़िया! आपने पूरा रास्ता याद रखा!",
+    "score": "आपका स्कोर: {score}/{total}"
+  },
+  "caregiver": {
+    "title": "देखभालकर्ता डैशबोर्ड",
+    "subtitle": "अपने मरीज़ों के संज्ञानात्मक स्वास्थ्य की निगरानी करें",
+    "addPatient": "+ मरीज़ जोड़ें",
+    "yourPatients": "आपके मरीज़"
+  },
+  "intake": {
+    "step": "चरण {current} / {total}",
+    "back": "← वापस",
+    "continue": "आगे →",
+    "submit": "मरीज़ प्रोफ़ाइल बनाएँ ✓",
+    "creating": "प्रोफ़ाइल बन रही है...",
+    "complete": {
+      "title": "मरीज़ प्रोफ़ाइल बन गई!",
+      "desc": "{name} को आपके मरीज़ों में जोड़ दिया गया है। खेल और गतिविधियाँ अब व्यक्तिगत हो रही हैं।",
+      "dashboard": "डैशबोर्ड पर वापस जाएँ"
+    },
+    "personal": {
+      "title": "मरीज़ के बारे में",
+      "subtitle": "मरीज़ की प्रोफ़ाइल सेट करने और खेलों को उनके स्तर के अनुसार बनाने के लिए कुछ बुनियादी जानकारी चाहिए।",
+      "name": {
+        "label": "पूरा नाम",
+        "placeholder": "जैसे, रमेश दत्ता"
+      },
+      "dob": "जन्म तिथि",
+      "gender": "लिंग",
+      "phone": {
+        "label": "फ़ोन नंबर",
+        "placeholder": "जैसे, 9876543210"
+      },
+      "relationship": "यह फ़ॉर्म कौन भर रहा है?"
+    },
+    "medical": {
+      "title": "निदान रिपोर्ट",
+      "subtitle": "कोई भी मेडिकल रिपोर्ट अपलोड करें। हमारा AI इसे पढ़ेगा और मेडिकल विवरण भर देगा।",
+      "upload": {
+        "label": "PDF यहाँ डालें या ब्राउज़ करने के लिए क्लिक करें",
+        "desc": "मरीज़ की निदान रिपोर्ट अपलोड करें (MMSE, MoCA, या समान)"
+      },
+      "analyze": "रिपोर्ट का विश्लेषण करें",
+      "skip": "मेरे पास रिपोर्ट नहीं है — इस चरण को छोड़ें",
+      "continue": "रिपोर्ट के बिना आगे बढ़ें",
+      "extracted": "निकाली गई जानकारी",
+      "replace": "अलग फ़ाइल अपलोड करें",
+      "diagnosis": "निदान",
+      "date": "निदान की तिथि",
+      "score": "संज्ञानात्मक स्कोर",
+      "medications": "दवाइयाँ",
+      "notes": "डॉक्टर की टिप्पणी",
+      "physician": "डॉक्टर"
+    },
+    "family": {
+      "title": "परिवार और रिश्तेदार",
+      "subtitle": "मरीज़ के लिए महत्वपूर्ण लोगों को जोड़ें। उनकी फ़ोटो और नाम स्मृति टुकड़े खेल में उपयोग होते हैं।",
+      "add": "परिवार का सदस्य जोड़ें",
+      "empty": "स्मृति टुकड़े खेल में मदद के लिए कम से कम एक परिवार का सदस्य जोड़ें।",
+      "remove": "✕ यह परिवार का सदस्य हटाएँ",
+      "name": {
+        "placeholder": "नाम (जैसे, मीना)"
+      },
+      "notes": {
+        "placeholder": "नोट्स (जैसे, गुवाहाटी में रहती है, हर रविवार आती है)"
+      }
+    },
+    "life": {
+      "title": "जीवन कहानी और रुचियाँ",
+      "subtitle": "ये विवरण व्यक्तिगत खेल और स्मरण गतिविधियाँ बनाने में मदद करते हैं।",
+      "occupation": {
+        "label": "व्यवसाय",
+        "placeholder": "जैसे, स्कूल शिक्षक, किसान"
+      },
+      "events": {
+        "label": "प्रमुख जीवन घटनाएँ",
+        "add": "+ जीवन घटना जोड़ें",
+        "event": {
+          "placeholder": "घटना"
+        },
+        "year": {
+          "placeholder": "वर्ष"
+        }
+      },
+      "interests": "रुचियाँ और शौक",
+      "music": {
+        "label": "पसंदीदा संगीत या कलाकार",
+        "placeholder": "जैसे, भूपेन हज़ारिका के गाने"
+      },
+      "culture": {
+        "label": "सांस्कृतिक पृष्ठभूमि",
+        "placeholder": "जैसे, असमिया, बिहू परंपराएँ"
+      },
+      "language": "पसंदीदा भाषा",
+      "joy": {
+        "label": "उन्हें क्या खुशी देता है?",
+        "placeholder": "जैसे, पुराने परिवार की फ़ोटो देखकर वह खिल उठती हैं..."
+      }
+    },
+    "places": {
+      "title": "परिचित स्थान",
+      "subtitle": "ऐसे स्थान जोड़ें जो मरीज़ अच्छी तरह जानते हैं। ये वेफ़ाइंडिंग खेल में उपयोग होते हैं।",
+      "add": "एक स्थान जोड़ें",
+      "empty": "वेफ़ाइंडिंग खेल के लिए कम से कम 3 स्थान जोड़ें।",
+      "icon": "एक आइकन चुनें",
+      "name": {
+        "placeholder": "स्थान का नाम (जैसे, कामाख्या मंदिर)"
+      },
+      "desc": {
+        "placeholder": "विवरण (जैसे, जहाँ हर सुबह प्रार्थना करते हैं)"
+      }
+    },
+    "review": {
+      "title": "समीक्षा और जमा करें",
+      "subtitle": "कृपया जाँच लें कि सब कुछ सही है इससे पहले कि हम मरीज़ की प्रोफ़ाइल बनाएँ।",
+      "edit": "संपादित करें",
+      "personal": "व्यक्तिगत जानकारी",
+      "medical": "निदान रिपोर्ट",
+      "family": "परिवार और रिश्तेदार",
+      "life": "जीवन कहानी और रुचियाँ",
+      "places": "परिचित स्थान",
+      "noReport": "कोई रिपोर्ट अपलोड नहीं की — छोड़ दिया",
+      "noFamily": "कोई परिवार का सदस्य नहीं जोड़ा"
+    }
+  },
+  "common": {
+    "required": "*",
+    "edit": "संपादित करें",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "remove": "हटाएँ",
+    "add": "जोड़ें",
+    "upload": "अपलोड करें",
+    "analyzing": {
+      "label": "रिपोर्ट का विश्लेषण हो रहा है...",
+      "desc": "इसमें लगभग 30 सेकंड लगते हैं"
+    },
+    "maxSize": "अधिकतम {size}MB",
+    "pdfOnly": "केवल PDF",
+    "imagesOnly": "केवल चित्र"
+  },
+  "audio": {
+    "listen": "सुनें",
+    "howToPlay": "कैसे खेलें",
+    "listenToStory": "कहानी सुनें",
+    "listenToDirections": "निर्देश सुनें"
+  }
 }

@@ -14,16 +14,21 @@ export async function POST(request: Request) {
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
     // Mock diagnostic data extracted from PDF
-    // In production, this would call the Spring Boot backend or LLM API
+    // In production, this would call the Spring Boot backend or Ollama API
     const mockData: DiagnosticData = {
       diagnosis: "Mild Cognitive Impairment",
-      diagnosisDate: "March 2026",
-      cognitiveScore: "24",
-      cognitiveScoreType: "MoCA",
+      icd10: "G31.84",
+      dateOfDiagnosis: "March 2026",
+      examiningPhysician: "Dr. Ananya Sharma, Neurology",
+      clinicOrHospital: "Guwahati Medical College",
+      testType: "MoCA",
+      score: 24,
+      maxScore: 30,
+      stage: "Mild Cognitive Impairment",
+      recommendedStartLevel: 1,
       medications: ["Donepezil 10mg daily", "Memantine 5mg twice daily"],
       physicianNotes:
-        "Patient presents with mild memory impairment affecting daily activities. MMSE score 24/30 indicates mild deficit. Recommend cognitive stimulation therapy and regular follow-up.",
-      physicianName: "Dr. Ananya Sharma, Neurology",
+        "Patient presents with mild memory impairment affecting daily activities. MoCA score 24/30 indicates mild deficit. Recommend cognitive stimulation therapy and regular follow-up.",
     };
 
     return NextResponse.json(mockData);

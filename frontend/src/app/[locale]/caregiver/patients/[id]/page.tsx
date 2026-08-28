@@ -8,7 +8,7 @@ import { MemoryVault } from "@/components/caregiver/MemoryVault";
 export default async function CaregiverPatientDetail({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
   const { id } = await params;
   void id;

@@ -7,12 +7,13 @@ import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { PIECES, FAMILY_MEMBERS, CORRECT_INDEX } from "@/data/puzzleData";
-import { useTranslation } from "@/hooks/useTranslation";
+import { useTranslations, useLocale } from "next-intl";
 
 type Stage = "presentation" | "puzzle" | "recognition";
 
 export default function PuzzleGame() {
-  const { t, locale } = useTranslation();
+  const t = useTranslations("puzzle");
+  const locale = useLocale();
   const [stage, setStage] = useState<Stage>("presentation");
   const [countdown, setCountdown] = useState(10);
   const [pieces, setPieces] = useState<number[]>(
@@ -24,14 +25,16 @@ export default function PuzzleGame() {
   const [recognized, setRecognized] = useState<number | null>(null);
   const [score, setScore] = useState(0);
 
-  // Presentation countdown
   useEffect(() => {
     if (stage !== "presentation") return;
-    if (countdown <= 0) {
-      setStage("puzzle");
-      return;
-    }
-    const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => {
+      if (countdown <= 1) {
+        setStage("puzzle");
+      } else {
+        setCountdown(countdown - 1);
+      }
+    }, 1000);
     return () => clearTimeout(timer);
   }, [stage, countdown]);
 
@@ -39,7 +42,6 @@ export default function PuzzleGame() {
     (targetIndex: number) => {
       if (selectedPiece === null) return;
       if (selectedPiece === targetIndex) {
-        // Correct placement
         setCompletedPieces((prev) => new Set(prev).add(targetIndex));
         setScore((s) => s + 10);
         if (completedPieces.size + 1 === PIECES) {
@@ -56,7 +58,7 @@ export default function PuzzleGame() {
 
   return (
     <div className="min-h-screen pb-8">
-      <GameHeader title={t("puzzle.title")} score={score} backHref="/patient" bgColor="bg-terracotta" />
+      <GameHeader title={t("title")} score={score} backHref="/patient" bgColor="bg-terracotta" />
 
       <div className="max-w-3xl mx-auto px-6 mt-8 space-y-8">
         {/* ── Stage 1: Photo Presentation ── */}
@@ -71,7 +73,6 @@ export default function PuzzleGame() {
               </p>
             </ScrapbookCard>
 
-            {/* Countdown ring */}
             <div className="flex flex-col items-center gap-4">
               <div className="relative w-24 h-24">
                 <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
@@ -99,7 +100,7 @@ export default function PuzzleGame() {
               <AudioPrompt
                 text="Look at this photo carefully. This is your daughter Meena, taken in Shillong. Remember her face and the background."
                 lang={locale === "en" ? "en-US" : `${locale}-IN`}
-                label={t("audio.listenToStory")}
+                label="Listen to Story"
               />
             </div>
           </div>
@@ -110,14 +111,13 @@ export default function PuzzleGame() {
           <div className="space-y-6">
             <div className="text-center">
               <h2 className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink mb-2">
-                {t("puzzle.puzzle")}
+                {t("puzzle.label")}
               </h2>
               <p className="text-ink-secondary text-lg">
-                {t("puzzle.puzzle.desc")}
+                {t("puzzle.desc")}
               </p>
             </div>
 
-            {/* Wooden frame puzzle grid */}
             <div className="max-w-md mx-auto">
               <div className="wood-frame p-3">
                 <div className="grid grid-cols-3 gap-2">
@@ -140,10 +140,9 @@ export default function PuzzleGame() {
               </div>
             </div>
 
-            {/* Piece tray */}
             <div>
               <p className="text-sm font-bold text-ink-secondary mb-2 uppercase tracking-wider">
-                {t("puzzle.pieces")}
+                {t("pieces")}
               </p>
               <div className="flex flex-wrap gap-2">
                 {pieces.map((p) => (
@@ -171,12 +170,12 @@ export default function PuzzleGame() {
                 size="lg"
                 onClick={() => setShowHint(!showHint)}
               >
-                {showHint ? t("puzzle.hint.hide") : t("puzzle.hint.show")}
+                {showHint ? t("hint.hide") : t("hint.show")}
               </BigButton>
               <AudioPrompt
                 text="Tap a piece number below, then tap where it should go in the grid above."
                 lang={locale === "en" ? "en-US" : `${locale}-IN`}
-                label={t("audio.howToPlay")}
+                label="How to Play"
                 size="lg"
               />
             </div>
@@ -188,7 +187,7 @@ export default function PuzzleGame() {
           <div className="space-y-6 text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-3xl text-ink">
-              {t("puzzle.correct")}
+              {t("correct")}
             </h2>
 
             <ScrapbookCard variant="polaroid" className="max-w-sm mx-auto">
@@ -196,7 +195,7 @@ export default function PuzzleGame() {
                 👨‍👩‍👧
               </div>
               <p className="font-[family-name:var(--font-serif)] text-center text-lg text-ink mt-2 font-semibold">
-                {t("puzzle.recognition")}
+                {t("recognition")}
               </p>
             </ScrapbookCard>
 
@@ -227,12 +226,12 @@ export default function PuzzleGame() {
               <div className="space-y-4">
                 <p className="text-xl font-bold text-ink">
                   {recognized === CORRECT_INDEX
-                    ? t("puzzle.correct")
-                    : t("puzzle.incorrect")}
+                    ? t("correct")
+                    : t("incorrect")}
                 </p>
                 <Link href="/patient">
                   <BigButton variant="terracotta" size="xl">
-                    {t("puzzle.backHome")}
+                    {t("backHome")}
                   </BigButton>
                 </Link>
               </div>

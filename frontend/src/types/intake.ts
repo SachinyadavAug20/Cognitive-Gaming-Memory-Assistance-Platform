@@ -30,24 +30,38 @@ export interface LandmarkEntry {
   fileRef?: File;
 }
 
-export interface DomainDetail {
+export interface DomainMetric {
   needs_help: boolean;
+  impairment_level: "None" | "Mild" | "Moderate" | "Severe";
+  score_pct: number;
   evidence: string | null;
 }
 
-export type ClinicalDomains = Record<string, DomainDetail>;
+export type ClinicalDomains = Record<string, DomainMetric>;
+
+export interface SubscaleScore {
+  score: number;
+  max: number;
+}
 
 export interface DiagnosticData {
   diagnosis: string;
-  diagnosisDate: string;
-  cognitiveScore: string;
-  cognitiveScoreType: string;
+  icd10?: string;
+  dateOfDiagnosis: string;
+  examiningPhysician?: string;
+  clinicOrHospital?: string;
+  testType: string;
+  score: number | null;
+  maxScore: number | null;
+  stage: string;
+  recommendedStartLevel: number;
+  mtaScore?: string;
+  fazekasGrade?: string;
   medications: string[];
-  physicianNotes: string;
-  physicianName: string;
-  score?: number | null;
-  maxScore?: number | null;
+  subscaleScores?: Record<string, SubscaleScore>;
   domains?: ClinicalDomains;
+  physicianNotes: string;
+  file?: File | null;
 }
 
 export interface IntakeFormData {

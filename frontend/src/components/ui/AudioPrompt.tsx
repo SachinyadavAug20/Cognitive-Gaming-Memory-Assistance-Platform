@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useLocale } from "next-intl";
+import { LOCALE_MAP } from "@/lib/i18n";
 
 interface AudioPromptProps {
   text: string;
@@ -11,17 +13,19 @@ interface AudioPromptProps {
 
 export function AudioPrompt({
   text,
-  lang = "en-US",
+  lang,
   label = "Speak",
   size = "lg",
 }: AudioPromptProps) {
+  const locale = useLocale();
+  const resolvedLang = lang ?? LOCALE_MAP[locale] ?? "en-US";
   const [speaking, setSpeaking] = useState(false);
 
   const speak = useCallback(() => {
     if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
+      utterance.lang = resolvedLang;
       utterance.rate = 0.85;
       utterance.pitch = 1.0;
       utterance.onstart = () => setSpeaking(true);
@@ -29,7 +33,7 @@ export function AudioPrompt({
       utterance.onerror = () => setSpeaking(false);
       window.speechSynthesis.speak(utterance);
     }
-  }, [text, lang]);
+  }, [text, resolvedLang]);
 
   const sizes = {
     md: "text-base px-5 py-3 min-h-[56px] rounded-xl",
@@ -42,7 +46,6 @@ export function AudioPrompt({
       className={`btn-tactile bg-surface text-ink border-border inline-flex items-center gap-3 font-bold ${sizes[size]}`}
       aria-label={label}
     >
-      {/* Speaker icon with waves */}
       <span className="flex items-center gap-0.5">
         <svg
           viewBox="0 0 24 24"
