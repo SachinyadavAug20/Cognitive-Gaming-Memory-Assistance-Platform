@@ -72,7 +72,7 @@ export function IntakeWizard() {
       } catch (e) {
         console.warn("Could not auto-save draft", e);
       }
-    }, 600);
+    }, 1000);
 
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -110,6 +110,7 @@ export function IntakeWizard() {
             ...prev.diagnostic,
             file: null,
             fileName: "",
+            extractedData: null,
             isProcessing: false,
           },
         }));
@@ -156,21 +157,21 @@ export function IntakeWizard() {
             ...prev.diagnostic,
             extractedData: {
               diagnosis: response.diagnosis || "Undetermined Diagnosis",
-              icd10: response.icd10 || undefined,
-              dateOfDiagnosis: response.dateOfDiagnosis || new Date().toISOString().split("T")[0],
-              examiningPhysician: response.examiningPhysician || undefined,
-              clinicOrHospital: response.clinicOrHospital || undefined,
-              testType: response.testType || "Unknown",
+              icd10: response.icd10 ?? undefined,
+              dateOfDiagnosis: response.dateOfDiagnosis || "",
+              examiningPhysician: response.examiningPhysician ?? undefined,
+              clinicOrHospital: response.clinicOrHospital ?? undefined,
+              testType: response.testType ?? "Unknown",
               score: response.mmseScore ?? null,
-              maxScore: response.maxScore ?? 30,
-              stage: response.clinicalStage || "Mild Cognitive Impairment",
-              recommendedStartLevel: response.recommendedStartDifficulty || 1,
-              mtaScore: response.mtaScore || undefined,
-              fazekasGrade: response.fazekasGrade || undefined,
-              medications: response.medications || [],
-              subscaleScores: response.subscaleScores || undefined,
-              domains: response.domains || undefined,
-              physicianNotes: response.llmSummary || "",
+              maxScore: response.maxScore ?? (response.mmseScore != null ? 30 : null),
+              stage: response.clinicalStage ?? "MCI",
+              recommendedStartLevel: response.recommendedStartDifficulty ?? 1,
+              mtaScore: response.mtaScore ?? undefined,
+              fazekasGrade: response.fazekasGrade ?? undefined,
+              medications: response.medications ?? [],
+              subscaleScores: response.subscaleScores ?? undefined,
+              domains: response.domains ?? undefined,
+              physicianNotes: response.llmSummary ?? "",
             },
             isProcessing: false,
           },
@@ -369,6 +370,26 @@ export function IntakeWizard() {
         },
         landmarks: landmarksWithIndex,
         caregiverId: 1,
+        diagnostic: formData.diagnostic.extractedData
+          ? {
+              diagnosis: formData.diagnostic.extractedData.diagnosis,
+              icd10: formData.diagnostic.extractedData.icd10,
+              dateOfDiagnosis: formData.diagnostic.extractedData.dateOfDiagnosis,
+              examiningPhysician: formData.diagnostic.extractedData.examiningPhysician,
+              clinicOrHospital: formData.diagnostic.extractedData.clinicOrHospital,
+              testType: formData.diagnostic.extractedData.testType,
+              score: formData.diagnostic.extractedData.score,
+              maxScore: formData.diagnostic.extractedData.maxScore,
+              stage: formData.diagnostic.extractedData.stage,
+              recommendedStartLevel: formData.diagnostic.extractedData.recommendedStartLevel,
+              mtaScore: formData.diagnostic.extractedData.mtaScore,
+              fazekasGrade: formData.diagnostic.extractedData.fazekasGrade,
+              medications: formData.diagnostic.extractedData.medications,
+              subscaleScores: formData.diagnostic.extractedData.subscaleScores,
+              domains: formData.diagnostic.extractedData.domains,
+              physicianNotes: formData.diagnostic.extractedData.physicianNotes,
+            }
+          : null,
       };
 
       formDataPayload.append(

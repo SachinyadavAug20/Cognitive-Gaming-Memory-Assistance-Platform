@@ -3,10 +3,13 @@
     "greeting": "শুভ দিন!",
     "ready": "আজিৰ স্মৃতি অभ্যাসৰ বাবে প্ৰস্তুত?",
     "routine": {
-      "label": "আজিৰ দৈনিক কাৰ্য",
-      "medicine": "পুৱাৰ ওষুধ",
-      "water": "পানী স্মৃতিবোধক",
-      "family": "পৰিয়ালৰ ফটো"
+      "label": "আজিৰ দিনচৰ্যা",
+      "morning_medicine": "ৰাতিপুৱাৰ ঔষধ",
+      "water_reminder": "পানী খোৱাৰ সোঁৱৰণি",
+      "family_photos": "পৰিয়ালৰ ফটো",
+      "medicine_time": "ৰাতিপুৱা ৮:০০ বজাত",
+      "water_count": "আজি ৪ গিলাচ",
+      "memories_count": "১২ টা স্মৃতি সংৰক্ষিত"
     },
     "patient": {
       "title": "মই এজন ৰোগী",

@@ -4,9 +4,12 @@
     "ready": "आज के स्मृति अभ्यास के लिए तैयार?",
     "routine": {
       "label": "आज की दिनचर्या",
-      "medicine": "सुबह की दवाई",
-      "water": "पानी का अनुस्मारक",
-      "family": "परिवार की फ़ोटो"
+      "morning_medicine": "सुबह की दवाई",
+      "water_reminder": "पानी का अनुस्मारक",
+      "family_photos": "परिवार की फ़ोटो",
+      "medicine_time": "सुबह 8:00 बजे",
+      "water_count": "4 गिलास आज",
+      "memories_count": "12 यादें सुरक्षित"
     },
     "patient": {
       "title": "मैं एक मरीज़ हूँ",

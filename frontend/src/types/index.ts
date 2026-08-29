@@ -53,6 +53,8 @@ export interface Reminder {
 }
 
 export interface RoutineItem {
+  key?: string;
+  timeKey?: string;
   emoji: string;
   title: string;
   time: string;

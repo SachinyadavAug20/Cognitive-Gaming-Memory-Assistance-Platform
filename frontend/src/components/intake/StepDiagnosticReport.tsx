@@ -53,28 +53,7 @@ const DOMAIN_LABELS: Record<string, string> = {
   apathy: "Apathy",
   agitation: "Agitation",
   social_withdrawal: "Social Withdrawal",
-  sleep_disturbance: "Sleep Disturbance",
 };
-
-function severityColor(level: string): string {
-  switch (level) {
-    case "None": return "bg-tea text-white";
-    case "Mild": return "bg-marigold text-white";
-    case "Moderate": return "bg-terracotta text-white";
-    case "Severe": return "bg-brick text-white";
-    default: return "bg-gray-500 text-white";
-  }
-}
-
-function barColor(needsHelp: boolean, level?: string): string {
-  if (!needsHelp) return "bg-tea";
-  switch (level) {
-    case "Severe": return "bg-brick";
-    case "Moderate": return "bg-terracotta";
-    case "Mild": return "bg-marigold";
-    default: return "bg-gray-500";
-  }
-}
 
 export function StepDiagnosticReport({
   data,
@@ -127,10 +106,11 @@ export function StepDiagnosticReport({
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-ink text-lg">{t("extracted")}</h3>
             <button
-              onClick={() => onFileSelect(data.file!)}
-              className="text-sm text-sky font-bold hover:underline"
+              type="button"
+              onClick={() => onFileSelect(null)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface border-2 border-border rounded-xl text-xs font-bold text-ink hover:bg-surface-muted shadow-[2px_2px_0_var(--color-border)] active:translate-y-0.5 transition-all cursor-pointer"
             >
-              {t("replace")}
+              📄 {t("replace") || "Upload different file"}
             </button>
           </div>
 
@@ -252,94 +232,136 @@ export function StepDiagnosticReport({
           )}
 
           {/* ── 17-Domain Clinical Assessment Matrix ── */}
-          {Object.keys(domains).length > 0 && (
-            <div className="border-3 border-[#16120E] rounded-2xl bg-white p-5 shadow-[4px_4px_0_#16120E] space-y-5">
-              <div className="flex items-center justify-between border-b-2 border-[#D9CEBF] pb-3">
+          {domains && Object.keys(domains).length > 0 && (
+            <div className="border-3 border-border rounded-2xl bg-surface p-5 md:p-6 shadow-[4px_4px_0_var(--color-border)] space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-border-soft pb-3 gap-2">
                 <div>
-                  <h4 className="font-[family-name:var(--font-serif)] font-black text-xl text-[#16120E]">
-                    {t("assessment")}
+                  <h4 className="font-[family-name:var(--font-serif)] font-black text-xl text-ink">
+                    {t("assessment") || "17-Domain Clinical Assessment"}
                   </h4>
-                  <p className="text-xs font-semibold text-[#4A4036]">
-                    {t("assessmentDesc")}
+                  <p className="text-xs font-semibold text-ink-secondary">
+                    {t("assessmentDesc") || "Quantified cognitive & functional breakdown extracted by local AI"}
                   </p>
                 </div>
-                <div className="flex gap-3 text-[10px] font-bold">
+                <div className="flex items-center gap-2 text-[11px] font-bold">
                   <span className="flex items-center gap-1">
-                    <span className="w-3 h-3 rounded-full bg-[#1E5136]" /> {t("intact")}
+                    <span className="w-2.5 h-2.5 rounded-full bg-tea" /> {t("intact") || "Intact"}
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-3 h-3 rounded-full bg-[#D97706]" /> Mild
+                    <span className="w-2.5 h-2.5 rounded-full bg-marigold" /> Mild
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-3 h-3 rounded-full bg-[#C24E26]" /> Moderate
+                    <span className="w-2.5 h-2.5 rounded-full bg-terracotta" /> Moderate
                   </span>
                   <span className="flex items-center gap-1">
-                    <span className="w-3 h-3 rounded-full bg-[#9B1C1C]" /> Severe
+                    <span className="w-2.5 h-2.5 rounded-full bg-brick" /> Severe
                   </span>
                 </div>
               </div>
 
-              {Object.entries(CATEGORY_GROUPS).map(([categoryKey, domainKeys]) => (
-                <div key={categoryKey} className="space-y-2.5">
-                  <h5 className="font-bold text-sm text-[#16120E] uppercase tracking-wide">
-                    {DOMAIN_ICONS[categoryKey]} {t(categoryKey as "categoryCognitive" | "categoryIadls" | "categoryBehavioral")}
-                  </h5>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {domainKeys.map((key) => {
-                      const item = domains[key];
-                      if (!item) return null;
-                      const isImpaired = item.needs_help;
-                      return (
-                        <div
-                          key={key}
-                          className={`p-3 rounded-xl border-2 border-[#16120E] flex flex-col justify-between transition-all ${
-                            isImpaired ? "bg-[#FDEEE9]" : "bg-[#EAF3EC]"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-bold text-xs uppercase tracking-wider text-[#16120E]">
-                              {DOMAIN_LABELS[key] || key.replace(/_/g, " ")}
-                            </span>
-                            <span
-                              className={`px-2 py-0.5 rounded text-[10px] font-black border border-[#16120E] flex-shrink-0 ${severityColor(item.impairment_level)}`}
-                            >
-                              {item.impairment_level || (isImpaired ? t("impaired") : t("intact"))}
-                            </span>
-                          </div>
+              {Object.entries(CATEGORY_GROUPS).map(([categoryKey, domainKeys]) => {
+                const activeKeys = domainKeys.filter((k) => domains[k]);
+                if (activeKeys.length === 0) return null;
 
-                          {/* Performance Bar */}
-                          <div className="w-full bg-white h-1.5 rounded-full border border-[#16120E] overflow-hidden my-2">
-                            <div
-                              className={`h-full ${barColor(isImpaired, item.impairment_level)}`}
-                              style={{ width: `${Math.max(2, item.score_pct)}%` }}
-                            />
-                          </div>
-                          <span className="text-[10px] font-black text-[#4A4036] text-right">
-                            {t("retained", { pct: item.score_pct.toString() })}
-                          </span>
+                const categoryTitle = t(categoryKey as "categoryCognitive" | "categoryIadls" | "categoryBehavioral") || categoryKey;
 
-                          {item.evidence && (
-                            <p className="text-[11px] text-[#4F473D] italic mt-1.5 leading-snug border-l-2 border-[#16120E]/40 pl-2">
-                              &ldquo;{item.evidence}&rdquo;
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })}
+                return (
+                  <div key={categoryKey} className="space-y-3">
+                    <h5 className="font-bold text-xs uppercase tracking-wider text-ink-secondary flex items-center gap-2">
+                      <span>{DOMAIN_ICONS[categoryKey]} {categoryTitle}</span>
+                      <span className="flex-1 h-[1px] bg-border-soft" />
+                    </h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {activeKeys.map((key) => {
+                        const item = domains[key];
+                        const isImpaired = (item as unknown as { needs_help?: boolean; needsHelp?: boolean }).needs_help ?? (item as unknown as { needs_help?: boolean; needsHelp?: boolean }).needsHelp ?? false;
+                        const rawLevel = (((item as unknown as { impairment_level?: string; impairmentLevel?: string }).impairment_level ?? (item as unknown as { impairment_level?: string; impairmentLevel?: string }).impairmentLevel ?? (isImpaired ? "Moderate" : "None"))).toLowerCase();
+                        const dataScorePct = (item as unknown as { score_pct?: number; scorePct?: number }).score_pct ?? (item as unknown as { score_pct?: number; scorePct?: number }).scorePct;
+
+                        let badgeColor = "bg-tea text-white";
+                        let barColor = "bg-tea";
+                        let badgeLabel = t("intact") || "Intact";
+
+                        if (rawLevel.includes("severe")) {
+                          badgeColor = "bg-brick text-white";
+                          barColor = "bg-brick";
+                          badgeLabel = "Severe";
+                        } else if (rawLevel.includes("mod")) {
+                          badgeColor = "bg-terracotta text-white";
+                          barColor = "bg-terracotta";
+                          badgeLabel = "Moderate";
+                        } else if (rawLevel.includes("mild")) {
+                          badgeColor = "bg-marigold text-white";
+                          barColor = "bg-marigold";
+                          badgeLabel = "Mild";
+                        }
+
+                        const scorePct =
+                          dataScorePct !== undefined && dataScorePct !== null && Number.isFinite(dataScorePct)
+                            ? Math.max(0, Math.min(100, dataScorePct))
+                            : rawLevel.includes("severe")
+                            ? 15
+                            : rawLevel.includes("mod")
+                            ? 40
+                            : rawLevel.includes("mild")
+                            ? 70
+                            : 100;
+
+                        const evidenceText = item.evidence && item.evidence !== "No evidence provided" && item.evidence !== "null" ? item.evidence : null;
+
+                        return (
+                          <div
+                            key={key}
+                            className="p-3.5 rounded-xl border-2 border-border bg-surface-muted/60 hover:bg-surface-muted transition-colors flex flex-col justify-between gap-2"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-bold text-xs uppercase tracking-wider text-ink">
+                                {DOMAIN_LABELS[key] || key.replace(/_/g, " ")}
+                              </span>
+                              <span className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${badgeColor}`}>
+                                {badgeLabel}
+                              </span>
+                            </div>
+
+                            {/* Visual Retention Bar */}
+                            <div className="w-full bg-surface h-2 rounded-full border border-border-soft overflow-hidden">
+                              <div
+                                className={`h-full ${barColor} transition-all duration-500`}
+                                style={{ width: `${scorePct}%` }}
+                              />
+                            </div>
+
+                            {/* Verbatim Clinical Quote */}
+                            {evidenceText ? (
+                              <p className="text-[11px] text-ink-secondary italic leading-relaxed border-l-2 border-border/40 pl-2 bg-white/40 p-1 rounded-r">
+                                &ldquo;{evidenceText}&rdquo;
+                              </p>
+                            ) : (
+                              <span className="text-[10px] text-ink-secondary/50 italic">
+                                No clinical deficit noted in report
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
       )}
 
-      <button
-        onClick={onSkip}
-        className="w-full min-h-[56px] rounded-xl border-3 border-border-soft bg-surface text-ink-secondary font-bold text-lg hover:bg-surface-muted transition-colors"
-      >
-        {ext ? t("continue") : t("skip")}
-      </button>
+      {!ext && (
+        <button
+          type="button"
+          onClick={onSkip}
+          className="w-full min-h-[56px] rounded-xl border-3 border-border-soft bg-surface text-ink-secondary font-bold text-lg hover:bg-surface-muted transition-colors cursor-pointer"
+        >
+          {t("skip")}
+        </button>
+      )}
 
       {errors.skipped && (
         <p role="alert" className="text-brick text-sm font-bold text-center">

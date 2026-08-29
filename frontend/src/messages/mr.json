@@ -24,9 +24,12 @@
     },
     "routine": {
       "label": "आजची दिनचर्या",
-      "medicine": "सकाळचे औषध",
-      "water": "पाणी पिण्याची आठवण",
-      "family": "कौटुंबिक फोटो"
+      "morning_medicine": "सकाळचे औषध",
+      "water_reminder": "पाणी पिण्याची आठवण",
+      "family_photos": "कुटुंबाचे फोटो",
+      "medicine_time": "सकाळी ८:०० वाजता",
+      "water_count": "आज ४ ग्लास",
+      "memories_count": "१२ आठवणी जतन"
     }
   },
   "patient": {

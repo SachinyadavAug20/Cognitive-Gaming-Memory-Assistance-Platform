@@ -4,9 +4,12 @@
     "ready": "Ready for your daily memory exercises?",
     "routine": {
       "label": "Today's Routine",
-      "medicine": "Morning Medicine",
-      "water": "Water Reminder",
-      "family": "Family Photos"
+      "morning_medicine": "Morning Medicine",
+      "water_reminder": "Water Reminder",
+      "family_photos": "Family Photos",
+      "medicine_time": "8:00 AM",
+      "water_count": "4 glasses today",
+      "memories_count": "12 memories saved"
     },
     "patient": {
       "title": "I am a Patient",
@@ -214,7 +217,7 @@
     },
     "review": {
       "title": "Review & Submit",
-      "subtitle": "Please check that everything looks right before we create the patient&apos;s profile.",
+      "subtitle": "Please check that everything looks right before we create the patient's profile.",
       "edit": "Edit",
       "personal": "Personal Information",
       "medical": "Medical Report",
