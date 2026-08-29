@@ -26,6 +26,15 @@
       "patients": "Patients",
       "sessions": "Sessions Today",
       "alerts": "Alerts"
+    },
+    "kiosk": {
+      "title": "Kiosk Check-In",
+      "subtitle": "QR Scanner Station",
+      "description": "Scan a patient's QR health card to check them in and start their session.",
+      "cta": "OPEN SCANNER",
+      "showCard": "Show the QR health card",
+      "scan": "Scan at the kiosk",
+      "start": "Check in & start session"
     }
   },
   "nav": {

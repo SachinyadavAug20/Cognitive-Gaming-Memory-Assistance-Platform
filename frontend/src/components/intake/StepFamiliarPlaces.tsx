@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";
@@ -60,32 +60,27 @@ function LandmarkCard({
   landmark: LandmarkEntry;
   onUpdate: (l: LandmarkEntry) => void;
 }) {
-  const [photoPreview, setPhotoPreview] = useState<string | null>(
-    landmark.photoUrl || null
-  );
   const tName = useTranslations("intake.places.name");
   const tDesc = useTranslations("intake.places.desc");
   const tIcon = useTranslations("intake.places");
 
   const handlePhoto = useCallback(
     (_file: File, dataUrl: string) => {
-      setPhotoPreview(dataUrl);
       onUpdate({ ...landmark, photoUrl: dataUrl, fileRef: _file });
     },
     [landmark, onUpdate]
   );
 
   const handleClearPhoto = useCallback(() => {
-    if (photoPreview?.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-    setPhotoPreview(null);
+    if (landmark.photoUrl?.startsWith("blob:")) URL.revokeObjectURL(landmark.photoUrl);
     onUpdate({ ...landmark, photoUrl: "", fileRef: undefined });
-  }, [photoPreview, landmark, onUpdate]);
+  }, [landmark, onUpdate]);
 
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-3">
         <PhotoPicker
-          preview={photoPreview}
+          preview={landmark.photoUrl || null}
           size="md"
           onPick={handlePhoto}
           onClearPhoto={handleClearPhoto}

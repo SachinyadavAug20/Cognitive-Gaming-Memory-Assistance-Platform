@@ -5,7 +5,7 @@ import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";
 import { SelectChip } from "./SelectChip";
 import { PhotoPicker } from "./PhotoPicker";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Relative } from "@/types/intake";
 
 const REL_KEYS = ["daughter", "son", "spouse", "grandchild", "sibling", "friend", "other"] as const;
@@ -65,9 +65,6 @@ function RelativeCard({
   onRemove: () => void;
   onUpdate: (r: Relative) => void;
 }) {
-  const [photoPreview, setPhotoPreview] = useState<string | null>(
-    relative.photoUrl || null
-  );
   const tName = useTranslations("intake.family.name");
   const tNotes = useTranslations("intake.family.notes");
   const tRel = useTranslations("options.relativeRelationship");
@@ -75,23 +72,21 @@ function RelativeCard({
 
   const handlePhoto = useCallback(
     (_file: File, dataUrl: string) => {
-      setPhotoPreview(dataUrl);
       onUpdate({ ...relative, photoUrl: dataUrl, fileRef: _file });
     },
     [relative, onUpdate]
   );
 
   const handleClearPhoto = useCallback(() => {
-    if (photoPreview?.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
-    setPhotoPreview(null);
+    if (relative.photoUrl?.startsWith("blob:")) URL.revokeObjectURL(relative.photoUrl);
     onUpdate({ ...relative, photoUrl: "", fileRef: undefined });
-  }, [photoPreview, relative, onUpdate]);
+  }, [relative, onUpdate]);
 
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-4">
         <PhotoPicker
-          preview={photoPreview}
+          preview={relative.photoUrl || null}
           size="lg"
           onPick={handlePhoto}
           onClearPhoto={handleClearPhoto}

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { useEffect, useId, useRef, useState } from "react";
+import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 
 interface KioskScannerProps {
   onScan: (text: string) => void;
@@ -9,9 +9,8 @@ interface KioskScannerProps {
 }
 
 export function KioskScanner({ onScan, paused }: KioskScannerProps) {
-  const [containerId] = useState(
-    () => `qr-reader-${Math.random().toString(36).slice(2, 9)}`
-  );
+  const id = useId();
+  const containerId = "qr-reader-" + id.replace(/[^a-zA-Z0-9]/g, "");
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const startedRef = useRef(false);
   const onScanRef = useRef(onScan);
@@ -25,6 +24,32 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
   useEffect(() => {
     const scanner = new Html5Qrcode(containerId, { verbose: false });
     scannerRef.current = scanner;
+    let disposed = false;
+    let hasStarted = false;
+
+    const stopScanner = (s: Html5Qrcode) => {
+      try {
+        const state = s.getState();
+        if (
+          state === Html5QrcodeScannerState.SCANNING ||
+          state === Html5QrcodeScannerState.PAUSED
+        ) {
+          s.stop()
+            .then(() => {
+              try {
+                s.clear();
+              } catch {
+                /* element may already be cleaned up */
+              }
+            })
+            .catch(() => {
+              /* camera already released */
+            });
+        }
+      } catch {
+        /* safely catch synchronous state exceptions */
+      }
+    };
 
     scanner
       .start(
@@ -38,34 +63,47 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
         }
       )
       .then(() => {
+        if (disposed) {
+          stopScanner(scanner);
+          return;
+        }
+        hasStarted = true;
         startedRef.current = true;
         setCameraOn(true);
       })
       .catch(() => {
+        if (disposed) return;
         setError(
           "Camera unavailable. Please allow camera access from browser settings and try again."
         );
       });
 
     return () => {
+      disposed = true;
       startedRef.current = false;
-      scanner
-        .stop()
-        .then(() => scanner.clear())
-        .catch(() => {
-          /* camera already released */
-        });
       scannerRef.current = null;
+      if (hasStarted) {
+        stopScanner(scanner);
+      }
     };
   }, [containerId]);
 
   useEffect(() => {
     const scanner = scannerRef.current;
     if (!scanner || !startedRef.current) return;
-    if (paused) {
-      scanner.pause(true);
-    } else {
-      scanner.resume();
+    try {
+      const state = scanner.getState();
+      if (paused) {
+        if (state === Html5QrcodeScannerState.SCANNING) {
+          scanner.pause(false);
+        }
+      } else {
+        if (state === Html5QrcodeScannerState.PAUSED) {
+          scanner.resume();
+        }
+      }
+    } catch {
+      /* html5-qrcode throws synchronously when state is mismatched */
     }
   }, [paused]);
 

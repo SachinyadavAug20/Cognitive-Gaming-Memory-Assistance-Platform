@@ -68,23 +68,27 @@ export function parseAnalyzeReport(response: AnalyzeReportResponse): DiagnosticD
 export function serializeFormData(formData: IntakeFormData) {
   return {
     personal: formData.personal,
-    relatives: formData.relatives.map(({ fileRef: _fileRef, ...rest }, index) => ({
-      ...rest,
-      photoIndex: index,
-    })),
+    relatives: formData.relatives.map(
+      ({ fileRef: _fileRef, photoUrl: _photoUrl, ...rest }, index) => ({
+        ...rest,
+        photoIndex: index,
+      })
+    ),
     lifeStory: {
       occupation: formData.lifeStory.occupation,
       favoriteMusic: formData.lifeStory.favoriteMusic,
       interests: formData.lifeStory.interests,
-      lifeEvents: formData.lifeStory.lifeEvents,
+      lifeEvents: formData.lifeStory.lifeEvents.map(({ photoUrl: _p, ...e }) => e),
       culturalBackground: formData.lifeStory.culturalBackground,
       preferredLanguage: formData.lifeStory.preferredLanguage,
       joyNote: formData.lifeStory.joyNote,
     },
-    landmarks: formData.landmarks.map(({ fileRef: _fileRef, ...rest }, index) => ({
-      ...rest,
-      photoIndex: formData.relatives.length + index,
-    })),
+    landmarks: formData.landmarks.map(
+      ({ fileRef: _fileRef, photoUrl: _photoUrl, ...rest }, index) => ({
+        ...rest,
+        photoIndex: formData.relatives.length + index,
+      })
+    ),
     diagnostic: formData.diagnostic.extractedData,
     caregiverId: 1,
   };

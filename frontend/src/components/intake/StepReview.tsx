@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { StepHeader } from "./StepHeader";
 import type { IntakeFormData } from "@/types/intake";
 import { LANGUAGE_OPTIONS } from "@/types/intake";
+import { getMediaUrl } from "@/lib/api";
 import type { ReactNode } from "react";
 
 interface StepReviewProps {
@@ -71,25 +72,28 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
       >
         {data.relatives.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {data.relatives.map((rel, i) => (
-              <div key={i} className="flex items-center gap-3 bg-surface-muted/70 border border-border-soft rounded-xl p-2.5">
-                {rel.photoUrl ? (
-                  <img
-                    src={rel.photoUrl}
-                    alt={rel.name}
-                    className="w-11 h-11 rounded-lg object-cover border-2 border-border shrink-0"
-                  />
-                ) : (
-                  <span className="w-11 h-11 rounded-lg bg-surface border border-border-soft flex items-center justify-center text-xl shrink-0">
-                    👤
-                  </span>
-                )}
-                <div className="min-w-0">
-                  <p className="font-bold text-ink text-sm truncate">{rel.name}</p>
-                  <p className="text-ink-secondary text-xs">{rel.relationship}</p>
+            {data.relatives.map((rel, i) => {
+              const photo = getMediaUrl(rel.photoUrl);
+              return (
+                <div key={i} className="flex items-center gap-3 bg-surface-muted/70 border border-border-soft rounded-xl p-2.5">
+                  {photo ? (
+                    <img
+                      src={photo}
+                      alt={rel.name}
+                      className="w-11 h-11 rounded-lg object-cover border-2 border-border shrink-0"
+                    />
+                  ) : (
+                    <span className="w-11 h-11 rounded-lg bg-surface border border-border-soft flex items-center justify-center text-xl shrink-0">
+                      👤
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <p className="font-bold text-ink text-sm truncate">{rel.name}</p>
+                    <p className="text-ink-secondary text-xs">{rel.relationship}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <p className="text-ink-secondary italic text-sm">{t("noFamily")}</p>

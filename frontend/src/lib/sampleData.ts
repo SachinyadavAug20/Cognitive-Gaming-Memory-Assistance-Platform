@@ -115,7 +115,7 @@ async function mapRelatives(list: unknown): Promise<Relative[] | null> {
       const r = item as Record<string, unknown>;
       return {
         name: asString(r["name"]),
-        relationship: asString(r["relation"]),
+        relationship: asString(r["relation"]).trim().toLowerCase(),
         imageFile: asString(r["image_file"] ?? r["photo_file"]),
         notes: asString(r["notes"]),
       };
@@ -209,9 +209,9 @@ export async function mapSampleJsonToFormData(
     personal: {
       fullName: asString(step1["full_name"]),
       dateOfBirth: parseDob(step1["date_of_birth"]),
-      gender: asString(step1["gender"]),
+      gender: asString(step1["gender"]).trim().toLowerCase(),
       phone: asString(step1["phone_number"]),
-      relationship: asString(step1["form_filled_by"]),
+      relationship: asString(step1["form_filled_by"]).trim().toLowerCase(),
     },
     diagnostic: {
       ...EMPTY_FORM.diagnostic,

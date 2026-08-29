@@ -20,6 +20,19 @@ export default function KioskLoginPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const busyRef = useRef(false);
 
+  useEffect(() => {
+    function handleUnhandledRejection(event: PromiseRejectionEvent) {
+      const reason =
+        event.reason instanceof Error ? event.reason : new Error(String(event.reason));
+      const isAbortError =
+        reason.name === "AbortError" ||
+        reason.message.toLowerCase().includes("aborted by the user agent");
+      if (isAbortError) event.preventDefault();
+    }
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+    return () => window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+  }, []);
+
   const handleScan = useCallback(
     (text: string) => {
       if (busyRef.current) return;
@@ -63,14 +76,16 @@ export default function KioskLoginPage() {
         </p>
       </div>
 
-      {status === "loading" ? (
-        <div className="text-center py-16">
-          <div className="w-20 h-20 border-8 border-marigold border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-6 text-2xl font-bold text-ink">{t("loading")}</p>
-        </div>
-      ) : (
+      <div className="relative w-full max-w-[440px] mx-auto">
         <KioskScanner onScan={handleScan} paused={status !== "scanning"} />
-      )}
+
+        {status === "loading" && (
+          <div className="absolute inset-0 bg-canvas/90 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center p-6 z-10">
+            <div className="w-16 h-16 border-6 border-marigold border-t-transparent rounded-full animate-spin" />
+            <p className="mt-4 text-xl font-bold text-ink">{t("loading")}</p>
+          </div>
+        )}
+      </div>
 
       {status === "error" && errorMsg && (
         <div

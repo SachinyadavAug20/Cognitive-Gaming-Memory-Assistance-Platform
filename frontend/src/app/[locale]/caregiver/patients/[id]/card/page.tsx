@@ -17,15 +17,13 @@ export default function PatientCardPage() {
   const [error, setError] = useState<string | null>(null);
   const [patientName, setPatientName] = useState("");
   const [secureToken, setSecureToken] = useState("");
-  const [regenerating, setRegenerating] = useState(false);
-
   useEffect(() => {
     let ignore = false;
     async function fetchCard() {
       try {
         const [profile, card] = await Promise.all([
           api.get<PatientProfile>(`/patients/${patientId}`),
-          api.post<GenerateCardResponse>(`/caregiver/patients/${patientId}/card`, {}),
+          api.get<GenerateCardResponse>(`/caregiver/patients/${patientId}/card`),
         ]);
         if (ignore) return;
         setPatientName(card.patientName || profile.name);
@@ -46,23 +44,6 @@ export default function PatientCardPage() {
       ignore = true;
     };
   }, [patientId, t]);
-
-  const handleRegenerate = async () => {
-    setRegenerating(true);
-    setError(null);
-    try {
-      const card = await api.post<GenerateCardResponse>(
-        `/caregiver/patients/${patientId}/card`,
-        {}
-      );
-      setSecureToken(card.secureToken);
-      setPatientName(card.patientName || patientName);
-    } catch {
-      setError(t("error.regenerate"));
-    } finally {
-      setRegenerating(false);
-    }
-  };
 
   const backHref = `/caregiver/patients/${patientId}`;
 
@@ -106,19 +87,9 @@ export default function PatientCardPage() {
               secureToken={secureToken}
             />
 
-            <div className="flex justify-center">
-              <button
-                onClick={handleRegenerate}
-                disabled={regenerating}
-                className="btn-chunky btn-chunky-outline btn-chunky-xl print:hidden"
-              >
-                {regenerating ? "…" : `↻ ${t("regenerate")}`}
-              </button>
-            </div>
-
             <Link
               href={backHref}
-              className="block text-center font-bold text-ink-secondary hover:text-ink transition-colors print:hidden"
+              className="block text-center font-bold text-ink-secondary hover:text-ink transition-colors print:hidden pt-2"
             >
               ← {t("backToProfile")}
             </Link>

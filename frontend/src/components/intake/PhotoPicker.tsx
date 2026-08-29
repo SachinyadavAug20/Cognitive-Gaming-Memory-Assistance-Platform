@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { getMediaUrl } from "@/lib/api";
 
 interface PhotoPickerProps {
   label?: string;
@@ -25,6 +26,7 @@ export function PhotoPicker({
   const [error, setError] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const resolvedPreview = getMediaUrl(preview);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +71,7 @@ export function PhotoPicker({
         </p>
       )}
 
-      {preview ? (
+      {resolvedPreview ? (
         <div className="group relative w-fit">
           <button
             type="button"
@@ -79,7 +81,7 @@ export function PhotoPicker({
             className={`relative block cursor-pointer rounded-xl border-3 border-tea overflow-hidden transition-all hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-marigold ${SIZE_CLASSES[size]}`}
           >
             <img
-              src={preview}
+              src={resolvedPreview}
               alt={label || "Photo preview"}
               className="w-full h-full object-cover"
             />
@@ -149,7 +151,7 @@ export function PhotoPicker({
             </button>
 
             <img
-              src={preview ?? undefined}
+              src={resolvedPreview ?? undefined}
               alt={label || "Photo preview"}
               className="w-full aspect-square object-cover"
             />

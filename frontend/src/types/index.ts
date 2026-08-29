@@ -138,3 +138,106 @@ export interface DomainMetric {
 }
 
 export type ClinicalDomains = Record<string, DomainMetric>;
+
+export interface SubscaleScore {
+  score: number;
+  max: number;
+}
+
+export interface DomainAssessment {
+  needs_help?: boolean;
+  needsHelp?: boolean;
+  impairment_level?: string;
+  impairmentLevel?: string;
+  score_pct?: number;
+  scorePct?: number;
+  evidence?: string | null;
+}
+
+export interface GameConfig {
+  startLevel: number;
+  memoryGridSize: number;
+  memoryPreviewSeconds: number;
+  memoryShowHints: boolean;
+  wayfindingRouteLength: number;
+  audioSpeechRate: number;
+}
+
+export interface MedicalProfileData {
+  diagnosis: string | null;
+  icd10: string | null;
+  dateOfDiagnosis: string | null;
+  examiningPhysician: string | null;
+  clinicOrHospital: string | null;
+  clinicalStage: string | null;
+  recommendedStartDifficulty: number | null;
+  llmSummary: string | null;
+  testType: string | null;
+  mmseScore: number | null;
+  maxScore: number | null;
+  mtaScore: string | null;
+  fazekasGrade: string | null;
+  impairedDomains: string | null;
+  primaryDeficits: string | null;
+  medications: string[];
+  subscaleScores: Record<string, SubscaleScore>;
+  domains: Record<string, DomainAssessment>;
+  gameConfig?: GameConfig;
+}
+
+export interface LifeEventItem {
+  event: string;
+  year: string;
+  photoUrl?: string | null;
+}
+
+export interface LifeStoryData {
+  occupation: string | null;
+  favoriteMusic: string | null;
+  hobbies: string[];
+  lifeEvents: LifeEventItem[];
+}
+
+export interface FamilyMemberItem {
+  id: number;
+  name: string;
+  relation: string;
+  notes: string | null;
+  photoUrl: string | null;
+}
+
+export interface FamiliarPlaceItem {
+  id: number;
+  name: string;
+  category: string | null;
+  description: string | null;
+  emoji: string | null;
+  photoUrl: string | null;
+}
+
+export interface PatientCardData {
+  secureToken: string;
+  patientId: number;
+  patientName: string;
+  issuedAt: string;
+  isActive: boolean;
+}
+
+export interface PatientDetailRecord {
+  id: number;
+  name: string;
+  dob: string | null;
+  gender: string | null;
+  phone: string | null;
+  relationship: string | null;
+  caregiverId: number | null;
+  preferredLanguage: string | null;
+  culturalBackground: string | null;
+  joyTriggers: string | null;
+  createdAt: string | null;
+  lifeStory: LifeStoryData | null;
+  medicalProfile: MedicalProfileData | null;
+  familyMembers: FamilyMemberItem[];
+  familiarPlaces: FamiliarPlaceItem[];
+  card: PatientCardData | null;
+}
