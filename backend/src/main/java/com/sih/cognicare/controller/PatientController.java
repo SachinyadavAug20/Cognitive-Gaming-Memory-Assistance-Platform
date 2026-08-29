@@ -3,6 +3,7 @@ package com.sih.cognicare.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sih.cognicare.dto.*;
+import com.sih.cognicare.exception.PatientNotFoundException;
 import com.sih.cognicare.model.*;
 import com.sih.cognicare.repository.*;
 import com.sih.cognicare.service.FileStorageService;
@@ -84,6 +85,25 @@ public class PatientController {
         }
     }
 
+    @GetMapping("/patients")
+    public ResponseEntity<List<PatientSummaryResponse>> getPatients() {
+        List<PatientSummaryResponse> response = patientRepo.findAll().stream()
+                .map(this::toSummary)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/patients/{id}")
+    public ResponseEntity<PatientProfileResponse> getPatient(@PathVariable Long id) {
+        return patientRepo.findById(id)
+                .map(p -> ResponseEntity.ok(PatientProfileResponse.builder()
+                        .id(p.getId())
+                        .name(p.getName())
+                        .languagePreference(p.getPreferredLanguage())
+                        .build()))
+                .orElseThrow(() -> new PatientNotFoundException(id));
+    }
+
     @GetMapping("/patients/{id}/family")
     public ResponseEntity<List<FamilyMemberResponse>> getFamilyMembers(@PathVariable Long id) {
         List<FamilyMember> members = familyMemberRepo.findByPatientId(id);
@@ -146,6 +166,15 @@ public class PatientController {
     }
 
     // --- Private helpers ---
+
+    private PatientSummaryResponse toSummary(Patient patient) {
+        return PatientSummaryResponse.builder()
+                .id(patient.getId())
+                .name(patient.getName())
+                .preferredLanguage(patient.getPreferredLanguage())
+                .dob(patient.getDob())
+                .build();
+    }
 
     private Patient buildPatient(OnboardRequest request) {
         OnboardRequest.PersonalInfo personal = request.getPersonal();
