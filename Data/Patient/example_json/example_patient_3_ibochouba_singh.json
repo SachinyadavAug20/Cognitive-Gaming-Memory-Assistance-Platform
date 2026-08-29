@@ -1,0 +1,104 @@
+{
+  "step_1_about_patient": {
+    "full_name": "Tongbram Ibochouba Singh",
+    "date_of_birth": "02/03/1951",
+    "gender": "Male",
+    "phone_number": "9366014299",
+    "form_filled_by": "Spouse"
+  },
+  "step_3_family_and_relatives": [
+    {
+      "name": "T. Sanatombi Devi",
+      "relation": "Spouse",
+      "image_file": "images/patient_3_ibochouba_singh/relatives/01_spouse_sanatombi_devi.png",
+      "notes": "Married 50 years; prepares traditional Kangsoi and accompanies me to Govindaji Temple every morning."
+    },
+    {
+      "name": "T. Birjit Singh",
+      "relation": "Son",
+      "image_file": "images/patient_3_ibochouba_singh/relatives/02_son_birjit_singh.png",
+      "notes": "Works in State Handloom Corporation; lives with us and manages medicine schedules and grocery."
+    },
+    {
+      "name": "T. Memcha Devi",
+      "relation": "Daughter",
+      "image_file": "images/patient_3_ibochouba_singh/relatives/03_daughter_memcha_devi.png",
+      "notes": "Lives in Kwakeithel; brings homemade fish delicacies every Sunday; helps me with memory recall games."
+    },
+    {
+      "name": "Tomba Singh",
+      "relation": "Grandchild",
+      "image_file": "images/patient_3_ibochouba_singh/relatives/04_grandchild_tomba_singh.png",
+      "notes": "Grandson; plays football and listens enthusiastically to grandfather's traditional Pena folk music."
+    },
+    {
+      "name": "T. Tombi Singh",
+      "relation": "Sibling",
+      "image_file": "images/patient_3_ibochouba_singh/relatives/05_sibling_tombi_singh.png",
+      "notes": "Younger brother; retired teacher living in Uripok; discusses local handloom affairs and news with me."
+    }
+  ],
+  "step_4_life_story_and_interests": {
+    "occupation": "Retired Handloom Master Weaver & Classical Manipuri Musician (Pena)",
+    "key_life_events": [
+      {
+        "event": "National Master Weaver Recognition",
+        "year": "1985"
+      },
+      {
+        "event": "Marriage to Sanatombi",
+        "year": "1976"
+      },
+      {
+        "event": "Son Birjit born",
+        "year": "1981"
+      },
+      {
+        "event": "Handloom Society Golden Jubilee",
+        "year": "2016"
+      }
+    ],
+    "interests_and_hobbies": [
+      "Music",
+      "Art",
+      "Religious",
+      "Gardening"
+    ],
+    "favorite_music_or_artists": "Manipuri Nata Sankirtana, traditional Pena ballads, devotional Krishna kirtans.",
+    "cultural_background": "Meitei Sanamahi & Vaishnavite traditions; celebrates Yaoshang, Lai Haraoba, and Ningol Chakouba.",
+    "preferred_language": "English",
+    "what_brings_them_joy": "Playing his ancestral Pena string instrument in the courtyard and celebrating Ningol Chakouba with his daughters."
+  },
+  "step_5_and_6_familiar_places": [
+    {
+      "place_name": "Home (Uripok Courtyard Residence)",
+      "short_description": "Where we live — ancestral Meitei homestead with open Yumjao courtyard.",
+      "icon_symbol": "🏠",
+      "image_file": "images/patient_3_ibochouba_singh/places/01_home_uripok_courtyard.png"
+    },
+    {
+      "place_name": "Ema Keithel (Mother's Market)",
+      "short_description": "Historic all-women marketplace in Imphal where family purchases handloom yarn and vegetables.",
+      "icon_symbol": "🛒",
+      "image_file": "images/patient_3_ibochouba_singh/places/02_ema_keithel_market.png"
+    },
+    {
+      "place_name": "Shree Govindaji Temple",
+      "short_description": "Place of worship — golden domed temple where he attends morning prayers and Sankirtana.",
+      "icon_symbol": "🛕",
+      "image_file": "images/patient_3_ibochouba_singh/places/03_shree_govindaji_temple.png"
+    },
+    {
+      "place_name": "RIMS Hospital Geriatric OPD",
+      "short_description": "Regional Institute of Medical Sciences outpatient clinic for health and memory monitoring.",
+      "icon_symbol": "🏥",
+      "image_file": "images/patient_3_ibochouba_singh/places/04_rims_hospital_clinic.png"
+    },
+    {
+      "place_name": "Kangla Fort & Moat Walkway",
+      "short_description": "Where we walk — peaceful gardens and historic moat surrounding Kangla Palace.",
+      "icon_symbol": "🌳",
+      "image_file": "images/patient_3_ibochouba_singh/places/05_kangla_fort_moat_park.png"
+    }
+  ]
+}

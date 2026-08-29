@@ -1,0 +1,104 @@
+{
+  "step_1_about_patient": {
+    "full_name": "Lalhmingmawii Sailo",
+    "date_of_birth": "18/08/1962",
+    "gender": "Female",
+    "phone_number": "9436142100",
+    "form_filled_by": "Spouse"
+  },
+  "step_3_family_and_relatives": [
+    {
+      "name": "Lalrinzuala Sailo",
+      "relation": "Spouse",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/01_spouse_lalrinzuala_sailo.png",
+      "notes": "Married 40 years; retired state revenue inspector; helps me with morning walks and prepares meals."
+    },
+    {
+      "name": "Vanlalruati Sailo",
+      "relation": "Daughter",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/02_daughter_vanlalruati_sailo.png",
+      "notes": "Lives in Aizawl; lecturer at Pachhunga University College; assists with daily cognitive exercises."
+    },
+    {
+      "name": "Lalbiakzuala Sailo",
+      "relation": "Son",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/03_son_lalbiakzuala_sailo.png",
+      "notes": "Civil engineer in PWD; lives in Mission Veng; brings fresh mountain fruit every weekend."
+    },
+    {
+      "name": "Lalramchhani Sailo",
+      "relation": "Grandchild",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/04_grandchild_lalramchhani_sailo.png",
+      "notes": "Granddaughter; loves playing Mizo word puzzle games and drawing pictures with Pi Hmingi."
+    },
+    {
+      "name": "Lalthanmawii Sailo",
+      "relation": "Sibling",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/05_sibling_lalthanmawii_sailo.png",
+      "notes": "Younger sister; lives in Khatla; attends Presbyterian Women's fellowship with me every Tuesday."
+    }
+  ],
+  "step_4_life_story_and_interests": {
+    "occupation": "Retired Presbyterian High School Principal & Community Educator",
+    "key_life_events": [
+      {
+        "event": "Master of Arts in Education",
+        "year": "1984"
+      },
+      {
+        "event": "Marriage to Lalrinzuala",
+        "year": "1986"
+      },
+      {
+        "event": "Appointed Principal of Aizawl High School",
+        "year": "2002"
+      },
+      {
+        "event": "Retirement from School Administration",
+        "year": "2022"
+      }
+    ],
+    "interests_and_hobbies": [
+      "Reading",
+      "Religious",
+      "Music",
+      "Gardening"
+    ],
+    "favorite_music_or_artists": "Mizo gospel songs, traditional Lengzem acoustic music, choral anthems.",
+    "cultural_background": "Mizo culture; celebrates Chapchar Kut and Christmas; loves wearing traditional Puan textile skirts.",
+    "preferred_language": "English",
+    "what_brings_them_joy": "Looking out at the mist-covered Aizawl hills from her balcony, reading devotional poetry, and teaching granddaughter Mizo songs."
+  },
+  "step_5_and_6_familiar_places": [
+    {
+      "place_name": "Home (Zarkawt Hill Residence)",
+      "short_description": "Where we live — cliffside Aizawl home overlooking the green rolling valleys.",
+      "icon_symbol": "🏠",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/places/01_home_zarkawt_residence.png"
+    },
+    {
+      "place_name": "Aizawl Bara Bazar (Burra Bazar)",
+      "short_description": "Multi-tier hill market where we buy fresh bamboo shoots, local vegetables, and handwoven Puan.",
+      "icon_symbol": "🛒",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/places/02_aizawl_bara_bazar.png"
+    },
+    {
+      "place_name": "Zarkawt Presbyterian Church",
+      "short_description": "Place of worship — neighborhood white church where she attended fellowship for 40 years.",
+      "icon_symbol": "🛕",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/places/03_zarkawt_presbyterian_church.png"
+    },
+    {
+      "place_name": "Aizawl Civil Hospital & UPHC",
+      "short_description": "Where I visit for monthly senior checkups and prescription refills.",
+      "icon_symbol": "🏥",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/places/04_aizawl_civil_hospital.png"
+    },
+    {
+      "place_name": "Durtlang Hills Viewpoint Park",
+      "short_description": "Where we walk — scenic mountain ridge promenade offering panoramic views of Aizawl city.",
+      "icon_symbol": "🌳",
+      "image_file": "images/patient_4_lalhmingmawii_sailo/places/05_durtlang_hills_viewpoint.png"
+    }
+  ]
+}

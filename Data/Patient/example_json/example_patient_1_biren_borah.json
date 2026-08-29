@@ -1,0 +1,105 @@
+{
+  "step_1_about_patient": {
+    "full_name": "Biren Borah",
+    "date_of_birth": "15/05/1954",
+    "gender": "Male",
+    "phone_number": "9864012845",
+    "form_filled_by": "Child"
+  },
+  "step_3_family_and_relatives": [
+    {
+      "name": "Manash Borah",
+      "relation": "Son",
+      "image_file": "images/patient_1_biren_borah/relatives/01_son_manash_borah.png",
+      "notes": "Lives in Guwahati with me; works as senior engineer at Tech Mahindra; takes me for evening walks every day."
+    },
+    {
+      "name": "Pratima Borah",
+      "relation": "Spouse",
+      "image_file": "images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.png",
+      "notes": "Married for 46 years; cooks traditional Masor Tenga; reminds me of daily prayers at Namghar."
+    },
+    {
+      "name": "Ananya Borah",
+      "relation": "Daughter",
+      "image_file": "images/patient_1_biren_borah/relatives/03_daughter_ananya_borah.png",
+      "notes": "Lives in Jorhat; visits every second weekend with fresh homemade Pitha; calls daily at 7 PM."
+    },
+    {
+      "name": "Arnav Borah",
+      "relation": "Grandchild",
+      "image_file": "images/patient_1_biren_borah/relatives/04_grandchild_arnav_borah.png",
+      "notes": "Studies in Class 6 in Guwahati; loves playing carrom and listening to folk tales with Dadu."
+    },
+    {
+      "name": "Dhireswar Borah",
+      "relation": "Sibling",
+      "image_file": "images/patient_1_biren_borah/relatives/05_sibling_dhireswar_borah.png",
+      "notes": "Younger brother; retired PWD engineer living in Uzan Bazar; visits every Sunday for tea and newspaper."
+    }
+  ],
+  "step_4_life_story_and_interests": {
+    "occupation": "Retired High School Mathematics Teacher (Guwahati Govt Boys' High School, Panbazar)",
+    "key_life_events": [
+      {
+        "event": "Marriage to Pratima in Nagaon",
+        "year": "1978"
+      },
+      {
+        "event": "Son Manash born",
+        "year": "1982"
+      },
+      {
+        "event": "Built Silpukhuri home",
+        "year": "1994"
+      },
+      {
+        "event": "Retirement from school",
+        "year": "2014"
+      }
+    ],
+    "interests_and_hobbies": [
+      "Music",
+      "Gardening",
+      "Reading",
+      "Religious",
+      "Cooking"
+    ],
+    "favorite_music_or_artists": "Dr. Bhupen Hazarika songs (Manuhe Manuhor Babe, Gonga Mur Maa), Jayanta Hazarika, Zubeen Garg classic melodies.",
+    "cultural_background": "Assamese Hindu; celebrates Rongali & Magh Bihu; daily evening prayers at local Namghar; wears traditional Gamosa.",
+    "preferred_language": "অসমীয়া (Assamese)",
+    "what_brings_them_joy": "Listening to Dr. Bhupen Hazarika vinyl records, sitting under the courtyard mango tree sipping warm Lal Saah (red tea), and seeing old photo albums."
+  },
+  "step_5_and_6_familiar_places": [
+    {
+      "place_name": "Home (Silpukhuri Residence)",
+      "short_description": "Where we live — 2-storey ancestral home near Silpukhuri pond with green garden.",
+      "icon_symbol": "🏠",
+      "image_file": "images/patient_1_biren_borah/places/01_home_silpukhuri_residence.png"
+    },
+    {
+      "place_name": "Silpukhuri Daily Bazaar",
+      "short_description": "Where we shop — morning fresh fish and local vegetable stalls 300m away.",
+      "icon_symbol": "🛒",
+      "image_file": "images/patient_1_biren_borah/places/02_silpukhuri_daily_market.png"
+    },
+    {
+      "place_name": "Silpukhuri Hari Namghar",
+      "short_description": "Place of worship — Community prayer hall for daily 5:30 PM Naam-Kirtan prayers.",
+      "icon_symbol": "🛕",
+      "image_file": "images/patient_1_biren_borah/places/03_silpukhuri_hari_namghar.png"
+    },
+    {
+      "place_name": "Dr. Baruah Family Clinic & PHC",
+      "short_description": "Where I get checkups — neighborhood healthcare clinic on Nabagraha Road.",
+      "icon_symbol": "🏥",
+      "image_file": "images/patient_1_biren_borah/places/04_community_phc_clinic.png"
+    },
+    {
+      "place_name": "Dighalipukhuri Lakeside Park",
+      "short_description": "Where we walk — lakeside walking path where he meets fellow retired teachers.",
+      "icon_symbol": "🌳",
+      "image_file": "images/patient_1_biren_borah/places/05_dighalipukhuri_lake_park.png"
+    }
+  ]
+}

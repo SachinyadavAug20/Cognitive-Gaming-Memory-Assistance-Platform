@@ -1,0 +1,105 @@
+{
+  "step_1_about_patient": {
+    "full_name": "Kevichüsa Angami",
+    "date_of_birth": "12/04/1952",
+    "gender": "Male",
+    "phone_number": "9436009855",
+    "form_filled_by": "Child"
+  },
+  "step_3_family_and_relatives": [
+    {
+      "name": "Seyievinuo Angami",
+      "relation": "Daughter",
+      "image_file": "images/patient_5_kevichusa_angami/relatives/01_daughter_seyievinuo_angami.png",
+      "notes": "Lives in Kohima with me; high school principal; takes me on daily walks and coordinates doctor visits."
+    },
+    {
+      "name": "Neiphrelie Angami",
+      "relation": "Spouse",
+      "image_file": "images/patient_5_kevichusa_angami/relatives/02_spouse_neiphrelie_angami.png",
+      "notes": "Married 48 years; master weaver of traditional Angami shawls (Loramhü); cooks traditional smoked meat stew."
+    },
+    {
+      "name": "Kevilezo Angami",
+      "relation": "Son",
+      "image_file": "images/patient_5_kevichusa_angami/relatives/03_son_kevilezo_angami.png",
+      "notes": "Lives in Dimapur; works in Agriculture Directorate; visits every second weekend with farm produce."
+    },
+    {
+      "name": "Vimenuo Angami",
+      "relation": "Grandchild",
+      "image_file": "images/patient_5_kevichusa_angami/relatives/04_grandchild_vimenuo_angami.png",
+      "notes": "Granddaughter; loves listening to grandfather recount Angami warrior folk legends and forest tales."
+    },
+    {
+      "name": "Vitsore Angami",
+      "relation": "Sibling",
+      "image_file": "images/patient_5_kevichusa_angami/relatives/05_sibling_vitsore_angami.png",
+      "notes": "Younger brother; village elder in Khonoma; visits Kohima monthly to talk about village council matters."
+    }
+  ],
+  "step_4_life_story_and_interests": {
+    "occupation": "Retired District Agriculture Officer & Angami Folklore Custodian",
+    "key_life_events": [
+      {
+        "event": "Degree in Agricultural Sciences",
+        "year": "1975"
+      },
+      {
+        "event": "Marriage to Neiphrelie in Khonoma",
+        "year": "1978"
+      },
+      {
+        "event": "Promoted to District Officer",
+        "year": "1996"
+      },
+      {
+        "event": "Retirement from State Service",
+        "year": "2012"
+      }
+    ],
+    "interests_and_hobbies": [
+      "Gardening",
+      "Reading",
+      "Travel",
+      "Art",
+      "Religious"
+    ],
+    "favorite_music_or_artists": "Traditional Naga folk chants (Li), choral Christian hymns, acoustic guitar melodies.",
+    "cultural_background": "Angami Naga community; celebrates Sekrenyi purification festival and Hornbill Festival; wears traditional red-black woven shawl.",
+    "preferred_language": "English",
+    "what_brings_them_joy": "Tending his terrace vegetable garden in Midland, looking at carved wooden Hornbill artefacts, and telling tribal stories to his granddaughter."
+  },
+  "step_5_and_6_familiar_places": [
+    {
+      "place_name": "Home (Midland Kohima Homestead)",
+      "short_description": "Where we live — hillside family home with terrace vegetable garden and pine trees.",
+      "icon_symbol": "🏠",
+      "image_file": "images/patient_5_kevichusa_angami/places/01_home_midland_homestead.png"
+    },
+    {
+      "place_name": "Kohima Mao Market",
+      "short_description": "Local organic market where we buy fresh mountain herbs, king chillies, and wild honey.",
+      "icon_symbol": "🛒",
+      "image_file": "images/patient_5_kevichusa_angami/places/02_kohima_mao_market.png"
+    },
+    {
+      "place_name": "Mary Help of Christians Cathedral Kohima",
+      "short_description": "Place of worship — landmark cathedral on Aradurah Hill overlooking Kohima town.",
+      "icon_symbol": "🛕",
+      "image_file": "images/patient_5_kevichusa_angami/places/03_cathedral_kohima_aradurah.png"
+    },
+    {
+      "place_name": "Naga Hospital Authority Clinic",
+      "short_description": "Where I get monthly health assessments and cognitive support therapy.",
+      "icon_symbol": "🏥",
+      "image_file": "images/patient_5_kevichusa_angami/places/04_naga_hospital_clinic.png"
+    },
+    {
+      "place_name": "Kohima War Cemetery Memorial Park",
+      "short_description": "Where we walk — serene terraced garden with blooming roses and peaceful stone paths.",
+      "icon_symbol": "🌳",
+      "image_file": "images/patient_5_kevichusa_angami/places/05_war_cemetery_memorial_park.png"
+    }
+  ]
+}

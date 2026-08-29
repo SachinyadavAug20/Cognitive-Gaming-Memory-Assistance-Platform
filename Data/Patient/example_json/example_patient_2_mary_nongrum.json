@@ -1,0 +1,104 @@
+{
+  "step_1_about_patient": {
+    "full_name": "Mary Nongrum",
+    "date_of_birth": "10/11/1957",
+    "gender": "Female",
+    "phone_number": "9436108722",
+    "form_filled_by": "Child"
+  },
+  "step_3_family_and_relatives": [
+    {
+      "name": "Daphisha Nongrum",
+      "relation": "Daughter",
+      "image_file": "images/patient_2_mary_nongrum/relatives/01_daughter_daphisha_nongrum.png",
+      "notes": "Lives in Shillong with me; school teacher at St. Mary's; prepares herbal morning tea and organizes medicines."
+    },
+    {
+      "name": "Banker Nongrum",
+      "relation": "Spouse",
+      "image_file": "images/patient_2_mary_nongrum/relatives/02_spouse_banker_nongrum.png",
+      "notes": "Married 45 years; retired forestry officer; loves tending the orchid and hydrangea garden with me."
+    },
+    {
+      "name": "Banylla Nongrum",
+      "relation": "Grandchild",
+      "image_file": "images/patient_2_mary_nongrum/relatives/03_grandchild_banylla_nongrum.png",
+      "notes": "Granddaughter; loves reading illustrated Khasi folktales and singing church choir hymns with Kong Mary."
+    },
+    {
+      "name": "Pynskhem Nongrum",
+      "relation": "Son",
+      "image_file": "images/patient_2_mary_nongrum/relatives/04_son_pynskhem_nongrum.png",
+      "notes": "Lives in Mawlai; works in state tourism; visits every Wednesday evening and brings traditional Khasi snacks."
+    },
+    {
+      "name": "Ibadalin Nongrum",
+      "relation": "Sibling",
+      "image_file": "images/patient_2_mary_nongrum/relatives/05_sibling_ibadalin_nongrum.png",
+      "notes": "Younger sister; lives near Police Bazar; knits woollen sweaters with me every Saturday afternoon."
+    }
+  ],
+  "step_4_life_story_and_interests": {
+    "occupation": "Retired Senior Head Nurse (Civil Hospital Shillong)",
+    "key_life_events": [
+      {
+        "event": "Graduated Nursing School",
+        "year": "1979"
+      },
+      {
+        "event": "Marriage to Banker in Laitumkhrah",
+        "year": "1983"
+      },
+      {
+        "event": "Born daughter Daphisha",
+        "year": "1990"
+      },
+      {
+        "event": "Retirement from Civil Hospital",
+        "year": "2017"
+      }
+    ],
+    "interests_and_hobbies": [
+      "Gardening",
+      "Religious",
+      "Music",
+      "Reading"
+    ],
+    "favorite_music_or_artists": "Traditional Khasi gospel hymns, Lou Majaw acoustic melodies, choral church music, Jim Reeves classics.",
+    "cultural_background": "Khasi community; celebrates Shad Suk Mynsiem and Christmas; loves wearing traditional Khasi Jainsem.",
+    "preferred_language": "English",
+    "what_brings_them_joy": "Tending to potted orchids on the veranda, listening to Sunday church bells, and holding hands with granddaughter Banylla."
+  },
+  "step_5_and_6_familiar_places": [
+    {
+      "place_name": "Home (Nongrim Hills Cottage)",
+      "short_description": "Where we live — wooden-roof heritage cottage with blooming orchid garden.",
+      "icon_symbol": "🏠",
+      "image_file": "images/patient_2_mary_nongrum/places/01_home_nongrim_hills_cottage.png"
+    },
+    {
+      "place_name": "Laitumkhrah Main Market",
+      "short_description": "Where we shop — bakery, fresh fruit stalls, and woollen garment shops.",
+      "icon_symbol": "🛒",
+      "image_file": "images/patient_2_mary_nongrum/places/02_laitumkhrah_main_market.png"
+    },
+    {
+      "place_name": "Cathedral of Mary Help of Christians",
+      "short_description": "Place of worship — iconic blue cathedral in Laitumkhrah where she attends Sunday mass.",
+      "icon_symbol": "🛕",
+      "image_file": "images/patient_2_mary_nongrum/places/03_cathedral_mary_help_christians.png"
+    },
+    {
+      "place_name": "Shillong Civil Hospital OPD",
+      "short_description": "Where I worked for 35 years and get monthly blood pressure checkups.",
+      "icon_symbol": "🏥",
+      "image_file": "images/patient_2_mary_nongrum/places/04_shillong_civil_hospital.png"
+    },
+    {
+      "place_name": "Ward's Lake (Nan Polok)",
+      "short_description": "Where we stroll — scenic horseshoe lake with wooden bridge, swans, and flowerbeds.",
+      "icon_symbol": "🌳",
+      "image_file": "images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.png"
+    }
+  ]
+}

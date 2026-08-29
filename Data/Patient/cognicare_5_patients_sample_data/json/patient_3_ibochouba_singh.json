@@ -1,0 +1,224 @@
+{
+  "patient_id": "PAT-NE-2026-003",
+  "slug": "patient_3_ibochouba_singh",
+  "state": "Manipur",
+  "city": "Imphal",
+  "step_1_about_patient": {
+    "full_name": "Tongbram Ibochouba Singh",
+    "regional_script_name": "তোংব্রম ইবোচৌবা সিংহ",
+    "date_of_birth": "02/03/1951",
+    "age": 75,
+    "gender": "Male",
+    "phone_number": "9366014299",
+    "form_filled_by": "Spouse",
+    "caregiver_name": "T. Sanatombi Devi",
+    "caregiver_relation": "Spouse"
+  },
+  "step_2_caregiver_contact": {
+    "primary_caregiver": "T. Sanatombi Devi",
+    "caregiver_relation": "Spouse",
+    "caregiver_phone": "+91 93661 88421",
+    "residence_address": "Uripok Khumanthem Leikai, Imphal West, Manipur - 795001",
+    "primary_health_centre": "RIMS Geriatric OPD / Uripok Urban Health Clinic"
+  },
+  "step_3_family_and_relatives": [
+    {
+      "id": "p3_r1",
+      "name": "T. Sanatombi Devi",
+      "relation": "Spouse",
+      "age": 70,
+      "photo_file": "images/patient_3_ibochouba_singh/relatives/01_spouse_sanatombi_devi.png",
+      "notes": "Married 50 years; prepares traditional Kangsoi and accompanies me to Govindaji Temple every morning.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          215,
+          75,
+          90
+        ],
+        "hair_type": "bun",
+        "hair_color": [
+          125,
+          125,
+          130
+        ],
+        "has_bindi": true
+      }
+    },
+    {
+      "id": "p3_r2",
+      "name": "T. Birjit Singh",
+      "relation": "Son",
+      "age": 45,
+      "photo_file": "images/patient_3_ibochouba_singh/relatives/02_son_birjit_singh.png",
+      "notes": "Works in State Handloom Corporation; lives with us and manages medicine schedules and grocery.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          40,
+          110,
+          140
+        ],
+        "hair_type": "short",
+        "has_specs": true
+      }
+    },
+    {
+      "id": "p3_r3",
+      "name": "T. Memcha Devi",
+      "relation": "Daughter",
+      "age": 39,
+      "photo_file": "images/patient_3_ibochouba_singh/relatives/03_daughter_memcha_devi.png",
+      "notes": "Lives in Kwakeithel; brings homemade fish delicacies every Sunday; helps me with memory recall games.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          50,
+          135,
+          110
+        ],
+        "hair_type": "long",
+        "has_bindi": true
+      }
+    },
+    {
+      "id": "p3_r4",
+      "name": "Tomba Singh",
+      "relation": "Grandchild",
+      "age": 12,
+      "photo_file": "images/patient_3_ibochouba_singh/relatives/04_grandchild_tomba_singh.png",
+      "notes": "Grandson; plays football and listens enthusiastically to grandfather's traditional Pena folk music.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          240,
+          160,
+          40
+        ],
+        "hair_type": "boy",
+        "is_child": true
+      }
+    },
+    {
+      "id": "p3_r5",
+      "name": "T. Tombi Singh",
+      "relation": "Sibling",
+      "age": 72,
+      "photo_file": "images/patient_3_ibochouba_singh/relatives/05_sibling_tombi_singh.png",
+      "notes": "Younger brother; retired teacher living in Uripok; discusses local handloom affairs and news with me.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          240,
+          235,
+          220
+        ],
+        "has_shawl": true,
+        "shawl_color": [
+          180,
+          50,
+          45
+        ],
+        "hair_color": [
+          120,
+          120,
+          125
+        ],
+        "has_moustache": true
+      }
+    }
+  ],
+  "step_4_life_story_and_interests": {
+    "occupation": "Retired Handloom Master Weaver & Classical Manipuri Musician (Pena)",
+    "key_life_events": [
+      {
+        "event": "National Master Weaver Recognition",
+        "year": "1985"
+      },
+      {
+        "event": "Marriage to Sanatombi",
+        "year": "1976"
+      },
+      {
+        "event": "Son Birjit born",
+        "year": "1981"
+      },
+      {
+        "event": "Handloom Society Golden Jubilee",
+        "year": "2016"
+      }
+    ],
+    "interests_and_hobbies": [
+      "Music",
+      "Art",
+      "Religious",
+      "Gardening"
+    ],
+    "favorite_music_or_artists": "Manipuri Nata Sankirtana, traditional Pena ballads, devotional Krishna kirtans.",
+    "cultural_background": "Meitei Sanamahi & Vaishnavite traditions; celebrates Yaoshang, Lai Haraoba, and Ningol Chakouba.",
+    "preferred_language": "English",
+    "what_brings_them_joy": "Playing his ancestral Pena string instrument in the courtyard and celebrating Ningol Chakouba with his daughters."
+  },
+  "step_5_and_6_familiar_places": [
+    {
+      "id": "p3_pl1",
+      "place_name": "Home (Uripok Courtyard Residence)",
+      "category": "Home",
+      "short_description": "Where we live — ancestral Meitei homestead with open Yumjao courtyard.",
+      "icon_symbol": "🏠",
+      "photo_file": "images/patient_3_ibochouba_singh/places/01_home_uripok_courtyard.png",
+      "style": {
+        "type": "home",
+        "roof_color": [
+          160,
+          70,
+          45
+        ]
+      }
+    },
+    {
+      "id": "p3_pl2",
+      "place_name": "Ema Keithel (Mother's Market)",
+      "category": "Local Market",
+      "short_description": "Historic all-women marketplace in Imphal where family purchases handloom yarn and vegetables.",
+      "icon_symbol": "🛒",
+      "photo_file": "images/patient_3_ibochouba_singh/places/02_ema_keithel_market.png",
+      "style": {
+        "type": "market"
+      }
+    },
+    {
+      "id": "p3_pl3",
+      "place_name": "Shree Govindaji Temple",
+      "category": "Place of Worship",
+      "short_description": "Place of worship — golden domed temple where he attends morning prayers and Sankirtana.",
+      "icon_symbol": "🛕",
+      "photo_file": "images/patient_3_ibochouba_singh/places/03_shree_govindaji_temple.png",
+      "style": {
+        "type": "temple"
+      }
+    },
+    {
+      "id": "p3_pl4",
+      "place_name": "RIMS Hospital Geriatric OPD",
+      "category": "Clinic",
+      "short_description": "Regional Institute of Medical Sciences outpatient clinic for health and memory monitoring.",
+      "icon_symbol": "🏥",
+      "photo_file": "images/patient_3_ibochouba_singh/places/04_rims_hospital_clinic.png",
+      "style": {
+        "type": "clinic"
+      }
+    },
+    {
+      "id": "p3_pl5",
+      "place_name": "Kangla Fort & Moat Walkway",
+      "category": "Park",
+      "short_description": "Where we walk — peaceful gardens and historic moat surrounding Kangla Palace.",
+      "icon_symbol": "🌳",
+      "photo_file": "images/patient_3_ibochouba_singh/places/05_kangla_fort_moat_park.png",
+      "style": {
+        "type": "park"
+      }
+    }
+  ]
+}
