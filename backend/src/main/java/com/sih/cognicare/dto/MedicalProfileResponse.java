@@ -28,9 +28,11 @@ public class MedicalProfileResponse {
     private String mtaScore;
     private String fazekasGrade;
     private String impairedDomains;
+    private String primaryDeficits;
     private List<String> medications;
     private Map<String, SubscaleScoreDto> subscaleScores;
     private Map<String, DomainAssessment> domains;
+    private GameConfigDto gameConfig;
 
     @Data
     @NoArgsConstructor
@@ -40,5 +42,23 @@ public class MedicalProfileResponse {
     public static class SubscaleScoreDto {
         private int score;
         private int max;
+    }
+
+    /**
+     * Calibrated starting parameters for Game 1 (Memory Pieces) and Game 2 (Remember the Way),
+     * derived from the patient's clinical stage / recommended start difficulty.
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class GameConfigDto {
+        private int startLevel;
+        private int memoryGridSize;
+        private int memoryPreviewSeconds;
+        private boolean memoryShowHints;
+        private int wayfindingRouteLength;
+        private double audioSpeechRate;
     }
 }

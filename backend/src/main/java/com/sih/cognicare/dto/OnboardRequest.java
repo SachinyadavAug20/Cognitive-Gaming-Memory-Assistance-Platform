@@ -3,6 +3,7 @@ package com.sih.cognicare.dto;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class OnboardRequest {
@@ -12,6 +13,7 @@ public class OnboardRequest {
     private LifeStoryRequest lifeStory;
     private List<LandmarkRequest> landmarks;
     private Long caregiverId;
+    private DiagnosticDataRequest diagnostic;
 
     @Data
     public static class PersonalInfo {
@@ -53,5 +55,31 @@ public class OnboardRequest {
         private String description;
         private String emoji;
         private Integer photoIndex;
+    }
+
+    @Data
+    public static class DiagnosticDataRequest {
+        private String diagnosis;
+        private String icd10;
+        private String dateOfDiagnosis;
+        private String examiningPhysician;
+        private String clinicOrHospital;
+        private String testType;
+        private Integer score;
+        private Integer maxScore;
+        private String stage;
+        private Integer recommendedStartLevel;
+        private String mtaScore;
+        private String fazekasGrade;
+        private List<String> medications;
+        private Map<String, SubscaleScoreRequest> subscaleScores;
+        private Map<String, DomainAssessment> domains;
+        private String physicianNotes;
+    }
+
+    @Data
+    public static class SubscaleScoreRequest {
+        private int score;
+        private int max;
     }
 }

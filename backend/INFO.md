@@ -354,4 +354,41 @@ cd backend
 
 ---
 
+## 11. Changelog — Stage Calibration & Game Personalization
+
+> Summary of the latest work (rules + key decisions), not full implementation detail.
+
+### Clinical Stage Calibration (corrected)
+MMSE/MoCA total → stage + baseline level. **NOTE: higher score = better cognition; the mapping is inverted vs. severity.**
+| Score | Stage | Baseline Level |
+|-------|-------|----------------|
+| `>= 24` | MCI / Mild | Level 3 (Hard) |
+| `18 – 23` | Early Dementia | Level 2 (Medium) |
+| `10 – 17` | Moderate Dementia | Level 1 (Assisted) |
+| `< 10` | Severe Dementia | Level 1 (High Assist) |
+
+- **Root cause of the old bug:** the fallback loop stamped generic `"MILD"` + boilerplate on all 17 domains, and the old cutoff put `7/30` into `<=24 → Early Dementia`. Score `7/30` is now correctly **Severe / Level 1 High Assist** (never MCI).
+- Implemented in `MedicalReportService.extractFastRegexMetrics`.
+
+### Rule-based Domain Derivation (no more "MILD" placeholders)
+- `deriveDomainsFromSubscales` derives the 17 domains from the **actual subscale scores** (Recall `/3`, Attention `/5`, Orientation `/10`, Language-Visuospatial `/9`) and the overall stage.
+- Subscale % guides: **`< 50%` Severe, `50–70%` Moderate, `> 70%` Mild/None**; `score_pct` is the exact `score/max` percentage.
+- Domains with no evidence default to `needs_help=false / None`, not generic placeholders.
+
+### Hybrid Extraction + Fast Ollama Polish
+- `analyzeReport` now runs: **Regex fast-path → rule-based domains → fast Ollama polish → merge**.
+- `callOllamaFast` keeps a small prompt (diagnosis, stage, medications, summary, domains) and short `num_predict=600`, `readTimeout` ~25s → ~5–10s on CPU.
+- `parseAndMergeOllama` uses **merge semantics** — Ollama only overwrites non-null values, so a slow/failed LLM never wipes deterministic regex/rule findings.
+
+### Game Calibration Config (`gameConfig` in response)
+- Added `MedicalProfileResponse.GameConfigDto`; built in `PatientController.buildGameConfig(MedicalProfile)`.
+- Rules: L3 → 4x4 grid / 5s / no hints / 4 landmarks / 1.0x speech; L2 → 3x3 / 10s / toggle hints / 3 landmarks / 0.85x; L1 → 2x2 / 15s (20s if Severe) / guided hints / 2 landmarks / 0.75x slow.
+- Frontend renders it as the **"AI Game Personalization"** card in `StepDiagnosticReport.tsx`; `gameConfig` threaded through `DiagnosticData` type + `IntakeWizard` analyze mapping.
+
+### Verification
+- `./mvnw compile` in `backend/` — BUILD SUCCESS.
+- `npx tsc --noEmit` in `frontend/` — no errors.
+
+---
+
 *Last updated: August 2026*
