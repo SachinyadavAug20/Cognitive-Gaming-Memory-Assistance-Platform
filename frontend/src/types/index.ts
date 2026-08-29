@@ -3,7 +3,7 @@ export type Trend = "improving" | "stable" | "declining";
 export interface PatientSummary {
   id: number;
   name: string;
-  preferredLanguage: string | null;
+  languagePreference: string | null;
   dob: string | null;
 }
 

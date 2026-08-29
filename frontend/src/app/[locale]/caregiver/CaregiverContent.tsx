@@ -14,6 +14,7 @@ export function CaregiverContent() {
   const [patients, setPatients] = useState<PatientSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let ignore = false;
@@ -31,7 +32,13 @@ export function CaregiverContent() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [reloadKey]);
+
+  const handleRetry = () => {
+    setError(false);
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  };
 
   return (
     <>
@@ -72,9 +79,16 @@ export function CaregiverContent() {
           ) : error ? (
             <div
               role="alert"
-              className="rounded-xl bg-brick-light border-2 border-brick p-4 text-brick font-bold text-center"
+              className="rounded-xl bg-brick-light border-2 border-brick p-4 text-brick font-bold text-center space-y-3"
             >
-              {t("loadError")}
+              <p>{t("loadError")}</p>
+              <button
+                type="button"
+                onClick={handleRetry}
+                className="btn-tactile bg-tea text-ink border-2 min-h-[44px] px-6"
+              >
+                {t("retry")}
+              </button>
             </div>
           ) : patients.length === 0 ? (
             <div className="scrapbook-card text-center py-14">

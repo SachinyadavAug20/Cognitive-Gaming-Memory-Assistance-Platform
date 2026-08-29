@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Spinner } from "@/components/ui/Spinner";
+import type { IntakeFormData } from "@/types/intake";
 
 const IntakeWizard = dynamic(
   () => import("@/components/intake/IntakeWizard").then((mod) => mod.IntakeWizard),
@@ -11,6 +12,6 @@ const IntakeWizard = dynamic(
   }
 );
 
-export function IntakeWizardClient() {
-  return <IntakeWizard />;
+export function IntakeWizardClient({ prefill }: { prefill?: IntakeFormData }) {
+  return <IntakeWizard prefill={prefill} />;
 }

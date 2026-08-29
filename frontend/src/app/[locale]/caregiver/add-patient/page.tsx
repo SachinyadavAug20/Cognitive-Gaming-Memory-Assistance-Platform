@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IntakeWizardClient } from "@/components/intake/IntakeWizardClient";
+import { DevImportTools } from "./DevImportTools";
 
 export const metadata = {
   title: "Add New Patient — CogniCare",
@@ -29,7 +29,7 @@ export default function AddPatientPage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 mt-6">
-        <IntakeWizardClient />
+        <DevImportTools />
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 {
   "home": {
-    "greeting": "Good Day!",
-    "ready": "Ready for your daily memory exercises?",
+"greeting": "Good Day!",
+  "ready": "Ready for your daily memory exercises?",
+  "comingSoon": "Coming Soon",
     "routine": {
       "label": "Today's Routine",
       "morning_medicine": "Morning Medicine",
@@ -96,7 +97,8 @@
     "loadingPatients": "Loading patients...",
     "loadError": "Could not load patients. Please check that the server is running and try again.",
     "emptyTitle": "No patients yet",
-    "emptyList": "No patients found. Add a new patient to get started.",
+    "emptyList": "No patients found. Click '+ Add Patient' to get started.",
+    "retry": "Retry",
     "age": "Age {age}",
     "ageUnknown": "Age unknown",
     "language": "Language"

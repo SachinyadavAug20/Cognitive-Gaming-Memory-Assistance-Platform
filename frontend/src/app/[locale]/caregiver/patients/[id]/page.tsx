@@ -67,8 +67,8 @@ export default function CaregiverPatientDetail() {
                 <p className="text-ink-inverse/60 text-base">
                   Patient #{patient.id}
                   {age != null ? ` • Age ${age}` : ""}
-                  {patient.preferredLanguage
-                    ? ` • ${patient.preferredLanguage}`
+                  {patient.languagePreference
+                    ? ` • ${patient.languagePreference}`
                     : ""}
                 </p>
               </div>
@@ -130,7 +130,7 @@ export default function CaregiverPatientDetail() {
                   Preferred Language
                 </dt>
                 <dd className="font-bold text-ink">
-                  {patient.preferredLanguage ?? "—"}
+                  {patient.languagePreference ?? "—"}
                 </dd>
               </div>
             </dl>

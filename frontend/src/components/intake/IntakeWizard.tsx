@@ -19,13 +19,22 @@ import type { IntakeFormData, Relative, LandmarkEntry } from "@/types/intake";
 const STORAGE_KEY = "cognicare:intake:draft";
 const STEP_ICONS = ["👤", "🏥", "👨‍👩‍👧", "📖", "📍", "✅"] as const;
 
-export function IntakeWizard() {
+export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
   const t = useTranslations("intake");
   const tWizard = useTranslations("intake.wizard");
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<IntakeFormData>(() => {
+    if (prefill) {
+      return {
+        ...EMPTY_FORM,
+        ...prefill,
+        diagnostic: { ...EMPTY_FORM.diagnostic, ...prefill.diagnostic, file: null },
+        relatives: prefill.relatives.map((r) => ({ ...EMPTY_FORM.relatives[0], ...r })),
+        landmarks: prefill.landmarks.map((l) => ({ ...EMPTY_FORM.landmarks[0], ...l })),
+      };
+    }
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {

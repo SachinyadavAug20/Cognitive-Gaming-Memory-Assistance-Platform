@@ -81,6 +81,12 @@ function RelativeCard({
     [relative, onUpdate]
   );
 
+  const handleClearPhoto = useCallback(() => {
+    if (photoPreview?.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+    onUpdate({ ...relative, photoUrl: "", fileRef: undefined });
+  }, [photoPreview, relative, onUpdate]);
+
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-4">
@@ -88,6 +94,7 @@ function RelativeCard({
           preview={photoPreview}
           size="lg"
           onPick={handlePhoto}
+          onClearPhoto={handleClearPhoto}
           label={`Upload photo for ${relative.name || "family member"}`}
         />
 

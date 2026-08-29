@@ -75,10 +75,21 @@ function LandmarkCard({
     [landmark, onUpdate]
   );
 
+  const handleClearPhoto = useCallback(() => {
+    if (photoPreview?.startsWith("blob:")) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+    onUpdate({ ...landmark, photoUrl: "", fileRef: undefined });
+  }, [photoPreview, landmark, onUpdate]);
+
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-3">
-        <PhotoPicker preview={photoPreview} size="md" onPick={handlePhoto} />
+        <PhotoPicker
+          preview={photoPreview}
+          size="md"
+          onPick={handlePhoto}
+          onClearPhoto={handleClearPhoto}
+        />
 
         <div className="flex-1 space-y-2">
           <input

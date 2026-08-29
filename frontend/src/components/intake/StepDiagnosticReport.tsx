@@ -29,7 +29,6 @@ export function StepDiagnosticReport({
   onAnalyze,
   onSkip,
 }: StepDiagnosticReportProps) {
-  const t = useTranslations("intake");
   const tMedical = useTranslations("intake.medical");
   const preview = data.file ? URL.createObjectURL(data.file) : undefined;
   const ext = data.extractedData;
@@ -84,7 +83,7 @@ export function StepDiagnosticReport({
           onClick={onSkip}
           className="w-full min-h-[56px] rounded-xl border-3 border-border-soft bg-surface text-ink-secondary font-bold text-lg hover:bg-surface-muted transition-colors cursor-pointer"
         >
-          {t("skip")}
+          {tMedical("skip")}
         </button>
       )}
 

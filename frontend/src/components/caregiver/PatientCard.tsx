@@ -22,8 +22,8 @@ export function PatientCard({ patient }: PatientCardProps) {
           <h3 className="font-bold text-base text-ink truncate">{patient.name}</h3>
           <p className="text-ink-secondary text-xs">
             {age != null ? `${t("age", { age })}` : t("ageUnknown")}
-            {patient.preferredLanguage
-              ? ` • ${t("language")}: ${patient.preferredLanguage}`
+            {patient.languagePreference
+              ? ` • ${t("language")}: ${patient.languagePreference}`
               : ""}
           </p>
         </div>

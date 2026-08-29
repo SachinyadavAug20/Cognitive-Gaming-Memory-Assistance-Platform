@@ -246,3 +246,19 @@ html {
 .status-online {
   animation: status-pulse 2s ease-in-out infinite;
 }
+
+/* ── Photo lightbox (viewer) ── */
+@keyframes lightbox-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes lightbox-zoom-in {
+  from { opacity: 0; transform: scale(0.95) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.lightbox-backdrop {
+  animation: lightbox-fade-in 0.18s ease-out;
+}
+.lightbox-card {
+  animation: lightbox-zoom-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}

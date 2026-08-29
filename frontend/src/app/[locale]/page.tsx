@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { ROUTINE } from "@/data/homeData";
 import { Navbar } from "@/components/layout/Navbar";
@@ -7,10 +8,32 @@ import { PortalCard } from "@/components/home/PortalCard";
 import { GamePreviewTile } from "@/components/home/GamePreviewTile";
 import { RoutineItem } from "@/components/home/RoutineItem";
 import { FooterBar } from "@/components/home/FooterBar";
+import { api } from "@/lib/api";
+import type { PatientSummary } from "@/types";
 import { useTranslations } from "next-intl";
+
+const COMING_SOON_MESSAGE =
+  "This game module is currently in development for the hackathon.";
 
 export default function Home() {
   const t = useTranslations("home");
+
+  const [patientCount, setPatientCount] = useState(0);
+
+  useEffect(() => {
+    let ignore = false;
+    api
+      .get<PatientSummary[]>("/patients")
+      .then((data) => {
+        if (!ignore) setPatientCount(data.length);
+      })
+      .catch(() => {
+        /* keep 0 for a fresh, accurate system state */
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <div className="min-h-[100vh] flex flex-col md:overflow-hidden">
@@ -35,7 +58,6 @@ export default function Home() {
                 title={t("patient.title")}
                 subtitle={t("patient.subtitle")}
                 description={t("patient.description")}
-                href="/patient"
                 actionButton={
                   <ChunkyButton
                     variant="terracotta"
@@ -46,16 +68,43 @@ export default function Home() {
                         <path d="M10 10h4M12 8v4" strokeWidth="2" />
                       </svg>
                     }
-                    className="w-full text-lg md:text-xl"
+                    className="w-full text-lg md:text-xl opacity-80 cursor-not-allowed"
+                    onClick={() => alert(COMING_SOON_MESSAGE)}
                   >
-                    {t("patient.cta")}
+                    <span className="inline-flex items-center gap-2">
+                      {t("patient.cta")}
+                      <span className="px-1.5 py-0.5 rounded-full bg-ink/15 text-ink text-[10px] font-bold uppercase tracking-wide whitespace-nowrap">
+                        {t("comingSoon")}
+                      </span>
+                    </span>
                   </ChunkyButton>
                 }
               >
                 <div className="grid grid-cols-3 gap-2">
-                  <GamePreviewTile emoji="🧩" name="Memory Game" subtitle="Level 2" bgColor="bg-terracotta-light" borderColor="border-terracotta/20" />
-                  <GamePreviewTile emoji="🗺️" name="Wayfinding" subtitle="8 min" bgColor="bg-tea-light" borderColor="border-tea/20" />
-                  <GamePreviewTile emoji="📷" name="Photo Quiz" subtitle="New!" bgColor="bg-marigold-light" borderColor="border-marigold/20" />
+                  <GamePreviewTile
+                    emoji="🧩"
+                    name="Memory Game"
+                    subtitle="Level 2"
+                    bgColor="bg-terracotta-light"
+                    borderColor="border-terracotta/20"
+                    comingSoonLabel={t("comingSoon")}
+                  />
+                  <GamePreviewTile
+                    emoji="🗺️"
+                    name="Wayfinding"
+                    subtitle="8 min"
+                    bgColor="bg-tea-light"
+                    borderColor="border-tea/20"
+                    comingSoonLabel={t("comingSoon")}
+                  />
+                  <GamePreviewTile
+                    emoji="📷"
+                    name="Photo Quiz"
+                    subtitle="New!"
+                    bgColor="bg-marigold-light"
+                    borderColor="border-marigold/20"
+                    comingSoonLabel={t("comingSoon")}
+                  />
                 </div>
               </PortalCard>
             </div>
@@ -87,15 +136,15 @@ export default function Home() {
                 <div className="space-y-2 flex-1">
                   <div className="flex items-center justify-between bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
                     <span className="font-bold text-sm text-ink">{t("caregiver.patients")}</span>
-                    <span className="font-bold text-tea text-base">3</span>
+                    <span className="font-bold text-tea text-base">{patientCount}</span>
                   </div>
                   <div className="flex items-center justify-between bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
                     <span className="font-bold text-sm text-ink">{t("caregiver.sessions")}</span>
-                    <span className="font-bold text-terracotta text-base">5</span>
+                    <span className="font-bold text-terracotta text-base">0</span>
                   </div>
                   <div className="flex items-center justify-between bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
                     <span className="font-bold text-sm text-ink">{t("caregiver.alerts")}</span>
-                    <span className="font-bold text-brick text-base">1</span>
+                    <span className="font-bold text-brick text-base">0</span>
                   </div>
                 </div>
               </PortalCard>
