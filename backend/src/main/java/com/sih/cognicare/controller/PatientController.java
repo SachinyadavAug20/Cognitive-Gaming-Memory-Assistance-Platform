@@ -86,9 +86,9 @@ public class PatientController {
     }
 
     @GetMapping("/patients")
-    public ResponseEntity<List<PatientSummaryResponse>> getPatients() {
-        List<PatientSummaryResponse> response = patientRepo.findAll().stream()
-                .map(this::toSummary)
+    public ResponseEntity<List<PatientProfileResponse>> getPatients() {
+        List<PatientProfileResponse> response = patientRepo.findAll().stream()
+                .map(this::toProfile)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
     }
@@ -96,11 +96,7 @@ public class PatientController {
     @GetMapping("/patients/{id}")
     public ResponseEntity<PatientProfileResponse> getPatient(@PathVariable Long id) {
         return patientRepo.findById(id)
-                .map(p -> ResponseEntity.ok(PatientProfileResponse.builder()
-                        .id(p.getId())
-                        .name(p.getName())
-                        .languagePreference(p.getPreferredLanguage())
-                        .build()))
+                .map(p -> ResponseEntity.ok(toProfile(p)))
                 .orElseThrow(() -> new PatientNotFoundException(id));
     }
 
@@ -167,11 +163,11 @@ public class PatientController {
 
     // --- Private helpers ---
 
-    private PatientSummaryResponse toSummary(Patient patient) {
-        return PatientSummaryResponse.builder()
+    private PatientProfileResponse toProfile(Patient patient) {
+        return PatientProfileResponse.builder()
                 .id(patient.getId())
                 .name(patient.getName())
-                .preferredLanguage(patient.getPreferredLanguage())
+                .languagePreference(patient.getPreferredLanguage())
                 .dob(patient.getDob())
                 .build();
     }
