@@ -37,6 +37,7 @@ public class PatientController {
     private final FamiliarPlaceRepository familiarPlaceRepo;
     private final LifeStoryRepository lifeStoryRepo;
     private final MedicalProfileRepository medicalProfileRepo;
+    private final PatientCardRepository patientCardRepo;
     private final FileStorageService fileStorageService;
     private final MedicalReportService medicalReportService;
     private final ObjectMapper objectMapper;
@@ -94,9 +95,9 @@ public class PatientController {
     }
 
     @GetMapping("/patients/{id}")
-    public ResponseEntity<PatientProfileResponse> getPatient(@PathVariable Long id) {
+    public ResponseEntity<PatientDetailResponse> getPatient(@PathVariable Long id) {
         return patientRepo.findById(id)
-                .map(p -> ResponseEntity.ok(toProfile(p)))
+                .map(p -> ResponseEntity.ok(toDetailResponse(p)))
                 .orElseThrow(() -> new PatientNotFoundException(id));
     }
 
@@ -152,16 +153,86 @@ public class PatientController {
         }
     }
 
-    @GetMapping("/uploads/{path:.+}")
-    public ResponseEntity<Resource> serveFile(@PathVariable String path) {
-        Resource resource = fileStorageService.loadFile(path);
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
-                .body(resource);
-    }
-
     // --- Private helpers ---
+
+    private PatientDetailResponse toDetailResponse(Patient patient) {
+        Long id = patient.getId();
+
+        // 1. Life story
+        PatientDetailResponse.LifeStoryDto lifeStoryDto = null;
+        Optional<LifeStory> lsOpt = lifeStoryRepo.findByPatientId(id);
+        if (lsOpt.isPresent()) {
+            LifeStory ls = lsOpt.get();
+            List<String> hobbies = ls.getHobbies() != null && !ls.getHobbies().isBlank()
+                    ? Arrays.stream(ls.getHobbies().split(","))
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .collect(Collectors.toList())
+                    : List.of();
+
+            List<PatientDetailResponse.LifeEventDto> lifeEvents = List.of();
+            if (ls.getLifeEvents() != null && !ls.getLifeEvents().isBlank()) {
+                try {
+                    lifeEvents = objectMapper.readValue(ls.getLifeEvents(),
+                            new TypeReference<List<PatientDetailResponse.LifeEventDto>>() {});
+                } catch (Exception e) {
+                    log.warn("Could not deserialize life events for patient {}: {}", id, e.getMessage());
+                }
+            }
+
+            lifeStoryDto = PatientDetailResponse.LifeStoryDto.builder()
+                    .occupation(ls.getOccupation())
+                    .favoriteMusic(ls.getFavoriteMusic())
+                    .hobbies(hobbies)
+                    .lifeEvents(lifeEvents)
+                    .build();
+        }
+
+        // 2. Medical profile
+        MedicalProfileResponse medResponse = medicalProfileRepo.findByPatientId(id)
+                .map(this::toMedicalProfileResponse)
+                .orElse(null);
+
+        // 3. Family members
+        List<FamilyMemberResponse> family = familyMemberRepo.findByPatientId(id).stream()
+                .map(this::toFamilyMemberResponse)
+                .collect(Collectors.toList());
+
+        // 4. Familiar places
+        List<FamiliarPlaceResponse> places = familiarPlaceRepo.findByPatientId(id).stream()
+                .map(this::toFamiliarPlaceResponse)
+                .collect(Collectors.toList());
+
+        // 5. Active Card
+        GenerateCardResponse cardResponse = patientCardRepo.findTopByPatientIdAndIsActiveTrue(id)
+                .map(card -> GenerateCardResponse.builder()
+                        .secureToken(card.getSecureToken())
+                        .patientId(patient.getId())
+                        .patientName(patient.getName())
+                        .issuedAt(card.getIssuedAt())
+                        .isActive(card.isActive())
+                        .build())
+                .orElse(null);
+
+        return PatientDetailResponse.builder()
+                .id(patient.getId())
+                .name(patient.getName())
+                .dob(patient.getDob())
+                .gender(patient.getGender())
+                .phone(patient.getPhone())
+                .relationship(patient.getRelationship())
+                .caregiverId(patient.getCaregiverId())
+                .preferredLanguage(patient.getPreferredLanguage())
+                .culturalBackground(patient.getCulturalBackground())
+                .joyTriggers(patient.getJoyTriggers())
+                .createdAt(patient.getCreatedAt())
+                .lifeStory(lifeStoryDto)
+                .medicalProfile(medResponse)
+                .familyMembers(family)
+                .familiarPlaces(places)
+                .card(cardResponse)
+                .build();
+    }
 
     private PatientProfileResponse toProfile(Patient patient) {
         return PatientProfileResponse.builder()

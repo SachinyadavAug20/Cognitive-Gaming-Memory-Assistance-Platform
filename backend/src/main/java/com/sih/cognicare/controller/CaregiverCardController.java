@@ -13,6 +13,11 @@ public class CaregiverCardController {
 
     private final PatientCardService patientCardService;
 
+    @GetMapping("/{patientId}/card")
+    public ResponseEntity<GenerateCardResponse> getCard(@PathVariable Long patientId) {
+        return ResponseEntity.ok(patientCardService.getCard(patientId));
+    }
+
     @PostMapping("/{patientId}/card")
     public ResponseEntity<GenerateCardResponse> generateCard(@PathVariable Long patientId) {
         return ResponseEntity.ok(patientCardService.generateCard(patientId));

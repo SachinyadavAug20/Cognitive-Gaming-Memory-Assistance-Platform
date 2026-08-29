@@ -11,9 +11,11 @@ import com.sih.cognicare.repository.PatientCardRepository;
 import com.sih.cognicare.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,11 +27,26 @@ public class PatientCardService {
     private final JwtService jwtService;
 
     @Transactional
+    public GenerateCardResponse getCard(Long patientId) {
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException(patientId));
+
+        return patientCardRepository.findTopByPatientIdAndIsActiveTrue(patientId)
+                .map(card -> toResponse(patient, card))
+                .orElseGet(() -> generateCard(patientId));
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public GenerateCardResponse generateCard(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(patientId));
 
-        patientCardRepository.deactivateActiveCardsByPatientId(patientId);
+        List<PatientCard> activeCards =
+                patientCardRepository.findAllByPatientIdAndIsActiveTrue(patientId);
+        for (PatientCard card : activeCards) {
+            card.setActive(false);
+        }
+        patientCardRepository.saveAll(activeCards);
 
         PatientCard card = PatientCard.builder()
                 .patientId(patientId)
@@ -39,9 +56,13 @@ public class PatientCardService {
                 .build();
         patientCardRepository.save(card);
 
+        return toResponse(patient, card);
+    }
+
+    private GenerateCardResponse toResponse(Patient patient, PatientCard card) {
         return GenerateCardResponse.builder()
                 .secureToken(card.getSecureToken())
-                .patientId(patientId)
+                .patientId(patient.getId())
                 .patientName(patient.getName())
                 .issuedAt(card.getIssuedAt())
                 .isActive(card.isActive())

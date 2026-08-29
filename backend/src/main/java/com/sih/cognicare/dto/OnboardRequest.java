@@ -1,10 +1,12 @@
 package com.sih.cognicare.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class OnboardRequest {
 
@@ -15,6 +17,7 @@ public class OnboardRequest {
     private Long caregiverId;
     private DiagnosticDataRequest diagnostic;
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class PersonalInfo {
         private String fullName;
@@ -24,6 +27,7 @@ public class OnboardRequest {
         private String relationship;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class RelativeRequest {
         private String name;
@@ -32,6 +36,7 @@ public class OnboardRequest {
         private Integer photoIndex;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class LifeStoryRequest {
         private String occupation;
@@ -43,12 +48,14 @@ public class OnboardRequest {
         private String joyNote;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class LifeEventRequest {
         private String event;
         private String year;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class LandmarkRequest {
         private String name;
@@ -57,6 +64,7 @@ public class OnboardRequest {
         private Integer photoIndex;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class DiagnosticDataRequest {
         private String diagnosis;
@@ -77,6 +85,7 @@ public class OnboardRequest {
         private String physicianNotes;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @Data
     public static class SubscaleScoreRequest {
         private int score;

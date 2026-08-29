@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(401, "Unauthorized", ex.getMessage()));
     }
 
+    @ExceptionHandler(AuthenticationRequiredException.class)
+    public ResponseEntity<ApiError> handleAuthenticationRequired(AuthenticationRequiredException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiError.of(401, "Unauthorized", ex.getMessage()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()
