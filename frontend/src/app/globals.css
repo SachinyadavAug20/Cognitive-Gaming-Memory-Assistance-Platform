@@ -38,6 +38,14 @@
   --color-brick: #C5221F;
   --color-brick-light: #FDE8E8;
 
+  /* ── Diagnostic report accent colors (pixel-matched hex aliases) ── */
+  --color-cream: #FEF3C7;
+  --color-terracotta-deep: #C24E26;
+  --color-amber: #D97706;
+  --color-warm-surface: #F8F5EE;
+  --color-ink-soft: #4F473D;
+  --color-surface-cream: #E8E4DB;
+
   /* ── Fonts (Preserved) ── */
   --font-serif: "Fraunces", "Georgia", serif;
   --font-sans: "Atkinson Hyperlegible", "Noto Sans Devanagari", sans-serif;

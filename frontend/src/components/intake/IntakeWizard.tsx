@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ProgressBar } from "./ProgressBar";
@@ -13,14 +13,15 @@ import { StepReview } from "./StepReview";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { api } from "@/lib/api";
 import { EMPTY_FORM } from "@/types/intake";
-import type { IntakeFormData, Relative, LandmarkEntry, ClinicalDomains } from "@/types/intake";
+import { parseAnalyzeReport, buildOnboardPayload } from "@/lib/intake";
+import type { IntakeFormData, Relative, LandmarkEntry } from "@/types/intake";
 
 const STORAGE_KEY = "cognicare:intake:draft";
-
-const STEP_ICONS = ["👤", "🏥", "👨‍👩‍👧", "📖", "📍", "✅"];
+const STEP_ICONS = ["👤", "🏥", "👨‍👩‍👧", "📖", "📍", "✅"] as const;
 
 export function IntakeWizard() {
   const t = useTranslations("intake");
+  const tWizard = useTranslations("intake.wizard");
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -36,7 +37,7 @@ export function IntakeWizard() {
         };
       }
     } catch {
-      // Ignore corrupted data
+      /* ignore corrupted data */
     }
     return EMPTY_FORM;
   });
@@ -46,31 +47,31 @@ export function IntakeWizard() {
   const [patientId, setPatientId] = useState<number | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const tWizard = useTranslations("intake.wizard");
-  const STEP_META = [
-    { label: tWizard("personal"), icon: STEP_ICONS[0] },
-    { label: tWizard("medical"), icon: STEP_ICONS[1] },
-    { label: tWizard("family"), icon: STEP_ICONS[2] },
-    { label: tWizard("life"), icon: STEP_ICONS[3] },
-    { label: tWizard("places"), icon: STEP_ICONS[4] },
-    { label: tWizard("review"), icon: STEP_ICONS[5] },
-  ];
+  const stepMeta = useMemo(
+    () =>
+      STEP_ICONS.map((icon, i) => {
+        const keys = ["personal", "medical", "family", "life", "places", "review"] as const;
+        return { icon, label: tWizard(keys[i]) };
+      }),
+    [tWizard]
+  );
 
+  /* ── Auto-save to localStorage ── */
   useEffect(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     saveTimerRef.current = setTimeout(() => {
-      try {
-        const toSave = {
-          ...formData,
-          diagnostic: { ...formData.diagnostic, file: null },
-          relatives: formData.relatives.map(({ fileRef: _, ...r }) => r),
-          landmarks: formData.landmarks.map(({ fileRef: _, ...l }) => l),
-        };
+    try {
+      const toSave = {
+        ...formData,
+        diagnostic: { ...formData.diagnostic, file: null },
+        relatives: formData.relatives.map(({ fileRef: _, ...r }) => r),
+        landmarks: formData.landmarks.map(({ fileRef: _, ...l }) => l),
+      };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-      } catch (e) {
-        console.warn("Could not auto-save draft", e);
+      } catch {
+        /* ignore storage errors */
       }
     }, 1000);
 
@@ -79,10 +80,12 @@ export function IntakeWizard() {
     };
   }, [formData]);
 
+  /* ── Scroll to top on step change ── */
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentStep]);
 
+  /* ── Generic field updater ── */
   const updateField = useCallback(
     (section: string, field: string, value: string) => {
       setFormData((prev) => ({
@@ -101,117 +104,71 @@ export function IntakeWizard() {
     []
   );
 
-  const handleFileSelect = useCallback(
-    async (file: File | null) => {
-      if (!file) {
-        setFormData((prev) => ({
-          ...prev,
-          diagnostic: {
-            ...prev.diagnostic,
-            file: null,
-            fileName: "",
-            extractedData: null,
-            isProcessing: false,
-          },
-        }));
-        return;
-      }
+  /* ── PDF file handler → calls real backend ── */
+  const handleFileSelect = useCallback(async (file: File | null) => {
+    if (!file) {
+      setFormData((prev) => ({
+        ...prev,
+        diagnostic: {
+          ...prev.diagnostic,
+          file: null,
+          fileName: "",
+          extractedData: null,
+          isProcessing: false,
+        },
+      }));
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      diagnostic: {
+        ...prev.diagnostic,
+        file,
+        fileName: file.name,
+        isProcessing: true,
+        skipped: false,
+      },
+    }));
+
+    try {
+      const payload = new FormData();
+      payload.append("reportFile", file);
+      const response = await api.postMultipart<Record<string, unknown>>("/patients/analyze-pdf", payload);
 
       setFormData((prev) => ({
         ...prev,
         diagnostic: {
           ...prev.diagnostic,
-          file,
-          fileName: file.name,
-          isProcessing: true,
-          skipped: false,
+          extractedData: parseAnalyzeReport(response as Parameters<typeof parseAnalyzeReport>[0]),
+          isProcessing: false,
         },
       }));
-
-      try {
-        const payload = new FormData();
-        payload.append("reportFile", file);
-
-        const response = await api.postMultipart<{
-          diagnosis?: string | null;
-          icd10?: string | null;
-          dateOfDiagnosis?: string | null;
-          examiningPhysician?: string | null;
-          clinicOrHospital?: string | null;
-          clinicalStage?: string | null;
-          recommendedStartDifficulty?: number | null;
-          llmSummary?: string | null;
-          testType?: string | null;
-          mmseScore?: number | null;
-          maxScore?: number | null;
-          mtaScore?: string | null;
-          fazekasGrade?: string | null;
-          medications?: string[];
-          subscaleScores?: Record<string, { score: number; max: number }>;
-          domains?: ClinicalDomains;
-        }>("/patients/analyze-pdf", payload);
-
-        setFormData((prev) => ({
-          ...prev,
-          diagnostic: {
-            ...prev.diagnostic,
-            extractedData: {
-              diagnosis: response.diagnosis || "Undetermined Diagnosis",
-              icd10: response.icd10 ?? undefined,
-              dateOfDiagnosis: response.dateOfDiagnosis || "",
-              examiningPhysician: response.examiningPhysician ?? undefined,
-              clinicOrHospital: response.clinicOrHospital ?? undefined,
-              testType: response.testType ?? "Unknown",
-              score: response.mmseScore ?? null,
-              maxScore: response.maxScore ?? (response.mmseScore != null ? 30 : null),
-              stage: response.clinicalStage ?? "MCI",
-              recommendedStartLevel: response.recommendedStartDifficulty ?? 1,
-              mtaScore: response.mtaScore ?? undefined,
-              fazekasGrade: response.fazekasGrade ?? undefined,
-              medications: response.medications ?? [],
-              subscaleScores: response.subscaleScores ?? undefined,
-              domains: response.domains ?? undefined,
-              physicianNotes: response.llmSummary ?? "",
-            },
-            isProcessing: false,
-          },
-        }));
-      } catch (err) {
-        console.error("PDF analysis failed:", err);
-        setFormData((prev) => ({
-          ...prev,
-          diagnostic: { ...prev.diagnostic, isProcessing: false },
-        }));
-      }
-    },
-    []
-  );
+    } catch (err) {
+      console.error("PDF analysis failed:", err);
+      setFormData((prev) => ({
+        ...prev,
+        diagnostic: { ...prev.diagnostic, isProcessing: false },
+      }));
+    }
+  }, []);
 
   const handleAnalyze = useCallback(() => {
-    if (formData.diagnostic.file) {
-      handleFileSelect(formData.diagnostic.file);
-    }
+    if (formData.diagnostic.file) handleFileSelect(formData.diagnostic.file);
   }, [formData.diagnostic.file, handleFileSelect]);
 
   const handleSkipDiagnostic = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
-      diagnostic: {
-        ...prev.diagnostic,
-        skipped: true,
-        extractedData: null,
-        isProcessing: false,
-      },
+      diagnostic: { ...prev.diagnostic, skipped: true, extractedData: null, isProcessing: false },
     }));
   }, []);
 
+  /* ── Relative handlers ── */
   const handleAddRelative = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
-      relatives: [
-        ...prev.relatives,
-        { name: "", relationship: "", photoUrl: "", notes: "" },
-      ],
+      relatives: [...prev.relatives, { name: "", relationship: "", photoUrl: "", notes: "" }],
     }));
   }, []);
 
@@ -222,16 +179,14 @@ export function IntakeWizard() {
     }));
   }, []);
 
-  const handleUpdateRelative = useCallback(
-    (index: number, item: Relative) => {
-      setFormData((prev) => ({
-        ...prev,
-        relatives: prev.relatives.map((r, i) => (i === index ? item : r)),
-      }));
-    },
-    []
-  );
+  const handleUpdateRelative = useCallback((index: number, item: Relative) => {
+    setFormData((prev) => ({
+      ...prev,
+      relatives: prev.relatives.map((r, i) => (i === index ? item : r)),
+    }));
+  }, []);
 
+  /* ── Life story handler ── */
   const handleLifeStoryChange = useCallback(
     (field: string, value: string | string[] | { event: string; year: string }[]) => {
       setFormData((prev) => {
@@ -253,13 +208,11 @@ export function IntakeWizard() {
     []
   );
 
+  /* ── Landmark handlers ── */
   const handleAddLandmark = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
-      landmarks: [
-        ...prev.landmarks,
-        { name: "", description: "", emoji: "📍" },
-      ],
+      landmarks: [...prev.landmarks, { name: "", description: "", emoji: "📍" }],
     }));
   }, []);
 
@@ -270,16 +223,14 @@ export function IntakeWizard() {
     }));
   }, []);
 
-  const handleUpdateLandmark = useCallback(
-    (index: number, item: LandmarkEntry) => {
-      setFormData((prev) => ({
-        ...prev,
-        landmarks: prev.landmarks.map((l, i) => (i === index ? item : l)),
-      }));
-    },
-    []
-  );
+  const handleUpdateLandmark = useCallback((index: number, item: LandmarkEntry) => {
+    setFormData((prev) => ({
+      ...prev,
+      landmarks: prev.landmarks.map((l, i) => (i === index ? item : l)),
+    }));
+  }, []);
 
+  /* ── Validation ── */
   const validateStep = useCallback(
     (step: number): Record<string, string> => {
       const errs: Record<string, string> = {};
@@ -295,8 +246,7 @@ export function IntakeWizard() {
       }
 
       if (step === 2) {
-        if (formData.relatives.length === 0)
-          errs.relatives = "Add at least one family member";
+        if (formData.relatives.length === 0) errs.relatives = "Add at least one family member";
       }
 
       if (step === 4) {
@@ -309,6 +259,7 @@ export function IntakeWizard() {
     [formData]
   );
 
+  /* ── Navigation ── */
   const handleNext = useCallback(() => {
     const stepErrors = validateStep(currentStep);
     if (Object.keys(stepErrors).length > 0) {
@@ -316,8 +267,8 @@ export function IntakeWizard() {
       return;
     }
     setErrors({});
-    setCurrentStep((s) => Math.min(s + 1, STEP_META.length - 1));
-  }, [currentStep, validateStep]);
+    setCurrentStep((s) => Math.min(s + 1, stepMeta.length - 1));
+  }, [currentStep, validateStep, stepMeta.length]);
 
   const handleBack = useCallback(() => {
     setErrors({});
@@ -334,84 +285,14 @@ export function IntakeWizard() {
     [currentStep]
   );
 
+  /* ── Form submission ── */
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
-      const formDataPayload = new FormData();
-
-      const relativesWithIndex = formData.relatives.map((r, i) => ({
-        name: r.name,
-        relationship: r.relationship,
-        notes: r.notes,
-        photoIndex: r.fileRef ? i : null,
-      }));
-
-      const photoOffset = formData.relatives.filter((r) => r.fileRef).length;
-      const landmarksWithIndex = formData.landmarks.map((l, i) => ({
-        name: l.name,
-        description: l.description,
-        emoji: l.emoji,
-        photoIndex: l.fileRef ? photoOffset + i : null,
-      }));
-
-      const dataBlob = {
-        personal: formData.personal,
-        relatives: relativesWithIndex,
-        lifeStory: {
-          occupation: formData.lifeStory.occupation,
-          favoriteMusic: formData.lifeStory.favoriteMusic,
-          interests: formData.lifeStory.interests,
-          lifeEvents: formData.lifeStory.lifeEvents,
-          culturalBackground: formData.lifeStory.culturalBackground,
-          preferredLanguage: formData.lifeStory.preferredLanguage,
-          joyNote: formData.lifeStory.joyNote,
-        },
-        landmarks: landmarksWithIndex,
-        caregiverId: 1,
-        diagnostic: formData.diagnostic.extractedData
-          ? {
-              diagnosis: formData.diagnostic.extractedData.diagnosis,
-              icd10: formData.diagnostic.extractedData.icd10,
-              dateOfDiagnosis: formData.diagnostic.extractedData.dateOfDiagnosis,
-              examiningPhysician: formData.diagnostic.extractedData.examiningPhysician,
-              clinicOrHospital: formData.diagnostic.extractedData.clinicOrHospital,
-              testType: formData.diagnostic.extractedData.testType,
-              score: formData.diagnostic.extractedData.score,
-              maxScore: formData.diagnostic.extractedData.maxScore,
-              stage: formData.diagnostic.extractedData.stage,
-              recommendedStartLevel: formData.diagnostic.extractedData.recommendedStartLevel,
-              mtaScore: formData.diagnostic.extractedData.mtaScore,
-              fazekasGrade: formData.diagnostic.extractedData.fazekasGrade,
-              medications: formData.diagnostic.extractedData.medications,
-              subscaleScores: formData.diagnostic.extractedData.subscaleScores,
-              domains: formData.diagnostic.extractedData.domains,
-              physicianNotes: formData.diagnostic.extractedData.physicianNotes,
-            }
-          : null,
-      };
-
-      formDataPayload.append(
-        "data",
-        new Blob([JSON.stringify(dataBlob)], { type: "application/json" })
-      );
-
-      if (formData.diagnostic.file) {
-        formDataPayload.append("reportFile", formData.diagnostic.file);
-      }
-
-      for (const r of formData.relatives) {
-        if (r.fileRef) formDataPayload.append("photos", r.fileRef);
-      }
-      for (const l of formData.landmarks) {
-        if (l.fileRef) formDataPayload.append("photos", l.fileRef);
-      }
-
-      const response = await api.postMultipart<{ patientId: number }>(
-        "/patients/onboard",
-        formDataPayload
-      );
+      const payload = buildOnboardPayload(formData);
+      const response = await api.postMultipart<{ patientId: number }>("/patients/onboard", payload);
 
       setIsSubmitting(false);
       setIsComplete(true);
@@ -425,6 +306,7 @@ export function IntakeWizard() {
     }
   }, [formData]);
 
+  /* ── Completion screen ── */
   if (isComplete) {
     return (
       <div className="text-center space-y-6 py-12">
@@ -444,10 +326,7 @@ export function IntakeWizard() {
               View Patient Profile →
             </ChunkyButton>
           )}
-          <ChunkyButton
-            variant="tea"
-            onClick={() => router.push("/caregiver")}
-          >
+          <ChunkyButton variant="tea" onClick={() => router.push("/caregiver")}>
             {t("complete.dashboard")}
           </ChunkyButton>
         </div>
@@ -455,12 +334,13 @@ export function IntakeWizard() {
     );
   }
 
+  /* ── Main render ── */
   return (
     <div className="max-w-2xl mx-auto">
       <ProgressBar
         currentStep={currentStep}
-        totalSteps={STEP_META.length}
-        steps={STEP_META}
+        totalSteps={stepMeta.length}
+        steps={stepMeta}
         onStepClick={handleGoToStep}
       />
 
@@ -472,7 +352,6 @@ export function IntakeWizard() {
             onChange={(field, value) => updateField("personal", field, value)}
           />
         )}
-
         {currentStep === 1 && (
           <StepDiagnosticReport
             data={formData.diagnostic}
@@ -482,7 +361,6 @@ export function IntakeWizard() {
             onSkip={handleSkipDiagnostic}
           />
         )}
-
         {currentStep === 2 && (
           <StepFamilyMembers
             data={formData.relatives}
@@ -492,7 +370,6 @@ export function IntakeWizard() {
             onUpdate={handleUpdateRelative}
           />
         )}
-
         {currentStep === 3 && (
           <StepLifeStory
             data={formData.lifeStory}
@@ -500,7 +377,6 @@ export function IntakeWizard() {
             onChange={handleLifeStoryChange}
           />
         )}
-
         {currentStep === 4 && (
           <StepFamiliarPlaces
             data={formData.landmarks}
@@ -510,31 +386,25 @@ export function IntakeWizard() {
             onUpdate={handleUpdateLandmark}
           />
         )}
-
         {currentStep === 5 && (
           <StepReview data={formData} onEditStep={handleGoToStep} />
         )}
       </div>
 
+      {/* Navigation */}
       <div className="flex gap-3 mt-8 pt-6 border-t-3 border-border-soft">
         {currentStep > 0 && (
           <ChunkyButton variant="outline" onClick={handleBack}>
             {t("back")}
           </ChunkyButton>
         )}
-
         <div className="flex-1" />
-
-        {currentStep < STEP_META.length - 1 ? (
+        {currentStep < stepMeta.length - 1 ? (
           <ChunkyButton variant="terracotta" onClick={handleNext}>
             {t("continue")}
           </ChunkyButton>
         ) : (
-          <ChunkyButton
-            variant="tea"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
+          <ChunkyButton variant="tea" onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? t("creating") : t("submit")}
           </ChunkyButton>
         )}

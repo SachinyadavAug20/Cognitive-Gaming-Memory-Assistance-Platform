@@ -2,7 +2,9 @@
 
 import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";
+import { PhotoPicker } from "./PhotoPicker";
 import { LANDMARK_EMOJIS } from "@/types/intake";
 import type { LandmarkEntry } from "@/types/intake";
 
@@ -25,14 +27,7 @@ export function StepFamiliarPlaces({
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-1">
-        <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          {t("title")}
-        </h2>
-        <p className="text-ink-secondary text-base">
-          {t("subtitle")}
-        </p>
-      </div>
+      <StepHeader title={t("title")} subtitle={t("subtitle")} />
 
       {errors.landmarks && (
         <p role="alert" className="text-brick text-sm font-bold text-center">
@@ -44,7 +39,6 @@ export function StepFamiliarPlaces({
         items={data}
         onAdd={onAdd}
         onRemove={onRemove}
-        onUpdate={onUpdate}
         minItems={3}
         addLabel={t("add")}
         emptyMessage={t("empty")}
@@ -74,20 +68,9 @@ function LandmarkCard({
   const tIcon = useTranslations("intake.places");
 
   const handlePhoto = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Photo must be under 5MB");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result as string;
-        setPhotoPreview(dataUrl);
-        onUpdate({ ...landmark, photoUrl: dataUrl, fileRef: file });
-      };
-      reader.readAsDataURL(file);
+    (_file: File, dataUrl: string) => {
+      setPhotoPreview(dataUrl);
+      onUpdate({ ...landmark, photoUrl: dataUrl, fileRef: _file });
     },
     [landmark, onUpdate]
   );
@@ -95,34 +78,8 @@ function LandmarkCard({
   return (
     <div className="space-y-3">
       <div className="flex items-start gap-3">
-        {/* Photo */}
-        <label className="flex-shrink-0 cursor-pointer">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhoto}
-            className="sr-only"
-          />
-          <div
-            className={`w-16 h-16 rounded-xl border-3 flex items-center justify-center text-2xl transition-all ${
-              photoPreview
-                ? "border-tea overflow-hidden"
-                : "border-dashed border-border-soft bg-surface-muted hover:border-border"
-            }`}
-          >
-            {photoPreview ? (
-              <img
-                src={photoPreview}
-                alt={`Photo of ${landmark.name}`}
-                className="w-full h-full object-cover rounded-lg"
-              />
-            ) : (
-              "📷"
-            )}
-          </div>
-        </label>
+        <PhotoPicker preview={photoPreview} size="md" onPick={handlePhoto} />
 
-        {/* Name and description */}
         <div className="flex-1 space-y-2">
           <input
             type="text"
@@ -141,7 +98,7 @@ function LandmarkCard({
         </div>
       </div>
 
-      {/* Emoji selector — inline scrollable row */}
+      {/* Emoji selector */}
       <div>
         <p className="text-xs font-bold text-ink-secondary mb-1.5 uppercase tracking-wider">
           {tIcon("icon")}

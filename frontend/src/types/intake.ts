@@ -44,6 +44,15 @@ export interface SubscaleScore {
   max: number;
 }
 
+export interface GameConfig {
+  startLevel: number;
+  memoryGridSize: number;
+  memoryPreviewSeconds: number;
+  memoryShowHints: boolean;
+  wayfindingRouteLength: number;
+  audioSpeechRate: number;
+}
+
 export interface DiagnosticData {
   diagnosis: string;
   icd10?: string;
@@ -60,6 +69,7 @@ export interface DiagnosticData {
   medications: string[];
   subscaleScores?: Record<string, SubscaleScore>;
   domains?: ClinicalDomains;
+  gameConfig?: GameConfig;
   physicianNotes: string;
   file?: File | null;
 }

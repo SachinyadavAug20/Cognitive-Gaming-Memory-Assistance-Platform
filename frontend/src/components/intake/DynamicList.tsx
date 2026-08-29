@@ -6,7 +6,6 @@ interface DynamicListProps<T> {
   items: T[];
   onAdd: () => void;
   onRemove: (index: number) => void;
-  onUpdate: (index: number, item: T) => void;
   renderItem: (item: T, index: number) => ReactNode;
   minItems?: number;
   addLabel: string;

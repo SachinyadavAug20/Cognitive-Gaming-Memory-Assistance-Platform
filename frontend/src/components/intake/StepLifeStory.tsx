@@ -1,6 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { StepHeader } from "./StepHeader";
+import { Field, INPUT_CLASS } from "./Field";
+import { SelectChip } from "./SelectChip";
 import { LANGUAGE_OPTIONS } from "@/types/intake";
 import type { LifeStory, LifeEvent } from "@/types/intake";
 
@@ -17,10 +20,9 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
   const tInterest = useTranslations("options.interests");
 
   const toggleInterest = (interest: string) => {
-    const current = data.interests;
-    const updated = current.includes(interest)
-      ? current.filter((i) => i !== interest)
-      : [...current, interest];
+    const updated = data.interests.includes(interest)
+      ? data.interests.filter((i) => i !== interest)
+      : [...data.interests, interest];
     onChange("interests", updated);
   };
 
@@ -42,35 +44,22 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-1">
-        <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          {t("title")}
-        </h2>
-        <p className="text-ink-secondary text-base">
-          {t("subtitle")}
-        </p>
-      </div>
+      <StepHeader title={t("title")} subtitle={t("subtitle")} />
 
-      {/* Occupation */}
-      <div>
-        <label htmlFor="occupation" className="block font-bold text-ink mb-1.5">
-          {t("occupation.label")}
-        </label>
+      <Field label={t("occupation.label")} htmlFor="occupation">
         <input
           id="occupation"
           type="text"
           value={data.occupation}
           onChange={(e) => onChange("occupation", e.target.value)}
           placeholder={t("occupation.placeholder")}
-          className="w-full min-h-[56px] px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
+          className={INPUT_CLASS}
         />
-      </div>
+      </Field>
 
       {/* Life Events */}
       <div>
-        <label className="block font-bold text-ink mb-1.5">
-          {t("events.label")}
-        </label>
+        <label className="block font-bold text-ink mb-1.5">{t("events.label")}</label>
         <div className="space-y-2">
           {data.lifeEvents.map((event, i) => (
             <div key={i} className="flex gap-2 items-center">
@@ -106,103 +95,66 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
         </div>
       </div>
 
-      {/* Interests */}
-      <div>
-        <label className="block font-bold text-ink mb-1.5">
-          {t("interests")}
-        </label>
+      <Field label={t("interests")}>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Interests">
           {INTEREST_KEYS.map((key) => (
-            <button
+            <SelectChip
               key={key}
-              type="button"
+              label={tInterest(key)}
+              selected={data.interests.includes(key)}
+              tone="terracotta"
               onClick={() => toggleInterest(key)}
-              className={`min-h-[48px] px-4 rounded-xl border-3 font-bold transition-all ${
-                data.interests.includes(key)
-                  ? "bg-terracotta text-white border-border"
-                  : "bg-surface text-ink border-border-soft hover:border-border hover:bg-surface-muted"
-              }`}
-            >
-              {tInterest(key)}
-            </button>
+            />
           ))}
         </div>
-      </div>
+      </Field>
 
-      {/* Favorite Music */}
-      <div>
-        <label htmlFor="music" className="block font-bold text-ink mb-1.5">
-          {t("music.label")}
-        </label>
+      <Field label={t("music.label")} htmlFor="music">
         <input
           id="music"
           type="text"
           value={data.favoriteMusic}
           onChange={(e) => onChange("favoriteMusic", e.target.value)}
           placeholder={t("music.placeholder")}
-          className="w-full min-h-[56px] px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
+          className={INPUT_CLASS}
         />
-      </div>
+      </Field>
 
-      {/* Cultural Background */}
-      <div>
-        <label htmlFor="culture" className="block font-bold text-ink mb-1.5">
-          {t("culture.label")}
-        </label>
+      <Field label={t("culture.label")} htmlFor="culture">
         <input
           id="culture"
           type="text"
           value={data.culturalBackground}
           onChange={(e) => onChange("culturalBackground", e.target.value)}
           placeholder={t("culture.placeholder")}
-          className="w-full min-h-[56px] px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors"
+          className={INPUT_CLASS}
         />
-      </div>
+      </Field>
 
-      {/* Preferred Language */}
-      <div>
-        <label className="block font-bold text-ink mb-1.5">
-          {t("language")} <span className="text-brick">*</span>
-        </label>
+      <Field label={t("language")} error={errors.preferredLanguage} required>
         <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Preferred language">
           {LANGUAGE_OPTIONS.map((lang) => (
-            <button
+            <SelectChip
               key={lang.code}
-              type="button"
-              role="radio"
-              aria-checked={data.preferredLanguage === lang.code}
+              label={lang.label}
+              selected={data.preferredLanguage === lang.code}
+              tone="marigold"
               onClick={() => onChange("preferredLanguage", lang.code)}
-              className={`min-h-[56px] px-5 rounded-xl border-3 font-bold text-lg transition-all ${
-                data.preferredLanguage === lang.code
-                  ? "bg-marigold text-white border-border"
-                  : "bg-surface text-ink border-border-soft hover:border-border hover:bg-surface-muted"
-              }`}
-            >
-              {lang.label}
-            </button>
+            />
           ))}
         </div>
-        {errors.preferredLanguage && (
-          <p role="alert" className="mt-1 text-brick text-sm font-bold">
-            {errors.preferredLanguage}
-          </p>
-        )}
-      </div>
+      </Field>
 
-      {/* Joy Note */}
-      <div>
-        <label htmlFor="joy" className="block font-bold text-ink mb-1.5">
-          {t("joy.label")}
-        </label>
+      <Field label={t("joy.label")} htmlFor="joy">
         <textarea
           id="joy"
           value={data.joyNote}
           onChange={(e) => onChange("joyNote", e.target.value)}
           placeholder={t("joy.placeholder")}
           rows={3}
-          className="w-full px-4 rounded-xl border-3 border-border-soft bg-surface text-ink text-lg font-medium placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors resize-none"
+          className={`${INPUT_CLASS} min-h-[80px] resize-none`}
         />
-      </div>
+      </Field>
     </div>
   );
 }

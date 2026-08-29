@@ -1,8 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { StepHeader } from "./StepHeader";
 import type { IntakeFormData } from "@/types/intake";
 import { LANGUAGE_OPTIONS } from "@/types/intake";
+import type { ReactNode } from "react";
 
 interface StepReviewProps {
   data: IntakeFormData;
@@ -17,63 +19,35 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
 
   return (
     <div className="space-y-6">
-      <div className="text-center space-y-1">
-        <h2 className="font-[family-name:var(--font-serif)] text-2xl md:text-3xl font-bold text-ink">
-          {t("title")}
-        </h2>
-        <p className="text-ink-secondary text-sm md:text-base">
-          {t("subtitle") || "Please check that everything looks right before we create the patient's profile."}
-        </p>
-      </div>
+      <StepHeader
+        title={t("title")}
+        subtitle={t("subtitle") || "Please check that everything looks right before we create the patient's profile."}
+      />
 
-      {/* Personal Info */}
       <ReviewSection title={t("personal")} icon="👤" editLabel={t("edit")} onEdit={() => onEditStep(0)}>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldName")}</dt>
-            <dd className="font-bold text-ink mt-0.5">{data.personal.fullName || "—"}</dd>
-          </div>
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldDob")}</dt>
-            <dd className="font-bold text-ink mt-0.5">{data.personal.dateOfBirth || "—"}</dd>
-          </div>
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldGender")}</dt>
-            <dd className="font-bold text-ink capitalize mt-0.5">{data.personal.gender || "—"}</dd>
-          </div>
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldPhone")}</dt>
-            <dd className="font-bold text-ink mt-0.5">{data.personal.phone || "—"}</dd>
-          </div>
+          <ReviewField label={t("fieldName")} value={data.personal.fullName} />
+          <ReviewField label={t("fieldDob")} value={data.personal.dateOfBirth} />
+          <ReviewField label={t("fieldGender")} value={data.personal.gender} />
+          <ReviewField label={t("fieldPhone")} value={data.personal.phone} />
           <div className="sm:col-span-2">
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldRelationship")}</dt>
-            <dd className="font-bold text-ink capitalize mt-0.5">{data.personal.relationship || "—"}</dd>
+            <ReviewField label={t("fieldRelationship")} value={data.personal.relationship} />
           </div>
         </dl>
       </ReviewSection>
 
-      {/* Medical Report */}
       <ReviewSection title={t("medical")} icon="🏥" editLabel={t("edit")} onEdit={() => onEditStep(1)}>
         {data.diagnostic.extractedData ? (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
-            <div>
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldDiagnosis")}</dt>
-              <dd className="font-bold text-ink mt-0.5">{data.diagnostic.extractedData.diagnosis || "—"}</dd>
-            </div>
-            <div>
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldDate")}</dt>
-              <dd className="font-bold text-ink mt-0.5">{data.diagnostic.extractedData.dateOfDiagnosis || "—"}</dd>
-            </div>
+            <ReviewField label={t("fieldDiagnosis")} value={data.diagnostic.extractedData.diagnosis} />
+            <ReviewField label={t("fieldDate")} value={data.diagnostic.extractedData.dateOfDiagnosis} />
             <div>
               <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldScore")}</dt>
               <dd className="font-bold text-ink mt-0.5">
                 {data.diagnostic.extractedData.score ?? "--"}/{data.diagnostic.extractedData.maxScore ?? 30} ({data.diagnostic.extractedData.testType || "MMSE"})
               </dd>
             </div>
-            <div>
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldPhysician")}</dt>
-              <dd className="font-bold text-ink mt-0.5">{data.diagnostic.extractedData.examiningPhysician || "—"}</dd>
-            </div>
+            <ReviewField label={t("fieldPhysician")} value={data.diagnostic.extractedData.examiningPhysician} />
             <div className="sm:col-span-2">
               <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldMedications")}</dt>
               <dd className="font-bold text-ink mt-0.5">
@@ -88,7 +62,6 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
         )}
       </ReviewSection>
 
-      {/* Family Members */}
       <ReviewSection
         title={t("family")}
         icon="👨‍👩‍👧"
@@ -123,17 +96,10 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
         )}
       </ReviewSection>
 
-      {/* Life Story */}
       <ReviewSection title={t("life")} icon="📖" editLabel={t("edit")} onEdit={() => onEditStep(3)}>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldOccupation")}</dt>
-            <dd className="font-bold text-ink mt-0.5">{data.lifeStory.occupation || t("notSpecified")}</dd>
-          </div>
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldLanguage")}</dt>
-            <dd className="font-bold text-ink mt-0.5">{langLabel}</dd>
-          </div>
+          <ReviewField label={t("fieldOccupation")} value={data.lifeStory.occupation} fallback={t("notSpecified")} />
+          <ReviewField label={t("fieldLanguage")} value={langLabel} />
           <div>
             <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldInterests")}</dt>
             <dd className="font-bold text-ink mt-0.5">
@@ -142,10 +108,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
                 : t("noneSelected")}
             </dd>
           </div>
-          <div>
-            <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldMusic")}</dt>
-            <dd className="font-bold text-ink mt-0.5">{data.lifeStory.favoriteMusic || t("notSpecified")}</dd>
-          </div>
+          <ReviewField label={t("fieldMusic")} value={data.lifeStory.favoriteMusic} fallback={t("notSpecified")} />
           {data.lifeStory.lifeEvents && data.lifeStory.lifeEvents.length > 0 && (
             <div className="sm:col-span-2">
               <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldLifeEvents")}</dt>
@@ -166,7 +129,6 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
         </dl>
       </ReviewSection>
 
-      {/* Familiar Places */}
       <ReviewSection
         title={t("places")}
         icon="📍"
@@ -190,6 +152,23 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
   );
 }
 
+function ReviewField({
+  label,
+  value,
+  fallback = "—",
+}: {
+  label: string;
+  value?: string | null;
+  fallback?: string;
+}) {
+  return (
+    <div>
+      <dt className="text-xs font-black uppercase text-ink-secondary/70">{label}</dt>
+      <dd className="font-bold text-ink capitalize mt-0.5">{value || fallback}</dd>
+    </div>
+  );
+}
+
 function ReviewSection({
   title,
   icon,
@@ -203,7 +182,7 @@ function ReviewSection({
   editLabel: string;
   onEdit: () => void;
   count?: number;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="border-3 border-border rounded-2xl bg-surface p-5 shadow-[4px_4px_0_var(--color-border)] space-y-4">
@@ -233,4 +212,3 @@ function ReviewSection({
     </div>
   );
 }
-

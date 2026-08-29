@@ -1,16 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { Spinner } from "@/components/ui/Spinner";
 
 const IntakeWizard = dynamic(
   () => import("@/components/intake/IntakeWizard").then((mod) => mod.IntakeWizard),
   {
     ssr: false,
-    loading: () => (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-marigold border-t-transparent rounded-full animate-spin" />
-      </div>
-    ),
+    loading: () => <Spinner className="min-h-[400px]" />,
   }
 );
 
