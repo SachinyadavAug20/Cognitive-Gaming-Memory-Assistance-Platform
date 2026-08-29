@@ -7,10 +7,13 @@ import { ReminderRow } from "@/components/patient/ReminderRow";
 import { HydrationTracker } from "@/components/patient/HydrationTracker";
 import { ExerciseBanner } from "@/components/patient/ExerciseBanner";
 import { useTranslations, useLocale } from "next-intl";
+import { useIdleTimeout } from "@/hooks/useIdleTimeout";
 
 export default function PatientHome() {
   const t = useTranslations("patient");
   const locale = useLocale();
+
+  useIdleTimeout();
 
   return (
     <div className="min-h-[100vh] pb-4 md:overflow-hidden flex flex-col">

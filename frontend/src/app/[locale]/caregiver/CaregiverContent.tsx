@@ -1,14 +1,37 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AlertBanner } from "@/components/caregiver/AlertBanner";
 import { PatientCard } from "@/components/caregiver/PatientCard";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations } from "next-intl";
-import type { Patient } from "@/types";
+import { api } from "@/lib/api";
+import type { PatientSummary } from "@/types";
 
-export function CaregiverContent({ patients }: { patients: Patient[] }) {
+export function CaregiverContent() {
   const t = useTranslations("caregiver");
+
+  const [patients, setPatients] = useState<PatientSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let ignore = false;
+    async function fetchPatients() {
+      try {
+        const data = await api.get<PatientSummary[]>("/patients");
+        if (!ignore) setPatients(data);
+      } catch {
+        if (!ignore) setError(true);
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+    fetchPatients();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <>
@@ -26,30 +49,62 @@ export function CaregiverContent({ patients }: { patients: Patient[] }) {
                 {t("addPatient")}
               </ChunkyButton>
             </Link>
-            <Link href="/" className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-sm transition-colors">
-              ← Home
+            <Link
+              href="/"
+              className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-sm transition-colors"
+            >
+              ← {t("home")}
             </Link>
           </div>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 mt-3 space-y-3 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
-        <AlertBanner
-          title="Bhupen Kalita — Spatial recall dropped 15% this week"
-          description="Recommend reviewing landmark exercises. Consider increasing wayfinding sessions to 4x/week."
-        />
-
         <div>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-lg text-ink mb-2">
             {t("yourPatients")}
           </h2>
-          <div className="space-y-3 flex gap-2 flex-col">
-            {patients.map((patient) => (
-              <Link key={patient.id} href={`/caregiver/patients/${patient.id}`}>
-                <PatientCard patient={patient} />
-              </Link>
-            ))}
-          </div>
+
+          {loading ? (
+            <p className="text-ink-secondary font-bold text-base py-6 text-center">
+              {t("loadingPatients")}
+            </p>
+          ) : error ? (
+            <div
+              role="alert"
+              className="rounded-xl bg-brick-light border-2 border-brick p-4 text-brick font-bold text-center"
+            >
+              {t("loadError")}
+            </div>
+          ) : patients.length === 0 ? (
+            <div className="scrapbook-card text-center py-14">
+              <p className="text-6xl mb-4">🪪</p>
+              <p className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink mb-1">
+                {t("emptyTitle")}
+              </p>
+              <p className="text-ink-secondary font-bold text-base">
+                {t("emptyList")}
+              </p>
+              <div className="mt-6">
+                <Link href="/caregiver/add-patient">
+                  <ChunkyButton variant="marigold" size="xl">
+                    {t("addPatient")}
+                  </ChunkyButton>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3 flex gap-2 flex-col">
+              {patients.map((patient) => (
+                <Link
+                  key={patient.id}
+                  href={`/caregiver/patients/${patient.id}`}
+                >
+                  <PatientCard patient={patient} />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>

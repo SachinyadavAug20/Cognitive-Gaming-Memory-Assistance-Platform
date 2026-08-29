@@ -91,7 +91,15 @@
     "title": "Caregiver Dashboard",
     "subtitle": "Monitor cognitive health for your patients",
     "addPatient": "+ Add Patient",
-    "yourPatients": "Your Patients"
+    "home": "Home",
+    "yourPatients": "Your Patients",
+    "loadingPatients": "Loading patients...",
+    "loadError": "Could not load patients. Please check that the server is running and try again.",
+    "emptyTitle": "No patients yet",
+    "emptyList": "No patients found. Add a new patient to get started.",
+    "age": "Age {age}",
+    "ageUnknown": "Age unknown",
+    "language": "Language"
   },
   "intake": {
     "step": "Step {current} of {total}",
@@ -317,5 +325,32 @@
     "howToPlay": "How to Play",
     "listenToStory": "Listen to Story",
     "listenToDirections": "Listen to directions"
+  },
+  "kiosk": {
+    "title": "Welcome to CogniCare",
+    "subtitle": "Show your Health Card to the camera.",
+    "loading": "Signing you in...",
+    "error": {
+      "invalid": "This card is not recognized. Please show a valid Health Card.",
+      "generic": "Something went wrong. Please try again.",
+      "retry": "The camera will resume shortly."
+    }
+  },
+  "idcard": {
+    "heading": "Patient ID Card",
+    "desc": "Print or download the QR Health Card for this patient. Scanning the card at a kiosk instantly signs them in.",
+    "regenerate": "Regenerate Card",
+    "download": "Download PNG",
+    "print": "Print Card",
+    "backToProfile": "Back to Patient Profile",
+    "error": {
+      "fetch": "Could not load the patient card. Please try again.",
+      "regenerate": "Could not regenerate the card. Please try again."
+    },
+    "badge": {
+      "label": "Health Access Card",
+      "hint": "Scan the QR to sign in securely",
+      "footer": "QR-Only Passkey"
+    }
   }
 }

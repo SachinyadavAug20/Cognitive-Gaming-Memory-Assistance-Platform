@@ -110,6 +110,10 @@ html {
 .btn-chunky-terracotta {
   --btn-bg: #D4441C;
 }
+/* Variant: Marigold Saffron (Primary Caregiver CTA) */
+.btn-chunky-marigold {
+  --btn-bg: #E66A00;
+}
 /* Variant: Sky (Wayfinding) */
 .btn-chunky-sky {
   --btn-bg: #1362B8;

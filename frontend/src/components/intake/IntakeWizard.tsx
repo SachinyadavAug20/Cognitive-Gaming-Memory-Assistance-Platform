@@ -43,8 +43,6 @@ export function IntakeWizard() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-  const [patientId, setPatientId] = useState<number | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -295,44 +293,15 @@ export function IntakeWizard() {
       const response = await api.postMultipart<{ patientId: number }>("/patients/onboard", payload);
 
       setIsSubmitting(false);
-      setIsComplete(true);
-      setPatientId(response.patientId);
       localStorage.removeItem(STORAGE_KEY);
+      router.replace(`/caregiver/patients/${response.patientId}/card`);
     } catch (err) {
       setIsSubmitting(false);
       setSubmitError(
         err instanceof Error ? err.message : "Failed to create patient profile. Please try again."
       );
     }
-  }, [formData]);
-
-  /* ── Completion screen ── */
-  if (isComplete) {
-    return (
-      <div className="text-center space-y-6 py-12">
-        <div className="text-6xl">🎉</div>
-        <h2 className="font-[family-name:var(--font-serif)] text-3xl font-bold text-ink">
-          {t("complete.title")}
-        </h2>
-        <p className="text-ink-secondary text-lg max-w-md mx-auto">
-          {t("complete.desc", { name: formData.personal.fullName || "The patient" })}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          {patientId && (
-            <ChunkyButton
-              variant="terracotta"
-              onClick={() => router.push(`/caregiver/patients/${patientId}`)}
-            >
-              View Patient Profile →
-            </ChunkyButton>
-          )}
-          <ChunkyButton variant="tea" onClick={() => router.push("/caregiver")}>
-            {t("complete.dashboard")}
-          </ChunkyButton>
-        </div>
-      </div>
-    );
-  }
+  }, [formData, router]);
 
   /* ── Main render ── */
   return (

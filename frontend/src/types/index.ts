@@ -1,5 +1,20 @@
 export type Trend = "improving" | "stable" | "declining";
 
+export interface PatientSummary {
+  id: number;
+  name: string;
+  preferredLanguage: string | null;
+  dob: string | null;
+}
+
+export function ageFromDob(dob: string | null): number | null {
+  if (!dob) return null;
+  const birth = new Date(dob);
+  const diff = Date.now() - birth.getTime();
+  const age = Math.floor(diff / (365.25 * 24 * 60 * 60 * 1000));
+  return Number.isFinite(age) && age >= 0 ? age : null;
+}
+
 export type ReminderStatus = "completed" | "due" | "upcoming" | "skipped";
 
 export type RoutineStatus = "completed" | "due" | "info";
