@@ -1,34 +1,89 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
-import { BigButton } from "@/components/ui/BigButton";
+import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
-import { playPress, playCorrect, playIncorrect, playComplete } from "@/lib/sound";
-import { speak } from "@/lib/speech";
+import {
+  playPress,
+  playCorrect,
+  playComplete,
+  playLandmarkChime,
+  playPineBreeze,
+  playStepSound,
+  playLifeSong,
+} from "@/lib/sound";
+import { speak, stopSpeaking } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
-import { LOCALE_MAP } from "@/lib/i18n";
-import { recordGameSession } from "@/lib/telemetry";
+import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel, wayfindingRouteLength } from "@/games/config";
 import type { FamiliarPlaceItem } from "@/types";
 
 const DEFAULT_PLACES: FamiliarPlaceItem[] = [
-  { id: -1, name: "Home", category: "home", description: "Assam-type house", emoji: "🏠", photoUrl: null },
-  { id: -2, name: "Tea Stall", category: "tea", description: "Ranjan Dai's shop", emoji: "🍵", photoUrl: null },
-  { id: -3, name: "Namghar", category: "temple", description: "Village prayer hall", emoji: "🛕", photoUrl: null },
-  { id: -4, name: "Clinic", category: "clinic", description: "Dr. Baruah's clinic", emoji: "🏥", photoUrl: null },
+  {
+    id: -1,
+    name: "Home (Heritage Cottage)",
+    category: "🏠",
+    description: "Where we live — wooden-roof cottage surrounded by pine trees and blooming orchids.",
+    emoji: "🏠",
+    photoUrl: null,
+  },
+  {
+    id: -2,
+    name: "Village Tea Stall",
+    category: "🍵",
+    description: "Where we meet friends for hot spiced tea and morning news.",
+    emoji: "🍵",
+    photoUrl: null,
+  },
+  {
+    id: -3,
+    name: "Community Prayer Hall (Namghar / Church)",
+    category: "🛕",
+    description: "Place of worship with ringing chimes and peaceful gardens.",
+    emoji: "🛕",
+    photoUrl: null,
+  },
+  {
+    id: -4,
+    name: "Pine Lake Promenade",
+    category: "🌲",
+    description: "Scenic lakeside path with wooden bridge and gentle mountain breeze.",
+    emoji: "🌲",
+    photoUrl: null,
+  },
+  {
+    id: -5,
+    name: "Local Market & Dispensary",
+    category: "🏪",
+    description: "Fresh fruits, vegetables, and neighborhood medical dispensary.",
+    emoji: "🏪",
+    photoUrl: null,
+  },
 ];
 
-interface RouteStep {
-  place: FamiliarPlaceItem;
+function GameShell({
+  title,
+  score,
+  children,
+}: {
+  title: string;
+  score: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="pb-12">
+      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
+    </section>
+  );
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -45,37 +100,53 @@ export function WayfindingGame() {
   const locale = useLocale();
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
-  const level = startLevel(detail);
+  const level = resolveAdaptiveLevel(patientId, "wayfinding", startLevel(detail));
   const rate = speechRate(detail);
 
-  const places = useMemo<FamiliarPlaceItem[]>(() => {
+  // Available places pool
+  const placesPool = useMemo<FamiliarPlaceItem[]>(() => {
     if ((detail?.familiarPlaces?.length ?? 0) >= 2) return detail!.familiarPlaces;
     return DEFAULT_PLACES;
   }, [detail]);
 
-  const route = useMemo<RouteStep[]>(() => {
-    const pool = places.length >= 2 ? places : DEFAULT_PLACES;
-    const shuffled = shuffle(pool);
-    const homeIdx = shuffled.findIndex((p) => (p.category ?? "").toLowerCase().includes("home"));
-    if (homeIdx > -1 && homeIdx < shuffled.length - 1) {
-      const [home] = shuffled.splice(homeIdx, 1);
-      shuffled.push(home);
+  // Generate an ordered route that finishes at "Home"
+  const route = useMemo<FamiliarPlaceItem[]>(() => {
+    const pool = [...placesPool];
+    // Find home or place matching 'home' / 'cottage' / id 1
+    const homeIdx = pool.findIndex(
+      (p) =>
+        (p.category ?? "").toLowerCase().includes("home") ||
+        p.name.toLowerCase().includes("home") ||
+        p.name.toLowerCase().includes("cottage")
+    );
+    let homePlace: FamiliarPlaceItem;
+    if (homeIdx > -1) {
+      [homePlace] = pool.splice(homeIdx, 1);
+    } else {
+      homePlace = pool.pop() ?? DEFAULT_PLACES[0];
     }
-    return shuffled
-      .slice(0, Math.min(wayfindingRouteLength(detail), pool.length))
-      .map((place) => ({ place }));
-  }, [places, detail]);
 
-  const [phase, setPhase] = useState<"explore" | "recall" | "done">("explore");
-  const [currentStep, setCurrentStep] = useState(0);
-  const [recallStep, setRecallStep] = useState(1);
+    const shuffledWaypoints = shuffle(pool);
+    const maxWaypoints = Math.max(2, Math.min(wayfindingRouteLength(detail) - 1, shuffledWaypoints.length));
+    const selectedWaypoints = shuffledWaypoints.slice(0, maxWaypoints);
+
+    // Route = [Station 1, Station 2, ..., Home]
+    return [...selectedWaypoints, homePlace];
+  }, [placesPool, detail]);
+
+  const [mode, setMode] = useState<"scenic" | "recall">("recall");
+  const [phase, setPhase] = useState<"intro" | "walk" | "done">("intro");
+  const [stepIndex, setStepIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [taps, setTaps] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [wiggle, setWiggle] = useState<number | null>(null);
-  const [lightbox, setLightbox] = useState<FamiliarPlaceItem | null>(null);
-  const [startedAt] = useState(() => new Date().toISOString());
+  const [selectedFork, setSelectedFork] = useState<number | null>(null);
+  const [hintActive, setHintActive] = useState(false);
+  const [lightboxPlace, setLightboxPlace] = useState<FamiliarPlaceItem | null>(null);
+  const [startedAt, setStartedAt] = useState<string | null>(null);
+  const [isWalkingAnimation, setIsWalkingAnimation] = useState(false);
+
+  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const guard = useSessionGuard({
     patientId,
@@ -86,93 +157,164 @@ export function WayfindingGame() {
     errorCount,
   });
 
-  const exploreStarted = useRef(false);
+  const currentPlace = route[stepIndex] ?? route[0];
+  const nextTargetPlace = route[stepIndex + 1] ?? null;
+  const isLastStation = stepIndex >= route.length - 1;
 
-  useEffect(() => {
-    if (phase === "explore" && !exploreStarted.current && route.length) {
-      exploreStarted.current = true;
-      speak(`${t("wayfinding.explore")} ${route[0].place.name}`, locale, rate);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, route]);
-
-  const options = useMemo(() => {
-    if (recallStep <= 0 || recallStep >= route.length) return [];
-    const correct = route[recallStep].place;
-    const distractors = places
-      .filter((p) => p.name !== correct.name)
-      .filter((p) => p.name !== route[recallStep - 1].place.name)
+  // Fork choices for recall mode
+  const signpostChoices = useMemo<FamiliarPlaceItem[]>(() => {
+    if (!nextTargetPlace) return [];
+    const correct = nextTargetPlace;
+    const distractors = placesPool
+      .filter((p) => p.name !== correct.name && p.name !== currentPlace.name)
       .slice(0, 2);
     const pool = [correct, ...distractors];
-    return pool.sort(() => Math.random() - 0.5);
-  }, [recallStep, route, places]);
+    return shuffle(pool);
+  }, [nextTargetPlace, placesPool, currentPlace]);
 
+  // Clean up speech and timers on unmount
   useEffect(() => {
     return () => {
-      if (typeof window !== "undefined") {
-        window.speechSynthesis?.cancel?.();
-      }
+      stopSpeaking();
+      if (hintTimer.current) clearTimeout(hintTimer.current);
     };
   }, []);
 
-  function advanceExplore() {
+  const announceCurrentStation = useCallback(
+    (station: FamiliarPlaceItem, nextDest: FamiliarPlaceItem | null) => {
+      stopSpeaking();
+      playLandmarkChime();
+      const desc = station.description || "";
+      if (nextDest) {
+        speak(
+          `${t("wayfinding.speechArrived", { name: station.name, description: desc })} ${t("wayfinding.speechTurn", { target: nextDest.name })}`,
+          locale,
+          rate
+        );
+      } else {
+        speak(
+          `${t("wayfinding.speechFinish")} ${station.name}. ${desc}`,
+          locale,
+          rate
+        );
+      }
+    },
+    [locale, rate, t]
+  );
+
+  function startJourney() {
+    stopSpeaking();
     playPress();
-    setTaps((v) => v + 1);
-    const next = currentStep + 1;
-    if (next >= route.length) {
-      startRecall();
-      return;
-    }
-    setCurrentStep(next);
-    speak(
-      `${t("wayfinding.walkTo", { name: route[next].place.name })}`,
-      locale,
-      rate
-    );
-  }
+    setStepIndex(0);
+    setScore(0);
+    setTaps(0);
+    setErrorCount(0);
+    setSelectedFork(null);
+    setHintActive(false);
+    setStartedAt(new Date().toISOString());
+    setPhase("walk");
 
-  function startRecall() {
-    setPhase("recall");
-    setRecallStep(1);
-    speak(t("wayfinding.recallStart"), locale, rate);
-  }
-
-  function checkRecall(index: number) {
-    if (selected !== null) return;
-    setSelected(index);
-    setTaps((v) => v + 1);
-    const correct = options[index].name === route[recallStep].place.name;
-    if (correct) {
-      playCorrect();
-      setScore((s) => s + 1);
+    const first = route[0];
+    if (first) {
       speak(
-        `${t("wayfinding.correct")} ${options[index].name}`,
+        t("wayfinding.speechIntro", {
+          start: first.name,
+          home: route[route.length - 1]?.name ?? "",
+        }),
         locale,
         rate
       );
-    } else {
-      playIncorrect();
-      setErrorCount((v) => v + 1);
-      setWiggle(index);
-      speak(t("wayfinding.wrong"), locale, rate);
     }
-
-    window.setTimeout(() => {
-      setSelected(null);
-      setWiggle(null);
-      if (!correct) return;
-      if (recallStep + 1 >= route.length) {
-        finish();
-      } else {
-        setRecallStep((s) => s + 1);
-      }
-    }, 900);
   }
 
-  function finish() {
+  // Automatic errorless scaffolding hint after 12s idle
+  useEffect(() => {
+    if (phase === "walk" && mode === "recall" && nextTargetPlace && !hintActive) {
+      if (hintTimer.current) clearTimeout(hintTimer.current);
+      hintTimer.current = setTimeout(() => {
+        setHintActive(true);
+        playPineBreeze();
+        speak(
+          t("wayfinding.hintWhisper", { name: nextTargetPlace.name }),
+          locale,
+          rate
+        );
+      }, 12000);
+    }
+    return () => {
+      if (hintTimer.current) clearTimeout(hintTimer.current);
+    };
+  }, [phase, mode, nextTargetPlace, hintActive, locale, rate, t]);
+
+  function handleScenicAdvance() {
+    if (isWalkingAnimation) return;
+    playStepSound();
+    setTaps((v) => v + 1);
+    setIsWalkingAnimation(true);
+
+    setTimeout(() => {
+      setIsWalkingAnimation(false);
+      const nextIdx = stepIndex + 1;
+      if (nextIdx >= route.length) {
+        completeJourney();
+      } else {
+        setStepIndex(nextIdx);
+        setHintActive(false);
+        announceCurrentStation(route[nextIdx], route[nextIdx + 1] ?? null);
+      }
+    }, 700);
+  }
+
+  function handleForkChoice(chosen: FamiliarPlaceItem, choiceIndex: number) {
+    if (selectedFork !== null || isWalkingAnimation || !nextTargetPlace) return;
+    setTaps((v) => v + 1);
+    setSelectedFork(choiceIndex);
+
+    const isCorrect = chosen.name === nextTargetPlace.name;
+
+    if (isCorrect) {
+      playCorrect();
+      setScore((s) => s + 1);
+      speak(t("wayfinding.speechSuccess", { name: chosen.name }), locale, rate);
+      setIsWalkingAnimation(true);
+
+      setTimeout(() => {
+        setSelectedFork(null);
+        setIsWalkingAnimation(false);
+        setHintActive(false);
+        const nextIdx = stepIndex + 1;
+        if (nextIdx >= route.length - 1) {
+          // Reached Home!
+          setStepIndex(nextIdx);
+          completeJourney();
+        } else {
+          setStepIndex(nextIdx);
+          announceCurrentStation(route[nextIdx], route[nextIdx + 1] ?? null);
+        }
+      }, 1200);
+    } else {
+      // Errorless Learning: Soft whisper scaffolding, never a harsh error buzzer
+      setErrorCount((e) => e + 1);
+      playPineBreeze();
+      setHintActive(true);
+      speak(
+        t("wayfinding.hintWhisper", { name: nextTargetPlace.name }),
+        locale,
+        rate
+      );
+      setTimeout(() => {
+        setSelectedFork(null);
+      }, 800);
+    }
+  }
+
+  function completeJourney() {
+    stopSpeaking();
     playComplete();
     setPhase("done");
     guard.markCompleted();
+
+    const home = route[route.length - 1];
     if (startedAt) {
       recordGameSession(patientId, {
         gameId: "wayfinding",
@@ -184,188 +326,435 @@ export function WayfindingGame() {
         errorCount,
       });
     }
+    speak(
+      `${t("wayfinding.speechFinish")} ${home?.name ?? ""}.`,
+      locale,
+      rate
+    );
   }
 
   if (loading) return <GameLoading />;
   if (error)
     return (
-      <GameShell>
+      <GameShell title={t("wayfinding.title")} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
+  const home = route[route.length - 1];
+
   return (
-    <GameShell>
-      <div className="space-y-8">
-        <ScrapbookCard className="!p-6">
-          <div className="rounded-xl bg-tea-light p-6">
-            <div className="relative flex items-center justify-between">
-              {route.map((step, i) => {
-                const isVisited = phase === "recall" || phase === "done" || i <= currentStep;
-                const isCurrent = phase === "explore" && i === currentStep;
+    <GameShell title={t("wayfinding.title")} score={score}>
+      {phase === "intro" ? (
+        <div className="flex flex-col items-center gap-6 py-8 text-center">
+          <div className="text-6xl">🗺️</div>
+          <p className="font-serif text-3xl font-black text-ink">
+            {t("wayfinding.title")}
+          </p>
+          <p className="max-w-md text-lg font-semibold text-ink-secondary">
+            {t("wayfinding.desc")}
+          </p>
+
+          {/* Mode Selection Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                playPress();
+                setMode("recall");
+              }}
+              className={`rounded-2xl border-2 px-5 py-2.5 text-base font-extrabold transition-all shadow-[2px_2px_0px_rgba(0,0,0,1)] ${
+                mode === "recall"
+                  ? "border-black bg-tea text-white scale-105"
+                  : "border-border bg-surface text-ink hover:bg-surface-muted"
+              }`}
+            >
+              {t("wayfinding.modeRecall")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                playPress();
+                setMode("scenic");
+              }}
+              className={`rounded-2xl border-2 px-5 py-2.5 text-base font-extrabold transition-all shadow-[2px_2px_0px_rgba(0,0,0,1)] ${
+                mode === "scenic"
+                  ? "border-black bg-marigold text-white scale-105"
+                  : "border-border bg-surface text-ink hover:bg-surface-muted"
+              }`}
+            >
+              {t("wayfinding.modeScenic")}
+            </button>
+          </div>
+
+          {/* Route Overview Preview */}
+          <div className="w-full max-w-lg rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+            <span className="text-xs font-black uppercase tracking-wider text-ink-secondary">
+              Today&apos;s Trail ({route.length} Landmarks)
+            </span>
+            <div className="mt-3 flex items-center justify-between gap-2 overflow-x-auto py-2">
+              {route.map((p, i) => {
+                const src = getMediaUrl(p.photoUrl);
                 return (
-                  <div key={step.place.id} className="relative flex flex-1 flex-col items-center gap-2">
-                    {i > 0 && (
-                      <div
-                        className={`absolute top-8 right-1/2 h-1 w-full rounded ${
-                          isVisited && i - 1 <= currentStep ? "bg-tea" : "bg-border-soft"
-                        }`}
-                      />
-                    )}
-                    <div
-                      className={`relative z-10 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border-[3px] transition-all md:h-20 md:w-20 ${
-                        isCurrent
-                          ? "scale-110 border-terracotta bg-terracotta-light shadow-lg"
-                          : isVisited
-                          ? "border-tea bg-surface"
-                          : "opacity-50 border-border-soft bg-surface-muted"
-                      }`}
-                    >
-                      {step.place.photoUrl ? (
+                  <div key={p.id} className="flex flex-col items-center gap-1 shrink-0">
+                    <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border-2 border-black bg-tea-light shadow-sm">
+                      {src ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={getMediaUrl(step.place.photoUrl) ?? ""}
-                          alt={step.place.name}
-                          className="h-full w-full object-cover"
-                        />
+                        <img src={src} alt={p.name} className="h-full w-full object-cover" />
                       ) : (
-                        <span className="text-3xl md:text-4xl">
-                          {step.place.emoji ?? "📍"}
-                        </span>
-                      )}
-                      {isVisited && (
-                        <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-surface bg-tea" />
+                        <span className="text-2xl">{p.emoji || "📍"}</span>
                       )}
                     </div>
-                    <span className="text-center text-sm font-bold leading-tight text-ink">
-                      {step.place.name}
+                    <span className="max-w-[70px] truncate text-[11px] font-extrabold text-ink">
+                      {i === route.length - 1 ? "🏠 " : ""}{p.name}
                     </span>
-                    {step.place.description && (
-                      <span className="w-full max-w-[120px] text-center text-[11px] font-semibold leading-tight text-ink-secondary">
-                        {step.place.description}
-                      </span>
-                    )}
                   </div>
                 );
               })}
             </div>
           </div>
-        </ScrapbookCard>
 
-        {phase === "explore" && (
-          <div className="space-y-6 text-center">
-            <h2 className="font-[family-name:var(--font-serif)] text-2xl font-bold text-ink">
-              {t("wayfinding.explore")}
-            </h2>
-            <p className="text-lg text-ink-secondary">
-              {t("wayfinding.step", {
-                current: String(currentStep + 1),
-                total: String(route.length),
+          <AudioPrompt
+            text={t("wayfinding.speechIntro", {
+              start: route[0]?.name ?? "",
+              home: home?.name ?? "",
+            })}
+            label={t("listen")}
+            size="md"
+          />
+
+          <ChunkyButton variant="tea" size="2xl" onClick={startJourney}>
+            {t("wayfinding.startJourney")}
+          </ChunkyButton>
+        </div>
+      ) : phase === "walk" ? (
+        <div className="flex flex-col items-center gap-5 py-4">
+          {/* LUSH 2.5D INTERACTIVE VILLAGE MAP TRAIL */}
+          <div className="relative w-full overflow-hidden rounded-3xl border-4 border-[#2A241F] bg-[#1F291E] p-4 shadow-[6px_6px_0px_rgba(0,0,0,0.9)] select-none">
+            {/* Ambient Mountain Terrain Background Elements */}
+            <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#4ADE80_1px,transparent_1px)] [background-size:16px_16px]" />
+            <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80">
+              🌲 Pine Hills Trail
+            </div>
+
+            {/* Stepping Trail Path Nodes */}
+            <div className="relative z-10 flex items-center justify-between gap-2 overflow-x-auto py-3 px-2">
+              {route.map((step, idx) => {
+                const isVisited = idx < stepIndex;
+                const isCurrent = idx === stepIndex;
+                const src = getMediaUrl(step.photoUrl);
+
+                return (
+                  <div key={step.id} className="relative flex flex-1 flex-col items-center gap-1 min-w-[70px]">
+                    {/* Connecting Stepping Stone Path Line */}
+                    {idx > 0 && (
+                      <div
+                        className={`absolute top-7 right-1/2 -left-1/2 h-1.5 -z-0 rounded-full transition-all duration-500 ${
+                          idx <= stepIndex ? "bg-marigold" : "bg-white/20 border-dashed"
+                        }`}
+                      />
+                    )}
+
+                    {/* Milestone Pin Icon */}
+                    <button
+                      type="button"
+                      onClick={() => setLightboxPlace(step)}
+                      className={`relative z-10 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center overflow-hidden rounded-2xl border-3 transition-all duration-300 cursor-pointer ${
+                        isCurrent
+                          ? "border-marigold scale-115 ring-4 ring-marigold/80 bg-surface shadow-[0_0_15px_rgba(245,158,11,0.9)]"
+                          : isVisited
+                          ? "border-tea bg-tea-light opacity-90"
+                          : "border-white/30 bg-black/40 opacity-50"
+                      }`}
+                    >
+                      {src ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={src} alt={step.name} className="h-full w-full object-cover" />
+                      ) : (
+                        <span className="text-2xl">{step.emoji || "📍"}</span>
+                      )}
+
+                      {/* Visited Checkmark */}
+                      {isVisited && (
+                        <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-tea text-[10px] font-black text-white">
+                          ✓
+                        </span>
+                      )}
+
+                      {/* Current Walker Avatar Pin */}
+                      {isCurrent && (
+                        <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-marigold border-2 border-black text-xs font-black text-white animate-pulse">
+                          🚶
+                        </span>
+                      )}
+                    </button>
+
+                    <span
+                      className={`max-w-[80px] text-center text-xs font-black truncate leading-tight ${
+                        isCurrent ? "text-amber-300" : isVisited ? "text-white/90" : "text-white/40"
+                      }`}
+                    >
+                      {idx === route.length - 1 ? "🏠 " : ""}
+                      {step.name}
+                    </span>
+                  </div>
+                );
               })}
-              : <strong>{route[currentStep].place.name}</strong>
-            </p>
-            <AudioPrompt
-              text={`${t("wayfinding.towards", {
-                name: route[currentStep].place.name,
-              })} ${
-                route[currentStep].place.description
-                  ? `${route[currentStep].place.description}. `
-                  : ""
-              }${
-                currentStep + 1 < route.length
-                  ? `${t("wayfinding.then")} ${route[currentStep + 1].place.name}`
-                  : t("wayfinding.arrive")
-              }`}
-              lang={LOCALE_MAP[locale] ?? "en-US"}
-              label={t("wayfinding.listenDirections")}
-            />
-            {route[currentStep].place.photoUrl ? (
-              <button
-                type="button"
-                onClick={() => setLightbox(route[currentStep].place)}
-                className="btn-tactile relative mx-auto block w-full max-w-md overflow-hidden rounded-2xl border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)]"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={getMediaUrl(route[currentStep].place.photoUrl) ?? ""}
-                  alt={route[currentStep].place.name}
-                  className="h-52 w-full object-cover"
-                />
-                <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border-2 border-black bg-ink/80 px-4 py-1.5 text-sm font-bold text-white">
-                  🔍 {t("wayfinding.viewPhoto")}
-                </span>
-              </button>
-            ) : null}
-            <BigButton variant="terracotta" size="xl" onClick={advanceExplore}>
-              {currentStep + 1 < route.length
-                ? t("wayfinding.walkTo", { name: route[currentStep + 1].place.name })
-                : t("wayfinding.reached")}
-            </BigButton>
-          </div>
-        )}
-
-        {phase === "recall" && (
-          <div className="space-y-6 text-center">
-            <h2 className="font-[family-name:var(--font-serif)] text-2xl font-bold text-ink">
-              {t("wayfinding.recallLabel")}
-            </h2>
-            <p className="text-lg text-ink-secondary">
-              {t("wayfinding.recallDesc", { prev: route[recallStep - 1].place.name })}
-            </p>
-            <div className="mx-auto grid max-w-lg grid-cols-2 gap-4">
-              {options.map((place, i) => (
-                <button
-                  key={`${place.id}-${recallStep}`}
-                  onClick={() => checkRecall(i)}
-                  disabled={selected !== null}
-                  className={`btn-tactile flex min-h-[72px] flex-col items-center gap-1 overflow-hidden rounded-2xl border-2 px-4 py-5 text-lg ${
-                    wiggle === i ? "animate-bounce bg-marigold/30" : ""
-                  } ${
-                    selected === i
-                      ? place.name === route[recallStep].place.name
-                        ? "border-border bg-tea text-ink-inverse"
-                        : "border-border bg-brick text-ink-inverse"
-                      : "border-border bg-surface text-ink hover:bg-surface-muted"
-                  }`}
-                >
-                  {place.photoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={getMediaUrl(place.photoUrl) ?? ""}
-                      alt={place.name}
-                      className="h-14 w-14 rounded-xl border-2 border-border object-cover"
-                    />
-                  ) : (
-                    <span className="text-3xl">{place.emoji ?? "📍"}</span>
-                  )}
-                  <span className="font-bold">{place.name}</span>
-                </button>
-              ))}
             </div>
           </div>
-        )}
 
-        {phase === "done" && (
-          <Celebration emoji="🏡" title={t("wayfinding.complete")}>
-            <p className="text-xl font-bold text-ink">
-              {t("score", { score: `${score}/${route.length - 1}` })}
-            </p>
-            <Link
-              href="/patient"
-              className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-border bg-tea px-6 py-3 font-bold text-ink-inverse"
-            >
-              {t("backToRoutine")}
-            </Link>
-          </Celebration>
-        )}
-      </div>
+          {/* STATION HEADER & VISUAL PORTAL */}
+          <div className="w-full max-w-xl text-center space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border-2 border-black bg-surface px-4 py-1 shadow-sm">
+              <span className="text-xs font-black text-tea uppercase tracking-wide">
+                {t("wayfinding.stepCounter", {
+                  current: String(stepIndex + 1),
+                  total: String(route.length),
+                })}
+              </span>
+              <span className="text-xs text-ink-secondary">•</span>
+              <span className="text-xs font-extrabold text-ink">
+                {currentPlace.name}
+              </span>
+            </div>
 
+            {/* HIGH-CONTRAST IMMERSIVE PHOTO PORTAL */}
+            <div className="relative mx-auto w-full aspect-video sm:aspect-[16/10] overflow-hidden rounded-3xl border-4 border-black bg-[#181512] shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+              {currentPlace.photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={getMediaUrl(currentPlace.photoUrl) ?? ""}
+                  alt={currentPlace.name}
+                  className={`h-full w-full object-cover transition-transform duration-700 ${
+                    isWalkingAnimation ? "scale-105 blur-[1px]" : "scale-100"
+                  }`}
+                />
+              ) : (
+                <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[#181512] text-white">
+                  <span className="text-6xl">{currentPlace.emoji || "📍"}</span>
+                  <span className="text-lg font-black">{currentPlace.name}</span>
+                </div>
+              )}
+
+              {/* Station Name & Reminiscence Banner */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-left text-white">
+                <p className="text-lg sm:text-xl font-black">{currentPlace.name}</p>
+                {currentPlace.description && (
+                  <p className="text-xs sm:text-sm font-semibold text-white/90 line-clamp-2">
+                    {currentPlace.description}
+                  </p>
+                )}
+              </div>
+
+              {/* View Full Lightbox Button */}
+              <button
+                type="button"
+                onClick={() => setLightboxPlace(currentPlace)}
+                className="absolute top-3 right-3 rounded-full border-2 border-black bg-surface/90 px-3 py-1 text-xs font-extrabold text-ink shadow-md backdrop-blur-sm hover:bg-surface cursor-pointer"
+              >
+                🔍 {t("wayfinding.viewScrapbook")}
+              </button>
+            </div>
+
+            <AudioPrompt
+              text={`${currentPlace.name}. ${currentPlace.description || ""} ${
+                nextTargetPlace
+                  ? t("wayfinding.signpostPrompt", { target: nextTargetPlace.name })
+                  : t("wayfinding.arrive")
+              }`}
+              label={t("listen")}
+              size="md"
+            />
+          </div>
+
+          {/* INTERACTION AREA */}
+          {!isLastStation ? (
+            mode === "recall" ? (
+              /* Directional Signposts Area */
+              <div className="w-full max-w-xl space-y-3 pt-2">
+                <div className="text-center">
+                  <p className="text-base sm:text-lg font-black text-ink">
+                    {t("wayfinding.signpostPrompt", {
+                      target: nextTargetPlace?.name ?? "",
+                    })}
+                  </p>
+                </div>
+
+                {/* Scaffolding Hint Banner if active */}
+                {hintActive && nextTargetPlace && (
+                  <div className="rounded-xl border-2 border-marigold bg-marigold-light p-3 text-center text-sm font-bold text-ink shadow-sm animate-pulse">
+                    {t("wayfinding.hintWhisper", { name: nextTargetPlace.name })}
+                  </div>
+                )}
+
+                {/* 2-3 High-Contrast Directional Signposts */}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {signpostChoices.map((choice, i) => {
+                    const isSelected = selectedFork === i;
+                    const isTarget = choice.name === nextTargetPlace?.name;
+                    const choicePhoto = getMediaUrl(choice.photoUrl);
+
+                    return (
+                      <button
+                        key={`${choice.id}-${stepIndex}`}
+                        type="button"
+                        onClick={() => handleForkChoice(choice, i)}
+                        disabled={selectedFork !== null || isWalkingAnimation}
+                        className={`group relative flex items-center gap-3 rounded-2xl border-3 border-black p-3.5 text-left transition-all duration-200 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 ${
+                          isSelected
+                            ? isTarget
+                              ? "bg-tea text-white scale-102 ring-4 ring-tea"
+                              : "bg-brick text-white scale-98"
+                            : hintActive && isTarget
+                            ? "bg-marigold-light border-marigold ring-4 ring-marigold scale-102"
+                            : "bg-surface text-ink hover:bg-surface-muted"
+                        }`}
+                      >
+                        {/* Thumbnail or Category Icon */}
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-black bg-tea-light">
+                          {choicePhoto ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={choicePhoto}
+                              alt={choice.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-2xl">{choice.emoji || "📍"}</span>
+                          )}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="font-extrabold text-sm sm:text-base leading-tight truncate">
+                            {choice.name}
+                          </p>
+                          <span className="text-[11px] font-bold opacity-80">
+                            {i === 0 ? "👈 Take Left Path" : i === 1 ? "👉 Take Right Path" : "👆 Straight Path"}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              /* Scenic Walk Action Button */
+              <div className="pt-2">
+                <ChunkyButton
+                  variant="tea"
+                  size="2xl"
+                  onClick={handleScenicAdvance}
+                  disabled={isWalkingAnimation}
+                >
+                  {isWalkingAnimation
+                    ? "Walking Along Path... 🚶"
+                    : t("wayfinding.walkButton")}
+                </ChunkyButton>
+              </div>
+            )
+          ) : (
+            /* Arrived Home Button */
+            <div className="pt-2">
+              <ChunkyButton variant="marigold" size="2xl" onClick={completeJourney}>
+                {t("wayfinding.arrive")} 🏡
+              </ChunkyButton>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* PHASE: DONE — HERITAGE SCRAPBOOK POSTCARD CELEBRATION */
+        <Celebration
+          emoji="🏡"
+          title={t("wayfinding.congratulations")}
+        >
+          <div className="flex flex-col items-center gap-5 max-w-md mx-auto">
+            {/* DIGITAL HERITAGE POSTCARD */}
+            <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink text-left select-none">
+              {/* Vintage Postage Stamp Corner */}
+              <div className="absolute top-4 right-4 flex flex-col items-center border-2 border-dashed border-terracotta bg-surface p-1 rounded-lg shadow-sm">
+                <div className="h-14 w-14 overflow-hidden rounded border border-black bg-tea-light">
+                  {home?.photoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={getMediaUrl(home.photoUrl) ?? ""}
+                      alt={home.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-full items-center justify-center text-2xl">🏡</span>
+                  )}
+                </div>
+                <span className="text-[9px] font-black text-terracotta tracking-wider uppercase">
+                  Home Stamp
+                </span>
+              </div>
+
+              <h3 className="font-serif text-2xl font-black text-tea pr-20">
+                {t("wayfinding.postcardTitle")}
+              </h3>
+              <p className="mt-1 text-xs font-bold text-ink-secondary">
+                {t("wayfinding.completedJourneyDesc", {
+                  count: String(route.length),
+                  home: home?.name ?? "Home",
+                })}
+              </p>
+
+              {/* Route Itinerary Recap */}
+              <div className="mt-4 space-y-1.5 border-t-2 border-dashed border-border pt-3">
+                <span className="text-[11px] font-black uppercase tracking-wider text-ink-secondary">
+                  Your Path Today:
+                </span>
+                <div className="flex flex-wrap items-center gap-1.5 text-xs font-extrabold text-ink">
+                  {route.map((p, idx) => (
+                    <span key={p.id} className="flex items-center gap-1">
+                      <span className="rounded bg-tea-light px-2 py-0.5 border border-tea">
+                        {p.name}
+                      </span>
+                      {idx < route.length - 1 && <span>→</span>}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Reminiscence Folk Melody Button */}
+              <div className="mt-4 flex items-center justify-between pt-2 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => playLifeSong()}
+                  className="group flex items-center gap-2 rounded-xl border-2 border-marigold bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
+                >
+                  <span className="text-lg">🎵</span>
+                  <span className="text-xs font-black">{t("wayfinding.musicCta")}</span>
+                </button>
+                <span className="text-xs font-bold text-ink-secondary">
+                  ⭐ Score: {score}/{Math.max(1, route.length - 1)}
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <ChunkyButton variant="tea" size="xl" onClick={startJourney}>
+                {t("wayfinding.walkAgain")}
+              </ChunkyButton>
+              <Link
+                href="/patient"
+                className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
+              >
+                {t("backToRoutine")}
+              </Link>
+            </div>
+          </div>
+        </Celebration>
+      )}
+
+      {/* Memory Lightbox Modal */}
       <MemoryLightbox
-        open={lightbox ? true : false}
-        onClose={() => setLightbox(null)}
-        photoUrl={lightbox?.photoUrl}
-        title={lightbox?.name ?? ""}
-        text={lightbox?.description ?? null}
+        open={lightboxPlace !== null}
+        onClose={() => setLightboxPlace(null)}
+        photoUrl={lightboxPlace?.photoUrl}
+        title={lightboxPlace?.name ?? ""}
+        text={lightboxPlace?.description ?? null}
         langCode={locale}
         rate={rate}
         closeLabel={t("lightbox.close")}
@@ -374,13 +763,4 @@ export function WayfindingGame() {
       />
     </GameShell>
   );
-
-  function GameShell({ children }: { children: React.ReactNode }) {
-    return (
-      <section className="pb-10">
-        <GameHeader title={t("wayfinding.title")} score={score} backHref="/patient/games" bgColor="bg-tea" />
-        <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
-      </section>
-    );
-  }
 }

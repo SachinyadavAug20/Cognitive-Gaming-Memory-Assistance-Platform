@@ -641,6 +641,34 @@
         "Let's play again soon!",
         "You are my favourite person today!"
       ]
+    },
+    "weaving": {
+      "title": "The Loom of Memories",
+      "desc": "Weave traditional silk patterns with rhythmic wooden shuttle taps"
+    },
+    "teaHarvest": {
+      "title": "Two Leaves & A Bud",
+      "desc": "Harvest fresh morning tea shoots across Upper Assam hills"
+    },
+    "radio": {
+      "title": "The Nostalgia Tuner",
+      "desc": "Tune into vintage Akashvani broadcasts & timeless memories"
+    },
+    "lotusLake": {
+      "title": "Lotus Ripples on Ward's Lake",
+      "desc": "Create soothing water ripples & blossom floating pink lotuses"
+    },
+    "kitchen": {
+      "title": "Grandmother's Heritage Kitchen",
+      "desc": "Cook traditional recipes step-by-step with authentic native spices"
+    },
+    "rhythmHills": {
+      "title": "Rhythm of the Hills",
+      "desc": "Play traditional Bihu Dhol & Khasi Ksing percussion in rhythm"
+    },
+    "rootBridge": {
+      "title": "Living Root Bridge Builder",
+      "desc": "Guide living rubber fig roots across a scenic mountain river gorge"
     }
   }
 }

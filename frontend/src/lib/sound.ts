@@ -617,3 +617,74 @@ export function playPineBreeze(): void {
   playNote(783.99, now + 0.35, 1.2, 0.06, "sine");   // G5
 }
 
+/** Wooden Loom Shuttle Clack — Crisp organic double tap (Tuk... Clack!) */
+export function playShuttleClack(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(480, now, 0.04, 0.15, "triangle");
+  playNote(260, now + 0.05, 0.08, 0.18, "sine");
+  playNote(140, now + 0.06, 0.07, 0.14, "sine");
+}
+
+/** Tea Leaf Pluck — Organic crisp snap sound */
+export function playLeafPluck(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(620, now, 0.03, 0.12, "triangle");
+  playNote(840, now + 0.02, 0.05, 0.16, "sine");
+  playNote(420, now + 0.05, 0.04, 0.08, "sine");
+}
+
+/** Vintage Radio Station Tuning Chime */
+export function playRadioTune(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(440, now, 0.12, 0.08, "sine");
+  playNote(880, now + 0.08, 0.25, 0.14, "sine");
+  playNote(1320, now + 0.18, 0.4, 0.12, "triangle");
+}
+
+/** Water Ripple & Lotus Bloom — Shimmering crystalline liquid chime */
+export function playWaterRipple(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  const baseFreq = 523.25 + Math.random() * 200;
+  playNote(baseFreq, now, 0.4, 0.09, "sine");
+  playNote(baseFreq * 1.5, now + 0.08, 0.6, 0.07, "triangle");
+}
+
+/** Kitchen Sizzle & Stirring Sound */
+export function playSizzle(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(280, now, 0.15, 0.14, "triangle");
+  playNote(340, now + 0.08, 0.2, 0.12, "sine");
+  playNote(220, now + 0.16, 0.25, 0.1, "sine");
+}
+
+/** Resonant Ethnic Drum Beat (Bihu Dhol / Khasi Ksing) */
+export function playDholBeat(low = true): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  const startF = low ? 140 : 260;
+  const endF = low ? 48 : 80;
+  osc.frequency.setValueAtTime(startF, now);
+  osc.frequency.exponentialRampToValueAtTime(endF, now + 0.18);
+  gain.gain.setValueAtTime(0.35, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+  osc.connect(gain);
+  gain.connect(_masterGain);
+  osc.start(now);
+  osc.stop(now + 0.22);
+}
+
+

@@ -9,6 +9,7 @@ import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
+import { ClinicalBiomarkerHUD } from "@/components/games/ClinicalBiomarkerHUD";
 import {
   playPress,
   playCorrect,

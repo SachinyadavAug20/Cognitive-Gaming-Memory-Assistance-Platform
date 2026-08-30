@@ -362,3 +362,67 @@ html {
 .animate-shake {
   animation: gentle-shake 0.5s ease-in-out infinite;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   HIGH-POLISH CDTx GAME AESTHETICS & SENSORY ANIMATIONS
+   ══════════════════════════════════════════════════════════════ */
+
+/* Golden Halo Scaffolding Glow */
+@keyframes golden-scaffold-aura {
+  0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), inset 0 0 8px rgba(245, 158, 11, 0.3); }
+  50%      { box-shadow: 0 0 24px rgba(245, 158, 11, 0.9), inset 0 0 16px rgba(245, 158, 11, 0.6); }
+}
+.scaffold-aura {
+  animation: golden-scaffold-aura 1.8s ease-in-out infinite;
+}
+
+/* Aromatic Kitchen Steam */
+@keyframes steam-rise {
+  0%   { transform: translateY(0) scaleX(1); opacity: 0; }
+  40%  { opacity: 0.8; }
+  80%  { transform: translateY(-40px) scaleX(1.4); opacity: 0.3; }
+  100% { transform: translateY(-60px) scaleX(1.8); opacity: 0; }
+}
+.steam-smoke {
+  animation: steam-rise 2.4s ease-out infinite;
+}
+
+/* Tea Bush Leaf Sway */
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(4deg) translateY(-2px); }
+}
+.leaf-breeze {
+  animation: leaf-sway 3.2s ease-in-out infinite;
+}
+
+/* Percussion Drum Shockwave */
+@keyframes drum-shockwave {
+  0%   { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.drum-hit-ring {
+  animation: drum-shockwave 0.45s ease-out forwards;
+}
+
+/* Fluid Water Ripple Expanding Ring */
+@keyframes water-caustic-ring {
+  0%   { transform: scale(0.2); opacity: 0.9; }
+  60%  { opacity: 0.6; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+.water-ripple-node {
+  animation: water-caustic-ring 1.4s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+/* Shimmering Golden Thread */
+@keyframes thread-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.thread-glow {
+  background: linear-gradient(90deg, #F59E0B 0%, #FEF08A 50%, #F59E0B 100%);
+  background-size: 200% 100%;
+  animation: thread-shimmer 2s infinite linear;
+}
+

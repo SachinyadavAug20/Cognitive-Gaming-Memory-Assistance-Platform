@@ -192,43 +192,127 @@ export default function PatientHome() {
 
       <div className="max-w-3xl mx-auto px-4 py-4 space-y-5 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
         <section aria-labelledby="games-title">
-          <h2
-            id="games-title"
-            className="font-[family-name:var(--font-serif)] text-xl font-bold text-ink flex items-center gap-2"
-          >
-            <span className="text-2xl">🧠</span> {t("gamesTitle")}
-          </h2>
-          <div className="mt-3">
+          <div className="flex items-center justify-between">
+            <h2
+              id="games-title"
+              className="font-[family-name:var(--font-serif)] text-xl font-bold text-ink flex items-center gap-2"
+            >
+              <span className="text-2xl">🧠</span> {t("gamesTitle")}
+            </h2>
+            <Link
+              href="/patient/games"
+              className="text-xs font-black text-terracotta underline hover:text-terracotta/80"
+            >
+              View All Games →
+            </Link>
+          </div>
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            {/* Memory Pieces Puzzle Card */}
             <Link
               href="/patient/games/jigsaw"
-              className={`${CARD} btn-tactile group flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border-3 border-black bg-tea p-5 text-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-[1.01]`}
+              className={`${CARD} btn-tactile group flex flex-col justify-between gap-3 rounded-2xl border-3 border-black bg-tea p-5 text-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-[1.01]`}
             >
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 text-4xl shadow-sm">
-                🧩
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-2xl font-black tracking-tight">
-                    {t("cards.jigsaw.title")}
-                  </span>
-                  <span className="rounded-full bg-marigold px-2.5 py-0.5 text-xs font-black uppercase tracking-wide text-white shadow-sm">
-                    ⭐ Active CDTx Module
-                  </span>
+              <div className="flex items-start gap-3">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 text-3xl shadow-sm">
+                  🧩
                 </div>
-                <p className="mt-1 text-base font-semibold text-white/90">
-                  {t("cards.jigsaw.desc")}
-                </p>
-                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-white/80">
-                  <span className="rounded-md bg-black/20 px-2 py-0.5">2×2 / 3×3 / 4×4 Adaptive</span>
-                  <span>•</span>
-                  <span className="rounded-md bg-black/20 px-2 py-0.5">Family & Landmark Photos</span>
-                  <span>•</span>
-                  <span className="rounded-md bg-black/20 px-2 py-0.5">Voice Guided</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-xl font-black tracking-tight">
+                      {t("cards.jigsaw.title")}
+                    </span>
+                    <span className="rounded-full bg-marigold px-2 py-0.5 text-[10px] font-black uppercase text-white shadow-sm">
+                      ⭐ CDTx
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs font-semibold text-white/90 line-clamp-2">
+                    {t("cards.jigsaw.desc")}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center rounded-xl border-2 border-white bg-white px-5 py-3 text-lg font-black text-tea shadow-[2px_2px_0px_rgba(0,0,0,0.4)] group-hover:bg-surface-muted">
-                Play Now →
+              <div className="flex items-center justify-between border-t border-white/20 pt-2 text-xs font-bold text-white/90">
+                <span>Adaptive 2×2 • 3×3 • 4×4</span>
+                <span className="rounded-lg bg-white px-3 py-1 text-xs font-black text-tea shadow-sm group-hover:bg-surface-muted">
+                  Play →
+                </span>
               </div>
+            </Link>
+
+            {/* Heritage Wayfinding Card */}
+            <Link
+              href="/patient/games/wayfinding"
+              className={`${CARD} btn-tactile group flex flex-col justify-between gap-3 rounded-2xl border-3 border-black bg-[#1F291E] p-5 text-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-[1.01]`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 text-3xl shadow-sm">
+                  🗺️
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-xl font-black tracking-tight text-amber-300">
+                      {t("cards.wayfinding.title")}
+                    </span>
+                    <span className="rounded-full bg-tea px-2 py-0.5 text-[10px] font-black uppercase text-white shadow-sm">
+                      📍 Spatial
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs font-semibold text-white/90 line-clamp-2">
+                    {t("cards.wayfinding.desc")}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between border-t border-white/20 pt-2 text-xs font-bold text-white/90">
+                <span>{detail?.familiarPlaces?.length ?? 5} Local Landmarks</span>
+                <span className="rounded-lg bg-marigold px-3 py-1 text-xs font-black text-white shadow-sm group-hover:bg-marigold/90">
+                  Walk →
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Quick Access to the rest of the therapy suite */}
+          <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
+            <Link
+              href="/patient/games/weaving"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-500/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-amber-500/25 shadow-sm"
+            >
+              <span>🧵</span> Loom of Memories
+            </Link>
+            <Link
+              href="/patient/games/tea-harvest"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-emerald-500/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-emerald-500/25 shadow-sm"
+            >
+              <span>🌿</span> Two Leaves & A Bud
+            </Link>
+            <Link
+              href="/patient/games/radio"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-800/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-amber-800/25 shadow-sm"
+            >
+              <span>📻</span> Nostalgia Tuner
+            </Link>
+            <Link
+              href="/patient/games/lotus-lake"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-teal-500/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-teal-500/25 shadow-sm"
+            >
+              <span>🌸</span> Lotus Ripples
+            </Link>
+            <Link
+              href="/patient/games/heritage-kitchen"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-terracotta/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-terracotta/25 shadow-sm"
+            >
+              <span>🍲</span> Heritage Kitchen
+            </Link>
+            <Link
+              href="/patient/games/rhythm-hills"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-marigold/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-marigold/25 shadow-sm"
+            >
+              <span>🪕</span> Rhythm of Hills
+            </Link>
+            <Link
+              href="/patient/games/root-bridge"
+              className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-green-800/15 px-3 py-1.5 text-xs font-black text-ink shrink-0 hover:bg-green-800/25 shadow-sm"
+            >
+              <span>🌳</span> Root Bridge
             </Link>
           </div>
         </section>
