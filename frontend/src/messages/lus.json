@@ -113,6 +113,22 @@
     "proverb": {
       "title": "Mizo Thufing & Hla Phuahte",
       "desc": "Mizo thufing leh hla thluk hriat chhuahna hmanga hriatna tihchak"
+    },
+    "riverLanterns": {
+      "title": "३D Lui & Hriatrengna Khawnvar",
+      "desc": "Kut vaiin ३D lui tui fawn siam la, chhungkaw hriatrengna khawnvarte hnaih rawh"
+    },
+    "loom": {
+      "title": "३D Puanbu & Puan Tahna",
+      "desc": "३D thembu pawtin Mizo puan ropui tak tak tah rawh"
+    },
+    "drum": {
+      "title": "३D Khuang & Rimawi Tumna",
+      "desc": "Mizo khuang leh dar rimawi thluk milin kut hnihin tum rawh"
+    },
+    "memoirScribe": {
+      "title": "Hriatrengna Lehkhabu & Thuziak",
+      "desc": "Chhungkaw hriatrengna hlu takte sawi la, AI-in phek mawi tak a siam ang"
     }
   }
 }

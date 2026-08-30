@@ -689,6 +689,22 @@
     "proverb": {
       "title": "Folk Proverb & Rhyme Cloze",
       "desc": "Activate semantic recall by completing timeless North Eastern folk proverbs and verses"
+    },
+    "riverLanterns": {
+      "title": "The 3D Living River of Memories",
+      "desc": "Wave your hand across 3D water ripples to guide floating family memory lanterns on the sunlit Brahmaputra"
+    },
+    "loom": {
+      "title": "The 3D Heritage Loom: Rhythm of Muga Silk",
+      "desc": "Slide the 3D wooden shuttle to procedurally weave traditional Assamese Muga silk patterns with bi-manual rhythm"
+    },
+    "drum": {
+      "title": "The 3D Folk Rhythm Drummer: Dhol & Ksing",
+      "desc": "Play traditional Bihu Dhol and Khasi Ksing beats with real-time 3D spring deformation and acoustic feedback"
+    },
+    "memoirScribe": {
+      "title": "The Voice Reminiscence Scribe: Living Memoirs",
+      "desc": "Speak heartfelt family memories and let local AI synthesize an illustrated Golden Memoir page"
     }
   }
 }

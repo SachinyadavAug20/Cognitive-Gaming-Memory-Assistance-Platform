@@ -40,6 +40,7 @@ export default function GamesHubPage() {
     if (selectedFilter === "all") return true;
     if (selectedFilter === "recommended") return g.recommended;
     if (selectedFilter === "ai") return g.domain.startsWith("AI");
+    if (selectedFilter === "3d") return g.domain.includes("3D");
     return true;
   });
 
@@ -83,6 +84,18 @@ export default function GamesHubPage() {
         >
           <Layers className="h-3.5 w-3.5" />
           <span>All Modules ({GAMES.length})</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setSelectedFilter("3d")}
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            selectedFilter === "3d"
+              ? "border-black bg-teal-800 text-white shadow-[2px_2px_0px_#000]"
+              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
+          }`}
+        >
+          <Activity className="h-3.5 w-3.5" />
+          <span>3D & Vision ({GAMES.filter((g) => g.domain.includes("3D")).length})</span>
         </button>
         <button
           type="button"

@@ -15,6 +15,8 @@ import {
   GitFork,
   Store,
   Quote,
+  Waves,
+  Feather,
 } from "lucide-react";
 
 import { JigsawGame } from "./jigsaw/JigsawGame";
@@ -31,6 +33,10 @@ import { MemoryDetectiveGame } from "./memory-detective/MemoryDetectiveGame";
 import { StorybookGame } from "./storybook/StorybookGame";
 import { BazaarGame } from "./bazaar/BazaarGame";
 import { ProverbGame } from "./proverb/ProverbGame";
+import { RiverLanternsGame } from "./river-lanterns/RiverLanternsGame";
+import { LoomGame } from "./loom/LoomGame";
+import { DrumGame } from "./drum/DrumGame";
+import { MemoirScribeGame } from "./memoir-scribe/MemoirScribeGame";
 
 export interface GameDef {
   id: string;
@@ -44,6 +50,46 @@ export interface GameDef {
 }
 
 export const GAMES: GameDef[] = [
+  {
+    id: "river-lanterns",
+    icon: Waves,
+    titleKey: "riverLanterns.title",
+    descKey: "riverLanterns.desc",
+    accent: "bg-teal-800",
+    domain: "3D Graphics & Optical Vision",
+    recommended: true,
+    component: RiverLanternsGame,
+  },
+  {
+    id: "loom",
+    icon: Sparkles,
+    titleKey: "loom.title",
+    descKey: "loom.desc",
+    accent: "bg-amber-800",
+    domain: "3D Constructional Praxis",
+    recommended: true,
+    component: LoomGame,
+  },
+  {
+    id: "drum",
+    icon: Music,
+    titleKey: "drum.title",
+    descKey: "drum.desc",
+    accent: "bg-marigold",
+    domain: "3D Auditory-Motor Entrainment",
+    recommended: true,
+    component: DrumGame,
+  },
+  {
+    id: "memoir-scribe",
+    icon: Feather,
+    titleKey: "memoirScribe.title",
+    descKey: "memoirScribe.desc",
+    accent: "bg-purple-900",
+    domain: "AI Narrative Living Memoirs",
+    recommended: true,
+    component: MemoirScribeGame,
+  },
   {
     id: "grandchild-chat",
     icon: Coffee,
@@ -121,7 +167,7 @@ export const GAMES: GameDef[] = [
     descKey: "weaving.desc",
     accent: "bg-amber-600",
     domain: "Constructional Praxis",
-    recommended: true,
+    recommended: false,
     component: WeavingGame,
   },
   {

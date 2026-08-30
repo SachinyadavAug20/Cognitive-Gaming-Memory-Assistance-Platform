@@ -198,6 +198,20 @@ export interface AiProverbResponse {
   regionOrigin: string;
 }
 
+export interface AiMemoirPayload {
+  patientId?: number | null;
+  photoPromptTitle?: string;
+  userSpokenNarrative?: string;
+}
+
+export interface AiMemoirResponse {
+  memoirTitle: string;
+  poeticNarrative: string;
+  emotionalTone: string;
+  syntacticRichnessScore: number;
+  culturalDedication: string;
+}
+
 export const api = {
   get: <T,>(path: string) => request<T>(path),
   post: <T,>(path: string, body: unknown) =>
@@ -228,6 +242,11 @@ export const api = {
     }),
   aiProverb: (payload: AiProverbPayload) =>
     request<AiProverbResponse>("/ai/reminiscence/proverb", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  aiMemoir: (payload: AiMemoirPayload) =>
+    request<AiMemoirResponse>("/ai/reminiscence/memoir-scribe", {
       method: "POST",
       body: JSON.stringify(payload),
     }),

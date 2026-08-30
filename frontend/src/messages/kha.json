@@ -113,6 +113,22 @@
     "proverb": {
       "title": "Ki Ktien Tymmen & Puriskam",
       "desc": "Pyndap ia ki ktien kiba duna ha ki ktien tymmen Khasi ban pynkynmaw pat"
+    },
+    "riverLanterns": {
+      "title": "Ka Wah 3D & Ki Sharak Jingkynmaw",
+      "desc": "Khyllie um da ki kti ban pyniaid ia ki sharak jingkynmaw ha ka wah Dawki"
+    },
+    "loom": {
+      "title": "Ka Thain Jain Ryndia 3D",
+      "desc": "Pyniaid ia ka shuti dieng ban thain ia ki jain ryndia bad jainsem ba itynnad"
+    },
+    "drum": {
+      "title": "Ka Sur Ksing & Bom 3D",
+      "desc": "Tem ia ka ksing Khasi da baroh ar kti katkum ka sur tynrai"
+    },
+    "memoirScribe": {
+      "title": "Ki Ktien Jingkynmaw & Kot Puriskam",
+      "desc": "Iathuh ia ki jingkynmaw kiba sngewbha, bad ka AI kan shna ia ka sla kot jingkynmaw"
     }
   }
 }

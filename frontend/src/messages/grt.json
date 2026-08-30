@@ -109,6 +109,22 @@
     "proverb": {
       "title": "Katta Gitcham & Ring·anirang",
       "desc": "A·dokni katta gitchamni bangbang damko gapatbo"
+    },
+    "riverLanterns": {
+      "title": "३D Chiring & Gisik Ra·ani Wal·ku",
+      "desc": "Jakko mo·ate ३D chiringo bal·rorogipa wal·kurangko sepangona rimbabo"
+    },
+    "loom": {
+      "title": "३D Dokmanda & Ba·ra Dokani",
+      "desc": "३D makkoko sale Dokmanda ba·rani nitogipa rongrangko dokbo"
+    },
+    "drum": {
+      "title": "३D Dama & Kram Surna Dokani",
+      "desc": "Wangala damana jak gipin gipinba dokatbo"
+    },
+    "memoirScribe": {
+      "title": "Janggi Tangani Katta & Ki·tap",
+      "desc": "Nokdangni katta gitchamko aganbo, AI gital lekka jakko segen"
     }
   }
 }

@@ -45,4 +45,10 @@ public class AiReminiscenceController {
         AiProverbResponse response = reminiscenceService.generateProverbChallenge(request);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/memoir-scribe")
+    public ResponseEntity<AiMemoirResponse> getMemoirStory(@RequestBody AiMemoirRequest request) {
+        AiMemoirResponse response = reminiscenceService.generateMemoirStory(request);
+        return ResponseEntity.ok(response);
+    }
 }

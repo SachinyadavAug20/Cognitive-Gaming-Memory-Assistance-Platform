@@ -9,6 +9,8 @@ import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { patientLangCode } from "@/lib/i18n";
 import { speechRate } from "@/games/config";
 import { ageFromDob, type PatientDetailRecord } from "@/types";
+import { BiomarkerRadarChart } from "@/components/biomarkers/BiomarkerRadarChart";
+import { TrajectoryHeatmap } from "@/components/biomarkers/TrajectoryHeatmap";
 
 function getStageBadgeStyle(stage?: string | null) {
   if (!stage) return "bg-surface-muted text-ink-secondary border-border-soft";
@@ -409,6 +411,49 @@ export default function CaregiverPatientDetail() {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* SECTION: Continuous Neuropsychological Biomarkers & Motor Trajectory */}
+            <div className="scrapbook-card">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-border-soft pb-4 mb-5">
+                <div>
+                  <div className="flex items-center gap-2 mb-1 text-tea">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-ink bg-surface-muted px-2.5 py-0.5 rounded-lg border border-border-soft">
+                      CDTx Continuous Neuropsychological Engine // Active
+                    </span>
+                  </div>
+                  <h2 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink">
+                    Continuous Cognitive Biomarkers & Motor Analytics
+                  </h2>
+                  <p className="text-sm text-ink-secondary mt-0.5">
+                    Objective digital biomarkers extracted unobtrusively from everyday game sessions
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-xl bg-tea-light border-2 border-tea text-tea-dark font-black text-xs">
+                  5 Biomarker Axes Active
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                {/* 5-Axis Clinical Radar Chart */}
+                <div className="rounded-2xl border-3 border-border bg-surface p-5 shadow-[4px_4px_0px_var(--color-border)] text-left flex flex-col justify-between h-full">
+                  <div>
+                    <div className="flex items-center justify-between border-b border-border-soft pb-2 mb-3">
+                      <h3 className="font-bold text-sm text-ink uppercase tracking-wider">
+                        5-Axis Cognitive Competency Radar
+                      </h3>
+                      <span className="text-xs font-black text-tea">Mean: 91.0%</span>
+                    </div>
+                    <p className="text-xs text-ink-secondary leading-relaxed mb-4">
+                      Measures multi-domain performance across memory retrieval, daily sequencing (IADL), bilateral motor speed, reaction latency, and lexical fluency.
+                    </p>
+                  </div>
+                  <BiomarkerRadarChart />
+                </div>
+
+                {/* Motor Trajectory Jitter & Micro-Hesitation Visualizer */}
+                <TrajectoryHeatmap />
+              </div>
             </div>
 
             {/* SECTION 2: Family & Loved Ones (Photo Cards Grid) */}
