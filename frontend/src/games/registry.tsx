@@ -1,4 +1,22 @@
 import type { ComponentType } from "react";
+import type { LucideIcon } from "lucide-react";
+import {
+  Coffee,
+  Search,
+  BookOpen,
+  Grid3X3,
+  Compass,
+  Sparkles,
+  Leaf,
+  Radio,
+  Flower2,
+  Utensils,
+  Music,
+  GitFork,
+  Store,
+  Quote,
+} from "lucide-react";
+
 import { JigsawGame } from "./jigsaw/JigsawGame";
 import { WayfindingGame } from "./wayfinding/WayfindingGame";
 import { WeavingGame } from "./weaving/WeavingGame";
@@ -8,10 +26,15 @@ import { LotusLakeGame } from "./lotus-lake/LotusLakeGame";
 import { HeritageKitchenGame } from "./heritage-kitchen/HeritageKitchenGame";
 import { RhythmHillsGame } from "./rhythm-hills/RhythmHillsGame";
 import { RootBridgeGame } from "./root-bridge/RootBridgeGame";
+import { GrandchildChatGame } from "./grandchild-chat/GrandchildChatGame";
+import { MemoryDetectiveGame } from "./memory-detective/MemoryDetectiveGame";
+import { StorybookGame } from "./storybook/StorybookGame";
+import { BazaarGame } from "./bazaar/BazaarGame";
+import { ProverbGame } from "./proverb/ProverbGame";
 
 export interface GameDef {
   id: string;
-  emoji: string;
+  icon: LucideIcon;
   titleKey: string;
   descKey: string;
   accent: string;
@@ -22,8 +45,58 @@ export interface GameDef {
 
 export const GAMES: GameDef[] = [
   {
+    id: "grandchild-chat",
+    icon: Coffee,
+    titleKey: "grandchildChat.title",
+    descKey: "grandchildChat.desc",
+    accent: "bg-tea",
+    domain: "AI Conversational Reminiscence",
+    recommended: true,
+    component: GrandchildChatGame,
+  },
+  {
+    id: "bazaar",
+    icon: Store,
+    titleKey: "bazaar.title",
+    descKey: "bazaar.desc",
+    accent: "bg-amber-700",
+    domain: "AI Market Barter & IADL",
+    recommended: true,
+    component: BazaarGame,
+  },
+  {
+    id: "proverb",
+    icon: Quote,
+    titleKey: "proverb.title",
+    descKey: "proverb.desc",
+    accent: "bg-tea",
+    domain: "AI Cultural Cloze & Wisdom",
+    recommended: true,
+    component: ProverbGame,
+  },
+  {
+    id: "memory-detective",
+    icon: Search,
+    titleKey: "memoryDetective.title",
+    descKey: "memoryDetective.desc",
+    accent: "bg-marigold",
+    domain: "AI Clue & Face Recognition",
+    recommended: true,
+    component: MemoryDetectiveGame,
+  },
+  {
+    id: "storybook",
+    icon: BookOpen,
+    titleKey: "storybook.title",
+    descKey: "storybook.desc",
+    accent: "bg-amber-800",
+    domain: "AI Branching Life Tales",
+    recommended: true,
+    component: StorybookGame,
+  },
+  {
     id: "jigsaw",
-    emoji: "🧩",
+    icon: Grid3X3,
     titleKey: "jigsaw.title",
     descKey: "jigsaw.desc",
     accent: "bg-tea",
@@ -33,7 +106,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "wayfinding",
-    emoji: "🗺️",
+    icon: Compass,
     titleKey: "wayfinding.title",
     descKey: "wayfinding.desc",
     accent: "bg-emerald-700",
@@ -43,7 +116,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "weaving",
-    emoji: "🧵",
+    icon: Sparkles,
     titleKey: "weaving.title",
     descKey: "weaving.desc",
     accent: "bg-amber-600",
@@ -53,7 +126,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "tea-harvest",
-    emoji: "🌿",
+    icon: Leaf,
     titleKey: "teaHarvest.title",
     descKey: "teaHarvest.desc",
     accent: "bg-emerald-600",
@@ -63,7 +136,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "radio",
-    emoji: "📻",
+    icon: Radio,
     titleKey: "radio.title",
     descKey: "radio.desc",
     accent: "bg-amber-800",
@@ -72,8 +145,8 @@ export const GAMES: GameDef[] = [
     component: NostalgiaRadioGame,
   },
   {
-    id: "lotus-lake",
-    emoji: "🌸",
+    id: "lotusLake",
+    icon: Flower2,
     titleKey: "lotusLake.title",
     descKey: "lotusLake.desc",
     accent: "bg-teal-700",
@@ -83,7 +156,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "heritage-kitchen",
-    emoji: "🍲",
+    icon: Utensils,
     titleKey: "kitchen.title",
     descKey: "kitchen.desc",
     accent: "bg-terracotta",
@@ -93,7 +166,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "rhythm-hills",
-    emoji: "🪕",
+    icon: Music,
     titleKey: "rhythmHills.title",
     descKey: "rhythmHills.desc",
     accent: "bg-marigold",
@@ -103,7 +176,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "root-bridge",
-    emoji: "🌳",
+    icon: GitFork,
     titleKey: "rootBridge.title",
     descKey: "rootBridge.desc",
     accent: "bg-green-800",

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { Leaf, Music, ShoppingBag } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -343,13 +344,13 @@ export function TeaHarvestGame() {
           {/* HINT BANNER IF ACTIVE */}
           {hintActive && (
             <div className="rounded-xl border-2 border-marigold bg-marigold-light p-3 text-center text-sm font-bold text-ink shadow-sm animate-pulse max-w-md w-full">
-              💡 Look for the glowing tender green shoot (🌱) with two leaves and a bud!
+              Look for the tender green shoot with two leaves and a bud!
             </div>
           )}
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration emoji="🧺" title="Morning Harvest Completed!">
+        <Celebration icon={Leaf} title="Morning Harvest Completed!">
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
               <h3 className="font-serif text-2xl font-black text-tea">
@@ -361,7 +362,7 @@ export function TeaHarvestGame() {
 
               {/* Harvest Basket Graphic */}
               <div className="mt-4 flex items-center justify-center gap-3 py-4 bg-[#0F230C] rounded-2xl border-3 border-black text-white">
-                <span className="text-5xl">🧺</span>
+                <ShoppingBag className="h-12 w-12 text-amber-300" />
                 <div>
                   <p className="text-lg font-black text-amber-300">{targetGoal} Shoots Collected</p>
                   <p className="text-xs text-white/80">100% Pure First Flush Quality</p>
@@ -373,13 +374,13 @@ export function TeaHarvestGame() {
                 <button
                   type="button"
                   onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-marigold bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
+                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
-                  <span className="text-lg">🎵</span>
+                  <Music className="h-4 w-4 text-ink" />
                   <span className="text-xs font-black">Play Tea Garden Song</span>
                 </button>
                 <span className="text-xs font-bold text-ink-secondary">
-                  ⭐ Harvest Score: {score}
+                  Harvest Score: {score}
                 </span>
               </div>
             </div>
@@ -387,7 +388,7 @@ export function TeaHarvestGame() {
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startHarvest}>
-                Harvest Another Flush 🌿
+                Harvest Another Flush
               </ChunkyButton>
               <Link
                 href="/patient"

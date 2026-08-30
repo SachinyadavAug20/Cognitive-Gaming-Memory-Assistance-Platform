@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { Grid3X3, Volume2, Music } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
-import { ClinicalBiomarkerHUD } from "@/components/games/ClinicalBiomarkerHUD";
+import { JigsawPieceBoard } from "./JigsawPieceBoard";
 import {
   playPress,
   playCorrect,
@@ -65,18 +66,6 @@ export interface PuzzleTarget {
   notes: string;
   emoji?: string;
   type: "family" | "place";
-}
-
-function getPieceBgStyle(pieceId: number, g: number, photo: string) {
-  const row = Math.floor(pieceId / g);
-  const col = pieceId % g;
-  const bgX = g > 1 ? (col / (g - 1)) * 100 : 0;
-  const bgY = g > 1 ? (row / (g - 1)) * 100 : 0;
-  return {
-    backgroundImage: `url(${photo})`,
-    backgroundSize: `${g * 100}% ${g * 100}%`,
-    backgroundPosition: `${bgX}% ${bgY}%`,
-  };
 }
 
 export function JigsawGame() {
@@ -496,84 +485,18 @@ export function JigsawGame() {
             />
           </div>
 
-          {/* HIGH-CONTRAST DARK BOARD TRAY */}
+          {/* AUTHENTIC INTERLOCKING JIGSAW PUZZLE BOARD */}
           {photo ? (
-            <div
-              role="group"
-              aria-label={t("jigsaw.title")}
-              className="relative mx-auto w-full max-w-sm sm:max-w-md aspect-square rounded-3xl p-3 sm:p-4 bg-[#181512] border-4 border-[#2A241F] shadow-[8px_8px_0px_rgba(0,0,0,0.9)] overflow-hidden flex items-center justify-center select-none"
-            >
-              {peeking ? (
-                <div className="relative h-full w-full overflow-hidden rounded-2xl border-2 border-white/20">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={photo}
-                    alt={currentTarget?.name}
-                    className="h-full w-full object-cover"
-                  />
-                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border-2 border-black bg-ink/80 px-4 py-1.5 text-sm font-black text-white shadow-md">
-                    👀 {t("jigsaw.peeking")}
-                  </span>
-                </div>
-              ) : (
-                <>
-                  {/* Ghost Blueprint Watermark Guide */}
-                  {ghostGuide && (
-                    <div
-                      className="absolute inset-3 sm:inset-4 rounded-2xl overflow-hidden pointer-events-none opacity-25 grayscale-[20%] transition-opacity duration-300"
-                      style={{
-                        backgroundImage: `url(${photo})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                  )}
-
-                  {/* Puzzle Pieces Grid */}
-                  <div
-                    className="grid h-full w-full gap-2 sm:gap-2.5 z-10"
-                    style={{
-                      gridTemplateColumns: `repeat(${gridSize}, minmax(0, 1fr))`,
-                      gridTemplateRows: `repeat(${gridSize}, minmax(0, 1fr))`,
-                    }}
-                  >
-                    {order.map((pieceId, pos) => {
-                      const isSel = selectedPos === pos;
-                      const isCorrect = pieceId === pos;
-                      const isSnapping = snapping.includes(pos);
-                      return (
-                        <button
-                          key={`${pieceId}-${pos}`}
-                          type="button"
-                          onClick={() => onCellTap(pos)}
-                          aria-pressed={isSel}
-                          aria-label={t("jigsaw.piece")}
-                          className={`relative w-full h-full rounded-xl sm:rounded-2xl border-2.5 sm:border-3 border-black bg-no-repeat transition-all duration-200 cursor-pointer overflow-hidden ${
-                            isSnapping ? "piece-snap ring-4 ring-tea" : ""
-                          } ${
-                            isSel
-                              ? "ring-4 ring-marigold ring-offset-2 ring-offset-[#181512] scale-105 z-30 shadow-[0_0_20px_rgba(245,158,11,0.9)]"
-                              : isCorrect
-                              ? "border-tea/90 shadow-[0_4px_0px_rgba(0,0,0,0.8)]"
-                              : "shadow-[0_4px_0px_rgba(0,0,0,0.7)] active:scale-95"
-                          }`}
-                          style={getPieceBgStyle(pieceId, gridSize, photo)}
-                        >
-                          {/* Inner bevel ring */}
-                          <span className="absolute inset-0 rounded-xl sm:rounded-2xl pointer-events-none ring-1 ring-inset ring-white/30" />
-                          {/* Correct piece corner badge */}
-                          {isCorrect && (
-                            <span className="absolute bottom-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-tea text-[11px] font-black text-white shadow-sm">
-                              ✓
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </div>
+            <JigsawPieceBoard
+              gridSize={gridSize}
+              order={order}
+              selectedPos={selectedPos}
+              snappingPos={snapping}
+              photoUrl={photo}
+              peeking={peeking}
+              ghostGuide={ghostGuide}
+              onPieceTap={onCellTap}
+            />
           ) : null}
 
           {/* Action Bar */}
@@ -592,7 +515,7 @@ export function JigsawGame() {
         </div>
       ) : (
         <Celebration
-          emoji="🧩"
+          icon={Grid3X3}
           title={
             finishedAll
               ? t("jigsaw.allComplete")
@@ -606,7 +529,7 @@ export function JigsawGame() {
               <button
                 type="button"
                 onClick={revisitLightbox}
-                className="group flex flex-col items-center gap-2 rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-102"
+                className="group flex flex-col items-center gap-2 rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-102 cursor-pointer"
               >
                 {photo ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -619,8 +542,9 @@ export function JigsawGame() {
                 <span className="text-lg font-black text-ink">
                   {currentTarget.subtitle}
                 </span>
-                <span className="rounded-full bg-tea-light border border-tea px-3 py-1 text-sm font-bold text-tea">
-                  {t("jigsaw.viewPicture")} 🔊
+                <span className="rounded-full bg-tea-light border border-tea px-3 py-1 text-xs font-bold text-tea flex items-center gap-1.5">
+                  <Volume2 className="h-3.5 w-3.5" />
+                  <span>{t("jigsaw.viewPicture")}</span>
                 </span>
               </button>
 
@@ -628,9 +552,9 @@ export function JigsawGame() {
               <button
                 type="button"
                 onClick={() => playLifeSong()}
-                className="group flex items-center gap-2 rounded-2xl border-2 border-marigold bg-marigold-light px-4 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5"
+                className="group flex items-center gap-2 rounded-2xl border-2 border-black bg-marigold-light px-4 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
               >
-                <span className="text-xl">🎵</span>
+                <Music className="h-4 w-4 text-ink" />
                 <span className="text-sm font-black">{t("jigsaw.music")}</span>
               </button>
             </div>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { Flower2, Music } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -267,7 +268,7 @@ export function LotusLakeGame() {
           </div>
         ) : (
           /* PHASE: DONE CELEBRATION */
-          <Celebration emoji="🪷" title="All Lilies in Bloom!">
+          <Celebration icon={Flower2} title="All Lilies in Bloom!">
             <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
               <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
                 <h3 className="font-serif text-2xl font-black text-teal-800">
@@ -297,13 +298,13 @@ export function LotusLakeGame() {
                   <button
                     type="button"
                     onClick={() => playLifeSong()}
-                    className="group flex items-center gap-2 rounded-xl border-2 border-teal-700 bg-teal-100 px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
+                    className="group flex items-center gap-2 rounded-xl border-2 border-black bg-teal-100 px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
                   >
-                    <span className="text-lg">🎵</span>
+                    <Music className="h-4 w-4 text-teal-900" />
                     <span className="text-xs font-black">Play Calming Flute</span>
                   </button>
                   <span className="text-xs font-bold text-ink-secondary">
-                    ⭐ Calming Score: {bloomedCount}
+                    Calming Score: {bloomedCount}
                   </span>
                 </div>
               </div>
@@ -311,7 +312,7 @@ export function LotusLakeGame() {
               {/* Actions */}
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ChunkyButton variant="tea" size="xl" onClick={startLake}>
-                  Visit Lake Again 🌸
+                  Visit Lake Again
                 </ChunkyButton>
                 <Link
                   href="/patient"

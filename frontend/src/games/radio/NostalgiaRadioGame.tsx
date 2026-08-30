@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { Radio, Music, Search } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -344,9 +345,10 @@ export function NostalgiaRadioGame() {
                 <button
                   type="button"
                   onClick={() => setLightboxPhoto(stationMemoryPhoto)}
-                  className="absolute top-2 right-2 rounded-full border border-black bg-surface/90 px-2.5 py-0.5 text-[10px] font-black text-ink shadow cursor-pointer"
+                  className="absolute top-2 right-2 rounded-full border border-black bg-surface/90 px-2.5 py-0.5 text-[10px] font-black text-ink shadow cursor-pointer flex items-center gap-1"
                 >
-                  🔍 View
+                  <Search className="h-3 w-3" />
+                  <span>View</span>
                 </button>
               </div>
             ) : (
@@ -399,7 +401,7 @@ export function NostalgiaRadioGame() {
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration emoji="📻" title="All Heritage Frequencies Discovered!">
+        <Celebration icon={Radio} title="All Heritage Frequencies Discovered!">
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
               <h3 className="font-serif text-2xl font-black text-tea">
@@ -413,7 +415,7 @@ export function NostalgiaRadioGame() {
               <div className="mt-3 space-y-1.5 border-t border-border pt-2">
                 {STATIONS.map((s) => (
                   <div key={s.id} className="flex items-center justify-between text-xs font-extrabold text-ink">
-                    <span>{s.emoji} {s.title}</span>
+                    <span>{s.title}</span>
                     <span className="text-tea">Tuned ({s.freq} kHz) ✓</span>
                   </div>
                 ))}
@@ -424,13 +426,13 @@ export function NostalgiaRadioGame() {
                 <button
                   type="button"
                   onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-marigold bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
+                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
-                  <span className="text-lg">🎵</span>
+                  <Music className="h-4 w-4 text-ink" />
                   <span className="text-xs font-black">Replay Folk Broadcast</span>
                 </button>
                 <span className="text-xs font-bold text-ink-secondary">
-                  ⭐ Score: {score}/{STATIONS.length}
+                  Score: {score}/{STATIONS.length}
                 </span>
               </div>
             </div>
@@ -438,7 +440,7 @@ export function NostalgiaRadioGame() {
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startRadio}>
-                Tune Again 📻
+                Tune Again
               </ChunkyButton>
               <Link
                 href="/patient"

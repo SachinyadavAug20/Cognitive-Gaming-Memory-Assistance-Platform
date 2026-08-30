@@ -58,10 +58,61 @@
       "title": "Ka tea siam rawh",
       "complete": "Ngai!"
     },
-    "companion": {
-      "title": "Tlawng mih kai",
-      "hello": "Chibai, {name}!",
-      "chat": "Tlawng rawh"
+    "grandchildChat": {
+      "title": "Tu Te Nena Thingpui In & Inkawmna",
+      "desc": "Zing thingpui in paha tu te nena hmanlai chanchin hlimawm tak sawidunna"
+    },
+    "memoryDetective": {
+      "title": "Hriatrengna Detective (Chhungkua Hriatna)",
+      "desc": "Hriattirna ngaithlaa chhungkhat lainate thlalak hriat chhuahna"
+    },
+    "storybook": {
+      "title": "Nunkawng Chanchin Bu",
+      "desc": "Hmarchhak ram mawi leh hmanlai chanchin hlimawm thawnthu chhiarna"
+    },
+    "jigsaw": {
+      "title": "Hriatrengna Lemlem Puzzle",
+      "desc": "Thlalak bung hrang hrang remkhawma chhungte hmel siam thatna"
+    },
+    "wayfinding": {
+      "title": "Khawchhung Kal Leh In Kawn",
+      "desc": "Khawchhung hmun hriat lar paltlanga mahni in thlen lehna"
+    },
+    "weaving": {
+      "title": "Puan Bu & Puan Tahna",
+      "desc": "Puanchei leh puan mawi tak tak zai hrang hrang nena tah chhuahna"
+    },
+    "teaHarvest": {
+      "title": "Thingpui Hnah Hring & Par",
+      "desc": "Thingpui huan hring mawi tak atanga thingpui hnah thar lawr khawmna"
+    },
+    "radio": {
+      "title": "Akashvani Radio Hlunte",
+      "desc": "Hmanlai hla mawi leh Akashvani thupuan hlu tak tak ngaihthlakna"
+    },
+    "lotusLake": {
+      "title": "Dil Cham & Senhri Par",
+      "desc": "Tui fim tak chunga senhri par vul tirin hahdamna hmun siam rawh"
+    },
+    "kitchen": {
+      "title": "Pi Pi Choka",
+      "desc": "Hmarchhak thlai leh hnahhang nena chawhmeh tui tak chhumna"
+    },
+    "rhythmHills": {
+      "title": "Tlang Khuallam & Khuang Beat",
+      "desc": "Khuang leh dar rimawi nena zai leh lam rualna"
+    },
+    "rootBridge": {
+      "title": "Thing Zung Lei Dawhna",
+      "desc": "Lui chungah thing zung nung hmanga lei nghet tak siamna"
+    },
+    "bazaar": {
+      "title": "Bara Bazar & Sumdawnna",
+      "desc": "Dawr neitu nena inbiakna leh thil man bituk fel thiamna"
+    },
+    "proverb": {
+      "title": "Mizo Thufing & Hla Phuahte",
+      "desc": "Mizo thufing leh hla thluk hriat chhuahna hmanga hriatna tihchak"
     }
   }
 }

@@ -50,18 +50,65 @@
       "title": "Fag-Siang Sorting",
       "complete": "Angan!"
     },
-    "wayfinding": {
-      "title": "Lam chiklik",
-      "complete": "Angan!"
-    },
     "dailyTasks": {
       "title": "Ka tea chiklak",
       "complete": "Angan!"
     },
-    "companion": {
-      "title": "Katha mit",
-      "hello": "Chibainawa, {name}!",
-      "chat": "Katha chiklak"
+    "grandchildChat": {
+      "title": "Su·gipa Baksa Cha Ringani & Golpo",
+      "desc": "Pringni cha ringe su·gipa baksa namgipa golpo aro gisik ra·anirangko agangrikbo"
+    },
+    "memoryDetective": {
+      "title": "Noksik Detective (Nokdang U·iani)",
+      "desc": "Dakmesokaniko knae nokdangni manderangko noksao u·ie sandibo"
+    },
+    "storybook": {
+      "title": "Janggi Tangani Golpo Ki·tap",
+      "desc": "Salgro-Salgipeng A·dokni fajarang aro gisik ra·anirangko golpo dake nina"
+    },
+    "jigsaw": {
+      "title": "Nokdang Noksa Puzzle",
+      "desc": "Noksani bakrangko nangdimate nokdangni mikkangko taribo"
+    },
+    "wayfinding": {
+      "title": "Songjinma Rama Re·ani",
+      "desc": "U·igimin songni ramako ja·rike an·tangni nokona re·babo"
+    },
+    "weaving": {
+      "title": "Dandik Bara Dokani",
+      "desc": "Dakmanda aro muga kilko doke rongchinggipa noksako taribo"
+    },
+    "teaHarvest": {
+      "title": "Bijak Gni & Ku·dimba Sa",
+      "desc": "Cha baganni gital bijak gni aro ku·dimba sako chimongbo"
+    },
+    "radio": {
+      "title": "Akashvani Gitcham Radio",
+      "desc": "Gitcham ring·anirang aro Akashvanini surna radioko tune kabo"
+    },
+    "lotusLake": {
+      "title": "Ward's Lake & Padam Bibal",
+      "desc": "Chio chiring dake padam bibal bal·atbo aro tom·tom ong·atbo"
+    },
+    "kitchen": {
+      "title": "Ambi Riti Song·chakram",
+      "desc": "A·dokni moslarangko rone cha·aniko song·bo"
+    },
+    "rhythmHills": {
+      "title": "A·bri Dama & Bangsi Dokani",
+      "desc": "A·chigipa Dama aro bangsi surna dokatbo"
+    },
+    "rootBridge": {
+      "title": "Janggi Tanggipa Ja·dil Jalang",
+      "desc": "Chibima kosako bolni ja·dilko nangdimate jalangko taribo"
+    },
+    "bazaar": {
+      "title": "A·chik Songjinma Anti & Dam",
+      "desc": "Dokan gipaba agangrikbo, chal·ang marangko brebo aro tangka man·chongbo"
+    },
+    "proverb": {
+      "title": "Katta Gitcham & Ring·anirang",
+      "desc": "A·dokni katta gitchamni bangbang damko gapatbo"
     }
   }
 }

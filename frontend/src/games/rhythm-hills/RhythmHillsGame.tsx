@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { Music } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -234,13 +235,15 @@ export function RhythmHillsGame() {
             {/* Bottom Actions */}
             <div className="pt-2">
               <ChunkyButton variant="marigold" size="xl" onClick={() => playLifeSong()}>
-                Play Folk Air Tune 🎵
+                <span className="flex items-center gap-2">
+                  <Music className="h-4 w-4" /> Play Folk Melody
+                </span>
               </ChunkyButton>
             </div>
           </div>
         ) : (
           /* PHASE: DONE CELEBRATION */
-          <Celebration emoji="🥁" title="Folk Symphony Complete!">
+          <Celebration icon={Music} title="Folk Symphony Complete!">
             <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
               <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
                 <h3 className="font-serif text-2xl font-black text-tea">
@@ -255,13 +258,13 @@ export function RhythmHillsGame() {
                   <button
                     type="button"
                     onClick={() => playLifeSong()}
-                    className="group flex items-center gap-2 rounded-xl border-2 border-marigold bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
+                    className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
                   >
-                    <span className="text-lg">🎵</span>
+                    <Music className="h-4 w-4 text-ink" />
                     <span className="text-xs font-black">Play Life Song Melody</span>
                   </button>
                   <span className="text-xs font-bold text-ink-secondary">
-                    ⭐ Rhythm Score: {score}
+                    Score: {score}
                   </span>
                 </div>
               </div>
@@ -269,7 +272,7 @@ export function RhythmHillsGame() {
               {/* Actions */}
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ChunkyButton variant="tea" size="xl" onClick={startRhythm}>
-                  Play Rhythms Again 🪕
+                  Play Rhythms Again
                 </ChunkyButton>
                 <Link
                   href="/patient"

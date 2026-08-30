@@ -104,10 +104,131 @@ export function getMediaUrl(path?: string | null): string | null {
   return path;
 }
 
+export interface AiChatPayload {
+  patientId?: number | null;
+  userMessage: string;
+  personaName?: string;
+  conversationHistory?: Array<{ role: string; text: string }>;
+}
+
+export interface AiChatResponse {
+  replyText: string;
+  spokenAudioText: string;
+  emotionTone: string;
+  suggestedQuickReplies: string[];
+  highlightedMemoryNote?: string;
+  relatedPhotoUrl?: string;
+}
+
+export interface AiCluesPayload {
+  patientId?: number | null;
+  targetType: string;
+  targetName: string;
+  targetRelationOrSignificance?: string;
+  targetNotes?: string;
+}
+
+export interface AiCluesResponse {
+  gentleClue1: string;
+  specificClue2: string;
+  directClue3: string;
+  encouragingEncouragement: string;
+  candidateOptions: string[];
+}
+
+export interface AiStoryPayload {
+  patientId?: number | null;
+  theme: string;
+  currentChapterIndex: number;
+  previousChoiceMade?: string;
+  previousChapterSummaries?: string[];
+}
+
+export interface AiStoryChoice {
+  id: string;
+  label: string;
+  emoji: string;
+  nextThemePrompt?: string;
+}
+
+export interface AiStoryResponse {
+  chapterNumber: number;
+  chapterTitle: string;
+  chapterNarrative: string;
+  sensoryAtmosphere: string;
+  storyEmoji: string;
+  choices: AiStoryChoice[];
+  isFinale: boolean;
+}
+
+export interface AiBazaarPayload {
+  patientId?: number | null;
+  marketName?: string;
+  currentItem?: string;
+  userOfferPrice?: number;
+  userSpokenMessage?: string;
+  budgetRemaining?: number;
+}
+
+export interface AiBazaarResponse {
+  merchantName: string;
+  merchantDialogue: string;
+  itemName: string;
+  finalPrice: number;
+  updatedBudget: number;
+  quickOptions: string[];
+  isDealClosed: boolean;
+  culturalFact: string;
+}
+
+export interface AiProverbPayload {
+  patientId?: number | null;
+  language?: string;
+  category?: string;
+}
+
+export interface AiProverbResponse {
+  id: string;
+  category: string;
+  partialVerseWithBlank: string;
+  correctWord: string;
+  candidateOptions: string[];
+  fullProverb: string;
+  explanationAndWisdom: string;
+  regionOrigin: string;
+}
+
 export const api = {
   get: <T,>(path: string) => request<T>(path),
   post: <T,>(path: string, body: unknown) =>
     request<T>(path, { method: "POST", body: JSON.stringify(body) }),
   postMultipart: <T,>(path: string, formData: FormData) =>
     requestMultipart<T>(path, formData),
+
+  // AI Reminiscence Endpoints (Local Ollama Powered)
+  aiChat: (payload: AiChatPayload) =>
+    request<AiChatResponse>("/ai/reminiscence/chat", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  aiClues: (payload: AiCluesPayload) =>
+    request<AiCluesResponse>("/ai/reminiscence/clues", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  aiStoryChapter: (payload: AiStoryPayload) =>
+    request<AiStoryResponse>("/ai/reminiscence/story-chapter", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  aiBazaar: (payload: AiBazaarPayload) =>
+    request<AiBazaarResponse>("/ai/reminiscence/bazaar", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  aiProverb: (payload: AiProverbPayload) =>
+    request<AiProverbResponse>("/ai/reminiscence/proverb", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };

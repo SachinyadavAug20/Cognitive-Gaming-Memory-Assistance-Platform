@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { Brain, PhoneCall, Radio } from "lucide-react";
 
 interface AppHeaderProps {
   isOnline?: boolean;
@@ -32,34 +33,30 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
   }, [forcedOnline]);
 
   return (
-    <header className="w-full border-b-2 border-border/10 bg-canvas px-3 py-2 md:px-6">
+    <header className="w-full border-b-3 border-black bg-surface px-3 py-2.5 md:px-6 shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-border bg-marigold text-sm text-white shadow-[0_2px_0_var(--color-border)]">
-            🧠
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors">
+            <Brain className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="font-[family-name:var(--font-serif)] text-lg font-black leading-tight text-ink">
+            <h1 className="font-serif text-lg font-black leading-tight text-ink">
               CogniCare
             </h1>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-ink-secondary">
+            <p className="text-[9px] font-black uppercase tracking-wider text-ink-secondary">
               MDoNER Initiative
             </p>
           </div>
-        </div>
+        </Link>
 
         <div className="flex items-center gap-2 md:gap-3">
           <div
-            className={`hidden items-center gap-2 rounded-xl border-2 border-border px-2 py-1 text-xs font-bold shadow-[0_2px_0_var(--color-border)] sm:flex ${
+            className={`hidden items-center gap-1.5 rounded-xl border-2 border-black px-2.5 py-1 text-xs font-black shadow-[2px_2px_0px_#000] sm:flex ${
               online ? "bg-tea-light text-tea" : "bg-marigold-light text-marigold"
             }`}
           >
-            <span
-              className={`h-2.5 w-2.5 rounded-full ${
-                online ? "animate-pulse bg-tea" : "bg-marigold"
-              }`}
-            />
-            {online ? t("online") : t("offline")}
+            <Radio className="h-3 w-3 animate-pulse" />
+            <span>{online ? t("online") : t("offline")}</span>
           </div>
 
           <LanguageSelector />
@@ -67,9 +64,9 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
           <Link href="tel:108">
             <button
               type="button"
-              className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl border-2 border-border bg-brick px-3 text-sm font-extrabold text-white shadow-[0_3px_0_var(--color-border)] transition-all active:translate-y-[2px] active:shadow-none md:px-4"
+              className="flex min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick px-3 text-xs font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] md:px-3.5"
             >
-              <span className="text-base">🚨</span>
+              <PhoneCall className="h-3.5 w-3.5" />
               <span>{t("sos")}</span>
             </button>
           </Link>

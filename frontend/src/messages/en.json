@@ -669,6 +669,26 @@
     "rootBridge": {
       "title": "Living Root Bridge Builder",
       "desc": "Guide living rubber fig roots across a scenic mountain river gorge"
+    },
+    "grandchildChat": {
+      "title": "The Grandchild's Teatime Chat",
+      "desc": "Sit down for morning tea, reminisce with your loving grandchild & share warm stories"
+    },
+    "memoryDetective": {
+      "title": "The Memory Detective",
+      "desc": "Listen to affectionate clues from your life story and recognize beloved family members"
+    },
+    "storybook": {
+      "title": "The Living Heritage Storybook",
+      "desc": "Step into living nostalgic tales woven from North Eastern landscapes and memories"
+    },
+    "bazaar": {
+      "title": "The Heritage Bazaar Barter",
+      "desc": "Converse with a friendly local shopkeeper, barter for goods & manage your daily wallet budget"
+    },
+    "proverb": {
+      "title": "Folk Proverb & Rhyme Cloze",
+      "desc": "Activate semantic recall by completing timeless North Eastern folk proverbs and verses"
     }
   }
 }

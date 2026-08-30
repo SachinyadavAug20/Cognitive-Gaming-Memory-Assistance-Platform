@@ -58,10 +58,61 @@
       "title": "মোৰ চাহ",
       "complete": "মনন দু!"
     },
-    "companion": {
-      "title": "কথা বন্ধু",
-      "hello": "নমস্কাৰ, {name}!",
-      "chat": "কথা"
+    "grandchildChat": {
+      "title": "Kylli & Iakren Sha ryngkat u Khun Ksiew",
+      "desc": "Dih sha step bad iakren parom jingkynmaw ryngkat u khun ksiew"
+    },
+    "memoryDetective": {
+      "title": "U Pulit Jingkynmaw (Ithuh Kur & Kha)",
+      "desc": "Sngap ia ki dak jingkynmaw bad ithuh ia ki ba-haiing ba-sem"
+    },
+    "storybook": {
+      "title": "Ka Kot Puriskam Jingim Ba Im",
+      "desc": "Iaid lyngba ki puriskam jingim bad ki lum ba sngewtynnat ka Ri Shatei Lam-Mihngi"
+    },
+    "jigsaw": {
+      "title": "Pyniasoh Dur Jingkynmaw",
+      "desc": "Pyniasoh ia ki dkhot dur ban pynim biang ia ki dur jingkynmaw"
+    },
+    "wayfinding": {
+      "title": "Iaid Lynti Shnong",
+      "desc": "Iaid lyngba ki lynti shnong ban poi suk sha la iing"
+    },
+    "weaving": {
+      "title": "Ka Thain Jainsem & Ryndia",
+      "desc": "Thain ia ki jain ryndia bad muga da ki sur thain kiba sngewtynnat"
+    },
+    "teaHarvest": {
+      "title": "Arsla bad uwei u Tnat Sha",
+      "desc": "Kheit ia ki sla sha kiba jem na ki kper sha ba jyrngam"
+    },
+    "radio": {
+      "title": "Radio Akashvani Rim",
+      "desc": "Sngap ia ki sur jingrwai tynrai bad ki khubor rim Akashvani"
+    },
+    "lotusLake": {
+      "title": "Pung Ward's Lake & Syntu Puka",
+      "desc": "Pynkhih um bad pynphuh ia ki syntu puka ha pung Ward's Lake"
+    },
+    "kitchen": {
+      "title": "Ka Rympei Iawbei",
+      "desc": "Sheti ia ki jingbam tynrai da ki musla-manor ba bang"
+    },
+    "rhythmHills": {
+      "title": "Ka Sur Ksing & Bom Lum",
+      "desc": "Tem ia ka ksing, ka bom bad ka tangmuri katkum ka sur"
+    },
+    "rootBridge": {
+      "title": "Ka Jingkieng Jri Ba Im",
+      "desc": "Tei bad pyniasoh ia ki thied jri ban shna jingkieng halor wah"
+    },
+    "bazaar": {
+      "title": "Iew Sohra & Ka Dor-Mur",
+      "desc": "Iakren bad u nongdie ha iew, thied ia ki mar tynrai bad pyniaid ia ki tyngka"
+    },
+    "proverb": {
+      "title": "Ki Ktien Tymmen & Puriskam",
+      "desc": "Pyndap ia ki ktien kiba duna ha ki ktien tymmen Khasi ban pynkynmaw pat"
     }
   }
 }

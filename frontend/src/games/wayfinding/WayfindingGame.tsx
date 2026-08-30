@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { Compass, Music, MapPin } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -664,15 +665,15 @@ export function WayfindingGame() {
       ) : (
         /* PHASE: DONE — HERITAGE SCRAPBOOK POSTCARD CELEBRATION */
         <Celebration
-          emoji="🏡"
-          title={t("wayfinding.congratulations")}
+          icon={Compass}
+          title={t("wayfinding.celebrationTitle")}
         >
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto">
             {/* DIGITAL HERITAGE POSTCARD */}
             <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink text-left select-none">
               {/* Vintage Postage Stamp Corner */}
               <div className="absolute top-4 right-4 flex flex-col items-center border-2 border-dashed border-terracotta bg-surface p-1 rounded-lg shadow-sm">
-                <div className="h-14 w-14 overflow-hidden rounded border border-black bg-tea-light">
+                <div className="h-14 w-14 overflow-hidden rounded border border-black bg-tea-light flex items-center justify-center">
                   {home?.photoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -681,7 +682,7 @@ export function WayfindingGame() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <span className="flex h-full items-center justify-center text-2xl">🏡</span>
+                    <MapPin className="h-8 w-8 text-tea" />
                   )}
                 </div>
                 <span className="text-[9px] font-black text-terracotta tracking-wider uppercase">
@@ -721,13 +722,13 @@ export function WayfindingGame() {
                 <button
                   type="button"
                   onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-marigold bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
+                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
-                  <span className="text-lg">🎵</span>
+                  <Music className="h-4 w-4 text-ink" />
                   <span className="text-xs font-black">{t("wayfinding.musicCta")}</span>
                 </button>
                 <span className="text-xs font-bold text-ink-secondary">
-                  ⭐ Score: {score}/{Math.max(1, route.length - 1)}
+                  Score: {score}/{Math.max(1, route.length - 1)}
                 </span>
               </div>
             </div>
