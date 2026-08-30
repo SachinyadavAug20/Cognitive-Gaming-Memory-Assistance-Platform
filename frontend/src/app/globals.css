@@ -286,6 +286,22 @@ html {
   animation: reticle-glow 2s ease-in-out infinite;
 }
 
+/* ── Prevent Html5Qrcode internal double-box overlay ── */
+[id^="qr-reader-"] #qr-shaded-region,
+[id^="qr-reader-"] svg,
+[id^="qr-reader-"] div[style*="border"] {
+  display: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[id^="qr-reader-"] video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
 /* ── Scan success overlay ── */
 @keyframes scan-success-flash {
   0%   { opacity: 0; }

@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Brain, PhoneCall, Radio } from "lucide-react";
+import { Brain, PhoneCall, Radio, ShieldCheck } from "lucide-react";
 
 interface AppHeaderProps {
   isOnline?: boolean;
@@ -63,6 +63,17 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
           </div>
 
           <LanguageSelector />
+
+          {/* Discrete Healthcare / Caregiver Portal Access */}
+          <Link
+            href="/caregiver"
+            className="flex min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-surface hover:bg-tea-light hover:border-tea px-2.5 sm:px-3 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px]"
+            title="Caregiver & Healthcare Worker Portal"
+          >
+            <ShieldCheck className="h-3.5 w-3.5 text-tea shrink-0" />
+            <span className="hidden sm:inline">Caregiver Portal</span>
+            <span className="sm:hidden">Caregiver</span>
+          </Link>
 
           <Link href="tel:108">
             <button

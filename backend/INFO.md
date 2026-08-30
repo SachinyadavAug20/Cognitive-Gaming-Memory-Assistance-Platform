@@ -1,394 +1,173 @@
-# CogniCare Backend — Technical Reference
+# CogniCare Backend — Technical Reference & Presentation Summary
 
-> Quick revision doc for SIH26003 presentation. Covers architecture, stack, schema, API, and AI pipeline.
+> **Comprehensive Reference for SIH 2026 Presentation & Pitch Deck Creation**  
+> Covers Architecture, Schema, Hybrid Ollama Clinical Extraction, QR Kiosk Authentication, and REST APIs.
 
 ---
 
-## 1. Project Identity
+## 1. Project Identity & Architecture
 
 | Field | Value |
-|-------|-------|
-| Name | CogniCare |
-| Problem | SIH26003 — AI-Based Cognitive Gaming & Memory Assistance for Elderly Dementia Patients (NER India) |
-| Backend Entry | `CognicareApplication.java` (`@SpringBootApplication`) |
-| Base Package | `com.sih.cognicare` |
-| Server Port | `8080` |
-| API Prefix | `/api/v1` |
+|---|---|
+| **System Name** | CogniCare Backend Service |
+| **Problem Statement** | SIH26003 — AI-Based Cognitive Gaming & Memory Assistance for Elderly Dementia Patients (NER India) |
+| **Framework & Runtime** | Spring Boot 4.1.1, Java 17, Spring Data JPA / Hibernate |
+| **Server Port & Base URL** | Port `8080` • Prefix `/api/v1` |
+| **AI Engine** | Local Ollama REST API (`qwen2.5:1.5b` / `llama3.2:3b`) |
+| **Primary Databases** | MariaDB (Production: port 3306) / H2 Embedded (Zero-Config Demo Profile) |
+| **PDF Extraction** | Apache PDFBox 3.0.3 |
 
 ---
 
-## 2. Tech Stack
-
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Framework | Spring Boot | 4.1.1 |
-| Language | Java | 17 |
-| Web Layer | Spring WebMVC | (starter) |
-| ORM | Spring Data JPA / Hibernate | (starter) |
-| Validation | Jakarta Bean Validation | (starter) |
-| Build Tool | Apache Maven | 3.9.16 (via wrapper) |
-| Primary DB | MariaDB | localhost:3306 |
-| Demo DB | H2 (file-embedded) | — |
-| PDF Extraction | Apache PDFBox | 3.0.3 |
-| JSON Processing | Jackson (databind + jsr310) | — |
-| Boilerplate | Lombok | — |
-| AI Engine | Ollama (REST API) | qwen2.5:1.5b |
-| API Style | REST / JSON / Multipart | — |
-
----
-
-## 3. Package Architecture
+## 2. Package & Layer Architecture
 
 ```
 com.sih.cognicare/
-│
-├── CognicareApplication.java              Spring Boot entry point
-│
+├── CognicareApplication.java          # Spring Boot main application entry
 ├── config/
-│   ├── CorsConfig.java                    CORS filter — allows localhost:3000 on /api/**
-│   ├── AppConfig.java                     ObjectMapper bean (JavaTimeModule, no timestamps)
-│   └── WebConfig.java                     Static resource handler for /uploads/**
-│
+│   ├── CorsConfig.java                # CORS policy (allows http://localhost:3000)
+│   ├── AppConfig.java                 # ObjectMapper configuration (JavaTimeModule)
+│   └── WebConfig.java                 # Static file resource handler (/uploads/**)
 ├── controller/
-│   └── PatientController.java             All REST endpoints (onboard, getters, file serve)
-│
+│   ├── PatientController.java         # Patient onboarding, getters, family/place photos
+│   └── KioskAuthController.java       # Zero-touch QR kiosk authentication endpoint
 ├── dto/
-│   ├── OnboardRequest.java                Inbound: nested JSON from frontend intake wizard
-│   ├── PatientOnboardResponse.java        Outbound: patientId + medicalProfile + counts
-│   ├── MedicalProfileResponse.java        Outbound: full clinical profile + SubscaleScoreDto
-│   ├── DomainAssessment.java              Domain: needsHelp, impairmentLevel, scorePct, evidence
-│   ├── FamilyMemberResponse.java          Outbound: family member + photo URL
-│   └── FamiliarPlaceResponse.java         Outbound: place + emoji + photo URL
-│
+│   ├── OnboardRequest.java            # Multi-part intake payload
+│   ├── PatientOnboardResponse.java    # Onboarding result + clinical calibration
+│   ├── MedicalProfileResponse.java    # 17-domain quantified scores + subscale breakdown
+│   ├── KioskScanRequest.java          # QR code cryptographic payload
+│   └── KioskScanResponse.java         # Session JWT token + patient profile
 ├── model/
-│   ├── Patient.java                       Root entity — owns all children via @OneToMany/@OneToOne
-│   ├── FamilyMember.java                  @ManyToOne → Patient (photo for Game 1)
-│   ├── FamiliarPlace.java                 @ManyToOne → Patient (emoji + photo for Game 2)
-│   ├── LifeStory.java                     @OneToOne → Patient (occupation, hobbies, life events JSON)
-│   └── MedicalProfile.java                @OneToOne → Patient (clinical scores, Ollama output)
-│
+│   ├── Patient.java                   # Root patient aggregate entity
+│   ├── FamilyMember.java              # Family portraits and relationships
+│   ├── FamiliarPlace.java             # Visual landmarks and wayfinding cues
+│   ├── LifeStory.java                 # Career, hobbies, music, milestones
+│   ├── MedicalProfile.java            # Clinical MMSE scores, biomarkers, LLM analysis
+│   └── PatientCard.java               # Active QR token and issue timestamp
 ├── repository/
-│   ├── PatientRepository.java             JpaRepository<Patient, Long> + findByCaregiverId
-│   ├── FamilyMemberRepository.java        findByPatientId
-│   ├── FamiliarPlaceRepository.java       findByPatientId
-│   ├── LifeStoryRepository.java           findByPatientId
-│   └── MedicalProfileRepository.java      findByPatientId
-│
-└── service/
-    ├── FileStorageService.java            Disk I/O — saves photos/PDFs under ./uploads/patients/{id}/
-    └── MedicalReportService.java          PDFBox extraction → Ollama qwen2.5:1.5b → JSON parse → persist
+│   ├── PatientRepository.java         # JpaRepository<Patient, Long>
+│   ├── FamilyMemberRepository.java    # findByPatientId
+│   ├── FamiliarPlaceRepository.java   # findByPatientId
+│   ├── LifeStoryRepository.java       # findByPatientId
+│   ├── MedicalProfileRepository.java  # findByPatientId
+│   └── PatientCardRepository.java     # findTopBySecureTokenAndIsActiveTrue
+├── service/
+│   ├── FileStorageService.java        # Disk file storage (UUID naming under /uploads)
+│   ├── MedicalReportService.java      # PDF extraction → Regex metrics → Ollama analysis
+│   ├── PatientCardService.java        # QR health card generation & kiosk validation
+│   └── JwtService.java                # Stateless JWT session token issuance
+└── exception/
+    ├── PatientNotFoundException.java  # 404 handler
+    └── InvalidQrTokenException.java   # 401 unauthenticated QR handler
 ```
-
-**File count:** 22 Java files (3 config, 1 controller, 6 DTOs, 5 entities, 5 repositories, 2 services)
 
 ---
 
-## 4. Database Schema
+## 3. Database Schema Overview
 
-**DDL strategy:** `spring.jpa.hibernate.ddl-auto=update` — schema auto-created/updated from `@Entity` classes.
+```mermaid
+erDiagram
+    PATIENT ||--o{ FAMILY_MEMBER : "has many"
+    PATIENT ||--o{ FAMILIAR_PLACE : "has many"
+    PATIENT ||--|| LIFE_STORY : "has one"
+    PATIENT ||--|| MEDICAL_PROFILE : "has one"
+    PATIENT ||--o{ PATIENT_CARD : "issues"
 
-### Table: `patients`
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | BIGINT (PK, auto) | |
-| `name` | VARCHAR | NOT NULL |
-| `dob` | DATE | |
-| `gender` | VARCHAR | |
-| `phone` | VARCHAR | |
-| `relationship` | VARCHAR | Caregiver's relation to patient |
-| `caregiver_id` | BIGINT | FK (logical, not enforced) |
-| `preferred_language` | VARCHAR | en/as/hi/mni |
-| `cultural_background` | TEXT | |
-| `joy_triggers` | TEXT | |
-| `created_at` | TIMESTAMP | @CreationTimestamp |
+    PATIENT {
+        bigint id PK
+        string name
+        date dob
+        string gender
+        string phone
+        string preferred_language
+        text cultural_background
+        text joy_triggers
+        timestamp created_at
+    }
 
-### Table: `family_members`
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | BIGINT (PK) | |
-| `patient_id` | BIGINT (FK) | @ManyToOne → patients |
-| `name` | VARCHAR | |
-| `relation` | VARCHAR | Daughter, Son, Spouse, etc. |
-| `notes` | TEXT | |
-| `photo_path` | VARCHAR | Disk path for Game 1 photos |
+    MEDICAL_PROFILE {
+        bigint id PK
+        bigint patient_id FK
+        string diagnosis
+        string icd10
+        string examining_physician
+        string clinic_or_hospital
+        int mmse_score
+        int max_score
+        string clinical_stage
+        int recommended_start_difficulty
+        string mta_score
+        string fazekas_grade
+        text llm_summary
+        text subscale_scores_json
+        text clinical_domains_json
+    }
 
-### Table: `familiar_places`
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | BIGINT (PK) | |
-| `patient_id` | BIGINT (FK) | @ManyToOne → patients |
-| `name` | VARCHAR | |
-| `category` | VARCHAR | Emoji used as category |
-| `description` | TEXT | |
-| `photo_path` | VARCHAR | Disk path for Game 2 photos |
-| `emoji` | VARCHAR | Visual landmark icon |
-
-### Table: `life_stories`
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | BIGINT (PK) | |
-| `patient_id` | BIGINT (FK, UNIQUE) | @OneToOne → patients |
-| `occupation` | VARCHAR | |
-| `favorite_music` | VARCHAR | |
-| `hobbies` | TEXT | Comma-separated |
-| `life_events` | TEXT | JSON string: `[{event, year}]` |
-
-### Table: `medical_profiles`
-| Column | Type | Notes |
-|--------|------|-------|
-| `id` | BIGINT (PK) | |
-| `patient_id` | BIGINT (FK, UNIQUE) | @OneToOne → patients |
-| `raw_report_path` | VARCHAR | Path to uploaded PDF |
-| `diagnosis` | VARCHAR | e.g. "Major Neurocognitive Disorder..." |
-| `icd10` | VARCHAR | e.g. "G30.9 / F02.80" |
-| `date_of_diagnosis` | VARCHAR | |
-| `examining_physician` | VARCHAR | e.g. "Dr. Sarah Jenkins, MD" |
-| `clinic_or_hospital` | VARCHAR | e.g. "St. Jude Medical Center" |
-| `test_type` | VARCHAR | MMSE / MoCA / General Diagnostic / Unknown |
-| `mmse_score` | INT | Total score (e.g. 19) |
-| `max_score` | INT | Max possible (e.g. 30) |
-| `clinical_stage` | VARCHAR | MCI / Early Dementia / Moderate / Severe |
-| `recommended_start_difficulty` | INT | 1, 2, or 3 |
-| `mta_score` | VARCHAR | MRI biomarker (e.g. "Grade 3") |
-| `fazekas_grade` | VARCHAR | White matter biomarker (e.g. "Grade 1") |
-| `llm_summary` | TEXT | Clinical summary from Ollama |
-| `primary_deficits` | TEXT | Comma-separated domains |
-| `impaired_domains` | TEXT | Comma-separated domains |
-| `medications_json` | TEXT | Serialized `List<String>` |
-| `clinical_domains_json` | TEXT | Serialized `Map<String, DomainAssessment>` |
-| `subscale_scores_json` | TEXT | Serialized `Map<String, SubscaleScoreDto>` |
-| `detailed_analysis_json` | TEXT | Complete raw Ollama JSON response |
-
-**Relationships:**
+    PATIENT_CARD {
+        bigint id PK
+        bigint patient_id FK
+        string secure_token UK
+        boolean is_active
+        timestamp issued_at
+    }
 ```
-Patient (1) ──→ (N) FamilyMember
-Patient (1) ──→ (N) FamiliarPlace
-Patient (1) ──→ (1) LifeStory
-Patient (1) ──→ (1) MedicalProfile
-```
-All child tables use `cascade = ALL, orphanRemoval = true`.
 
 ---
 
-## 5. REST API Endpoints
+## 4. Hybrid AI Clinical Extraction Pipeline
 
-| # | Method | Endpoint | Content-Type | Description |
-|---|--------|----------|-------------|-------------|
-| 1 | `POST` | `/api/v1/patients/onboard` | `multipart/form-data` | Create patient + family + places + life story + medical analysis |
-| 2 | `GET` | `/api/v1/patients/{id}/family` | `application/json` | Family members with photo URLs (Game 1 data) |
-| 3 | `GET` | `/api/v1/patients/{id}/places` | `application/json` | Familiar places with photo URLs (Game 2 data) |
-| 4 | `GET` | `/api/v1/patients/{id}/medical-profile` | `application/json` | Full clinical profile with 17-domain breakdown |
-| 5 | `GET` | `/api/v1/uploads/{path}` | `application/octet-stream` | Static file serving (photos, PDFs) |
-| 6 | — | `CORS` | — | GET/POST/PUT/DELETE/OPTIONS from `localhost:3000` on `/api/**` |
-
-### Endpoint 1: `POST /patients/onboard` (Multipart)
-
-**Request parts:**
-| Part | Type | Required | Description |
-|------|------|----------|-------------|
-| `data` | `application/json` (Blob) | Yes | Nested JSON: personal, relatives, lifeStory, landmarks, caregiverId |
-| `reportFile` | `application/pdf` | No | Medical report PDF for Ollama analysis |
-| `photos` | `image/*` (multiple) | No | Family/place photos, indexed to match JSON metadata |
-
-**Response:** `PatientOnboardResponse`
-```json
-{
-  "patientId": 1,
-  "medicalProfile": { /* MedicalProfileResponse — full clinical data */ },
-  "familyCount": 3,
-  "placesCount": 4
-}
+```mermaid
+graph TD
+    A[Caregiver Uploads PDF Report] --> B[Apache PDFBox Text Extraction]
+    B --> C[Regex Fast-Path Extraction: Total Score, Physician, ICD-10, Biomarkers]
+    C --> D[Rule-Based Clinical Stage & Subscale Derivation]
+    D --> E[Ollama LLM Polish: Contextual Summary & Domain Nuances]
+    E --> F[Merge Semantics: Preserves deterministic metrics, enriches clinical guidance]
+    F --> G[Persist to MedicalProfile Entity & Return Calibrated Baseline]
 ```
 
-### Endpoint 4: `GET /patients/{id}/medical-profile`
+### Clinical Stage Calibration Rubric
+| MMSE / MoCA Score | Clinical Stage | Baseline Difficulty | Assist Level |
+|---|---|---|---|
+| **$\ge$ 24 / 30** | **MCI / Mild** | Level 3 (Adaptive) | Minimal assistance, 4x4 grid, 5s reaction window |
+| **18 – 23 / 30** | **Early Dementia** | Level 2 (Standard) | Moderate assistance, 3x3 grid, 10s reaction window |
+| **10 – 17 / 30** | **Moderate Dementia** | Level 1 (Assisted) | High guidance, 2x2 grid, 15s reaction window, audio cues |
+| **$<$ 10 / 30** | **Severe Dementia** | Level 1 (High Assist) | Maximum guidance, 20s reaction window, 0.75x slow voice prompt |
 
-**Response:** `MedicalProfileResponse` with 17-domain quantified breakdown (see Section 6).
+### 17 Extracted Clinical Domains
+1. **Cognitive (7)**: *Memory, Attention, Executive Function, Orientation, Language, Visuospatial, Decision Making*.
+2. **IADLs (6)**: *Medication Management, Financial Management, Navigation, Meal Preparation, Driving, Household Tasks*.
+3. **Behavioral (4)**: *Apathy, Agitation, Social Withdrawal, Sleep Disturbance*.
 
 ---
 
-## 6. Ollama AI Pipeline
+## 5. REST API Endpoints Summary
 
-### Flow
-```
-PDF Upload → PDFBox Text Extraction → Ollama API → JSON Parse → Persist to MariaDB → Return to Frontend
-```
-
-### Configuration
-| Setting | Value |
-|---------|-------|
-| Model | `qwen2.5:1.5b` (ultra-lightweight, 1.5B params) |
-| Endpoint | `http://localhost:11434/api/generate` |
-| Temperature | `0.1` (near-deterministic) |
-| Format | `json` (strict JSON mode) |
-| Stream | `false` (synchronous) |
-| Connect Timeout | 10,000ms |
-| Read Timeout | 10,000ms |
-| Max Input Text | 8,000 characters (truncated from PDF) |
-
-### Extraction Schema (17 Domains)
-Ollama extracts quantified metrics for each domain:
-
-```json
-{
-  "domain_name": {
-    "needs_help": true,
-    "impairment_level": "Severe | Moderate | Mild | None",
-    "score_pct": 0-100,
-    "evidence": "verbatim quote from clinical report"
-  }
-}
-```
-
-**Domain Categories:**
-
-| Category | Domains |
-|----------|---------|
-| Cognitive (7) | memory, attention, executive_function, orientation, language, visuospatial, decision_making |
-| IADLs (6) | medication_management, financial_management, navigation, meal_preparation, driving, household_tasks |
-| Behavioral (4) | apathy, agitation, social_withdrawal, sleep_disturbance |
-
-### Additional Extracted Fields
-- `diagnosis`, `icd10`, `examiningPhysician`, `clinicOrHospital`
-- `totalScore` / `maxScore` (e.g. 19/30 MMSE)
-- `subscaleScores` (orientation, registration, attention_calculation, recall, language_visuospatial)
-- `activeMedications[]`
-- `mtaScore`, `fazekasGrade` (MRI biomarkers)
-- `clinicalSummary`
-
-### Graceful Fallbacks
-| Scenario | Behavior |
-|----------|----------|
-| PDF text < 50 chars (scanned/image PDF) | Returns default Level 1 baseline, `llmSummary = "Scanned document detected..."` |
-| Ollama offline or timeout (>10s) | Returns default Level 1 baseline, `llmSummary = "Ollama unavailable..."` |
-| Invalid JSON from Ollama | Returns default Level 1 baseline, `llmSummary = "Analysis parsing failed..."` |
-| No PDF uploaded (skipped step) | Returns default Level 1 baseline, `llmSummary = "No report uploaded..."` |
-
-**Default baseline:** `clinicalStage=MCI`, `recommendedStartDifficulty=1`, all scores null, empty domains.
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/v1/patients/onboard` | Multi-part onboarding: personal info, family photos, landmarks, life story, and medical PDF |
+| `GET` | `/api/v1/patients/{id}` | Complete patient profile, medical records, and demographic details |
+| `GET` | `/api/v1/patients/{id}/medical-profile` | 17-domain quantified breakdown and MMSE subscale scores |
+| `GET` | `/api/v1/patients/{id}/family` | Family members list with photo URLs for facial recognition games |
+| `GET` | `/api/v1/patients/{id}/places` | Familiar landmarks and descriptions for wayfinding games |
+| `GET` | `/api/v1/caregiver/patients/{id}/card` | Generates or retrieves active QR Health Card secure token |
+| `POST` | `/api/v1/auth/kiosk/scan` | Zero-touch kiosk login: validates card token and returns session JWT |
+| `GET` | `/api/v1/uploads/**` | Static media file server (photos, PDFs) with CORS support |
 
 ---
 
-## 7. File Storage System
-
-### Directory Structure
-```
-./uploads/
-└── patients/
-    └── {patientId}/
-        ├── photos/          Family member + landmark photos
-        │   ├── a1b2c3d4.jpg
-        │   └── e5f6g7h8.png
-        └── reports/         Medical report PDFs
-            └── i9j0k1l2.pdf
-```
-
-### Implementation
-- **Service:** `FileStorageService.java` — `saveFile(MultipartFile, patientId, subfolder)` → returns relative path
-- **UUID naming:** Files renamed to `UUID.ext` to prevent conflicts
-- **Serving:** `WebConfig.java` maps `/uploads/**` → `file:./uploads/` with CORS (GET from localhost:3000)
-- **Max upload:** 10MB (`spring.servlet.multipart.max-file-size=10MB`)
-
----
-
-## 8. Configuration Profiles
-
-### Default Profile (MariaDB)
-```properties
-spring.datasource.url=jdbc:mariadb://localhost:3306/cognicare?createDatabaseIfNotExist=true
-spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
-spring.datasource.username=root
-spring.datasource.password=root123
-spring.jpa.hibernate.ddl-auto=update
-```
-
-### Demo Profile (H2 — zero setup)
-```properties
-spring.datasource.url=jdbc:h2:file:./data/cognicare;AUTO_SERVER=TRUE
-spring.datasource.driver-class-name=org.h2.Driver
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-```
-
-| Property | Default | Demo |
-|----------|---------|------|
-| DB | MariaDB (port 3306) | H2 file (./data/cognicare) |
-| DDL | `update` | `update` |
-| Console | — | `/h2-console` |
-| SQL logging | `show-sql=true` | `show-sql=false` |
-
----
-
-## 9. Run Commands
+## 6. Execution & Verification
 
 ```bash
-# Pull AI model (one-time)
+# 1. Pull lightweight Ollama model
 ollama pull qwen2.5:1.5b
 
-# Start with MariaDB (default profile)
+# 2. Start backend in H2 demo mode (zero setup)
 cd backend
-./mvnw spring-boot:run
-
-# Start with H2 (no DB needed)
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=demo
 
-# Compile only
-./mvnw compile
+# 3. Start backend in MariaDB production mode
+./mvnw spring-boot:run
 ```
 
----
-
-## 10. Key Dependencies (pom.xml)
-
-| Dependency | Scope | Purpose |
-|-----------|-------|---------|
-| `spring-boot-starter-data-jpa` | compile | JPA/Hibernate ORM |
-| `spring-boot-starter-validation` | compile | Bean validation |
-| `spring-boot-starter-webmvc` | compile | REST API + web layer |
-| `mariadb-java-client` | runtime | MariaDB JDBC driver |
-| `postgresql` | runtime | PostgreSQL driver (alternative) |
-| `h2` | runtime | H2 embedded database |
-| `pdfbox` 3.0.3 | compile | PDF text extraction |
-| `jackson-databind` | compile | JSON serialization |
-| `jackson-datatype-jsr310` | compile | Java 8 date/time support |
-| `lombok` | optional | @Getter/@Setter/@Builder boilerplate reduction |
-
----
-
-## 11. Changelog — Stage Calibration & Game Personalization
-
-> Summary of the latest work (rules + key decisions), not full implementation detail.
-
-### Clinical Stage Calibration (corrected)
-MMSE/MoCA total → stage + baseline level. **NOTE: higher score = better cognition; the mapping is inverted vs. severity.**
-| Score | Stage | Baseline Level |
-|-------|-------|----------------|
-| `>= 24` | MCI / Mild | Level 3 (Hard) |
-| `18 – 23` | Early Dementia | Level 2 (Medium) |
-| `10 – 17` | Moderate Dementia | Level 1 (Assisted) |
-| `< 10` | Severe Dementia | Level 1 (High Assist) |
-
-- **Root cause of the old bug:** the fallback loop stamped generic `"MILD"` + boilerplate on all 17 domains, and the old cutoff put `7/30` into `<=24 → Early Dementia`. Score `7/30` is now correctly **Severe / Level 1 High Assist** (never MCI).
-- Implemented in `MedicalReportService.extractFastRegexMetrics`.
-
-### Rule-based Domain Derivation (no more "MILD" placeholders)
-- `deriveDomainsFromSubscales` derives the 17 domains from the **actual subscale scores** (Recall `/3`, Attention `/5`, Orientation `/10`, Language-Visuospatial `/9`) and the overall stage.
-- Subscale % guides: **`< 50%` Severe, `50–70%` Moderate, `> 70%` Mild/None**; `score_pct` is the exact `score/max` percentage.
-- Domains with no evidence default to `needs_help=false / None`, not generic placeholders.
-
-### Hybrid Extraction + Fast Ollama Polish
-- `analyzeReport` now runs: **Regex fast-path → rule-based domains → fast Ollama polish → merge**.
-- `callOllamaFast` keeps a small prompt (diagnosis, stage, medications, summary, domains) and short `num_predict=600`, `readTimeout` ~25s → ~5–10s on CPU.
-- `parseAndMergeOllama` uses **merge semantics** — Ollama only overwrites non-null values, so a slow/failed LLM never wipes deterministic regex/rule findings.
-
-### Game Calibration Config (`gameConfig` in response)
-- Added `MedicalProfileResponse.GameConfigDto`; built in `PatientController.buildGameConfig(MedicalProfile)`.
-- Rules: L3 → 4x4 grid / 5s / no hints / 4 landmarks / 1.0x speech; L2 → 3x3 / 10s / toggle hints / 3 landmarks / 0.85x; L1 → 2x2 / 15s (20s if Severe) / guided hints / 2 landmarks / 0.75x slow.
-- Frontend renders it as the **"AI Game Personalization"** card in `StepDiagnosticReport.tsx`; `gameConfig` threaded through `DiagnosticData` type + `IntakeWizard` analyze mapping.
-
-### Verification
-- `./mvnw compile` in `backend/` — BUILD SUCCESS.
-- `npx tsc --noEmit` in `frontend/` — no errors.
-
----
-
-*Last updated: August 2026*
+- **Build Status**: Verified with `mvn compile` (BUILD SUCCESS).

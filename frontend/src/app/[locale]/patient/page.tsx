@@ -18,6 +18,7 @@ import { TherapySuiteGrid } from "@/components/patient-dashboard/TherapySuiteGri
 import { MemorySpotlightCard } from "@/components/patient-dashboard/MemorySpotlightCard";
 import { SensoryCalmCard } from "@/components/patient-dashboard/SensoryCalmCard";
 import { DailyMoodTracker, type MoodKey } from "@/components/patient-dashboard/DailyMoodTracker";
+import { DailyRoutineSchedule } from "@/components/patient-dashboard/DailyRoutineSchedule";
 
 interface MoodLogEntry {
   mood: string;
@@ -195,6 +196,9 @@ export default function PatientHome() {
       <div className="max-w-3xl mx-auto px-4 py-5 space-y-6 flex-1 w-full">
         {/* THERAPY SUITE SECTION */}
         <TherapySuiteGrid gamesTitle={t("gamesTitle")} />
+
+        {/* TODAY'S ROUTINE & MEDICATION SCHEDULE */}
+        <DailyRoutineSchedule langCode={langCode} rate={rate} />
 
         {/* WELLBEING & COGNITIVE MEMORY SECTION */}
         <section aria-labelledby="wellbeing-title">

@@ -31,8 +31,6 @@ export const ALL_LANGUAGES: LanguageDef[] = [
   { code: "mr", label: "मराठी", native: "मराठी", full: "Marathi", region: "Western India", isNES: false },
 ];
 
-const QUICK_LANGS = ["en", "hi", "as", "bn", "ne"];
-
 export function LanguageSelector({ className = "" }: { className?: string }) {
   const locale = useLocale();
   const router = useRouter();
@@ -66,30 +64,6 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
 
   return (
     <div ref={containerRef} className={`relative inline-flex items-center gap-1.5 ${className}`}>
-      {/* Quick Access Top Language Buttons for Large Screens */}
-      <div className="hidden lg:flex items-center gap-1 bg-surface p-1 border-2 border-black rounded-xl shadow-[2px_2px_0px_#000]">
-        {QUICK_LANGS.map((code) => {
-          const lang = ALL_LANGUAGES.find((l) => l.code === code);
-          if (!lang) return null;
-          const isSelected = locale === lang.code;
-          return (
-            <button
-              key={lang.code}
-              type="button"
-              onClick={() => handleSelectLanguage(lang.code)}
-              title={`${lang.full} (${lang.region})`}
-              className={`px-2.5 py-1 text-xs font-black rounded-lg cursor-pointer ${
-                isSelected
-                  ? "bg-tea text-white shadow-sm"
-                  : "text-ink hover:bg-tea-light/60"
-              }`}
-            >
-              {lang.label}
-            </button>
-          );
-        })}
-      </div>
-
       {/* NES Region Language Hub Dropdown Button */}
       <button
         type="button"

@@ -1,257 +1,119 @@
-# CogniCare — Language Support & i18n Technical Reference
+# CogniCare Frontend — Technical Reference & Presentation Summary
 
-> Quick revision document for SIH 2026 presentation.
+> **Comprehensive Reference for SIH 2026 Presentation & Pitch Deck Creation**  
+> Covers Architecture, 18 CDTx Games, Ollama AI Integration, 11-Language i18n, Kiosk QR Scanner, and Regional Telemetry.
 
 ---
 
-## Tech Stack
+## 1. Executive Summary & Core Highlights
 
-| Technology | Version | Purpose |
+- **Framework**: Next.js 16.3.3 (Turbopack) + React 19 + TypeScript + Tailwind CSS 4.
+- **Visual Design System**: Neo-brutalist clinical scrapbook UI with paper texture overlays, tactile 3D chunky buttons, and GIGW compliance.
+- **18 Serious Clinical Games**: Categorized across Memory Recall, Spatial Orientation, Executive Function, Attention, Kinematic Motor Tracking, and Multi-Turn AI Reminiscence.
+- **11 Regional Languages**: Zero-flicker switching across 8 North Eastern languages + Pan-Indian languages.
+- **Zero-Touch Kiosk Terminal**: Optical laser scanning reticle, Web Audio feedback (`playScanSuccess`), voice guidance, and instant auto-redirect.
+- **MDoNER Command Center**: 8-state GIS telemetry dashboard and live clinical session feed.
+
+---
+
+## 2. 18 Cognitive Digital Therapeutics (CDTx) Games Portfolio
+
+| Game ID | Title | Cognitive Domain | Modality / Tech | Cultural Anchor |
+|---|---|---|---|---|
+| `grandchild-chat` | **Grandchild's Teatime Chat** | Reminiscence & Emotional Well-Being | Multi-turn Ollama LLM Dialogue | Traditional Morning Tea Dialogue |
+| `memory-detective` | **The Memory Detective** | Face & Episodic Memory Recall | 3-Tier Multi-Modal Clue Elimination | Family & Community Album |
+| `storybook` | **Living Chronicle** | Autobiographical Narrative Recall | Interactive Photo Scrapbook | Life Milestones & Timeline |
+| `jigsaw` | **Jigsaw Puzzle Engine** | Visuospatial & Fine Motor | Canvas 2D Interlocking Snap Engine | Heritage Landmark Photos |
+| `river-crossing` | **Brahmaputra Boat Crossing** | Visuospatial & Motor Kinematics | 3D Three.js + Micro-hesitation Tracking | Brahmaputra River Navigation |
+| `weaving-loom` | **Assam Weaving Loom** | Pattern Recognition & Motor Curve | Grid Target & Curve Kinematics | Assamese Gamosa Weaving |
+| `wayfinding` | **Village Wayfinding** | Spatial Memory & Orientation | Milestone Landmark Route Traversal | Village Paths & Landmarks |
+| `tea-harvest` | **Assam Tea Harvest** | Visual Attention & Reaction Time | Two-Leaf-and-a-Bud Selector | Assam Tea Gardens |
+| `radio` | **Akashvani Radio** | Auditory Processing & Tuning | Audio Frequency Dial Alignment | Vintage All India Radio |
+| `root-bridge` | **Living Root Bridge** | Sequential Planning & Logic | Stepwise Bridge Path Assembly | Cherrapunji Meghalaya Bridges |
+| `heritage-kitchen` | **Heritage Kitchen** | Working Memory & Recipe Sequencing | Ingredient Drag-and-Drop | North Eastern Culinary Recipes |
+| `lotus-lake` | **Lotus Lake Match** | Visual Search & Concentration | Serene Lake Reflection Pairs | Northeast Lotus Lakes |
+| `bihu-rhythm` | **Bihu Drum Rhythm** | Auditory-Motor Synchronization | Dhol Beat Tempo Tapping | Assamese Bihu Festival |
+| `majuli-masks` | **Majuli Mask Studio** | Shape Recognition & Symmetry | Traditional Mask Reconstruction | Majuli Island Art Forms |
+| `loktak-lake` | **Loktak Floating Phumdis** | Spatial Navigation & Balance | Circular Island Stepping Stones | Loktak Lake, Manipur |
+| `hornbill-headdress` | **Hornbill Headdress** | Color Matching & Sequence Recall | Feather & Bead Patterning | Nagaland Hornbill Festival |
+| `monastery-wheel` | **Monastery Prayer Wheel** | Motor Coordination & Calming Rhythm | Continuous Rotational Gesture | Tawang Monastery, Arunachal |
+| `orchid-sanctuary` | **Orchid Sanctuary** | Fine Detail Discrimination | Botanical Species Matching | Sessa Orchid Sanctuary |
+
+---
+
+## 3. Ollama AI Local Inference Engine
+
+```mermaid
+sequenceDiagram
+    participant User as Patient / Caregiver
+    participant FE as Next.js Frontend
+    participant BE as Spring Boot Backend
+    participant AI as Local Ollama LLM (qwen2.5 / llama3.2)
+
+    Note over User,AI: 1. Clinical Intake & 17-Domain Extraction
+    User->>FE: Uploads Clinical PDF / Medical Report
+    FE->>BE: POST /api/v1/patients/onboard (Multipart)
+    BE->>AI: POST /api/generate (PDF text + 17-domain extraction prompt)
+    AI-->>BE: Strict JSON { diagnosis, MMSE subscales, deficits, stage }
+    BE-->>FE: Returns Calibrated Patient Profile (Level 1/2/3)
+
+    Note over User,AI: 2. Real-Time Reminiscence Dialogue
+    User->>FE: Speaks/types to Grandchild's Teatime Chat
+    FE->>BE: POST /api/v1/ai/reminiscence { message, patientContext }
+    BE->>AI: Prompts LLM with family photos, hobbies & joy triggers
+    AI-->>BE: Warm, nostalgic, elderly-friendly conversational reply
+    BE-->>FE: Delivers response + synthesizes localized speech (TTS)
+```
+
+---
+
+## 4. 11 Regional Languages & Zero-Flicker Architecture
+
+### Supported Language Matrix
+1. **Assamese (অসমীয়া)** — `as` (Assam)
+2. **Bengali (বাংলা)** — `bn` (Tripura, Assam, West Bengal)
+3. **Hindi (हिन्दी)** — `hi` (Pan-India)
+4. **Marathi (मराठी)** — `mr` (Maharashtra / Clinical Partners)
+5. **Khasi** — `kha` (Meghalaya)
+6. **Garo** — `grt` (Meghalaya)
+7. **Manipuri / Meeteilon (মৈতৈলোন্)** — `mni` (Manipur)
+8. **Mizo** — `lus` (Mizoram)
+9. **Bodo** — `brx` (Bodoland, Assam)
+10. **Nepali** — `ne` (Sikkim, North Bengal)
+11. **English** — `en` (Default clinical base)
+
+### Zero-Flicker Engineering
+- **Deep Fallback Resolution**: Always loads `en.json` base messages and overlays target locale messages on top to prevent blank labels.
+- **React 19 `useTransition`**: Switches routes smoothly with `{ scroll: false }` without unmounting layout frames.
+- **`useSyncExternalStore` Persistence**: Stores font size (`cognicare_font_size`) and high contrast mode in `localStorage` with synchronous pre-paint application to eliminate SSR hydration flashes.
+
+---
+
+## 5. Accessibility & GIGW AAA Compliance
+
+| Feature | Specifications | Purpose |
 |---|---|---|
-| `next-intl` | 4.14.0 | i18n framework for Next.js App Router |
-| Next.js | 16.3.3 (Turbopack) | React framework with locale-prefixed routing |
-| TypeScript | — | Type-safe locale keys and message access |
-| Web Speech API | — | Browser-native TTS with locale-aware voices |
+| **Elderly Font Scaler** | **`16px`** (Compact) • **`18px`** (Default) • **`22px`** (Large) | Optimized for elderly patients with presbyopia or mild cognitive visual deficit |
+| **GIGW High-Contrast** | Black `#000000` & Yellow `#FBBF24` / Emerald `#059669` | AAA standard for low-vision legibility and outdoor sunlight kiosk usage |
+| **Tactile Buttons** | Neo-brutalist chunky 3D borders (`border-3 border-black shadow-[4px_4px_0px_#000]`) | High physical affordance for elderly users with impaired fine-motor control |
+| **Speech Rate Calibration** | Automated speech rate adjustment (`0.75x` for Severe, `0.85x` for Moderate, `1.0x` for Mild) | Comprehension support for auditory processing lag |
 
 ---
 
-## Supported Locales
+## 6. Zero-Touch QR Kiosk Terminal (`/kiosk/login`)
 
-| Code | Language | Native Name | TTS Code (BCP-47) |
-|---|---|---|---|
-| `en` | English | English | `en-US` (default) |
-| `hi` | Hindi | हिन्दी | `hi-IN` |
-| `as` | Assamese | অসমীয়া | `as-IN` |
-| `mr` | Marathi | मराठी | `mr-IN` |
-
-All routes are locale-prefixed: `/en/patient`, `/hi/patient`, etc. (`localePrefix: 'always'`)
-
----
-
-## Architecture — 6 Key Files
-
-### 1. `src/i18n/routing.ts` — Locale Configuration
-```ts
-defineRouting({ locales: ['en','hi','as','mr'], defaultLocale: 'en', localePrefix: 'always' })
-```
-- Defines supported locales and default fallback
-- Shared by middleware, navigation helpers, and request config
-
-### 2. `src/i18n/request.ts` — Server-Side Message Loading
-```ts
-getRequestConfig(async ({ requestLocale }) => {
-  // loads en.json as base, spreads target locale on top
-  return { locale, messages: { ...enMessages, ...targetMessages } };
-})
-```
-- **Deep fallback merge**: always loads `en.json` first, then overlays the target locale
-- Guarantees no blank/missing text even if a non-English file has gaps
-- Uses explicit `import()` per locale (not dynamic template literals) — Turbopack requirement
-
-### 3. `src/i18n/navigation.ts` — Locale-Aware Navigation
-```ts
-export const { Link, redirect, usePathname, useRouter, getPathname } = createNavigation(routing);
-```
-- Drop-in replacements for Next.js `Link`, `useRouter`, `usePathname`, `redirect`
-- Automatically preserves locale prefix on navigation
-- Used in Navbar, LanguageSelector, all page components
-
-### 4. `src/proxy.ts` — Middleware (Locale Detection)
-```ts
-export default createMiddleware(routing);
-export const config = { matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)' };
-```
-- Next.js 16 convention: file named `proxy.ts` (not `middleware.ts`)
-- Detects locale from `Accept-Language` header / URL prefix / cookie
-- Redirects `/` → `/en` (or saved locale)
-- Excludes API routes, static files, internal Next.js paths
-
-### 5. `src/lib/i18n.ts` — TTS Locale Map
-```ts
-export const LOCALE_MAP: Record<string, string> = {
-  en: "en-US", hi: "hi-IN", as: "as-IN", mr: "mr-IN"
-};
-```
-- Maps app locale codes to BCP-47 speech synthesis language tags
-- Used by `AudioPrompt` component for voice output
-
-### 6. `next.config.ts` — Plugin Integration
-```ts
-const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
-```
-- Wraps Next.js config with `next-intl` plugin
-- Enables server-side message loading and locale-aware routing
+- **Viewfinder HUD**: Clean single square reticle with 4 emerald corner guides and animated sweeping green laser line.
+- **Camera Selection**: Flip toggle between Front and Rear cameras with voice guidance audio prompt.
+- **Multi-Sensory Audio**:
+  - `playTapFeedback()`: Subtle scanner detection beep.
+  - `playScanSuccess()`: Triple-note fanfare on cryptographic token match.
+  - `playError()`: Low warning buzz on invalid or unreadable cards.
+  - Speech synthesis: Automatic verbal greeting (*"Welcome, [Patient Name]!"*).
+- **Smooth Auto-Redirect**: Automatically signs the patient in and navigates to `/patient`.
 
 ---
 
-## App Router Layout
+## 7. MDoNER Command Center & Clinical Dossier Export
 
-```
-src/app/
-├── layout.tsx              # Root layout — passthrough (no providers)
-├── page.tsx                # Root page — redirect("/en")
-└── [locale]/
-    ├── layout.tsx          # Locale layout — <html lang={locale}> + NextIntlClientProvider
-    ├── page.tsx            # Home page
-    ├── patient/            # Patient dashboard
-    ├── caregiver/          # Caregiver dashboard
-    └── login/              # Login page
-```
-
-- Root `layout.tsx` renders `{children}` directly (no `<html>` or providers)
-- `[locale]/layout.tsx` sets `<html lang={locale}>` dynamically and wraps with `<NextIntlClientProvider>`
-- `[locale]/page.tsx` and all sub-pages use `useTranslations()` hooks
-- Root `page.tsx` does `redirect("/en")` for bare `/` visits
-
----
-
-## Message File Format
-
-**Location**: `src/messages/{en,hi,as,mr}.json`
-
-**Structure**: Nested JSON with `.label` sub-keys for conflict resolution:
-
-```json
-{
-  "intake": {
-    "personal": {
-      "name": {
-        "label": "Full Name",
-        "placeholder": "e.g., Ramesh Dutta"
-      },
-      "gender": "Gender"
-    }
-  },
-  "options": {
-    "gender": {
-      "male": "Male",
-      "female": "Female",
-      "other": "Other"
-    }
-  }
-}
-```
-
-**Namespaces covered**: `nav`, `home`, `patient`, `puzzle`, `wayfinding`, `caregiver`, `intake` (with sub-namespaces: `personal`, `medical`, `family`, `life`, `places`, `review`, `wizard`), `options` (`gender`, `relationship`, `relativeRelationship`, `interests`, `status`, `metrics`), `game`, `common`, `audio`
-
----
-
-## Key Patterns in Components
-
-### Translations (Server & Client)
-```tsx
-import { useTranslations } from "next-intl";
-
-function MyComponent() {
-  const t = useTranslations("intake.personal");  // namespace
-  return <h2>{t("title")}</h2>;                   // key access
-}
-```
-
-### Current Locale
-```tsx
-import { useLocale } from "next-intl";
-const locale = useLocale();  // "en" | "hi" | "as" | "mr"
-```
-
-### Locale-Aware Links
-```tsx
-import Link from "@/i18n/navigation";
-<Link href="/patient">  // automatically becomes /hi/patient etc.
-```
-
-### Language Switching
-```tsx
-import { useRouter, usePathname } from "@/i18n/navigation";
-const router = useRouter();
-const pathname = usePathname();
-router.replace(pathname, { locale: "hi" });  // navigates to /hi/...
-```
-
----
-
-## TTS Integration
-
-**Component**: `src/components/ui/AudioPrompt.tsx`
-
-```tsx
-const locale = useLocale();
-const resolvedLang = LOCALE_MAP[locale] ?? "en-US";
-const utterance = new SpeechSynthesisUtterance(text);
-utterance.lang = resolvedLang;  // e.g., "hi-IN"
-utterance.rate = 0.85;          // slow for elderly users
-window.speechSynthesis.speak(utterance);
-```
-
-- Uses browser-native Web Speech API (no external service)
-- Automatically resolves voice language from current locale
-- Rate 0.85x for cognitive accessibility
-
----
-
-## Language Selector
-
-**Component**: `src/components/ui/LanguageSelector.tsx`
-
-- 4-button segmented pill: `ENG | हिन्दी | অসমীয়া | मराठी`
-- Uses `useLocale()` for active state, `useRouter().replace()` for switching
-- Client component (`"use client"`)
-- Styled with theme tokens (`bg-marigold`, `text-white` for active)
-
----
-
-## Deep Fallback Mechanism
-
-Problem: If a non-English locale file is missing a key, the UI shows blank text.
-
-Solution in `request.ts`:
-```ts
-const enMessages = await import('@/messages/en.json');
-const targetMessages = locale === 'en' ? {} : await messageLoaders[locale]();
-return { messages: { ...enMessages, ...targetMessages } };
-```
-
-- `en.json` is always loaded as the base (100% complete)
-- Target locale spread on top — only overrides keys that exist
-- Missing keys in Hindi/Assamese/Marathi fall back to English automatically
-- No blank text ever reaches the UI
-
----
-
-## Turbopack Constraint
-
-Dynamic template literal imports fail under Turbopack:
-```ts
-// ❌ FAILS — Turbopack can't resolve
-const msgs = await import(`@/messages/${locale}.json`);
-
-// ✅ WORKS — explicit imports
-const messageLoaders = {
-  en: () => import('@/messages/en.json'),
-  hi: () => import('@/messages/hi.json'),
-  as: () => import('@/messages/as.json'),
-  mr: () => import('@/messages/mr.json'),
-};
-```
-
----
-
-## Components Using i18n
-
-| Component | Type | Hooks Used |
-|---|---|---|
-| `LanguageSelector` | Client | `useLocale`, `useRouter`, `usePathname` |
-| `AudioPrompt` | Client | `useLocale` |
-| `Navbar` | Client | `useTranslations('nav')`, locale-aware `Link` |
-| `StepPersonalInfo` | Client | `useTranslations` x 3 (intake, options.gender, options.relationship) |
-| `StepFamilyMembers` | Client | `useTranslations` x 4 (intake.family, name, notes, options.relativeRelationship) |
-| `StepLifeStory` | Client | `useTranslations` x 2 (intake.life, options.interests) |
-| `StepFamiliarPlaces` | Client | `useTranslations` x 3 (intake.places, name, desc) |
-| `StepDiagnosticReport` | Client | `useTranslations('intake.medical')` |
-| `StepReview` | Client | `useTranslations('intake.review')` |
-| `IntakeWizard` | Client | `useTranslations` x 2 (intake, intake.wizard) |
-| `ReminderRow` | Client | `useTranslations('options.status')` |
-| `PatientCard` | Client | `useTranslations('options.metrics')` |
-| `GameHeader` | Client | `useTranslations('game')` |
-| `CaregiverContent` | Client | `useTranslations('caregiver')` |
+- **8-State Telemetry Hub (`/command-center`)**: GIS adherence metrics, district clusters, and active session telemetry covering all 8 North Eastern states.
+- **1-Click Clinical EHR Export**: Instant printable dossier with ABHA Health ID, 5-Axis Neuropsychological Radar, motor latency metrics, and verifiable QR codes.
