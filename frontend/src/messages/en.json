@@ -1,7 +1,7 @@
 {
   "home": {
-"greeting": "Good Day!",
-  "ready": "Ready for your daily memory exercises?",
+    "greeting": "Welcome Back!",
+    "ready": "We're happy to see you again. Ready for your daily memory exercises?",
   "comingSoon": "Coming Soon",
     "routine": {
       "label": "Today's Routine",

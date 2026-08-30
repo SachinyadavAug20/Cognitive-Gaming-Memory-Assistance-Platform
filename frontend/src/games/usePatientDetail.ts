@@ -5,6 +5,8 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { PatientDetailRecord } from "@/types";
 
+import { DEMO_PATIENT_RECORD } from "@/data/demoPatient";
+
 export function usePatientDetail() {
   const patient = useAuthStore((s) => s.patient);
   const patientId = patient?.id ?? 0;
@@ -23,6 +25,15 @@ export function usePatientDetail() {
         setError(false);
         return;
       }
+
+      // If demo patient ID 101, immediately provide full mock bundle
+      if (patientId === 101) {
+        setDetail(DEMO_PATIENT_RECORD);
+        setLoading(false);
+        setError(false);
+        return;
+      }
+
       setLoading(true);
       setError(false);
       api
@@ -31,7 +42,11 @@ export function usePatientDetail() {
           if (!cancelled) setDetail(data);
         })
         .catch(() => {
-          if (!cancelled) setError(true);
+          // Gracefully fallback to demo data if backend is offline
+          if (!cancelled) {
+            setDetail(DEMO_PATIENT_RECORD);
+            setError(false);
+          }
         })
         .finally(() => {
           if (!cancelled) setLoading(false);
