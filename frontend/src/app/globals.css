@@ -58,7 +58,7 @@ html {
   color: var(--color-ink);
   background: var(--color-canvas);
   -webkit-font-smoothing: antialiased;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.6;
 }
 
@@ -425,4 +425,27 @@ html {
   background-size: 200% 100%;
   animation: thread-shimmer 2s infinite linear;
 }
+
+/* ── GIGW High Contrast Accessibility Mode ── */
+.high-contrast-mode {
+  filter: contrast(125%) saturate(110%);
+}
+.high-contrast-mode body {
+  background-color: #0A0A0A !important;
+  color: #FFFFFF !important;
+}
+.high-contrast-mode .bg-surface,
+.high-contrast-mode .bg-canvas,
+.high-contrast-mode .scrapbook-card {
+  background-color: #121212 !important;
+  color: #FFFFFF !important;
+  border-color: #F59E0B !important;
+}
+.high-contrast-mode .text-ink {
+  color: #FFFFFF !important;
+}
+.high-contrast-mode .text-ink-secondary {
+  color: #E5E7EB !important;
+}
+
 

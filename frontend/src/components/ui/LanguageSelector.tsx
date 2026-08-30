@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { Globe, Check, ChevronDown } from "lucide-react";
@@ -38,6 +38,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [, startTransition] = useTransition();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const currentLang = ALL_LANGUAGES.find((l) => l.code === locale) || ALL_LANGUAGES[0];
@@ -54,7 +55,10 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
 
   const handleSelectLanguage = (code: string) => {
     setIsOpen(false);
-    router.replace(pathname, { locale: code });
+    if (code === locale) return;
+    startTransition(() => {
+      router.replace(pathname, { locale: code, scroll: false });
+    });
   };
 
   const nesLangs = ALL_LANGUAGES.filter((l) => l.isNES);
@@ -74,7 +78,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
               type="button"
               onClick={() => handleSelectLanguage(lang.code)}
               title={`${lang.full} (${lang.region})`}
-              className={`px-2.5 py-1 text-xs font-black rounded-lg transition-all cursor-pointer ${
+              className={`px-2.5 py-1 text-xs font-black rounded-lg cursor-pointer ${
                 isSelected
                   ? "bg-tea text-white shadow-sm"
                   : "text-ink hover:bg-tea-light/60"
@@ -92,7 +96,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-label="Select North East State or National Language"
-        className={`flex items-center gap-1.5 rounded-xl border-2 border-black px-2.5 sm:px-3 py-1.5 text-xs font-black shadow-[2px_2px_0px_#000] transition-all cursor-pointer ${
+        className={`flex items-center gap-1.5 rounded-xl border-2 border-black px-2.5 sm:px-3 py-1.5 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
           currentLang.isNES
             ? "bg-marigold text-white hover:bg-amber-600"
             : "bg-surface text-ink hover:bg-surface-muted"
@@ -103,12 +107,12 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
           {currentLang.native} {currentLang.isNES ? "(NES)" : ""}
         </span>
         <span className="sm:hidden font-extrabold">{currentLang.label}</span>
-        <ChevronDown className={`h-3 w-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-3 w-3 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {/* DROPDOWN MENU */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 rounded-2xl border-3 border-black bg-surface p-2.5 shadow-[5px_5px_0px_#000] z-50 animate-in fade-in zoom-in-95 duration-100 max-h-[80vh] overflow-y-auto">
+        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 rounded-2xl border-3 border-black bg-surface p-2.5 shadow-[5px_5px_0px_#000] z-50 max-h-[80vh] overflow-y-auto">
           {/* Header */}
           <div className="px-2.5 py-1.5 border-b-2 border-black/15 mb-2 flex items-center justify-between">
             <span className="text-[11px] font-black uppercase tracking-wider text-tea flex items-center gap-1">
@@ -128,7 +132,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
                   key={lang.code}
                   type="button"
                   onClick={() => handleSelectLanguage(lang.code)}
-                  className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-black transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-black cursor-pointer ${
                     isSelected
                       ? "border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
                       : "hover:bg-tea-light/60 text-ink"
@@ -161,7 +165,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
                   key={lang.code}
                   type="button"
                   onClick={() => handleSelectLanguage(lang.code)}
-                  className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-black transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between rounded-xl px-3 py-2 text-left text-xs font-black cursor-pointer ${
                     isSelected
                       ? "border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
                       : "hover:bg-tea-light/60 text-ink"

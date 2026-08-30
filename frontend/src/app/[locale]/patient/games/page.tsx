@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
@@ -15,26 +15,12 @@ import {
 import { GAMES } from "@/games/registry";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { startLevel } from "@/games/config";
-import { getGamePlayCount } from "@/lib/telemetry";
 import { GameError, GameLoading } from "@/components/games/GameState";
 
 export default function GamesHubPage() {
   const t = useTranslations("games");
-  const { detail, loading, error, reload, patientId } = usePatientDetail();
-  const [, setPlays] = useState<Record<string, number>>({});
+  const { detail, loading, error, reload } = usePatientDetail();
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
-
-  useEffect(() => {
-    if (!patientId) return;
-    const timer = window.setTimeout(() => {
-      const counts: Record<string, number> = {};
-      for (const game of GAMES) {
-        counts[game.id] = getGamePlayCount(patientId, game.id);
-      }
-      setPlays(counts);
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, [patientId, loading]);
 
   const filteredGames = GAMES.filter((g) => {
     if (selectedFilter === "all") return true;

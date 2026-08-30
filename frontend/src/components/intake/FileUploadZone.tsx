@@ -142,6 +142,7 @@ export function FileUploadZone({
             {preview && isPdf ? (
               <span className="text-4xl">📄</span>
             ) : preview ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={preview}
                 alt="Preview"

@@ -24,6 +24,7 @@ function handleSessionExpired(): void {
     // ignore storage failures
   }
   if (!window.location.pathname.includes("/kiosk/login")) {
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = LOGIN_URL;
   }
 }

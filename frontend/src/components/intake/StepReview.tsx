@@ -77,6 +77,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
               return (
                 <div key={i} className="flex items-center gap-3 bg-surface-muted/70 border border-border-soft rounded-xl p-2.5">
                   {photo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={photo}
                       alt={rel.name}

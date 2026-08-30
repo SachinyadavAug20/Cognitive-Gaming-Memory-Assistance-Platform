@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -10,27 +10,29 @@ interface AppHeaderProps {
   isOnline?: boolean;
 }
 
+function subscribeOnline(callback: () => void) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getOnlineSnapshot(): boolean {
+  return typeof navigator !== "undefined" ? navigator.onLine : true;
+}
+
 export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
   const t = useTranslations("nav");
-  const [online, setOnline] = useState(() =>
-    typeof navigator !== "undefined" ? navigator.onLine : true
+  const isOnlineLive = useSyncExternalStore(
+    subscribeOnline,
+    getOnlineSnapshot,
+    () => true
   );
 
-  useEffect(() => {
-    if (forcedOnline !== undefined) {
-      const id = window.setTimeout(() => setOnline(forcedOnline), 0);
-      return () => window.clearTimeout(id);
-    }
-    const update = () => setOnline(navigator.onLine);
-    const id = window.setTimeout(update, 0);
-    window.addEventListener("online", update);
-    window.addEventListener("offline", update);
-    return () => {
-      window.clearTimeout(id);
-      window.removeEventListener("online", update);
-      window.removeEventListener("offline", update);
-    };
-  }, [forcedOnline]);
+  const online = forcedOnline !== undefined ? forcedOnline : isOnlineLive;
 
   return (
     <header className="w-full border-b-3 border-black bg-surface px-3 py-2.5 md:px-6 shadow-sm">
@@ -44,19 +46,20 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
               CogniCare
             </h1>
             <p className="text-[9px] font-black uppercase tracking-wider text-ink-secondary">
-              MDoNER Initiative
+              CDTx Memory Care // MDoNER Track
             </p>
           </div>
         </Link>
 
         <div className="flex items-center gap-2 md:gap-3">
           <div
+            suppressHydrationWarning
             className={`hidden items-center gap-1.5 rounded-xl border-2 border-black px-2.5 py-1 text-xs font-black shadow-[2px_2px_0px_#000] sm:flex ${
               online ? "bg-tea-light text-tea" : "bg-marigold-light text-marigold"
             }`}
           >
             <Radio className="h-3 w-3 animate-pulse" />
-            <span>{online ? t("online") : t("offline")}</span>
+            <span suppressHydrationWarning>{online ? t("online") : t("offline")}</span>
           </div>
 
           <LanguageSelector />
