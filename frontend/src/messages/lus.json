@@ -1,0 +1,67 @@
+{
+  "home": {
+    "greeting": "Chibai!",
+    "ready": "Zan hian a tihna hmang dawn nia?",
+    "subtitle": "CogniCare",
+    "description": "AI tan vawiin",
+    "nerInitiative": "MDoNER thinrim"
+  },
+  "kiosk": {
+    "title": "CogniCare ah chibai",
+    "subtitle": "I Health Card camera ah hriatrawm rawh.",
+    "loading": "Incheck tawh...",
+    "error": {
+      "invalid": "Card hi hriat tur a ni lo.",
+      "generic": "Connection ah hrilhna. H lại hmaih la.",
+      "retry": "QR code leh hriatrawm rawh."
+    }
+  },
+  "patient": {
+    "listen": "Hlir rawh",
+    "speaking": "Tlawng tawh...",
+    "greeting": "Holh nuaih, Dadu!",
+    "greetingName": "Holh nuaih, {name}!",
+    "orientation": "Nihin i family tamtawh inla ah i awm dawn nia.",
+    "heroPrompt": "Game tannaah hnuaih a tihna button khat pick rawh.",
+    "back": "← Inla ah kal rawh",
+    "backToRoutine": "Daily routine ah kal rawh",
+    "wellbeing": {
+      "title": "Reminiscence & Comfort",
+      "moodTitle": "I ngaihtuah dawn nia?",
+      "moodPeaceful": "Huan ngai",
+      "moodOkay": "Tla",
+      "moodCare": "Enkawl tur a awm",
+      "moodThanks": "Inziakna, {name}.",
+      "moodFeedback": {
+        "peaceful": "I huan ngaihtuah thawhnaah hian kan inhlah!",
+        "okay": "Tla a ni. Kan tla in awm, leh kan hmang dawn.",
+        "caretaker": "I enkawltu hi hriatpuh a ni. Tihtan tur a awm."
+      }
+    }
+  },
+  "games": {
+    "memory": {
+      "title": "Famil Memory",
+      "preview": "Famil member hnuaia chhiar rawh...",
+      "start": "Tan rawh",
+      "complete": "Ngai! I matching tham!"
+    },
+    "sorting": {
+      "title": "Zan-zan sorting",
+      "complete": "Ngai!"
+    },
+    "wayfinding": {
+      "title": "Lam remh rawh",
+      "complete": "Ngai!"
+    },
+    "dailyTasks": {
+      "title": "Ka tea siam rawh",
+      "complete": "Ngai!"
+    },
+    "companion": {
+      "title": "Tlawng mih kai",
+      "hello": "Chibai, {name}!",
+      "chat": "Tlawng rawh"
+    }
+  }
+}

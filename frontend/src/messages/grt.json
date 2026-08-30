@@ -1,0 +1,67 @@
+{
+  "home": {
+    "greeting": "Chamerican!",
+    "ready": "Nana sisikrak na game akanchinggo?",
+    "subtitle": "CogniCare",
+    "description": "AI-tanchi nawa",
+    "nerInitiative": "MDoNER chiklik"
+  },
+  "kiosk": {
+    "title": "CogniCare galo chibainawa",
+    "subtitle": "Apa Health Card kamera tate chiklik.",
+    "loading": "Chikna...",
+    "error": {
+      "invalid": "Card-ko chikna nawa!",
+      "generic": "Sangming dikkhat. H mani chiklak.",
+      "retry": "QR code chiklik."
+    }
+  },
+  "patient": {
+    "listen": "Chiklak",
+    "speaking": "Katha nikla...",
+    "greeting": "Nana sisikrak, Dadu!",
+    "greetingName": "Nana sisikrak, {name}!",
+    "orientation": "Nana apa saikrak mepa sa galginni.",
+    "heroPrompt": "Game tamba phi nangtai.",
+    "back": "← Saikrak galginni",
+    "backToRoutine": "Daily galginni",
+    "wellbeing": {
+      "title": "Chiklik & Angan",
+      "moodTitle": "Nana ki angan nikla?",
+      "moodPeaceful": "Angan",
+      "moodOkay": "Chiklo",
+      "moodCare": "Enkawl tur",
+      "moodThanks": "Chiklik phi nangtai, {name}.",
+      "moodFeedback": {
+        "peaceful": "Nana angan nikla si kan ngaita!",
+        "okay": "Chiklo. Mi apa galginni, te game chiklak.",
+        "caretaker": "Enkawl phi u chiklikna. Mitanchi ngaita."
+      }
+    }
+  },
+  "games": {
+    "memory": {
+      "title": "Family Memory",
+      "preview": "Sikpiang chiklik...",
+      "start": "Tamba",
+      "complete": "Angan! Chiklik tham!"
+    },
+    "sorting": {
+      "title": "Fag-Siang Sorting",
+      "complete": "Angan!"
+    },
+    "wayfinding": {
+      "title": "Lam chiklik",
+      "complete": "Angan!"
+    },
+    "dailyTasks": {
+      "title": "Ka tea chiklak",
+      "complete": "Angan!"
+    },
+    "companion": {
+      "title": "Katha mit",
+      "hello": "Chibainawa, {name}!",
+      "chat": "Katha chiklak"
+    }
+  }
+}

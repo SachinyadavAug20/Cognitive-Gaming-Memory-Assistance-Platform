@@ -158,6 +158,13 @@ export const LANGUAGE_OPTIONS = [
   { code: "hi", label: "हिन्दी (Hindi)" },
   { code: "as", label: "অসমীয়া (Assamese)" },
   { code: "mr", label: "मराठी (Marathi)" },
+  { code: "bn", label: "বাংলা (Bengali)" },
+  { code: "ne", label: "नेपाली (Nepali)" },
+  { code: "mni", label: "মৈতৈলোন্ (Manipuri)" },
+  { code: "lus", label: "Mizo" },
+  { code: "kha", label: "Khasi" },
+  { code: "brx", label: "बड़ो (Bodo)" },
+  { code: "grt", label: "Garo" },
 ];
 
 export const RELATIVE_RELATIONSHIP_OPTIONS = [

@@ -1,0 +1,67 @@
+{
+  "home": {
+    "greeting": "सुभ दिन!",
+    "ready": "आजको स्मृति अभ्यासको लागि तयार?",
+    "subtitle": "CogniCare",
+    "description": "AI-शक्तिशाली स्मृति सहायक",
+    "nerInitiative": "MDoNER पहल"
+  },
+  "kiosk": {
+    "title": "CogniCare मा जोयाङ होरे!",
+    "subtitle": "अपुनो Health Card क्यामेरा मा देखाव।",
+    "loading": "जाँच गरा...",
+    "error": {
+      "invalid": "ए कार्ड चिन्ना नुआ!",
+      "generic": "सङ्गमा दिक्कत। फिरि कोसिस कर।",
+      "retry": "QR कोड देखाव।"
+    }
+  },
+  "patient": {
+    "listen": "सुनो",
+    "speaking": "कथा कहा...",
+    "greeting": "सुभ फग्गा, दादा!",
+    "greetingName": "सुभ फग्गा, {name}!",
+    "orientation": "आज अपुन परिवार लगोत घर मा सुरक्षित छी।",
+    "heroPrompt": "खेल सुरु करबा लागि तलको बटन दाब।",
+    "back": "← घर जा",
+    "backToRoutine": "दैनिक कार्यक्रम जा",
+    "wellbeing": {
+      "title": "स्मृति र आराम",
+      "moodTitle": "आज अपुन केहाला लागैया?",
+      "moodPeaceful": "शान्त",
+      "moodOkay": "ठीक छ",
+      "moodCare": "देखभाल लागैया",
+      "moodThanks": "कहबा खातिर धन्यवाद, {name}।",
+      "moodFeedback": {
+        "peaceful": "अपुन शान्त लागैया भने हम खुसी छी!",
+        "okay": "ठीक छ। म्हाँ अपुन लगोत छी।",
+        "caretaker": "अपुनो देखभाल कर्ता लाई बतायल गेला। सहयोग खातिर कोही आइसा।"
+      }
+    }
+  },
+  "games": {
+    "memory": {
+      "title": "पारिवारिक स्मृति",
+      "preview": "परिवारका सदस्य सम्झ...",
+      "start": "सुरु कर",
+      "complete": "बढ़िया! मिलाना भयल!"
+    },
+    "sorting": {
+      "title": "बिहान-साँझ बाँट",
+      "complete": "बढ़िया!"
+    },
+    "wayfinding": {
+      "title": "रस्ता सम्झ",
+      "complete": "बढ़िया!"
+    },
+    "dailyTasks": {
+      "title": "मेरो चिया बनाव",
+      "complete": "बढ़िया!"
+    },
+    "companion": {
+      "title": "कथा मित्र",
+      "hello": "नमस्ते, {name}!",
+      "chat": "कथा कह"
+    }
+  }
+}

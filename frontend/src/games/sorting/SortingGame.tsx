@@ -1,30 +1,56 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
-import { playCorrect, playIncorrect, playComplete } from "@/lib/sound";
-import { speak } from "@/lib/speech";
+import { AudioPrompt } from "@/components/ui/AudioPrompt";
+import { playCorrect, playIncorrect, playComplete, playPress } from "@/lib/sound";
+import { speak, stopSpeaking } from "@/lib/speech";
 import { recordGameSession } from "@/lib/telemetry";
+import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate } from "@/games/config";
+
+function GameShell({
+  title,
+  score,
+  children,
+}: {
+  title: string;
+  score: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="pb-10">
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-tea"
+      />
+      <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
+    </section>
+  );
+}
+
+type Category = "kitchen" | "prayer";
 
 interface SortItem {
   key: string;
   emoji: string;
-  morning: boolean;
+  category: Category;
 }
 
 const ITEMS: SortItem[] = [
-  { key: "medicine", emoji: "💊", morning: true },
-  { key: "tea", emoji: "🍵", morning: true },
-  { key: "radio", emoji: "📻", morning: true },
-  { key: "japi", emoji: "🧢", morning: false },
-  { key: "glass", emoji: "💧", morning: false },
-  { key: "pray", emoji: "🙏", morning: false },
+  { key: "teacup", emoji: "🍵", category: "kitchen" },
+  { key: "sugar", emoji: "🍯", category: "kitchen" },
+  { key: "clock", emoji: "🕰️", category: "kitchen" },
+  { key: "incense", emoji: "🪔", category: "prayer" },
+  { key: "bell", emoji: "🔔", category: "prayer" },
+  { key: "japi", emoji: "🧢", category: "prayer" },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
@@ -42,63 +68,120 @@ export function SortingGame() {
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
   const rate = speechRate(detail);
+
   const [queue] = useState<SortItem[]>(() => shuffle(ITEMS));
   const [index, setIndex] = useState(0);
+  const [picked, setPicked] = useState(false);
+  const [placed, setPlaced] = useState<SortItem[]>([]);
+  const [shakeCat, setShakeCat] = useState<Category | null>(null);
   const [done, setDone] = useState(false);
-  const [score, setScore] = useState(0);
-  const [wrong, setWrong] = useState(false);
   const [taps, setTaps] = useState(0);
-  const startedAt = useRef<string>(new Date().toISOString());
+  const [errorCount, setErrorCount] = useState(0);
+  const [startedAt] = useState(() => new Date().toISOString());
 
   const current = useMemo(() => queue[Math.min(index, queue.length - 1)], [queue, index]);
 
-  function choose(morning: boolean) {
-    if (!current || done) return;
+  const guard = useSessionGuard({
+    patientId,
+    gameId: "sorting",
+    level: 1,
+    startedAt,
+    taps,
+    errorCount,
+  });
+
+  useEffect(() => {
+    if (!done && current) {
+      speak(
+        `${t("sorting.intro")} ${t("sorting.pickItem")} ${t(
+          `sorting.items.${current.key}`
+        )}`,
+        locale,
+        rate
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done, current?.key]);
+
+  useEffect(() => () => stopSpeaking(), []);
+
+  function pickUp() {
+    if (!current || done || picked) return;
+    playPress();
+    setPicked(true);
+    speak(
+      `${t("sorting.pickBasket")} ${t(`sorting.items.${current.key}`)}`,
+      locale,
+      rate
+    );
+  }
+
+  function placeIn(category: Category) {
+    if (!current || done || !picked) return;
     setTaps((v) => v + 1);
-    if (morning === current.morning) {
+    if (category === current.category) {
       playCorrect();
-      setScore((s) => s + 1);
-      speak(t("sorting.correctName", { item: t(`sorting.items.${current.key}`) }), locale, rate);
+      const items = [...placed, current];
+      setPlaced(items);
+      setPicked(false);
+      speak(
+        t("sorting.correctName", { item: t(`sorting.items.${current.key}`) }),
+        locale,
+        rate
+      );
       if (index + 1 >= queue.length) {
-        finish();
+        finish(items);
       } else {
         setIndex((i) => i + 1);
       }
     } else {
       playIncorrect();
-      setWrong(true);
-      speak(t("sorting.hint"), locale, rate);
-      window.setTimeout(() => setWrong(false), 700);
+      setErrorCount((v) => v + 1);
+      setShakeCat(category);
+      speak(
+        t("sorting.wrongSpeech", {
+          item: t(`sorting.items.${current.key}`),
+          category: t(`sorting.${current.category}`),
+        }),
+        locale,
+        rate
+      );
+      window.setTimeout(() => setShakeCat(null), 800);
     }
   }
 
-  function finish() {
+  function finish(items: SortItem[]) {
     playComplete();
     setDone(true);
+    guard.markCompleted();
     recordGameSession(patientId, {
       gameId: "sorting",
       level: 1,
       outcome: "completed",
-      score: queue.length,
-      startedAt: startedAt.current,
+      score: items.length,
+      startedAt,
       taps,
+      errorCount,
     });
+    speak(t("sorting.complete"), locale, rate);
   }
 
   if (loading) return <GameLoading />;
   if (error)
     return (
-      <GameShell>
+      <GameShell title={t("sorting.title")} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
+  const inBasket = (category: Category) => placed.filter((i) => i.category === category);
+
   return (
-    <GameShell>
+    <GameShell title={t("sorting.title")} score={placed.length}>
       {done ? (
         <Celebration emoji="🧺" title={t("sorting.complete")}>
           <p className="text-xl font-bold text-ink">
-            {t("score", { score: `${score}/${queue.length}` })}
+            {t("score", { score: `${placed.length}/${queue.length}` })}
           </p>
           <Link
             href="/patient"
@@ -109,57 +192,97 @@ export function SortingGame() {
         </Celebration>
       ) : (
         <div className="flex flex-col items-center gap-6 py-6">
-          <div className="flex items-center gap-2">
-            {queue.map((_, i) => (
-              <span
-                key={i}
-                className={`h-3 w-3 rounded-full ${
-                  i < index ? "bg-tea" : i === index ? "bg-terracotta" : "bg-border-soft"
-                }`}
-              />
-            ))}
+          <AudioPrompt
+            text={`${t("sorting.intro")} ${t("sorting.pickItem")}`}
+            label={t("listen")}
+            size="md"
+          />
+
+          <div className="grid w-full max-w-xl grid-cols-2 gap-3 sm:gap-4">
+            <button
+              type="button"
+              onClick={() => placeIn("kitchen")}
+              aria-label={t("sorting.kitchen")}
+              className={`flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-3xl border-[3px] border-black bg-surface p-4 shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-transform ${
+                shakeCat === "kitchen" ? "animate-shake bg-brick/20" : ""
+              }`}
+            >
+              <span className="text-6xl">🍳</span>
+              <span className="text-lg font-extrabold text-ink">
+                {t("sorting.kitchen")}
+              </span>
+              <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1">
+                {inBasket("kitchen").map((item) => (
+                  <span key={item.key} className="text-3xl">
+                    {item.emoji}
+                  </span>
+                ))}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => placeIn("prayer")}
+              aria-label={t("sorting.prayer")}
+              className={`flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-3xl border-[3px] border-black bg-surface p-4 shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-transform ${
+                shakeCat === "prayer" ? "animate-shake bg-brick/20" : ""
+              }`}
+            >
+              <span className="text-6xl">🪔</span>
+              <span className="text-lg font-extrabold text-ink">
+                {t("sorting.prayer")}
+              </span>
+              <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1">
+                {inBasket("prayer").map((item) => (
+                  <span key={item.key} className="text-3xl">
+                    {item.emoji}
+                  </span>
+                ))}
+              </span>
+            </button>
           </div>
 
-          <p className="text-lg font-bold text-ink-secondary">{t("sorting.pick")}</p>
+          <p className="text-lg font-bold text-ink-secondary">
+            {picked
+              ? t("sorting.pickBasket")
+              : t("sorting.pickItem")}
+          </p>
 
-          <div
-            className={`flex min-h-[160px] w-full max-w-sm flex-col items-center justify-center gap-3 rounded-3xl border-2 border-marigold bg-marigold/15 p-6 ${
-              wrong ? "animate-shake" : ""
-            }`}
-          >
-            <div className="text-8xl">{current.emoji}</div>
-            <p className="text-2xl font-extrabold text-ink">
-              {t(`sorting.items.${current.key}`)}
-            </p>
-          </div>
-
-          <div className="grid w-full max-w-md grid-cols-2 gap-4">
-            <button
-              onClick={() => choose(true)}
-              className="btn-chunky btn-chunky-marigold flex flex-col items-center gap-1"
-            >
-              <span className="text-4xl">☀️</span>
-              <span className="font-bold">{t("sorting.morning")}</span>
-            </button>
-            <button
-              onClick={() => choose(false)}
-              className="btn-chunky btn-chunky-tea flex flex-col items-center gap-1"
-            >
-              <span className="text-4xl">🌙</span>
-              <span className="font-bold">{t("sorting.evening")}</span>
-            </button>
+          <div className="flex w-full max-w-xl flex-wrap items-center justify-center gap-3">
+            {queue.map((item, i) => {
+              const isDone = i < index;
+              const isCurrent = i === index && !done;
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={isCurrent ? pickUp : undefined}
+                  disabled={!isCurrent}
+                  aria-label={t(`sorting.items.${item.key}`)}
+                  className={`flex max-w-[40%] flex-col items-center gap-1 rounded-2xl border-2 px-4 py-3 transition-all sm:max-w-[30%] ${
+                    isCurrent
+                      ? picked
+                        ? "scale-105 border-terracotta bg-terracotta-light shadow-[3px_3px_0px_rgba(0,0,0,1)]"
+                        : "border-black bg-surface shadow-[3px_3px_0px_rgba(0,0,0,1)]"
+                      : isDone
+                      ? "border-tea bg-tea-light opacity-90"
+                      : "border-border-soft bg-surface-muted opacity-40"
+                  }`}
+                >
+                  <span className="text-5xl">{item.emoji}</span>
+                  <span
+                    className={`text-sm font-bold ${
+                      isCurrent ? "text-ink" : "text-ink-secondary"
+                    }`}
+                  >
+                    {t(`sorting.items.${item.key}`)}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
     </GameShell>
   );
-
-  function GameShell({ children }: { children: React.ReactNode }) {
-    return (
-      <section className="pb-10">
-        <GameHeader title={t("sorting.title")} score={score} backHref="/patient/games" bgColor="bg-tea" />
-        <div className="mx-auto max-w-3xl px-4">{children}</div>
-      </section>
-    );
-  }
 }

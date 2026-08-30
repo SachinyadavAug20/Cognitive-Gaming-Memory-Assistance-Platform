@@ -15,6 +15,7 @@ import { speak } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
 import { LOCALE_MAP } from "@/lib/i18n";
 import { recordGameSession } from "@/lib/telemetry";
+import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel, wayfindingRouteLength } from "@/games/config";
 import type { FamiliarPlaceItem } from "@/types";
@@ -70,10 +71,20 @@ export function WayfindingGame() {
   const [recallStep, setRecallStep] = useState(1);
   const [score, setScore] = useState(0);
   const [taps, setTaps] = useState(0);
+  const [errorCount, setErrorCount] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [wiggle, setWiggle] = useState<number | null>(null);
   const [lightbox, setLightbox] = useState<FamiliarPlaceItem | null>(null);
-  const startedAt = useRef<string>(new Date().toISOString());
+  const [startedAt] = useState(() => new Date().toISOString());
+
+  const guard = useSessionGuard({
+    patientId,
+    gameId: "wayfinding",
+    level,
+    startedAt,
+    taps,
+    errorCount,
+  });
 
   const exploreStarted = useRef(false);
 
@@ -141,6 +152,7 @@ export function WayfindingGame() {
       );
     } else {
       playIncorrect();
+      setErrorCount((v) => v + 1);
       setWiggle(index);
       speak(t("wayfinding.wrong"), locale, rate);
     }
@@ -160,14 +172,16 @@ export function WayfindingGame() {
   function finish() {
     playComplete();
     setPhase("done");
-    if (startedAt.current) {
+    guard.markCompleted();
+    if (startedAt) {
       recordGameSession(patientId, {
         gameId: "wayfinding",
         level,
         outcome: "completed",
         score: score + 1,
-        startedAt: startedAt.current,
+        startedAt,
         taps,
+        errorCount,
       });
     }
   }

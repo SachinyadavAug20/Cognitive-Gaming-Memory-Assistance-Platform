@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -12,6 +12,7 @@ import { playCorrect, playTapFeedback } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
 import { recordGameSession } from "@/lib/telemetry";
+import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import type { LifeEventItem } from "@/types";
@@ -66,8 +67,18 @@ export function TimelineGame() {
   const [completedCount, setCompletedCount] = useState(0);
   const [hint, setHint] = useState<string | null>(null);
   const [taps, setTaps] = useState(0);
+  const [errorCount, setErrorCount] = useState(0);
   const [lightbox, setLightbox] = useState<{ event: LifeEventItem } | null>(null);
-  const startedAt = useRef<string | null>(null);
+  const [startedAt, setStartedAt] = useState<string | null>(null);
+
+  const guard = useSessionGuard({
+    patientId,
+    gameId: "timeline",
+    level,
+    startedAt,
+    taps,
+    errorCount,
+  });
 
   useEffect(() => {
     if (phase === "play" && ordered.length) {
@@ -81,7 +92,7 @@ export function TimelineGame() {
   const onPick = (event: LifeEventItem) => {
     if (phase !== "play") return;
     setTaps((v) => v + 1);
-    if (!startedAt.current) startedAt.current = new Date().toISOString();
+    if (!startedAt) setStartedAt(new Date().toISOString());
     const next = ordered[completedCount];
     if (event.event === next.event) {
       playCorrect();
@@ -101,6 +112,7 @@ export function TimelineGame() {
       }
     } else {
       playTapFeedback();
+      setErrorCount((v) => v + 1);
       const label = eventLabel(event);
       setHint(t("timeline.wrong", { event: label }));
       speak(t("timeline.wrongSpeech"), locale, rate);
@@ -111,21 +123,23 @@ export function TimelineGame() {
   const finish = useCallback(() => {
     playCorrect();
     setPhase("done");
-    if (startedAt.current) {
+    guard.markCompleted();
+    if (startedAt) {
       recordGameSession(patientId, {
         gameId: "timeline",
         level,
         outcome: "completed",
         score: ordered.length,
-        startedAt: startedAt.current,
+        startedAt,
         taps,
+        errorCount,
       });
     }
     const sequence = ordered
       .map((e) => e.year || t("timeline.longAgo"))
       .join(", ");
     speak(`${t("timeline.completeSpeech")} ${sequence}`, locale, rate);
-  }, [ordered, patientId, level, taps, locale, rate, t]);
+  }, [ordered, patientId, level, taps, errorCount, startedAt, locale, rate, t]);
 
   if (loading) return <GameLoading />;
   if (error)

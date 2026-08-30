@@ -2,16 +2,17 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
-import { playScanSuccess } from "@/lib/sound";
 
 interface KioskScannerProps {
   onScan: (text: string) => void;
   paused: boolean;
+  /** When true, the scanner overlay hides (parent shows error instead) */
+  isError?: boolean;
 }
 
-type ScanPhase = "idle" | "scanning" | "success";
+type ScanPhase = "idle" | "scanning" | "verifying";
 
-export function KioskScanner({ onScan, paused }: KioskScannerProps) {
+export function KioskScanner({ onScan, paused, isError }: KioskScannerProps) {
   const id = useId();
   const containerId = "qr-reader-" + id.replace(/[^a-zA-Z0-9]/g, "");
   const scannerRef = useRef<Html5Qrcode | null>(null);
@@ -20,7 +21,13 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
   const [error, setError] = useState<string | null>(null);
   const [cameraReady, setCameraReady] = useState(false);
 
-  const phase: ScanPhase = cameraReady ? (paused ? "success" : "scanning") : "idle";
+  const phase: ScanPhase = cameraReady
+    ? paused
+      ? isError
+        ? "scanning" // resume scanning immediately on error
+        : "verifying"
+      : "scanning"
+    : "idle";
 
   useEffect(() => {
     onScanRef.current = onScan;
@@ -117,23 +124,18 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
     }
   }, [paused]);
 
-  /* ── Success chime (runs once on pause trigger) ── */
-  useEffect(() => {
-    if (paused) playScanSuccess();
-  }, [paused]);
-
   const isScanning = phase === "scanning";
-  const isSuccess = phase === "success";
+  const isVerifying = phase === "verifying";
 
   return (
     <div className="w-full max-w-[440px] mx-auto">
       {/* ── Camera card ── */}
       <div className="rounded-2xl border-2 border-border-soft bg-white overflow-hidden shadow-[4px_4px_0px_var(--color-border)]">
-        {/* Camera feed area — no aspect-ratio lock, let the library size the video naturally */}
+        {/* Camera feed area */}
         <div className="relative bg-ink overflow-hidden">
           <div id={containerId} className="w-full" aria-label="QR code camera view" />
 
-          {/* ── Reticle overlay (corner brackets) ── */}
+          {/* ── Reticle overlay (corner brackets) — only when actively scanning ── */}
           {isScanning && (
             <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
               <div className="relative w-[260px] h-[260px]">
@@ -146,22 +148,15 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
             </div>
           )}
 
-          {/* ── Success overlay ── */}
-          {isSuccess && (
-            <div className="absolute inset-0 bg-tea/80 flex flex-col items-center justify-center gap-3 scan-success-overlay">
-              <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg scan-check-pop">
-                <svg viewBox="0 0 24 24" fill="none" className="w-10 h-10 text-tea">
-                  <path
-                    d="M5 13l4 4L19 7"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <p className="text-white font-black text-lg text-center drop-shadow-md scan-check-pop">
-                Card Recognized – Authenticating...
+          {/* ── Verifying overlay — neutral, no premature celebration ── */}
+          {isVerifying && (
+            <div className="absolute inset-0 bg-ink/80 flex flex-col items-center justify-center gap-3">
+              <div className="w-14 h-14 rounded-full border-4 border-white border-t-transparent animate-spin" />
+              <p className="text-white font-bold text-lg text-center">
+                QR Code Detected
+              </p>
+              <p className="text-white/70 font-semibold text-sm text-center">
+                Verifying with server…
               </p>
             </div>
           )}
@@ -174,14 +169,14 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
               Align your registered Health Card QR code within the frame.
             </p>
           )}
-          {isSuccess && (
-            <p className="text-center font-bold text-tea text-sm pulse-gentle">
-              Scan recognized — signing in...
+          {isVerifying && (
+            <p className="text-center font-bold text-ink-secondary/70 text-sm pulse-gentle">
+              Please wait…
             </p>
           )}
-          {!isScanning && !isSuccess && !error && (
+          {!isScanning && !isVerifying && !error && (
             <p className="text-center font-bold text-ink-secondary/50 text-sm">
-              Initializing camera...
+              Initializing camera…
             </p>
           )}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -12,7 +12,8 @@ import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { playPress, playCorrect, playTapFeedback } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
-import { recordGameSession } from "@/lib/telemetry";
+import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
+import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { clamp, speechRate, startLevel } from "@/games/config";
 import type { FamilyMemberItem } from "@/types";
@@ -39,16 +40,67 @@ function solved(order: number[]): boolean {
   return order.length > 0 && order.every((piece, pos) => piece === pos);
 }
 
+// Interlocking jigsaw geometry (button-box-normalized 0..1 coordinates).
+// Each button box is a grid cell (100 units) plus a 16-unit symmetric overhang
+// on every side (button = 132 units), so tabs protrude from the content edge
+// (16/132) to the button edge. Even-parity pieces carry tabs on interior
+// edges, odd-parity neighbors keep a plain square cut — the checkerboard
+// layout guarantees every protruding tab lands on a straight-receiving edge.
+const TAB_FRAC = 16 / 132;
+const TAB_HALF = 0.14;
+
+function buildPiecePath(g: number, r: number, c: number): string {
+  const y0 = TAB_FRAC;
+  const x1 = 1 - TAB_FRAC;
+  const y1 = 1 - TAB_FRAC;
+  const even = (r + c) % 2 === 0;
+  const top = r > 0 && even;
+  const right = c < g - 1 && even;
+  const bottom = r < g - 1 && even;
+  const left = c > 0 && even;
+  const parts: string[] = [`M ${TAB_FRAC} ${y0}`];
+  if (top) {
+    parts.push(
+      `L ${0.5 - TAB_HALF} ${y0}`,
+      `C ${0.5 - TAB_HALF} 0, ${0.5 + TAB_HALF} 0, ${0.5 + TAB_HALF} ${y0}`
+    );
+  }
+  parts.push(`L ${x1} ${y0}`);
+  if (right) {
+    parts.push(
+      `L ${x1} ${0.5 - TAB_HALF}`,
+      `C 1 ${0.5 - TAB_HALF}, 1 ${0.5 + TAB_HALF}, ${x1} ${0.5 + TAB_HALF}`
+    );
+  }
+  parts.push(`L ${x1} ${y1}`);
+  if (bottom) {
+    parts.push(
+      `L ${0.5 + TAB_HALF} ${y1}`,
+      `C ${0.5 + TAB_HALF} 1, ${0.5 - TAB_HALF} 1, ${0.5 - TAB_HALF} ${y1}`
+    );
+  }
+  parts.push(`L ${TAB_FRAC} ${y1}`);
+  if (left) {
+    parts.push(
+      `L ${TAB_FRAC} ${0.5 + TAB_HALF}`,
+      `C 0 ${0.5 + TAB_HALF}, 0 ${0.5 - TAB_HALF}, ${TAB_FRAC} ${0.5 - TAB_HALF}`
+    );
+  }
+  parts.push(`L ${TAB_FRAC} ${y0}`, "Z");
+  return parts.join(" ");
+}
+
 export function JigsawGame() {
   const t = useTranslations("games");
   const relT = useTranslations("options.relativeRelationship");
   const locale = useLocale();
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
-  const level = startLevel(detail);
+  const level = resolveAdaptiveLevel(patientId, "jigsaw", startLevel(detail));
   const rate = speechRate(detail);
   const gridSize = clamp(level, 1, 3) + 1; // Level 1 => 2x2, Level 2 => 3x3, Level 3 => 4x4
   const pieceCount = gridSize * gridSize;
+  const boardUnits = 100 * gridSize + 32; // assembled board span in geometry units
 
   const members = useMemo(
     () => (detail?.familyMembers ?? []).filter((m) => m.photoUrl),
@@ -62,9 +114,34 @@ export function JigsawGame() {
   const [peeking, setPeeking] = useState(false);
   const [taps, setTaps] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const startedAt = useRef<string | null>(null);
+  const [startedAt, setStartedAt] = useState<string | null>(null);
+  const [snapping, setSnapping] = useState<number[]>([]);
+  const snapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
+
+  const guard = useSessionGuard({
+    patientId,
+    gameId: "jigsaw",
+    level,
+    startedAt,
+    taps,
+    errorCount: 0,
+  });
 
   const member = members[index] ?? null;
+
+  const clipDefs = useMemo(() => {
+    const defs: { id: string; d: string }[] = [];
+    for (let i = 0; i < pieceCount; i++) {
+      const r = Math.floor(i / gridSize);
+      const c = i % gridSize;
+      defs.push({
+        id: `${uid}-${gridSize}-${r}-${c}`,
+        d: buildPiecePath(gridSize, r, c),
+      });
+    }
+    return defs;
+  }, [gridSize, pieceCount, uid]);
 
   useEffect(() => {
     if (phase === "intro" && members.length) {
@@ -85,7 +162,7 @@ export function JigsawGame() {
       setSelectedPos(null);
       setPeeking(false);
       setTaps(0);
-      startedAt.current = new Date().toISOString();
+      setStartedAt(new Date().toISOString());
       setPhase("play");
       speak(
         `${t("jigsaw.startSpeech", { name: target.name })}`,
@@ -125,7 +202,15 @@ export function JigsawGame() {
     [next[selectedPos], next[pos]] = [next[pos], next[selectedPos]];
     setOrder(next);
     setSelectedPos(null);
-    if (solved(next)) reveal();
+    const nowSolved = solved(next);
+    const snappedNow = [selectedPos, pos].filter((p) => next[p] === p);
+    if (snappedNow.length && !nowSolved) {
+      playCorrect();
+      setSnapping(snappedNow);
+      if (snapTimer.current) clearTimeout(snapTimer.current);
+      snapTimer.current = setTimeout(() => setSnapping([]), 520);
+    }
+    if (nowSolved) reveal();
   }
 
   function revisitLightbox() {
@@ -146,24 +231,29 @@ export function JigsawGame() {
     const isLast = index >= members.length - 1;
     setPhase("done");
     setLightboxOpen(true);
+    guard.markCompleted();
+    const notesText = member.notes?.trim() || t("jigsaw.notesEmpty");
     if (isLast) {
-      if (startedAt.current) {
+      if (startedAt) {
         recordGameSession(patientId, {
           gameId: "jigsaw",
           level,
           outcome: "completed",
           score: members.length,
-          startedAt: startedAt.current,
+          startedAt,
           taps,
         });
       }
-      speak(t("jigsaw.allCompleteSpeech"), locale, rate);
+      speak(`${t("jigsaw.allCompleteSpeech")} ${notesText}`, locale, rate);
     } else {
       const relationLabel = relT.has(member.relation)
         ? relT(member.relation)
         : member.relation;
       speak(
-        t("jigsaw.completeSpeech", { name: member.name, relation: relationLabel }),
+        `${t("jigsaw.completeSpeech", {
+          name: member.name,
+          relation: relationLabel,
+        })} ${notesText}`,
         locale,
         rate
       );
@@ -259,7 +349,10 @@ export function JigsawGame() {
             size="md"
           />
           {photo ? (
-            <div className="relative aspect-square w-full max-w-md overflow-hidden rounded-2xl border-2 border-black bg-surface-muted shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+            <div
+              className="relative aspect-square w-full max-w-md overflow-hidden rounded-2xl border-2 border-black bg-surface-muted shadow-[3px_3px_0px_rgba(0,0,0,1)]"
+              style={{ padding: `${(16 / boardUnits) * 100}%` }}
+            >
               {peeking ? (
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -269,30 +362,48 @@ export function JigsawGame() {
                   </span>
                 </>
               ) : (
-                <div
-                  className="grid h-full w-full gap-1 p-2"
-                  style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
-                  role="group"
-                  aria-label={t("jigsaw.title")}
-                >
-                  {order.map((pieceId, pos) => (
-                    <button
-                      key={`${pieceId}-${pos}`}
-                      onClick={() => onCellTap(pos)}
-                      aria-pressed={selectedPos === pos}
-                      aria-label={t("jigsaw.piece")}
-                      className={`relative overflow-hidden rounded-lg border-2 border-black transition-all duration-150 ${
-                        selectedPos === pos
-                          ? "scale-[1.04] ring-4 ring-marigold"
-                          : "active:scale-95"
-                      }`}
-                      style={{
-                        backgroundImage: `url(${photo})`,
-                        backgroundSize: `${gridSize * 100}% ${gridSize * 100}%`,
-                        backgroundPosition: `${(pieceId % gridSize) * 100}% ${Math.floor(pieceId / gridSize) * 100}%`,
-                      }}
-                    />
-                  ))}
+                <div role="group" aria-label={t("jigsaw.title")} className="absolute inset-0">
+                  <svg width={0} height={0} aria-hidden="true" focusable="false">
+                    <defs>
+                      {clipDefs.map(({ id, d }) => (
+                        <clipPath key={id} id={id} clipPathUnits="objectBoundingBox">
+                          <path d={d} />
+                        </clipPath>
+                      ))}
+                    </defs>
+                  </svg>
+                  {order.map((pieceId, pos) => {
+                    const r = Math.floor(pos / gridSize);
+                    const c = pos % gridSize;
+                    const hr = Math.floor(pieceId / gridSize);
+                    const hc = pieceId % gridSize;
+                    const isSel = selectedPos === pos;
+                    return (
+                      <button
+                        key={`${pieceId}-${pos}`}
+                        onClick={() => onCellTap(pos)}
+                        aria-pressed={isSel}
+                        aria-label={t("jigsaw.piece")}
+                        className={`absolute transition-transform duration-150 ${
+                          snapping.includes(pos) ? "piece-snap" : ""
+                        } ${isSel ? "scale-[1.05]" : "active:scale-95"}`}
+                        style={{
+                          left: `${((c * 100 - 16) / boardUnits) * 100}%`,
+                          top: `${((r * 100 - 16) / boardUnits) * 100}%`,
+                          width: `${(132 / boardUnits) * 100}%`,
+                          height: `${(132 / boardUnits) * 100}%`,
+                          zIndex: (hr + hc) % 2 === 0 ? 2 : 1,
+                          clipPath: `url(#${uid}-${gridSize}-${hr}-${hc})`,
+                          backgroundImage: `url(${photo})`,
+                          backgroundSize: `${((gridSize * 100 * 100) / 132)}% ${((gridSize * 100 * 100) / 132)}%`,
+                          backgroundPosition: `${((16 - hc * 100) / (132 - gridSize * 100)) * 100}% ${((16 - hr * 100) / (132 - gridSize * 100)) * 100}%`,
+                          filter: isSel
+                            ? "drop-shadow(0 0 10px rgba(230,106,0,0.9)) drop-shadow(3px 4px 0 rgba(0,0,0,0.45))"
+                            : "drop-shadow(3px 4px 0 rgba(0,0,0,0.45))",
+                        }}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>

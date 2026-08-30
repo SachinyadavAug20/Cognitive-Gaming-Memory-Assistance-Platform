@@ -553,21 +553,23 @@
       }
     },
     "sorting": {
-      "title": "Daily Object Sorting",
+      "title": "Bazaar Sorting",
       "desc": "Sort things into the right basket",
-      "pick": "Where does this belong?",
-      "morning": "Morning Basket",
-      "evening": "Evening Basket",
+      "intro": "Let us sort the things in the house. Tap an item, then tap the basket where it belongs.",
+      "pickItem": "Tap the item to pick it up.",
+      "pickBasket": "Which basket does this belong in?",
+      "kitchen": "Kitchen Basket",
+      "prayer": "Prayer Room Basket",
       "correctName": "Good! {item} belongs there.",
-      "hint": "Take your time, you can try again.",
+      "wrongSpeech": "Not quite. {item} belongs in the {category} basket. Take your time.",
       "complete": "All sorted! Wonderful!",
       "items": {
-        "medicine": "Medicine Box",
-        "tea": "Tea Cup",
-        "radio": "Radio",
-        "japi": "Japi Hat",
-        "glass": "Water Glass",
-        "pray": "Prayer Beads"
+        "teacup": "Tea Cup",
+        "sugar": "Sugar Jar",
+        "clock": "Clock",
+        "incense": "Incense Sticks",
+        "bell": "Brass Bell",
+        "japi": "Japi Hat"
       }
     },
     "companion": {

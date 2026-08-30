@@ -322,6 +322,17 @@ html {
   animation: confetti-fall 3.4s linear infinite;
 }
 
+/* ── Jigsaw piece snap-in (interlocking pieces landing in their slot) ── */
+@keyframes jigsaw-snap {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.piece-snap {
+  animation: jigsaw-snap 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
 /* ── Gentle wrong-tap shake ── */
 @keyframes gentle-shake {
   0%, 100% { transform: translateX(0); }

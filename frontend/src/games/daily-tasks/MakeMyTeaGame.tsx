@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -11,6 +11,7 @@ import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { playEncourage, playComplete } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { recordGameSession } from "@/lib/telemetry";
+import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 
@@ -55,7 +56,16 @@ export function MakeMyTeaGame() {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [taps, setTaps] = useState(0);
-  const startedAt = useRef<string>(new Date().toISOString());
+  const [startedAt] = useState(() => new Date().toISOString());
+
+  const guard = useSessionGuard({
+    patientId,
+    gameId: "daily-tasks",
+    level,
+    startedAt,
+    taps,
+    errorCount: 0,
+  });
 
   const current = steps[Math.min(progress, steps.length - 1)];
 
@@ -80,12 +90,13 @@ export function MakeMyTeaGame() {
       stopSpeaking();
       playComplete();
       setDone(true);
+      guard.markCompleted();
       recordGameSession(patientId, {
         gameId: "daily-tasks",
         level,
         outcome: "completed",
         score: steps.length,
-        startedAt: startedAt.current,
+        startedAt,
         taps,
       });
       speak(

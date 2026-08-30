@@ -1,0 +1,67 @@
+{
+  "home": {
+    "greeting": "য़ाङ्ग्लो!",
+    "ready": "अमुক तारोंग Springfield!",
+    "subtitle": "CogniCare",
+    "description": "AI মরল নнун-মরল",
+    "nerInitiative": "MDoNER ফগ"
+  },
+  "kiosk": {
+    "title": "CogniCare দা য़ाङ्ग্লो",
+    "subtitle": "अखুনা Health Card ফোং দৌদৌ।",
+    "loading": "ইনা য়েংনা...",
+    "error": {
+      "invalid": "কাৰ্ড ফোং খংদে।",
+      "generic": "সংম দুর্গম লে। ফগ ইনা চেষ্টা দৌ।",
+      "retry": "ফগ QR ক'ড দৌ।"
+    }
+  },
+  "patient": {
+    "listen": "রিংবা",
+    "speaking": "হংনা...",
+    "greeting": "য়োং ফগ্গা, দাদু!",
+    "greetingName": "য়োং ফগ্গা, {name}!",
+    "orientation": "মমা অমানি সিং মরল দিং মরম কোংদৌ।",
+    "heroPrompt": "গম খোদ দৌবা সেই মন্ত্র নক্তা দৌ।",
+    "back": "← দিং ফোং",
+    "backToRoutine": "সিং ফোং",
+    "wellbeing": {
+      "title": "মনন অমা আৰাম",
+      "moodTitle": "মমা য়াং অমানি?",
+      "moodPeaceful": "য়াম",
+      "moodOkay": "ঠিক",
+      "moodCare": "দেখবাল লাগে",
+      "moodThanks": "হংনা দিং, {name}।",
+      "moodFeedback": {
+        "peaceful": "মমা য়াম অমানি দিং মনন দু!",
+        "okay": "ঠিক। অমানি মমাসি দিং, গম খোদ খোন।",
+        "caretaker": "নখোত হং সূচিত দিং। মমা সিং দিং খং।"
+      }
+    }
+  },
+  "games": {
+    "memory": {
+      "title": "মরল মনন",
+      "preview": "মরল মনন দৌবা...",
+      "start": "দৌ",
+      "complete": "মনন দু!"
+    },
+    "sorting": {
+      "title": "ফগ-রাত্তি খোদ",
+      "complete": "মনন দু!"
+    },
+    "wayfinding": {
+      "title": "পথ মনন দৌ",
+      "complete": "মনন দু!"
+    },
+    "dailyTasks": {
+      "title": "মোৰ চাহ",
+      "complete": "মনন দু!"
+    },
+    "companion": {
+      "title": "কথা বন্ধু",
+      "hello": "নমস্কাৰ, {name}!",
+      "chat": "কথা"
+    }
+  }
+}
