@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";

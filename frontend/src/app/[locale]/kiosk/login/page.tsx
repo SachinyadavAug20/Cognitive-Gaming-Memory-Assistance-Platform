@@ -21,14 +21,16 @@ export default function KioskLoginPage() {
   const busyRef = useRef(false);
 
   useEffect(() => {
-    function handleUnhandledRejection(event: PromiseRejectionEvent) {
-      const reason =
-        event.reason instanceof Error ? event.reason : new Error(String(event.reason));
-      const isAbortError =
-        reason.name === "AbortError" ||
-        reason.message.toLowerCase().includes("aborted by the user agent");
-      if (isAbortError) event.preventDefault();
-    }
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason?.message || event.reason?.name || String(event.reason);
+      if (
+        reason.includes("AbortError") ||
+        reason.includes("aborted by the user agent") ||
+        reason.includes("media resource")
+      ) {
+        event.preventDefault();
+      }
+    };
     window.addEventListener("unhandledrejection", handleUnhandledRejection);
     return () => window.removeEventListener("unhandledrejection", handleUnhandledRejection);
   }, []);
@@ -67,11 +69,11 @@ export default function KioskLoginPage() {
 
   return (
     <main className="min-h-screen bg-canvas paper-texture flex flex-col items-center justify-center px-4 py-10">
-      <div className="text-center mb-8 max-w-3xl">
-        <h1 className="font-[family-name:var(--font-serif)] font-bold text-4xl md:text-5xl text-ink leading-tight">
+      <div className="text-center mb-6 max-w-3xl">
+        <h1 className="font-[family-name:var(--font-serif)] font-bold text-3xl md:text-4xl text-ink leading-tight">
           {t("title")}
         </h1>
-        <p className="mt-4 text-2xl md:text-3xl font-bold text-ink-secondary">
+        <p className="mt-2 text-lg md:text-xl font-bold text-ink-secondary">
           {t("subtitle")}
         </p>
       </div>

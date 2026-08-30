@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { QuickAccessLinks } from "@/components/auth/QuickAccessLinks";
+import { KioskLoginSection } from "@/components/auth/KioskLoginSection";
 
 export default function LoginPage() {
   return (
@@ -18,6 +19,21 @@ export default function LoginPage() {
           </Link>
           <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl text-ink mb-1">Welcome Back</h1>
           <p className="text-ink-secondary text-base">Sign in to continue</p>
+        </div>
+
+        {/* QR Kiosk Scanner */}
+        <KioskLoginSection />
+
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t-2 border-border-soft" />
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="px-3 bg-canvas text-ink-secondary font-bold uppercase tracking-wider">
+              or sign in manually
+            </span>
+          </div>
         </div>
 
         <LoginForm />

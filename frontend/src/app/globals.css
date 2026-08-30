@@ -262,3 +262,47 @@ html {
 .lightbox-card {
   animation: lightbox-zoom-in 0.18s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   QR SCANNER — Kiosk scan animations
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Laser line sweep ── */
+@keyframes laser-sweep {
+  0%   { top: 0%; }
+  50%  { top: 100%; }
+  100% { top: 0%; }
+}
+.laser-line {
+  animation: laser-sweep 2.4s ease-in-out infinite;
+}
+
+/* ── Reticle corner glow pulse ── */
+@keyframes reticle-glow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.6)); }
+  50%      { filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)); }
+}
+.reticle-glow {
+  animation: reticle-glow 2s ease-in-out infinite;
+}
+
+/* ── Scan success overlay ── */
+@keyframes scan-success-flash {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+.scan-success-overlay {
+  animation: scan-success-flash 0.4s ease-out forwards;
+}
+
+/* ── Scan success checkmark pop ── */
+@keyframes scan-check-pop {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.scan-check-pop {
+  animation: scan-check-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+  opacity: 0;
+}

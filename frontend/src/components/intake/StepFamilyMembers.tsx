@@ -5,7 +5,7 @@ import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";
 import { SelectChip } from "./SelectChip";
 import { PhotoPicker } from "./PhotoPicker";
-import { useState, useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import type { Relative } from "@/types/intake";
 
 const REL_KEYS = ["daughter", "son", "spouse", "grandchild", "sibling", "friend", "other"] as const;
