@@ -9,7 +9,8 @@ import { Celebration } from "@/components/games/Celebration";
 import { BigButton } from "@/components/ui/BigButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { ScrapbookCard } from "@/components/ui/ScrapbookCard";
-import { playMechanicalClick, playSuccessChime } from "@/lib/sound";
+import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
+import { playPress, playCorrect, playIncorrect, playComplete } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
 import { LOCALE_MAP } from "@/lib/i18n";
@@ -71,6 +72,7 @@ export function WayfindingGame() {
   const [taps, setTaps] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [wiggle, setWiggle] = useState<number | null>(null);
+  const [lightbox, setLightbox] = useState<FamiliarPlaceItem | null>(null);
   const startedAt = useRef<string>(new Date().toISOString());
 
   const exploreStarted = useRef(false);
@@ -103,7 +105,7 @@ export function WayfindingGame() {
   }, []);
 
   function advanceExplore() {
-    playMechanicalClick();
+    playPress();
     setTaps((v) => v + 1);
     const next = currentStep + 1;
     if (next >= route.length) {
@@ -130,7 +132,7 @@ export function WayfindingGame() {
     setTaps((v) => v + 1);
     const correct = options[index].name === route[recallStep].place.name;
     if (correct) {
-      playSuccessChime();
+      playCorrect();
       setScore((s) => s + 1);
       speak(
         `${t("wayfinding.correct")} ${options[index].name}`,
@@ -138,7 +140,7 @@ export function WayfindingGame() {
         rate
       );
     } else {
-      playMechanicalClick();
+      playIncorrect();
       setWiggle(index);
       speak(t("wayfinding.wrong"), locale, rate);
     }
@@ -156,7 +158,7 @@ export function WayfindingGame() {
   }
 
   function finish() {
-    playSuccessChime();
+    playComplete();
     setPhase("done");
     if (startedAt.current) {
       recordGameSession(patientId, {
@@ -249,7 +251,7 @@ export function WayfindingGame() {
               : <strong>{route[currentStep].place.name}</strong>
             </p>
             <AudioPrompt
-              text={`${t("wayfinding.walkTo", {
+              text={`${t("wayfinding.towards", {
                 name: route[currentStep].place.name,
               })} ${
                 route[currentStep].place.description
@@ -263,6 +265,23 @@ export function WayfindingGame() {
               lang={LOCALE_MAP[locale] ?? "en-US"}
               label={t("wayfinding.listenDirections")}
             />
+            {route[currentStep].place.photoUrl ? (
+              <button
+                type="button"
+                onClick={() => setLightbox(route[currentStep].place)}
+                className="btn-tactile relative mx-auto block w-full max-w-md overflow-hidden rounded-2xl border-2 border-black shadow-[3px_3px_0_rgba(0,0,0,1)]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={getMediaUrl(route[currentStep].place.photoUrl) ?? ""}
+                  alt={route[currentStep].place.name}
+                  className="h-52 w-full object-cover"
+                />
+                <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border-2 border-black bg-ink/80 px-4 py-1.5 text-sm font-bold text-white">
+                  🔍 {t("wayfinding.viewPhoto")}
+                </span>
+              </button>
+            ) : null}
             <BigButton variant="terracotta" size="xl" onClick={advanceExplore}>
               {currentStep + 1 < route.length
                 ? t("wayfinding.walkTo", { name: route[currentStep + 1].place.name })
@@ -326,6 +345,19 @@ export function WayfindingGame() {
           </Celebration>
         )}
       </div>
+
+      <MemoryLightbox
+        open={lightbox ? true : false}
+        onClose={() => setLightbox(null)}
+        photoUrl={lightbox?.photoUrl}
+        title={lightbox?.name ?? ""}
+        text={lightbox?.description ?? null}
+        langCode={locale}
+        rate={rate}
+        closeLabel={t("lightbox.close")}
+        listenLabel={t("lightbox.listen")}
+        speakingLabel={t("listening")}
+      />
     </GameShell>
   );
 

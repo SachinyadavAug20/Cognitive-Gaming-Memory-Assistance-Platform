@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { api, getMediaUrl } from "@/lib/api";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
+import { patientLangCode } from "@/lib/i18n";
+import { speechRate } from "@/games/config";
 import { ageFromDob, type PatientDetailRecord } from "@/types";
 
 function getStageBadgeStyle(stage?: string | null) {
@@ -41,6 +44,11 @@ export default function CaregiverPatientDetail() {
   const [patient, setPatient] = useState<PatientDetailRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [lightbox, setLightbox] = useState<{
+    title: string;
+    text?: string | null;
+    photoUrl?: string | null;
+  } | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -434,11 +442,23 @@ export default function CaregiverPatientDetail() {
                       >
                         <div className="flex items-start gap-3">
                           {photo ? (
-                            <img
-                              src={photo}
-                              alt={member.name}
-                              className="w-14 h-14 rounded-xl border-2 border-border object-cover shrink-0 bg-surface-muted"
-                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setLightbox({
+                                  title: `${member.name} • ${member.relation}`,
+                                  text: member.notes,
+                                  photoUrl: member.photoUrl,
+                                })
+                              }
+                              className="btn-tactile shrink-0"
+                            >
+                              <img
+                                src={photo}
+                                alt={member.name}
+                                className="w-14 h-14 rounded-xl border-2 border-border object-cover bg-surface-muted"
+                              />
+                            </button>
                           ) : (
                             <div className="w-14 h-14 rounded-xl border-2 border-border bg-tea/20 text-tea font-bold flex items-center justify-center text-xl shrink-0">
                               {member.name.charAt(0)}
@@ -497,11 +517,23 @@ export default function CaregiverPatientDetail() {
                       >
                         <div className="flex items-start gap-3">
                           {photo ? (
-                            <img
-                              src={photo}
-                              alt={place.name}
-                              className="w-14 h-14 rounded-xl border-2 border-border object-cover shrink-0 bg-surface-muted"
-                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setLightbox({
+                                  title: place.name,
+                                  text: place.description,
+                                  photoUrl: place.photoUrl,
+                                })
+                              }
+                              className="btn-tactile shrink-0"
+                            >
+                              <img
+                                src={photo}
+                                alt={place.name}
+                                className="w-14 h-14 rounded-xl border-2 border-border object-cover bg-surface-muted"
+                              />
+                            </button>
                           ) : (
                             <div className="w-14 h-14 rounded-xl border-2 border-border bg-marigold/20 text-ink font-bold flex items-center justify-center text-2xl shrink-0">
                               {place.emoji || "🏠"}
@@ -688,6 +720,19 @@ export default function CaregiverPatientDetail() {
             </div>
           </>
         )}
+
+      <MemoryLightbox
+        open={lightbox ? true : false}
+        onClose={() => setLightbox(null)}
+        photoUrl={lightbox?.photoUrl}
+        title={lightbox?.title ?? ""}
+        text={lightbox?.text}
+        langCode={patientLangCode(patient?.preferredLanguage ?? null)}
+        rate={speechRate(patient)}
+        closeLabel="Close"
+        listenLabel="Listen to memory"
+        speakingLabel="Speaking..."
+      />
       </div>
     </div>
   );

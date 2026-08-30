@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { KioskScanner } from "@/components/kiosk/KioskScanner";
 import { useAuthStore } from "@/store/useAuthStore";
 import { api, HttpError } from "@/lib/api";
-import { playSuccessChime } from "@/lib/sound";
+import { playScanSuccess } from "@/lib/sound";
 import type { KioskScanResponse } from "@/types/auth";
 
 type ScanStatus = "scanning" | "loading" | "error";
@@ -40,7 +40,7 @@ export default function KioskLoginPage() {
       if (busyRef.current) return;
       busyRef.current = true;
       setStatus("loading");
-      playSuccessChime();
+      playScanSuccess();
 
       api
         .post<KioskScanResponse>("/auth/kiosk/scan", { qrData: text.trim() })

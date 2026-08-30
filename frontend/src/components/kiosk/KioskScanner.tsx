@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
-import { playSuccessChime } from "@/lib/sound";
+import { playScanSuccess } from "@/lib/sound";
 
 interface KioskScannerProps {
   onScan: (text: string) => void;
@@ -119,7 +119,7 @@ export function KioskScanner({ onScan, paused }: KioskScannerProps) {
 
   /* ── Success chime (runs once on pause trigger) ── */
   useEffect(() => {
-    if (paused) playSuccessChime();
+    if (paused) playScanSuccess();
   }, [paused]);
 
   const isScanning = phase === "scanning";

@@ -1,5 +1,7 @@
 import type { ComponentType } from "react";
 import { MemoryMatchGame } from "./memory/MemoryMatchGame";
+import { JigsawGame } from "./jigsaw/JigsawGame";
+import { TimelineGame } from "./timeline/TimelineGame";
 import { WayfindingGame } from "./wayfinding/WayfindingGame";
 import { MakeMyTeaGame } from "./daily-tasks/MakeMyTeaGame";
 import { SortingGame } from "./sorting/SortingGame";
@@ -26,6 +28,15 @@ export const GAMES: GameDef[] = [
     component: MemoryMatchGame,
   },
   {
+    id: "jigsaw",
+    emoji: "🧩",
+    titleKey: "jigsaw.title",
+    descKey: "jigsaw.desc",
+    accent: "bg-tea",
+    recommended: true,
+    component: JigsawGame,
+  },
+  {
     id: "wayfinding",
     emoji: "🗺️",
     titleKey: "wayfinding.title",
@@ -33,6 +44,15 @@ export const GAMES: GameDef[] = [
     accent: "bg-tea",
     recommended: true,
     component: WayfindingGame,
+  },
+  {
+    id: "timeline",
+    emoji: "📅",
+    titleKey: "timeline.title",
+    descKey: "timeline.desc",
+    accent: "bg-tea",
+    recommended: true,
+    component: TimelineGame,
   },
   {
     id: "daily-tasks",

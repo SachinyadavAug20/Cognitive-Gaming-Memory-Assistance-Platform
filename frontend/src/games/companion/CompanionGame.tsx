@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
-import { playMechanicalClick, playSuccessChime } from "@/lib/sound";
+import { playPress, playEncourage } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate } from "@/games/config";
@@ -33,20 +33,20 @@ export function CompanionGame() {
   useEffect(() => {
     if (detail) {
       setMessage(t("companion.hello", { name: detail.name }));
-      playSuccessChime();
+      // playEncourage only fires if sounds are enabled and a gesture has occurred — safe
+      playEncourage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detail]);
 
   function chat() {
-    playMechanicalClick();
+    playPress();
     setWaving(true);
     const pool = prompts.length ? prompts : [t("companion.hello", { name: detail?.name ?? "" })];
     const nextIndex = tapCount % pool.length;
     const line = pool[nextIndex];
     setMessage(line);
     setTapCount((c) => c + 1);
-    playSuccessChime();
     speak(line, locale, rate);
     window.setTimeout(() => setWaving(false), 800);
   }

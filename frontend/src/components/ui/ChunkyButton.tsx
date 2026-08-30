@@ -1,7 +1,7 @@
 "use client";
 
 import { type ButtonHTMLAttributes, type ReactNode, useCallback } from "react";
-import { playMechanicalClick } from "@/lib/sound";
+import { playPress } from "@/lib/sound";
 
 interface ChunkyButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -35,7 +35,7 @@ export function ChunkyButton({
 }: ChunkyButtonProps) {
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound) playMechanicalClick();
+      if (sound) playPress();
       onClick?.(e);
     },
     [onClick, sound]

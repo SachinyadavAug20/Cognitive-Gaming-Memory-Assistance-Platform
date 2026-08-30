@@ -58,7 +58,65 @@
     "back": "← Back to Home",
     "audio": {
       "greeting": "Good Morning, Dadu! It is Wednesday, 26th August. You have 2 tasks remaining today.",
-      "greetingName": "Good Morning, {name}! It is Wednesday, 26th August. You have 2 tasks remaining today."
+      "greetingName": "Good Morning, {name}! It is Wednesday, 26th August. You have 2 tasks remaining today.",
+      "todayIs": "Today is {date}.",
+      "close": "Close"
+    },
+    "orientation": "You are safe at home with your family today.",
+    "gamesTitle": "Daily Brain Games",
+    "speaking": "Speaking...",
+    "heroPrompt": "Tap any game below to start.",
+    "cards": {
+      "memory": {
+        "title": "Family Memory Match",
+        "desc": "Play with photos of {count} family members",
+        "descZero": "Play with your family's photos"
+      },
+"jigsaw": {
+        "title": "Family Face Puzzle",
+        "desc": "Put the pieces together to make a face"
+      },
+      "timeline": {
+        "title": "My Life Story",
+        "desc": "Put your life events in order"
+      },
+      "wayfinding": {
+        "title": "Village Wayfinding",
+        "desc": "Follow familiar routes around your village"
+      },
+      "dailyTasks": {
+        "title": "Make My Tea",
+        "desc": "Prepare a warm cup of morning tea step-by-step"
+      },
+      "exploreAll": "Explore All Games"
+    },
+    "wellbeing": {
+      "title": "Reminiscence & Comfort",
+      "familyTitle": "Family Memories",
+      "familyEmpty": "Your family's photos will appear here soon.",
+      "memoryTitle": "Memory of the Day",
+      "memoryListen": "Listen to memory",
+      "memoryAnother": "Show another memory",
+      "memoryView": "View memory",
+      "memoryEmpty": "A gentle memory will appear here soon.",
+      "calmTitle": "Calming Corner",
+      "calmHint": "Sounds and music that make you feel at home.",
+      "calmTriggers": "When you need comfort, think of {triggers}.",
+      "calmMusic": "Your favourite tunes: {music}.",
+      "calmFallbackTriggers": "warm tea in the morning",
+      "calmPlay": "Play soothing tune",
+      "calmListen": "Listen to comfort",
+      "moodTitle": "How are you feeling today?",
+      "moodPeaceful": "Peaceful",
+      "moodOkay": "Okay",
+      "moodCare": "Need Caretaker",
+      "moodThanks": "Thank you for sharing, {name}.",
+      "moodDear": "friend",
+      "moodFeedback": {
+        "peaceful": "We are glad you are feeling peaceful today!",
+        "okay": "That is okay. I am here with you, and we can play a game together.",
+        "caretaker": "Your caregiver has been notified. Someone is right here to assist you."
+      }
     },
     "exercise": {
       "daily": {
@@ -380,10 +438,15 @@
     "backToRoutine": "← Back to Daily Routine",
     "backToHub": "← Games Hub",
     "listen": "Listen",
+    "listening": "Speaking...",
     "recommended": "Recommended",
     "level": "Level {level}",
     "plays": "Played {count}×",
     "score": "Score: {score}",
+    "lightbox": {
+      "close": "Close",
+      "listen": "Listen to memory"
+    },
     "loading": "Preparing your game...",
     "loadError": "Something went wrong while getting your details.",
     "retry": "Try again",
@@ -394,16 +457,57 @@
     "memory": {
       "title": "Family Memory Match",
       "desc": "Match your family's faces",
-      "preview": "Look at the cards carefully...",
+      "preview": "Look at these cards carefully and remember the faces of your family.",
       "previewNote": "Try to remember each face.",
       "start": "I'm ready!",
       "pairs": "Find the matching pairs.",
-      "matched": "That's your {relation} {name}!",
+      "matched": "This is {name}, your {relation}.",
       "complete": "You matched everyone! Wonderful!",
       "matchedCount": "Matched {matched} of {total}",
       "hintShow": "Show hints",
       "hintHide": "Hide hints",
       "cardHidden": "Hidden card"
+    },
+    "jigsaw": {
+      "title": "Family Face Puzzle",
+      "desc": "Put the pieces together to make a face",
+      "pick": "Whose face shall we put together?",
+      "pickSpeech": "Pick a photo to make a picture together. Tapping a photo is the start.",
+      "startSpeech": "Let's make this picture of {name} together.",
+      "guidance": "Complete the picture of {name}.",
+      "guidanceSpeech": "Tap a piece, then tap the place where it fits. I am right here to help.",
+      "piece": "Puzzle piece",
+      "peek": "Peek",
+      "playing": "Back to puzzle",
+      "peeking": "Peeking at the picture...",
+      "tapPrompt": "Tap one piece, then tap the place it belongs.",
+      "complete": "Wonderful! {name}'s picture is ready!",
+      "completeSpeech": "Wonderful! That is {name}, your {relation}.",
+      "playAgain": "Play again",
+      "noPhoto": "Add family photos in the caregiver portal to play this game.",
+      "intro": "Let's put your family's pictures together, one face at a time. We will make {count} pictures.",
+      "start": "Start",
+      "face": "Face {current} of {total}: {name}",
+      "nextCta": "Next person: {name}",
+      "allComplete": "You made all your family's faces! Wonderful!",
+      "allCompleteSpeech": "Every face in your family is here with you today. What a beautiful story!",
+      "notesEmpty": "A memory your family wrote for you.",
+      "viewPicture": "View picture"
+    },
+    "timeline": {
+      "title": "My Life Story",
+      "desc": "Put your life events in order",
+      "intro": "Here are a few moments from your life. Let us put them in the order they happened.",
+      "introSpeech": "Here are a few moments from your life. Let us put them in the order they happened.",
+      "prompt": "Which happened next? {current} of {total}",
+      "correct": "That's right! {year}: {event}.",
+      "wrong": "A gentle hint: {event} happened later. Try another one.",
+      "wrongSpeech": "That one happened later in your story. Take your time and try another.",
+      "complete": "You told your life story in order! Wonderful!",
+      "completeSpeech": "From the first memory to the last, your story is beautiful:",
+      "storySoFar": "Your story so far",
+      "longAgo": "long ago",
+      "noData": "Add life events in the caregiver portal to play this game."
     },
     "wayfinding": {
       "title": "Village Wayfinding",
@@ -411,6 +515,7 @@
       "explore": "Let's walk this route...",
       "step": "Step {current} of {total}",
       "walkTo": "Walk to {name}",
+      "towards": "Walk towards {name}.",
       "then": "then to",
       "arrive": "You arrive home!",
       "listenDirections": "Listen to directions",
@@ -420,15 +525,25 @@
       "recallDesc": "After {prev}, where do we go?",
       "correct": "Correct! You remembered!",
       "wrong": "Take your time, you can try again.",
+      "viewPhoto": "View photo",
       "complete": "You reached home! Wonderful!"
     },
     "dailyTasks": {
-      "title": "Make My Tea",
-      "desc": "Brew a cup of tea, step by step",
+      "title": "Make Lal Saah",
+      "desc": "Make your favourite warm red tea, step by step",
+      "intro": "Today we will make something you love: {activity}. Let's go step by step.",
+      "defaultJoy": "a warm cup of Lal Saah tea",
       "step": "Step {current} of {total}",
-      "tap": "Tap the {item}",
-      "complete": "Your tea is ready! Great job!",
+      "complete": "Your Lal Saah is ready! Great job!",
       "ready": "Time to enjoy it!",
+      "completeSpeech": "Your {activity} is ready. Enjoy every sip!",
+      "actions": {
+        "water": "Boil the water",
+        "leaves": "Add tea leaves",
+        "milk": "Add a little milk",
+        "sugar": "Add sugar",
+        "cup": "Pour the tea into the cup"
+      },
       "items": {
         "cup": "Tea Cup",
         "water": "Water",

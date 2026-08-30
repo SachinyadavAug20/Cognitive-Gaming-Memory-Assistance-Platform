@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
-import { playMechanicalClick, playSuccessChime } from "@/lib/sound";
+import { playCorrect, playIncorrect, playComplete } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { recordGameSession } from "@/lib/telemetry";
 import { usePatientDetail } from "@/games/usePatientDetail";
@@ -56,7 +56,7 @@ export function SortingGame() {
     if (!current || done) return;
     setTaps((v) => v + 1);
     if (morning === current.morning) {
-      playSuccessChime();
+      playCorrect();
       setScore((s) => s + 1);
       speak(t("sorting.correctName", { item: t(`sorting.items.${current.key}`) }), locale, rate);
       if (index + 1 >= queue.length) {
@@ -65,7 +65,7 @@ export function SortingGame() {
         setIndex((i) => i + 1);
       }
     } else {
-      playMechanicalClick();
+      playIncorrect();
       setWrong(true);
       speak(t("sorting.hint"), locale, rate);
       window.setTimeout(() => setWrong(false), 700);
@@ -73,7 +73,7 @@ export function SortingGame() {
   }
 
   function finish() {
-    playSuccessChime();
+    playComplete();
     setDone(true);
     recordGameSession(patientId, {
       gameId: "sorting",

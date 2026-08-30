@@ -8,7 +8,7 @@ import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { playMechanicalClick, playSuccessChime } from "@/lib/sound";
+import { playPress, playCorrect, playComplete } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
 import { recordGameSession } from "@/lib/telemetry";
@@ -105,14 +105,14 @@ export function MemoryMatchGame() {
 
   function startPlay() {
     stopSpeaking();
-    playMechanicalClick();
+    playPress();
     setPhase("play");
     startedAt.current = new Date().toISOString();
   }
 
   const finish = useCallback(() => {
     stopSpeaking();
-    playSuccessChime();
+    playComplete();
     setPhase("done");
     if (startedAt.current) {
       recordGameSession(patientId, {
@@ -136,7 +136,7 @@ export function MemoryMatchGame() {
     if (locked || phase !== "play") return;
     if (matched.has(cards[index].member.id)) return;
     if (flipped.includes(index)) return;
-    playMechanicalClick();
+    playPress();
     setTaps((v) => v + 1);
 
     const next = [...flipped, index];
@@ -146,7 +146,7 @@ export function MemoryMatchGame() {
       const [a, b] = next;
       if (cards[a].member.id === cards[b].member.id) {
         window.setTimeout(() => {
-          playSuccessChime();
+          playCorrect();
           const member = cards[a].member;
           const relationLabel = relT.has(member.relation)
             ? relT(member.relation)
@@ -258,7 +258,7 @@ export function MemoryMatchGame() {
           {showHints && (
             <button
               onClick={() => {
-                playMechanicalClick();
+                playPress();
                 setHintOn((v) => !v);
               }}
               className="rounded-xl border-2 border-border bg-surface px-4 py-2 font-bold text-ink"

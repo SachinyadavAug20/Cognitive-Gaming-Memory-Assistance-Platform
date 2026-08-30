@@ -7,6 +7,7 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { AudioToggle } from "@/components/ui/AudioToggle";
 import type { PatientSummary } from "@/types";
 
 export function CaregiverContent() {
@@ -53,6 +54,7 @@ export function CaregiverContent() {
             <p className="text-ink-inverse/60 text-xs mt-0.5">{t("subtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
+            <AudioToggle />
             <Link href="/caregiver/add-patient">
               <ChunkyButton variant="marigold" size="xl">
                 {t("addPatient")}
