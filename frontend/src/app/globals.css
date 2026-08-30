@@ -306,3 +306,30 @@ html {
   animation: scan-check-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
   opacity: 0;
 }
+
+/* ── Game completion confetti ── */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-12px) rotate(0deg); }
+  100% { transform: translateY(115vh) rotate(720deg); }
+}
+.confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  opacity: 0.9;
+  animation: confetti-fall 3.4s linear infinite;
+}
+
+/* ── Gentle wrong-tap shake ── */
+@keyframes gentle-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+.animate-shake {
+  animation: gentle-shake 0.5s ease-in-out infinite;
+}

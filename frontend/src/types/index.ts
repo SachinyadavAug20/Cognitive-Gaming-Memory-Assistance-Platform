@@ -234,6 +234,7 @@ export interface PatientDetailRecord {
   preferredLanguage: string | null;
   culturalBackground: string | null;
   joyTriggers: string | null;
+  photoUrl?: string | null;
   createdAt: string | null;
   lifeStory: LifeStoryData | null;
   medicalProfile: MedicalProfileData | null;

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { ROUTINE } from "@/data/homeData";
-import { Navbar } from "@/components/layout/Navbar";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { PortalCard } from "@/components/home/PortalCard";
 import { RoutineItem } from "@/components/home/RoutineItem";
 import { FooterBar } from "@/components/home/FooterBar";
@@ -33,7 +33,7 @@ export default function Home() {
 
   return (
     <div className="min-h-[100vh] flex flex-col md:overflow-hidden">
-      <Navbar />
+      <AppHeader />
 
       <main className="flex-1 px-4 py-3 md:px-6 md:py-3 overflow-y-auto md:overflow-y-hidden">
         <div className="max-w-6xl mx-auto space-y-3">

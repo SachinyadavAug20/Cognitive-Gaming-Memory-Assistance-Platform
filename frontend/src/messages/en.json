@@ -44,11 +44,21 @@
   },
   "patient": {
     "greeting": "Good Morning, Dadu!",
+    "greetingName": "Good Morning, {name}!",
     "date": "Wednesday, 26 August",
     "schedule": "Today's Schedule",
+    "listen": "Listen",
+    "waterToday": "Water Today",
+    "moreGames": {
+      "label": "More Games",
+      "title": "Games & Activities Hub",
+      "desc": "Daily tasks, sorting and a chatty companion.",
+      "cta": "Open Games Hub"
+    },
     "back": "← Back to Home",
     "audio": {
-      "greeting": "Good Morning, Dadu! It is Wednesday, 26th August. You have 2 tasks remaining today."
+      "greeting": "Good Morning, Dadu! It is Wednesday, 26th August. You have 2 tasks remaining today.",
+      "greetingName": "Good Morning, {name}! It is Wednesday, 26th August. You have 2 tasks remaining today."
     },
     "exercise": {
       "daily": {
@@ -362,6 +372,103 @@
       "label": "Health Access Card",
       "hint": "Scan the QR to sign in securely",
       "footer": "QR-Only Passkey"
+    }
+  },
+  "games": {
+    "title": "Games Hub",
+    "subtitle": "Gentle games to keep your mind and daily routine strong.",
+    "backToRoutine": "← Back to Daily Routine",
+    "backToHub": "← Games Hub",
+    "listen": "Listen",
+    "recommended": "Recommended",
+    "level": "Level {level}",
+    "plays": "Played {count}×",
+    "score": "Score: {score}",
+    "loading": "Preparing your game...",
+    "loadError": "Something went wrong while getting your details.",
+    "retry": "Try again",
+    "notFound": {
+      "title": "Coming Soon",
+      "desc": "This game is being prepared. Try another one!"
+    },
+    "memory": {
+      "title": "Family Memory Match",
+      "desc": "Match your family's faces",
+      "preview": "Look at the cards carefully...",
+      "previewNote": "Try to remember each face.",
+      "start": "I'm ready!",
+      "pairs": "Find the matching pairs.",
+      "matched": "That's your {relation} {name}!",
+      "complete": "You matched everyone! Wonderful!",
+      "matchedCount": "Matched {matched} of {total}",
+      "hintShow": "Show hints",
+      "hintHide": "Hide hints",
+      "cardHidden": "Hidden card"
+    },
+    "wayfinding": {
+      "title": "Village Wayfinding",
+      "desc": "Walk home through familiar places",
+      "explore": "Let's walk this route...",
+      "step": "Step {current} of {total}",
+      "walkTo": "Walk to {name}",
+      "then": "then to",
+      "arrive": "You arrive home!",
+      "listenDirections": "Listen to directions",
+      "reached": "I remember the way!",
+      "recallStart": "Now, where do we go next?",
+      "recallLabel": "Where do we go next?",
+      "recallDesc": "After {prev}, where do we go?",
+      "correct": "Correct! You remembered!",
+      "wrong": "Take your time, you can try again.",
+      "complete": "You reached home! Wonderful!"
+    },
+    "dailyTasks": {
+      "title": "Make My Tea",
+      "desc": "Brew a cup of tea, step by step",
+      "step": "Step {current} of {total}",
+      "tap": "Tap the {item}",
+      "complete": "Your tea is ready! Great job!",
+      "ready": "Time to enjoy it!",
+      "items": {
+        "cup": "Tea Cup",
+        "water": "Water",
+        "leaves": "Tea Leaves",
+        "milk": "Milk",
+        "sugar": "Sugar"
+      }
+    },
+    "sorting": {
+      "title": "Daily Object Sorting",
+      "desc": "Sort things into the right basket",
+      "pick": "Where does this belong?",
+      "morning": "Morning Basket",
+      "evening": "Evening Basket",
+      "correctName": "Good! {item} belongs there.",
+      "hint": "Take your time, you can try again.",
+      "complete": "All sorted! Wonderful!",
+      "items": {
+        "medicine": "Medicine Box",
+        "tea": "Tea Cup",
+        "radio": "Radio",
+        "japi": "Japi Hat",
+        "glass": "Water Glass",
+        "pray": "Prayer Beads"
+      }
+    },
+    "companion": {
+      "title": "My Companion",
+      "desc": "Say hello and chat",
+      "hello": "Hello {name}! Tap me and say hello!",
+      "wave": "Say hello anytime",
+      "tapMe": "Tap me to chat",
+      "chat": "Chat with me",
+      "games": "Play a game",
+      "prompts": [
+        "You are doing wonderfully!",
+        "That made me smile!",
+        "Let's play again soon!",
+        "You are my favourite person today!"
+      ]
     }
   }
 }

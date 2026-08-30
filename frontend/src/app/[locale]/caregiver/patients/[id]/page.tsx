@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { api, getMediaUrl } from "@/lib/api";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { ageFromDob, type PatientDetailRecord } from "@/types";
 
 function getStageBadgeStyle(stage?: string | null) {
@@ -90,6 +91,7 @@ export default function CaregiverPatientDetail() {
 
   return (
     <div className="min-h-screen pb-16 bg-canvas paper-texture">
+      <AppHeader />
       {/* Header Banner */}
       <div className="bg-ink border-b-4 border-border px-4 py-6 md:px-8">
         <div className="max-w-6xl mx-auto">

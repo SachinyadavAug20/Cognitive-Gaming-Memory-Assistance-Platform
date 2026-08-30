@@ -6,6 +6,7 @@ import { PatientCard } from "@/components/caregiver/PatientCard";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api";
+import { AppHeader } from "@/components/layout/AppHeader";
 import type { PatientSummary } from "@/types";
 
 export function CaregiverContent() {
@@ -42,6 +43,7 @@ export function CaregiverContent() {
 
   return (
     <>
+      <AppHeader />
       <div className="bg-ink border-b-4 border-border px-4 py-2.5 md:px-6">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div>
