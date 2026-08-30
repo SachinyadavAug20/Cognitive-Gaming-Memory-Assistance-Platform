@@ -567,3 +567,53 @@ export function playCalmTone(): void {
     playNote(freq, now + i * 0.5, 1.8, 0.1);
   });
 }
+
+/**
+ * Reminiscence melody for the Life Story Journey game — a slow, floating
+ * pentatonic phrase over a low drone, evoking the gentle cadence of a
+ * traditional Assamese folk air (in the spirit of Dr. Bhupen Hazarika).
+ * Low-mid register, soft sine/triangle waves, long notes — soothing and
+ * non-startling for elderly listeners. Offline-safe, no audio assets.
+ */
+export function playLifeSong(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(220, now, 7.5, 0.05, "sine");            // A3 warm drone
+  playNote(440, now, 1.8, 0.11, "sine");            // A4
+  playNote(523.25, now + 1.1, 1.5, 0.09, "triangle"); // C5
+  playNote(587.33, now + 2.0, 1.4, 0.11, "triangle");  // D5
+  playNote(659.25, now + 2.9, 1.7, 0.11, "triangle");  // E5
+  playNote(587.33, now + 4.1, 1.3, 0.08, "triangle");
+  playNote(523.25, now + 5.1, 2.6, 0.09, "sine");   // long gentle falling rest
+}
+
+/** Landmark Arrival Chime — Warm resonant church/temple harmonic bell */
+export function playLandmarkChime(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  playNote(523.25, now, 1.8, 0.15, "sine");         // C5 fundamental
+  playNote(1046.5, now, 1.2, 0.08, "triangle");     // C6 octave
+  playNote(1567.98, now + 0.05, 0.9, 0.04, "sine"); // G6 harmonic
+}
+
+/** Footstep Tap — Soft, low-frequency organic thud for path walking */
+export function playStepSound(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(120, now, 0.08, 0.12, "sine");
+  playNote(85, now + 0.02, 0.06, 0.08, "sine");
+}
+
+/** Whispering Mountain Breeze — Gentle filtered whoosh for scaffolding hint */
+export function playPineBreeze(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_masterGain) return;
+  const now = ctx.currentTime;
+  playNote(392.0, now, 0.8, 0.08, "triangle");       // G4
+  playNote(587.33, now + 0.15, 0.9, 0.09, "sine");   // D5
+  playNote(783.99, now + 0.35, 1.2, 0.06, "sine");   // G5
+}
+

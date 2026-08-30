@@ -333,6 +333,24 @@ html {
   transform-origin: center;
 }
 
+/* ── Life Story Journey: gentle bloom of the revealed memory ── */
+@keyframes journey-reveal {
+  from { opacity: 0; transform: scale(0.86) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.journey-reveal {
+  animation: journey-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Life Story Journey: floating music note invite ── */
+@keyframes float-note {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+.float-note {
+  animation: float-note 2.8s ease-in-out infinite;
+}
+
 /* ── Gentle wrong-tap shake ── */
 @keyframes gentle-shake {
   0%, 100% { transform: translateX(0); }

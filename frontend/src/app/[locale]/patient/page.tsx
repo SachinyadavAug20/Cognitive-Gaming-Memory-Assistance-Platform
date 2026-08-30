@@ -92,12 +92,6 @@ export default function PatientHome() {
   const avatarPhoto = detail ? getMediaUrl(detail.photoUrl) : null;
   const avatarInitials = patientName ? initialsFrom(patientName) : "";
 
-  const memberCount = detail?.familyMembers?.length ?? 0;
-  const memoryDesc =
-    memberCount > 0
-      ? t("cards.memory.desc", { count: String(memberCount) })
-      : t("cards.memory.descZero");
-
   const joyTriggers =
     detail?.joyTriggers?.trim() || t("wellbeing.calmFallbackTriggers");
   const favoriteMusic = detail?.lifeStory?.favoriteMusic?.trim();
@@ -204,48 +198,37 @@ export default function PatientHome() {
           >
             <span className="text-2xl">🧠</span> {t("gamesTitle")}
           </h2>
-          <div className="mt-3 grid gap-4 md:grid-cols-2">
-            <GameCard
-              href="/patient/games/memory"
-              emoji="🧩"
-              accent="bg-tea-light"
-              title={t("cards.memory.title")}
-              desc={memoryDesc}
-            />
-            <GameCard
-              href="/patient/games/wayfinding"
-              emoji="🗺️"
-              accent="bg-marigold-light"
-              title={t("cards.wayfinding.title")}
-              desc={t("cards.wayfinding.desc")}
-            />
-            <GameCard
-              href="/patient/games/jigsaw"
-              emoji="🧩"
-              accent="bg-tea-light"
-              title={t("cards.jigsaw.title")}
-              desc={t("cards.jigsaw.desc")}
-            />
-            <GameCard
-              href="/patient/games/timeline"
-              emoji="📅"
-              accent="bg-marigold-light"
-              title={t("cards.timeline.title")}
-              desc={t("cards.timeline.desc")}
-            />
-            <GameCard
-              href="/patient/games/daily-tasks"
-              emoji="🍵"
-              accent="bg-terracotta-light"
-              title={t("cards.dailyTasks.title")}
-              desc={t("cards.dailyTasks.desc")}
-            />
+          <div className="mt-3">
             <Link
-              href="/patient/games"
-              className={`${CARD} btn-tactile flex min-h-[88px] items-center justify-center gap-3 rounded-2xl border-2 border-black bg-terracotta px-6 text-xl font-extrabold text-white`}
+              href="/patient/games/jigsaw"
+              className={`${CARD} btn-tactile group flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border-3 border-black bg-tea p-5 text-white shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-[1.01]`}
             >
-              <span className="text-2xl">🎮</span>
-              {t("cards.exploreAll")}
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 text-4xl shadow-sm">
+                🧩
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-2xl font-black tracking-tight">
+                    {t("cards.jigsaw.title")}
+                  </span>
+                  <span className="rounded-full bg-marigold px-2.5 py-0.5 text-xs font-black uppercase tracking-wide text-white shadow-sm">
+                    ⭐ Active CDTx Module
+                  </span>
+                </div>
+                <p className="mt-1 text-base font-semibold text-white/90">
+                  {t("cards.jigsaw.desc")}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-white/80">
+                  <span className="rounded-md bg-black/20 px-2 py-0.5">2×2 / 3×3 / 4×4 Adaptive</span>
+                  <span>•</span>
+                  <span className="rounded-md bg-black/20 px-2 py-0.5">Family & Landmark Photos</span>
+                  <span>•</span>
+                  <span className="rounded-md bg-black/20 px-2 py-0.5">Voice Guided</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-center rounded-xl border-2 border-white bg-white px-5 py-3 text-lg font-black text-tea shadow-[2px_2px_0px_rgba(0,0,0,0.4)] group-hover:bg-surface-muted">
+                Play Now →
+              </div>
             </Link>
           </div>
         </section>
@@ -399,39 +382,6 @@ export default function PatientHome() {
   );
 }
 
-interface GameCardProps {
-  href: string;
-  emoji: string;
-  accent: string;
-  title: string;
-  desc: string;
-}
-
-function GameCard({ href, emoji, accent, title, desc }: GameCardProps) {
-  return (
-    <Link
-      href={href}
-      className={`${CARD} btn-tactile group flex min-h-[112px] items-center gap-4 rounded-2xl bg-surface p-4`}
-    >
-      <div
-        className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-black text-3xl ${accent}`}
-      >
-        {emoji}
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="text-lg font-extrabold text-ink leading-tight">
-          {title}
-        </div>
-        <div className="mt-1 text-sm font-semibold text-ink-secondary leading-snug">
-          {desc}
-        </div>
-      </div>
-      <span className="text-2xl text-terracotta transition-transform group-hover:translate-x-1">
-        →
-      </span>
-    </Link>
-  );
-}
 
 interface SpeakButtonProps {
   text: string;

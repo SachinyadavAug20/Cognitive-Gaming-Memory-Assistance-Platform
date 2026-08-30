@@ -31,7 +31,7 @@ export function RoutineItem({ item }: RoutineItemProps) {
       )}
       {item.status === "due" && (
         <span className="px-2.5 py-1 rounded-full bg-marigold-light border-2 border-marigold text-marigold text-xs font-bold pulse-gentle">
-          NOW
+          {t("now")}
         </span>
       )}
     </div>

@@ -6,9 +6,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
-import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { playCorrect, playTapFeedback } from "@/lib/sound";
+import { ChunkyButton } from "@/components/ui/ChunkyButton";
+import { playCorrect, playLifeSong, playPress, playTapFeedback } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
 import { recordGameSession } from "@/lib/telemetry";
@@ -22,8 +22,20 @@ function yearValue(event: LifeEventItem): number {
   return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER;
 }
 
-function eventLabel(event: LifeEventItem): string {
-  return event.year ? `${event.year}: ${event.event}` : event.event;
+function shuffle<T>(list: T[]): T[] {
+  const out = [...list];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+interface Choice {
+  key: string;
+  text: string;
+  emoji: string;
+  isCorrect: boolean;
 }
 
 function GameShell({
@@ -48,6 +60,16 @@ function GameShell({
   );
 }
 
+const GENERIC_CARD_KEYS = ["one", "two", "three", "four", "five"];
+const GENERIC_EMOJI = ["🫶", "🌅", "🍵", "🎶", "🏡"];
+
+/**
+ * Life Story Journey — an Errorless-Learning autobiographical timeline.
+ * The patient walks chronologically through their own life events. Wrong taps
+ * are never penalised: the tapped card simply fades away and a soft voice
+ * guides onward ("Let's look at the other memories"). Choosing the right card
+ * blooms it into a warm, multisensory recollection with a gentle melody.
+ */
 export function TimelineGame() {
   const t = useTranslations("games");
   const locale = useLocale();
@@ -56,19 +78,33 @@ export function TimelineGame() {
   const level = startLevel(detail);
   const rate = speechRate(detail);
 
-  const ordered = useMemo<LifeEventItem[]>(() => {
+  const journey = useMemo<LifeEventItem[]>(() => {
     const events = detail?.lifeStory?.lifeEvents ?? [];
     return [...events]
       .sort((a, b) => yearValue(a) - yearValue(b) || a.event.localeCompare(b.event))
-      .slice(0, 3);
+      .slice(0, 6);
   }, [detail]);
 
-  const [phase, setPhase] = useState<"play" | "done">("play");
-  const [completedCount, setCompletedCount] = useState(0);
-  const [hint, setHint] = useState<string | null>(null);
+  const occupation = detail?.lifeStory?.occupation ?? "";
+  const favoriteMusic = detail?.lifeStory?.favoriteMusic ?? "";
+
+  const introSpeech = useMemo(() => {
+    const personal = [
+      occupation ? t("timeline.occupation", { occupation }) : "",
+      favoriteMusic ? t("timeline.favoriteMusic", { favoriteMusic }) : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return [t("timeline.introSpeech"), personal].filter(Boolean).join(" ");
+  }, [occupation, favoriteMusic, t]);
+
+  const [phase, setPhase] = useState<"intro" | "play" | "done">("intro");
+  const [step, setStep] = useState(0);
+  const [choices, setChoices] = useState<Choice[]>([]);
+  const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);
+  const [revealed, setRevealed] = useState(false);
   const [taps, setTaps] = useState(0);
-  const [errorCount, setErrorCount] = useState(0);
-  const [lightbox, setLightbox] = useState<{ event: LifeEventItem } | null>(null);
+  const [fades, setFades] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
   const guard = useSessionGuard({
@@ -77,48 +113,102 @@ export function TimelineGame() {
     level,
     startedAt,
     taps,
-    errorCount,
+    errorCount: fades,
   });
 
   useEffect(() => {
-    if (phase === "play" && ordered.length) {
-      speak(t("timeline.intro"), locale, rate);
+    if (phase === "intro" && journey.length) {
+      speak(introSpeech, locale, rate);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 
   useEffect(() => () => stopSpeaking(), []);
 
-  const onPick = (event: LifeEventItem) => {
-    if (phase !== "play") return;
+  const currentEvent = journey[step] ?? null;
+  const currentYear = currentEvent?.year || t("timeline.longAgo");
+
+  function promptSpeechFor(year?: string): string {
+    return year
+      ? t("timeline.promptSpeech", { year })
+      : t("timeline.promptSpeechLongAgo");
+  }
+
+  function prepareRound(index: number) {
+    const correct = journey[index];
+    if (!correct) return;
+    const others = journey.filter((_, k) => k !== index);
+    const pool: Choice[] = others.map((ev, i) => ({
+      key: `event:${ev.event}:${i}`,
+      text: ev.event,
+      emoji: GENERIC_EMOJI[i % GENERIC_EMOJI.length] ?? "🕰️",
+      isCorrect: false,
+    }));
+    let gi = 0;
+    while (pool.length < 2) {
+      pool.push({
+        key: `generic:${gi}`,
+        text: t(`timeline.generic.${GENERIC_CARD_KEYS[gi % GENERIC_CARD_KEYS.length]}`),
+        emoji: GENERIC_EMOJI[gi % GENERIC_EMOJI.length] ?? "🫶",
+        isCorrect: false,
+      });
+      gi++;
+    }
+    const placed = shuffle(pool);
+    placed.splice(Math.floor(Math.random() * (placed.length + 1)), 0, {
+      key: `correct:${correct.year}:${correct.event}`,
+      text: correct.event,
+      emoji: "🧩",
+      isCorrect: true,
+    });
+    setChoices(placed);
+    setHiddenKeys([]);
+    setRevealed(false);
+    speak(promptSpeechFor(correct.year), locale, rate);
+  }
+
+  function begin() {
+    if (!journey.length) return;
+    stopSpeaking();
+    playPress();
+    setStep(0);
+    setStartedAt(new Date().toISOString());
+    setPhase("play");
+    prepareRound(0);
+  }
+
+  function onPick(choice: Choice) {
+    if (phase !== "play" || revealed) return;
     setTaps((v) => v + 1);
-    if (!startedAt) setStartedAt(new Date().toISOString());
-    const next = ordered[completedCount];
-    if (event.event === next.event) {
+    if (choice.isCorrect) {
       playCorrect();
-      setHint(null);
-      const count = completedCount + 1;
-      setCompletedCount(count);
+      setRevealed(true);
       speak(
-        `${t("timeline.correct", {
-          year: event.year || "—",
-          event: event.event,
-        })}`,
+        t("timeline.correctSpeech", {
+          year: currentYear,
+          event: currentEvent?.event ?? "",
+        }),
         locale,
         rate
       );
-      if (count >= ordered.length) {
-        window.setTimeout(() => finish(), 600);
-      }
     } else {
       playTapFeedback();
-      setErrorCount((v) => v + 1);
-      const label = eventLabel(event);
-      setHint(t("timeline.wrong", { event: label }));
+      setFades((v) => v + 1);
+      setHiddenKeys((keys) => [...keys, choice.key]);
       speak(t("timeline.wrongSpeech"), locale, rate);
-      window.setTimeout(() => setHint(null), 3500);
     }
-  };
+  }
+
+  function nextMemory() {
+    const nextStep = step + 1;
+    if (nextStep >= journey.length) {
+      finish();
+      return;
+    }
+    playPress();
+    setStep(nextStep);
+    prepareRound(nextStep);
+  }
 
   const finish = useCallback(() => {
     playCorrect();
@@ -129,33 +219,42 @@ export function TimelineGame() {
         gameId: "timeline",
         level,
         outcome: "completed",
-        score: ordered.length,
+        score: journey.length,
         startedAt,
         taps,
-        errorCount,
+        errorCount: fades,
       });
     }
-    const sequence = ordered
-      .map((e) => e.year || t("timeline.longAgo"))
-      .join(", ");
-    speak(`${t("timeline.completeSpeech")} ${sequence}`, locale, rate);
-  }, [ordered, patientId, level, taps, errorCount, startedAt, locale, rate, t]);
+    speak(t("timeline.completeSpeech"), locale, rate);
+  }, [
+    patientId,
+    level,
+    journey.length,
+    startedAt,
+    taps,
+    fades,
+    locale,
+    rate,
+    t,
+    guard,
+  ]);
 
   if (loading) return <GameLoading />;
   if (error)
     return (
-      <GameShell title={t("timeline.title")} score={completedCount}>
+      <GameShell title={t("timeline.title")} score={step}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
-  if (!ordered.length) {
+  if (!journey.length) {
     return (
-      <GameShell title={t("timeline.title")} score={completedCount}>
+      <GameShell title={t("timeline.title")} score={0}>
         <div className="flex flex-col items-center gap-6 py-16 text-center">
           <div className="text-6xl">📜</div>
+          <p className="text-2xl font-bold text-ink">{t("timeline.moreSoon")}</p>
           <p className="max-w-xs text-lg font-semibold text-ink-secondary">
-            {t("timeline.noData")}
+            {t("timeline.moreSoonHint")}
           </p>
           <Link
             href="/patient/games"
@@ -168,23 +267,135 @@ export function TimelineGame() {
     );
   }
 
-  const placed = ordered.slice(0, completedCount);
-  const remaining = ordered.slice(completedCount);
-  const lightboxEvent = lightbox?.event;
+  const promptSpeechText = promptSpeechFor(currentEvent?.year);
 
   return (
-    <GameShell title={t("timeline.title")} score={completedCount}>
-      {phase === "done" ? (
-        <Celebration emoji="📅" title={t("timeline.complete")}>
-          <div className="mx-auto flex max-w-xl flex-wrap justify-center gap-3 px-4">
-            {ordered.map((event) => (
-              <EventBadge
-                key={event.event}
-                event={event}
-                onView={() => setLightbox({ event })}
-              />
-            ))}
+    <GameShell title={t("timeline.title")} score={step + (phase === "done" ? 1 : 0)}>
+      {phase === "intro" ? (
+        <div className="flex flex-col items-center gap-6 py-10 text-center">
+          <div className="text-6xl">📅</div>
+          <p className="text-2xl font-bold text-ink">{t("timeline.title")}</p>
+          <p className="max-w-md text-lg font-semibold text-ink-secondary">
+            {t("timeline.intro")}
+          </p>
+          {occupation ? (
+            <p className="max-w-md text-base font-semibold text-ink-secondary">
+              💼 {t("timeline.occupation", { occupation })}
+            </p>
+          ) : null}
+          {favoriteMusic ? (
+            <p className="max-w-md text-base font-semibold text-ink-secondary">
+              🎵 {t("timeline.favoriteMusic", { favoriteMusic })}
+            </p>
+          ) : null}
+          <AudioPrompt text={introSpeech} label={t("listen")} size="md" />
+          <ChunkyButton variant="tea" size="2xl" onClick={begin}>
+            {t("timeline.start")}
+          </ChunkyButton>
+        </div>
+      ) : phase === "play" ? (
+        <div className="flex flex-col items-center gap-6 py-4 text-center">
+          <p className="text-base font-bold uppercase tracking-wide text-ink-secondary">
+            {step + 1} / {journey.length}
+          </p>
+
+          <div>
+            <h2 className="font-serif text-6xl font-black leading-none text-ink sm:text-7xl">
+              {currentEvent?.year
+                ? t("timeline.promptYear", { year: currentEvent.year })
+                : t("timeline.promptYearLongAgo")}
+            </h2>
+            <p className="mt-3 text-lg font-semibold text-ink-secondary">
+              {t("timeline.question")}
+            </p>
           </div>
+
+          <AudioPrompt text={promptSpeechText} label={t("listen")} size="md" />
+
+          {!revealed ? (
+            <div className="grid w-full max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
+              {choices.map((choice) => {
+                const hidden = hiddenKeys.includes(choice.key);
+                return (
+                  <button
+                    key={choice.key}
+                    type="button"
+                    onClick={() => onPick(choice)}
+                    tabIndex={hidden ? -1 : 0}
+                    aria-hidden={hidden || undefined}
+                    className={`flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-black bg-surface p-4 text-center shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-[opacity,transform] duration-700 ease-in-out ${
+                      hidden
+                        ? "pointer-events-none scale-95 opacity-0"
+                        : "active:translate-y-0.5"
+                    }`}
+                  >
+                    <span className="text-4xl">{choice.emoji}</span>
+                    <span className="text-lg font-extrabold leading-tight text-ink">
+                      {choice.text}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            currentEvent && (
+              <div className="journey-reveal flex w-full max-w-xl flex-col items-center gap-4">
+                {(() => {
+                  const src = getMediaUrl(currentEvent.photoUrl ?? undefined);
+                  return src ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={src}
+                      alt={currentEvent.event}
+                      className="h-40 w-40 rounded-2xl border-4 border-black object-cover shadow-[3px_3px_0px_rgba(0,0,0,1)]"
+                    />
+                  ) : (
+                    <div className="flex h-40 w-40 items-center justify-center rounded-2xl border-4 border-black bg-terracotta-light text-6xl shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+                      🧩
+                    </div>
+                  );
+                })()}
+
+                <p className="rounded-full border-2 border-tea bg-tea-light px-4 py-1 text-base font-black text-ink">
+                  {t("timeline.correct")}
+                </p>
+
+                <p className="max-w-xl font-serif text-2xl font-black leading-snug text-ink sm:text-3xl">
+                  {t("timeline.correctSpeech", {
+                    year: currentYear,
+                    event: currentEvent.event,
+                  })}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => playLifeSong()}
+                  className="group mt-1 flex flex-col items-center gap-2"
+                  aria-label={t("timeline.music")}
+                >
+                  <span className="float-note flex h-16 w-16 items-center justify-center rounded-full border-4 border-marigold bg-marigold-light text-3xl shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-transform group-active:translate-y-0.5">
+                    🎵
+                  </span>
+                  <span className="text-base font-bold text-ink">{t("timeline.music")}</span>
+                  <span className="max-w-xs text-sm font-semibold text-ink-secondary">
+                    {t("timeline.musicHint")}
+                  </span>
+                </button>
+
+                <ChunkyButton variant="tea" size="xl" onClick={nextMemory}>
+                  {step + 1 >= journey.length
+                    ? t("timeline.finish")
+                    : t("timeline.nextCta")}
+                </ChunkyButton>
+              </div>
+            )
+          )}
+        </div>
+      ) : (
+        <Celebration emoji="📅" title={t("timeline.complete")}>
+          <p className="mx-auto max-w-lg px-4 text-lg font-semibold text-ink-secondary">
+            {journey.length} {t("timeline.memoriesShared")}
+          </p>
           <Link
             href="/patient"
             className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-border bg-tea px-6 py-3 font-bold text-ink-inverse"
@@ -192,117 +403,7 @@ export function TimelineGame() {
             {t("backToRoutine")}
           </Link>
         </Celebration>
-      ) : (
-        <div className="flex flex-col items-center gap-6 py-4 text-center">
-          <p className="text-xl font-bold text-ink">
-            {t("timeline.prompt", {
-              current: String(Math.max(completedCount, 1)),
-              total: String(ordered.length),
-            })}
-          </p>
-          <AudioPrompt text={t("timeline.introSpeech")} label={t("listen")} size="md" />
-
-          {hint && (
-            <p
-              role="status"
-              className="max-w-lg rounded-2xl border-2 border-marigold bg-marigold-light px-4 py-3 text-lg font-bold text-ink"
-            >
-              🕰️ {hint}
-            </p>
-          )}
-
-          <div className="grid w-full max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
-            {remaining.map((event) => {
-              const src = getMediaUrl(event.photoUrl ?? undefined);
-              return (
-                <button
-                  key={event.event}
-                  onClick={() => onPick(event)}
-                  className="group flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-2xl border-2 border-black bg-surface p-4 shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-transform active:translate-y-0.5"
-                >
-                  {src ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={src}
-                      alt={event.event}
-                      className="h-16 w-16 rounded-xl border-2 border-border object-cover"
-                    />
-                  ) : (
-                    <span className="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-border bg-terracotta-light text-3xl">
-                      🕰️
-                    </span>
-                  )}
-                  <span className="text-lg font-extrabold leading-tight text-ink">
-                    {eventLabel(event)}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {placed.length > 0 && (
-            <div className="w-full max-w-xl">
-              <p className="mb-2 text-sm font-bold uppercase tracking-wide text-ink-secondary">
-                {t("timeline.storySoFar")}
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                {placed.map((event) => (
-                  <EventBadge
-                    key={event.event}
-                    event={event}
-                    onView={() => setLightbox({ event })}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
       )}
-
-      <MemoryLightbox
-        open={lightboxEvent ? true : false}
-        onClose={() => setLightbox(null)}
-        photoUrl={lightboxEvent?.photoUrl}
-        title={lightboxEvent ? eventLabel(lightboxEvent) : ""}
-        text={lightboxEvent?.event}
-        langCode={locale}
-        rate={rate}
-        closeLabel={t("lightbox.close")}
-        listenLabel={t("lightbox.listen")}
-        speakingLabel={t("listening")}
-      />
     </GameShell>
-  );
-}
-
-function EventBadge({
-  event,
-  onView,
-}: {
-  event: LifeEventItem;
-  onView: () => void;
-}) {
-  const src = getMediaUrl(event.photoUrl ?? undefined);
-  return (
-    <button
-      type="button"
-      onClick={onView}
-      className={`btn-tactile flex items-center gap-2 rounded-2xl border-2 border-tea bg-tea-light px-3 py-2 font-bold text-ink ${
-        src ? "" : "pointer-events-none cursor-default"
-      }`}
-      aria-label={eventLabel(event)}
-    >
-      {src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={event.event}
-          className="h-10 w-10 rounded-lg border-2 border-border object-cover"
-        />
-      ) : (
-        <span className="text-2xl">🕰️</span>
-      )}
-      <span className="text-sm leading-tight">{eventLabel(event)}</span>
-    </button>
   );
 }
