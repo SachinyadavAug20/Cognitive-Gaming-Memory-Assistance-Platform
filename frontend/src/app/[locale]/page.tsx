@@ -1,12 +1,17 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "@/i18n/navigation";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { PortalCard } from "@/components/home/PortalCard";
 import { RegionalStatesHub } from "@/components/home/RegionalStatesHub";
 import { ClinicalImpactBadges } from "@/components/home/ClinicalImpactBadges";
 import { FooterBar } from "@/components/home/FooterBar";
+import { useAuthStore } from "@/store/useAuthStore";
+import { playScanSuccess, playTapFeedback } from "@/lib/sound";
+import { speak } from "@/lib/speech";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 const Hero3DLandscape = dynamic(
@@ -24,6 +29,22 @@ const Hero3DLandscape = dynamic(
 
 export default function Home() {
   const t = useTranslations("home");
+  const router = useRouter();
+  const login = useAuthStore((s) => s.login);
+
+  const handleLaunchDemo = () => {
+    playTapFeedback();
+    playScanSuccess();
+    speak("Welcome, Biren Borah! Starting your daily therapy session.", "en", 0.9);
+    login("DEMO_JWT_SESSION_TOKEN_2026", {
+      id: 101,
+      name: "Biren Borah",
+      languagePreference: "as",
+    });
+    setTimeout(() => {
+      router.push("/patient");
+    }, 400);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas paper-texture">
@@ -85,6 +106,20 @@ export default function Home() {
                   </div>
                 </div>
               </PortalCard>
+            </div>
+
+            {/* Small Discrete Demo Pass Button */}
+            <div className="flex justify-center pt-1">
+              <button
+                type="button"
+                onClick={handleLaunchDemo}
+                className="btn-tactile inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-black bg-surface hover:bg-tea-light hover:border-tea text-ink text-xs font-black shadow-[2px_2px_0px_#000] transition-all cursor-pointer group"
+                title="Instant Demo Patient Access for Testing & Evaluation"
+              >
+                <Sparkles className="h-3.5 w-3.5 text-marigold animate-pulse" />
+                <span>Try Demo Patient (Biren Borah &bull; 72y &bull; MCI)</span>
+                <ArrowRight className="h-3 w-3 text-tea group-hover:translate-x-0.5 transition-transform" />
+              </button>
             </div>
           </div>
 
