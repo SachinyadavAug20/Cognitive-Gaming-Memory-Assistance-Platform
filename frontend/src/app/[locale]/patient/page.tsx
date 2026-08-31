@@ -4,7 +4,14 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
-import { HeartHandshake, Paperclip, Volume2 } from "lucide-react";
+import {
+  HeartHandshake,
+  Paperclip,
+  Volume2,
+  Calendar,
+  Sparkles,
+  Trophy,
+} from "lucide-react";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useIdleTimeout } from "@/hooks/useIdleTimeout";
@@ -74,12 +81,20 @@ export default function PatientHome() {
   );
   const rate = speechRate(detail);
 
+  // Dynamic Time of Day
+  const hour = new Date().getHours();
+  const timeGreeting =
+    hour < 12
+      ? "Good Morning"
+      : hour < 17
+      ? "Good Afternoon"
+      : "Good Evening";
+
   const greeting = patientName
-    ? t("greetingName", { name: patientName })
-    : t("greeting");
-  const heroText = `${greeting} ${t("audio.todayIs", {
-    date: t("date"),
-  })} ${t("orientation")} ${t("heroPrompt")}`;
+    ? `${timeGreeting}, ${patientName}!`
+    : `${timeGreeting}!`;
+
+  const heroText = `${greeting} ${t("orientation")} ${t("heroPrompt")}`;
   const avatarPhoto = detail ? getMediaUrl(detail.photoUrl) : null;
   const avatarInitials = patientName ? initialsFrom(patientName) : "";
 
@@ -144,16 +159,30 @@ export default function PatientHome() {
     caretaker: t("wellbeing.moodCare"),
   };
 
+  // Formatted date string
+  const todayDateStr = new Date().toLocaleDateString(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+  });
+
   return (
     <div className="min-h-[100vh] pb-8 flex flex-col bg-[#FAF6F0]">
       {/* Patient Header Banner */}
       <div className="bg-tea border-b-4 border-black px-4 pt-5 pb-5 md:px-6 text-white shadow-sm">
         <div className="max-w-3xl mx-auto flex flex-col gap-3.5">
-          <div className="flex items-center gap-2 text-white/80">
-            <Paperclip className="h-4 w-4" />
-            <span className="text-[11px] font-black uppercase tracking-wider">
-              National Health Mission // MDoNER Cognitive Assistance Platform
-            </span>
+          <div className="flex items-center justify-between gap-2 text-white/90">
+            <div className="flex items-center gap-1.5">
+              <Paperclip className="h-4 w-4" />
+              <span className="text-[11px] font-black uppercase tracking-wider">
+                National Health Mission // MDoNER Cognitive Assistance Platform
+              </span>
+            </div>
+
+            <div className="hidden sm:flex items-center gap-1.5 bg-black/20 px-2.5 py-0.5 rounded-lg border border-white/20 text-xs font-bold">
+              <Calendar className="h-3.5 w-3.5 text-marigold" />
+              <span>{todayDateStr}</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -186,7 +215,10 @@ export default function PatientHome() {
           <div className="flex items-center gap-3 flex-wrap pt-1">
             <button
               type="button"
-              onClick={() => speak(heroText, langCode, rate)}
+              onClick={() => {
+                playTapFeedback();
+                speak(heroText, langCode, rate);
+              }}
               className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-white px-3.5 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] cursor-pointer"
             >
               <Volume2 className="h-4 w-4 text-tea" />
@@ -198,13 +230,37 @@ export default function PatientHome() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-5 space-y-6 flex-1 w-full">
-        {/* THERAPY SUITE SECTION */}
+        {/* DAILY BRAIN PROGRESS REINFORCEMENT BANNER */}
+        <div className="w-full rounded-2xl border-3 border-black bg-gradient-to-r from-amber-100 via-amber-50 to-emerald-50 p-4 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-marigold text-white shadow-xs">
+              <Trophy className="h-5 w-5" />
+            </div>
+            <div>
+              <span className="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-1">
+                <Sparkles className="h-3 w-3 text-amber-700" /> Daily Brain Exercises
+              </span>
+              <h3 className="font-serif text-sm sm:text-base font-black text-ink">
+                2 of 3 Modules Completed Today
+              </h3>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex-1 sm:w-32 bg-white rounded-full h-2.5 border-2 border-black overflow-hidden">
+              <div className="bg-tea h-full w-[66%]" />
+            </div>
+            <span className="text-xs font-black text-tea whitespace-nowrap">66% Done</span>
+          </div>
+        </div>
+
+        {/* 1. THERAPY SUITE SECTION */}
         <TherapySuiteGrid gamesTitle={t("gamesTitle")} />
 
-        {/* TODAY'S ROUTINE & MEDICATION SCHEDULE */}
+        {/* 2. TODAY'S ROUTINE & MEDICATION SCHEDULE */}
         <DailyRoutineSchedule langCode={langCode} rate={rate} />
 
-        {/* WELLBEING & COGNITIVE MEMORY SECTION */}
+        {/* 3. WELLBEING & COGNITIVE MEMORY SECTION */}
         <section aria-labelledby="wellbeing-title">
           <div className="flex items-center gap-2 border-b-2 border-black/15 pb-2">
             <HeartHandshake className="h-5 w-5 text-tea" />

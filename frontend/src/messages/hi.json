@@ -2,17 +2,18 @@
   "home": {
     "greeting": "वापस स्वागत है!",
     "ready": "आपको फिर से देखकर हमें खुशी हुई। क्या आप आज के अभ्यास के लिए तैयार हैं?",
-  "comingSoon": "जल्द आ रहा है",
+    "comingSoon": "जल्द आ रहा है",
     "routine": {
+      "title": "आज की दैनिक दिनचर्या",
       "label": "आज की दिनचर्या",
       "morning_medicine": "सुबह की दवाई",
       "water_reminder": "पानी का अनुस्मारक",
       "family_photos": "परिवार की फ़ोटो",
       "medicine_time": "सुबह 8:00 बजे",
       "water_count": "4 गिलास आज",
-"memories_count": "12 यादें सुरक्षित",
-    "now": "अभी"
-  },
+      "memories_count": "12 यादें सुरक्षित",
+      "now": "अभी"
+    },
     "patient": {
       "title": "मैं एक मरीज़ हूँ",
       "subtitle": "मरीज़ पोर्टल",

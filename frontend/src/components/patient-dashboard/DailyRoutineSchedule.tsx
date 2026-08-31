@@ -85,7 +85,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-tea" />
           <h2 id="routine-title" className="font-serif text-xl font-black text-ink">
-            {t("title") || "Today's Daily Routine"}
+            {t.has("title") ? t("title") : t.has("label") ? t("label") : "Today's Daily Routine"}
           </h2>
         </div>
         <button

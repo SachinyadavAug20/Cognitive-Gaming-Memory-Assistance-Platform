@@ -4,6 +4,7 @@
     "ready": "We're happy to see you again. Ready for your daily memory exercises?",
   "comingSoon": "Coming Soon",
     "routine": {
+      "title": "Today's Daily Routine",
       "label": "Today's Routine",
       "morning_medicine": "Morning Medicine",
       "water_reminder": "Water Reminder",
