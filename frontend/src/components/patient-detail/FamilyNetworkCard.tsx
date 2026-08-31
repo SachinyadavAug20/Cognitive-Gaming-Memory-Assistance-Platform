@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { getMediaUrl } from "@/lib/api";
 import type { FamilyMemberItem } from "@/types";
 
@@ -51,10 +52,13 @@ export function FamilyNetworkCard({ familyMembers, onOpenLightbox }: FamilyNetwo
                       }
                       className="btn-tactile shrink-0 cursor-pointer"
                     >
-                      <img
+                      <Image
                         src={photo}
-                        alt={member.name}
+                        alt={`Family member ${member.name} (${member.relation})`}
+                        width={56}
+                        height={56}
                         className="w-14 h-14 rounded-xl border-2 border-border object-cover bg-surface-muted"
+                        loading="lazy"
                       />
                     </button>
                   ) : (

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { HeartHandshake, Volume2, Sparkles, Search } from "lucide-react";
 import { getMediaUrl } from "@/lib/api";
 
@@ -52,10 +53,13 @@ export function MemorySpotlightCard({
                 className="btn-tactile shrink-0 overflow-hidden rounded-xl border-2 border-black bg-surface-muted cursor-pointer"
                 title="View Full Memory Photo"
               >
-                <img
+                <Image
                   src={photo}
-                  alt="Memory of the day"
+                  alt="Memory of the day photograph"
+                  width={128}
+                  height={128}
                   className="h-28 w-28 sm:h-32 sm:w-32 object-cover"
+                  loading="lazy"
                 />
                 <span className="block bg-ink px-3 py-1.5 text-xs font-black text-white flex items-center justify-center gap-1">
                   <Search className="h-3.5 w-3.5" /> {viewPhotoLabel}

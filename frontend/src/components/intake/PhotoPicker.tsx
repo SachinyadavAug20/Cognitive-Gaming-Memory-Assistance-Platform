@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import Image from "next/image";
 import { getMediaUrl } from "@/lib/api";
 
 interface PhotoPickerProps {
@@ -80,9 +81,12 @@ export function PhotoPicker({
             title="View photo"
             className={`relative block cursor-pointer rounded-xl border-3 border-tea overflow-hidden transition-all hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-marigold ${SIZE_CLASSES[size]}`}
           >
-            <img
+            <Image
               src={resolvedPreview}
-              alt={label || "Photo preview"}
+              alt={label || "Photo preview thumbnail"}
+              width={96}
+              height={96}
+              unoptimized
               className="w-full h-full object-cover"
             />
             <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/50 text-white text-xs font-bold opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
@@ -150,11 +154,16 @@ export function PhotoPicker({
               ✕
             </button>
 
-            <img
-              src={resolvedPreview ?? undefined}
-              alt={label || "Photo preview"}
-              className="w-full aspect-square object-cover"
-            />
+            {resolvedPreview && (
+              <Image
+                src={resolvedPreview}
+                alt={label || "Full photo preview"}
+                width={400}
+                height={400}
+                unoptimized
+                className="w-full aspect-square object-cover"
+              />
+            )}
 
             <div className="flex items-center gap-2 p-3">
               <button

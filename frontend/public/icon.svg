@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <rect width="512" height="512" rx="128" fill="#15803D"/>
+  <rect x="24" y="24" width="464" height="464" rx="104" fill="none" stroke="#FBBF24" stroke-width="16"/>
+  <!-- Glowing Brain & Tea Leaf Glyph -->
+  <g transform="translate(96, 96) scale(0.625)" fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Brain Silhouette -->
+    <path d="M256 128 C200 64, 96 96, 96 192 C96 220, 110 240, 128 256 C96 280, 80 320, 96 368 C112 416, 160 448, 224 432 C240 428, 250 420, 256 408" fill="#166534" fill-opacity="0.4"/>
+    <path d="M256 128 C312 64, 416 96, 416 192 C416 220, 402 240, 384 256 C416 280, 432 320, 416 368 C400 416, 352 448, 288 432 C272 428, 262 420, 256 408" fill="#166534" fill-opacity="0.4"/>
+    <path d="M256 128 L256 408" stroke="#FBBF24" stroke-width="32"/>
+    <!-- Synapse & Tea Nodes -->
+    <circle cx="176" cy="208" r="16" fill="#FBBF24" stroke="none"/>
+    <circle cx="336" cy="208" r="16" fill="#FBBF24" stroke="none"/>
+    <circle cx="160" cy="320" r="16" fill="#FBBF24" stroke="none"/>
+    <circle cx="352" cy="320" r="16" fill="#FBBF24" stroke="none"/>
+    <path d="M176 208 Q 216 256 160 320"/>
+    <path d="M336 208 Q 296 256 352 320"/>
+  </g>
+  <text x="256" y="440" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="52" fill="#FAF6F0" text-anchor="middle" letter-spacing="4">COGNICARE</text>
+</svg>

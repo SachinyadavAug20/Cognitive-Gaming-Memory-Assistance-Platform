@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { User, Sparkles, Paperclip, ShieldCheck, Volume2 } from "lucide-react";
 import { AudioToggle } from "@/components/ui/AudioToggle";
 import { speak } from "@/lib/speech";
@@ -33,10 +34,13 @@ export function PatientGreetingHero({
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="relative flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl border-2 border-black bg-tea/15 text-tea shadow-[2px_2px_0px_#000] overflow-hidden">
             {avatarPhoto ? (
-              <img
+              <Image
                 src={avatarPhoto}
                 alt="Patient Avatar"
+                width={64}
+                height={64}
                 className="h-full w-full object-cover"
+                priority
               />
             ) : avatarInitials ? (
               <span className="font-serif text-xl sm:text-2xl font-black">{avatarInitials}</span>

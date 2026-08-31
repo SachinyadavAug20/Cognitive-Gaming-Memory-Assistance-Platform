@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import { HeartHandshake, Paperclip, Volume2 } from "lucide-react";
 import { usePatientDetail } from "@/games/usePatientDetail";
@@ -158,10 +159,13 @@ export default function PatientHome() {
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border-3 border-black bg-surface overflow-hidden flex items-center justify-center shrink-0 shadow-[3px_3px_0px_#000]">
               {avatarPhoto ? (
-                <img
+                <Image
                   src={avatarPhoto}
-                  alt={patientName}
+                  alt={patientName || "Patient Portrait"}
+                  width={80}
+                  height={80}
                   className="h-full w-full object-cover"
+                  priority
                 />
               ) : (
                 <span className="text-xl md:text-2xl font-black text-tea">
