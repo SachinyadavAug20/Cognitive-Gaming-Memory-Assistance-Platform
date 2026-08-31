@@ -705,6 +705,10 @@
     "memoirScribe": {
       "title": "The Voice Reminiscence Scribe: Living Memoirs",
       "desc": "Speak heartfelt family memories and let local AI synthesize an illustrated Golden Memoir page"
+    },
+    "alpana": {
+      "title": "Sacred Alpana Sand Drawing",
+      "desc": "Trace sacred festive floor motifs using in-browser webcam air motion or touch"
     }
   }
 }

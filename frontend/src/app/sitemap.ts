@@ -2,23 +2,20 @@ import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 
 const GAME_IDS = [
+  "alpana",
+  "river-lanterns",
+  "loom",
+  "drum",
+  "memoir-scribe",
   "grandchild-chat",
   "memory-detective",
   "storybook",
   "jigsaw",
-  "river-crossing",
-  "weaving-loom",
   "tea-harvest",
   "radio",
   "root-bridge",
   "heritage-kitchen",
   "lotus-lake",
-  "bihu-rhythm",
-  "majuli-masks",
-  "loktak-lake",
-  "hornbill-headdress",
-  "monastery-wheel",
-  "orchid-sanctuary",
   "wayfinding",
 ];
 

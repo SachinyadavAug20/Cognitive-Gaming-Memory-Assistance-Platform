@@ -37,6 +37,7 @@ import { RiverLanternsGame } from "./river-lanterns/RiverLanternsGame";
 import { LoomGame } from "./loom/LoomGame";
 import { DrumGame } from "./drum/DrumGame";
 import { MemoirScribeGame } from "./memoir-scribe/MemoirScribeGame";
+import { AlpanaGame } from "./alpana/AlpanaGame";
 
 export interface GameDef {
   id: string;
@@ -50,6 +51,16 @@ export interface GameDef {
 }
 
 export const GAMES: GameDef[] = [
+  {
+    id: "alpana",
+    icon: Sparkles,
+    titleKey: "alpana.title",
+    descKey: "alpana.desc",
+    accent: "bg-purple-900",
+    domain: "Computer Vision Air-Canvas",
+    recommended: true,
+    component: AlpanaGame,
+  },
   {
     id: "river-lanterns",
     icon: Waves,
