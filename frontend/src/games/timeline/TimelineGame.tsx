@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -116,13 +116,6 @@ export function TimelineGame() {
     errorCount: fades,
   });
 
-  useEffect(() => {
-    if (phase === "intro" && journey.length) {
-      speak(introSpeech, locale, rate);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
-
   useEffect(() => () => stopSpeaking(), []);
 
   const currentEvent = journey[step] ?? null;
@@ -155,7 +148,8 @@ export function TimelineGame() {
       gi++;
     }
     const placed = shuffle(pool);
-    placed.splice(Math.floor(Math.random() * (placed.length + 1)), 0, {
+    const insertPos = index % (placed.length + 1);
+    placed.splice(insertPos, 0, {
       key: `correct:${correct.year}:${correct.event}`,
       text: correct.event,
       emoji: "🧩",
@@ -164,7 +158,6 @@ export function TimelineGame() {
     setChoices(placed);
     setHiddenKeys([]);
     setRevealed(false);
-    speak(promptSpeechFor(correct.year), locale, rate);
   }
 
   function begin() {
@@ -199,18 +192,7 @@ export function TimelineGame() {
     }
   }
 
-  function nextMemory() {
-    const nextStep = step + 1;
-    if (nextStep >= journey.length) {
-      finish();
-      return;
-    }
-    playPress();
-    setStep(nextStep);
-    prepareRound(nextStep);
-  }
-
-  const finish = useCallback(() => {
+  function finish() {
     playCorrect();
     setPhase("done");
     guard.markCompleted();
@@ -226,18 +208,18 @@ export function TimelineGame() {
       });
     }
     speak(t("timeline.completeSpeech"), locale, rate);
-  }, [
-    patientId,
-    level,
-    journey.length,
-    startedAt,
-    taps,
-    fades,
-    locale,
-    rate,
-    t,
-    guard,
-  ]);
+  }
+
+  function nextMemory() {
+    const nextStep = step + 1;
+    if (nextStep >= journey.length) {
+      finish();
+      return;
+    }
+    playPress();
+    setStep(nextStep);
+    prepareRound(nextStep);
+  }
 
   if (loading) return <GameLoading />;
   if (error)

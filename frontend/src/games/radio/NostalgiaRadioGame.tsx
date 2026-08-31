@@ -172,11 +172,6 @@ export function NostalgiaRadioGame() {
     setPhase("tune");
 
     playStationAudio(STATIONS[0]);
-    speak(
-      "Welcome to the Nostalgia Tuner. Turn the dial to explore vintage radio frequencies and rediscover cherished melodies.",
-      locale,
-      rate
-    );
   }
 
   function tuneToStation(station: RadioStation) {

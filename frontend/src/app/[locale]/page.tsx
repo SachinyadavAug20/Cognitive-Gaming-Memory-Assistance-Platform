@@ -10,7 +10,6 @@ import { ClinicalImpactBadges } from "@/components/home/ClinicalImpactBadges";
 import { FooterBar } from "@/components/home/FooterBar";
 import { useAuthStore } from "@/store/useAuthStore";
 import { playScanSuccess, playTapFeedback } from "@/lib/sound";
-import { speak } from "@/lib/speech";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -35,7 +34,6 @@ export default function Home() {
   const handleLaunchDemo = () => {
     playTapFeedback();
     playScanSuccess();
-    speak("Welcome, Biren Borah! Starting your daily therapy session.", "en", 0.9);
     login("DEMO_JWT_SESSION_TOKEN_2026", {
       id: 101,
       name: "Biren Borah",
@@ -43,7 +41,7 @@ export default function Home() {
     });
     setTimeout(() => {
       router.push("/patient");
-    }, 400);
+    }, 300);
   };
 
   return (

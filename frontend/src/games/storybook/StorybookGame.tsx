@@ -103,7 +103,6 @@ export function StorybookGame() {
           previousChoiceMade: choiceMade || "Begin Story",
         });
         setCurrentChapter(res);
-        speak(res.chapterNarrative, locale, rate);
       } catch {
         const fallback: AiStoryResponse = {
           chapterNumber: index,
@@ -119,12 +118,11 @@ export function StorybookGame() {
           isFinale: index >= totalChapters,
         };
         setCurrentChapter(fallback);
-        speak(fallback.chapterNarrative, locale, rate);
       } finally {
         setIsLoadingChapter(false);
       }
     },
-    [patientId, locale, rate]
+    [patientId]
   );
 
   const startStory = useCallback(

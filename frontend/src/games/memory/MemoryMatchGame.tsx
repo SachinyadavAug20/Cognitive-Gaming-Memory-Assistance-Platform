@@ -96,13 +96,6 @@ export function MemoryMatchGame() {
     return () => window.clearInterval(id);
   }, [phase, previewSeconds]);
 
-  useEffect(() => {
-    if (phase === "preview" && playingMembers.length) {
-      speak(t("memory.preview"), locale, rate);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
-
   function startPlay() {
     stopSpeaking();
     playPress();

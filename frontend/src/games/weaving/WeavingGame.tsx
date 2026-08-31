@@ -169,35 +169,21 @@ export function WeavingGame() {
     setErrorCount(0);
     setStartedAt(new Date().toISOString());
     setPhase("weave");
-
-    speak(
-      `Welcome to the Loom of Memories. Let us weave the traditional ${PATTERNS[selectedPatternIndex].title}. Tap the shuttle with the matching color for each thread.`,
-      locale,
-      rate
-    );
   }
 
   // Automatic errorless scaffolding hint after 10s idle
   useEffect(() => {
-    if (phase === "weave" && targetYarnId && !hintActive) {
+    if (phase === "weave" && !hintActive) {
       if (hintTimer.current) clearTimeout(hintTimer.current);
       hintTimer.current = setTimeout(() => {
         setHintActive(true);
         playPineBreeze();
-        const yarn = YARNS.find((y) => y.id === targetYarnId);
-        if (yarn) {
-          speak(
-            `Notice the pattern. Pass the ${yarn.name} shuttle.`,
-            locale,
-            rate
-          );
-        }
       }, 10000);
     }
     return () => {
       if (hintTimer.current) clearTimeout(hintTimer.current);
     };
-  }, [phase, targetYarnId, hintActive, locale, rate]);
+  }, [phase, hintActive]);
 
   function handleShuttleTap(yarnId: string) {
     if (isThrowingShuttle || phase !== "weave" || !targetYarnId) return;

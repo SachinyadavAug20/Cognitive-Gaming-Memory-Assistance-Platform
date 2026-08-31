@@ -86,7 +86,6 @@ export function BazaarGame() {
           userSpokenMessage: userMsg,
         });
         setTurnData(res);
-        speak(res.merchantDialogue, locale, rate);
       } catch {
         const fallback: AiBazaarResponse = {
           merchantName: "Pranab (Shopkeeper)",
@@ -99,12 +98,11 @@ export function BazaarGame() {
           culturalFact: "Fresh authentic harvest packaged in natural jute pouches.",
         };
         setTurnData(fallback);
-        speak(fallback.merchantDialogue, locale, rate);
       } finally {
         setIsAiResponding(false);
       }
     },
-    [patientId, currentItem, budget, locale, rate]
+    [patientId, currentItem, budget]
   );
 
   const startBazaar = useCallback(() => {

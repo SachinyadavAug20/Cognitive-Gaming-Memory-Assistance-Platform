@@ -109,7 +109,6 @@ export function MemoryDetectiveGame() {
         targetNotes: target.notes || "",
       });
       setCluesData(res);
-      speak(res.gentleClue1, locale, rate);
     } catch {
       const fallback: AiCluesResponse = {
         gentleClue1: `I am someone very special to you: your ${target.relation || "family member"}.`,
@@ -119,11 +118,10 @@ export function MemoryDetectiveGame() {
         candidateOptions: [target.name, "Old Classmate", "Village Neighbor"],
       };
       setCluesData(fallback);
-      speak(fallback.gentleClue1, locale, rate);
     } finally {
       setIsLoadingClues(false);
     }
-  }, [patientId, locale, rate]);
+  }, [patientId]);
 
   const startDetective = useCallback(() => {
     playPress();

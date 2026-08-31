@@ -150,13 +150,6 @@ export function JigsawGame() {
 
   const currentTarget = activeTargets[index] ?? null;
 
-  useEffect(() => {
-    if (phase === "intro" && activeTargets.length) {
-      speak(t("jigsaw.intro", { count: String(activeTargets.length) }), locale, rate);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, activeTargets.length]);
-
   useEffect(() => () => stopSpeaking(), []);
 
   const startPuzzleFor = useCallback(

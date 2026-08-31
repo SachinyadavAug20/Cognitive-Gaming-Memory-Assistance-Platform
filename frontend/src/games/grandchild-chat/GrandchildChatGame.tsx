@@ -134,7 +134,6 @@ export function GrandchildChatGame() {
 
       setMessages([initialMsg]);
       setQuickReplies(res.suggestedQuickReplies || ["Yes, sweet cardamom tea please!", "Tell me how your day was, dear!"]);
-      speak(initialMsg.text, locale, rate);
     } catch {
       const fallbackMsg: MessageItem = {
         id: "msg-0",
@@ -144,12 +143,11 @@ export function GrandchildChatGame() {
       };
       setMessages([fallbackMsg]);
       setQuickReplies(["I feel wonderful, thank you!", "The morning breeze is so peaceful."]);
-      speak(fallbackMsg.text, locale, rate);
     } finally {
       setIsAiThinking(false);
       scrollToBottom();
     }
-  }, [patientId, persona.name, locale, rate]);
+  }, [patientId, persona.name]);
 
   const sendResponse = async (textToSend: string) => {
     const trimmed = textToSend.trim();

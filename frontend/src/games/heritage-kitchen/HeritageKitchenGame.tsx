@@ -144,13 +144,6 @@ export function HeritageKitchenGame() {
     setErrorCount(0);
     setStartedAt(new Date().toISOString());
     setPhase("cook");
-
-    const firstStep = RECIPES[selectedRecipeIdx].steps[0];
-    speak(
-      `Welcome to Grandmother's Heritage Kitchen. Today we are preparing ${RECIPES[selectedRecipeIdx].title}. Let us start by adding ${firstStep.name}.`,
-      locale,
-      rate
-    );
   }
 
   // Automatic errorless scaffolding hint after 10s idle
@@ -160,13 +153,12 @@ export function HeritageKitchenGame() {
       hintTimer.current = setTimeout(() => {
         setHintActive(true);
         playPineBreeze();
-        speak(`Look for the ${currentStep.name} to add to the pan.`, locale, rate);
       }, 10000);
     }
     return () => {
       if (hintTimer.current) clearTimeout(hintTimer.current);
     };
-  }, [phase, currentStep, hintActive, locale, rate]);
+  }, [phase, currentStep, hintActive]);
 
   function handleAddIngredient(chosen: RecipeStep) {
     if (!currentStep || isSizzling) return;

@@ -106,8 +106,7 @@ export function MemoirScribeGame() {
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    speak(`Share a loving memory about ${currentPrompt.title}.`, locale, rate);
-  }, [currentPrompt, locale, rate]);
+  }, [currentPrompt]);
 
   const handleGenerateMemoir = async () => {
     if (!spokenText.trim() || isScribing) return;
@@ -124,7 +123,6 @@ export function MemoirScribeGame() {
       });
       setMemoirResult(res);
       playCorrect();
-      speak(res.poeticNarrative, locale, rate);
     } catch {
       const fallback: AiMemoirResponse = {
         memoirTitle: `Golden Chronicle of ${currentPrompt.title}`,
@@ -136,7 +134,6 @@ export function MemoirScribeGame() {
       };
       setMemoirResult(fallback);
       playCorrect();
-      speak(fallback.poeticNarrative, locale, rate);
     } finally {
       setIsScribing(false);
     }

@@ -80,8 +80,11 @@ export function AccessibilityToolbar() {
         {/* Left: Problem Statement Label */}
         <div className="flex items-center gap-2">
           <Paperclip className="h-3.5 w-3.5 text-tea shrink-0" />
-          <span className="text-[11px] font-black uppercase tracking-wider text-ink">
+          <span className="hidden sm:inline text-[11px] font-black uppercase tracking-wider text-ink">
             CogniCare CDTx // Proposed Solution for MDoNER Problem Statement
+          </span>
+          <span className="sm:hidden text-[10px] font-black uppercase tracking-wider text-ink">
+            CogniCare CDTx // MDoNER Track
           </span>
         </div>
 

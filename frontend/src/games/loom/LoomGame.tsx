@@ -75,8 +75,7 @@ export function LoomGame() {
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    speak("Pass the wooden shuttle across the silk warp threads to weave each row.", locale, rate);
-  }, [locale, rate]);
+  }, []);
 
   const handleShuttlePass = () => {
     if (rowsWoven >= TARGET_ROWS) return;

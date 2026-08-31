@@ -84,7 +84,6 @@ export function ProverbGame() {
           category: cat,
         });
         setCurrentChallenge(res);
-        speak(res.partialVerseWithBlank.replace("_____", "blank"), locale, rate);
       } catch {
         const fallback: AiProverbResponse = {
           id: `fb-${roundNum}`,
@@ -113,12 +112,11 @@ export function ProverbGame() {
           regionOrigin: "North East Living Heritage",
         };
         setCurrentChallenge(fallback);
-        speak(fallback.partialVerseWithBlank.replace("_____", "blank"), locale, rate);
       } finally {
         setIsAiLoading(false);
       }
     },
-    [patientId, locale, rate]
+    [patientId, locale]
   );
 
   const startGame = useCallback(() => {

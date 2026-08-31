@@ -15,7 +15,6 @@ import { KioskScanner } from "@/components/kiosk/KioskScanner";
 import { useAuthStore } from "@/store/useAuthStore";
 import { api, HttpError } from "@/lib/api";
 import { playScanSuccess, playError, playTapFeedback } from "@/lib/sound";
-import { speak } from "@/lib/speech";
 import type { KioskScanResponse, PatientProfile } from "@/types/auth";
 
 type ScanStatus = "scanning" | "loading" | "success" | "error";
@@ -59,9 +58,6 @@ export default function KioskLoginPage() {
         language: patient.languagePreference || "en",
       });
       setStatus("success");
-
-      // Spoken voice welcome
-      speak(`Welcome, ${patient.name}!`, patient.languagePreference || "en", 0.9);
 
       login(token, patient);
 

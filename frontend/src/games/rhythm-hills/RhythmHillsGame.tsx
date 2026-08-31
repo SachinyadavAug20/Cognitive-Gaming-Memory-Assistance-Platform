@@ -86,12 +86,6 @@ export function RhythmHillsGame() {
     pulseTimer.current = setInterval(() => {
       setPulseIndex((prev) => (prev + 1) % DRUMS.length);
     }, 1500);
-
-    speak(
-      "Welcome to Rhythm of the Hills. Tap the traditional drums to play along with the timeless folk beats of the North East.",
-      locale,
-      rate
-    );
   }
 
   function handleDrumTap(drum: DrumPad) {

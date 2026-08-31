@@ -148,12 +148,7 @@ export function RiverLanternsGame() {
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    speak(
-      `Welcome to the Living River. Wave your hand or touch the water to reach ${currentTarget.name}'s lantern.`,
-      locale,
-      rate
-    );
-  }, [currentTarget, locale, rate]);
+  }, []);
 
   const handleSelectLantern = (target: RiverTarget) => {
     setTaps((t) => t + 1);

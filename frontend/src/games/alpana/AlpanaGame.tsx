@@ -246,8 +246,7 @@ export function AlpanaGame() {
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    speak("Wave your hand or touch the screen to trace the sacred North Eastern Alpana lotus.", locale, rate);
-  }, [locale, rate]);
+  }, []);
 
   useSessionGuard({
     patientId: patientId ?? 0,

@@ -181,8 +181,7 @@ export function DrumGame() {
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    speak("Tap either side of the 3D Bihu Dhol drum or wave your hands to match the festive rhythm.", locale, rate);
-  }, [locale, rate]);
+  }, []);
 
   useSessionGuard({
     patientId: patientId ?? 0,

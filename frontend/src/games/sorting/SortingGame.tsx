@@ -90,19 +90,6 @@ export function SortingGame() {
     errorCount,
   });
 
-  useEffect(() => {
-    if (!done && current) {
-      speak(
-        `${t("sorting.intro")} ${t("sorting.pickItem")} ${t(
-          `sorting.items.${current.key}`
-        )}`,
-        locale,
-        rate
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done, current?.key]);
-
   useEffect(() => () => stopSpeaking(), []);
 
   function pickUp() {

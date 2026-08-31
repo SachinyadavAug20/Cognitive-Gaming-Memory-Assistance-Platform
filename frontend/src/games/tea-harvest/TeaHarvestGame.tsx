@@ -131,32 +131,21 @@ export function TeaHarvestGame() {
     setStartedAt(new Date().toISOString());
     setPhase("pluck");
     generateTeaBush();
-
-    speak(
-      "Welcome to the Upper Assam Tea Harvest. Spot and pluck only the fresh Two Leaves and a Bud into your woven bamboo basket.",
-      locale,
-      rate
-    );
   }
 
-  // Automatic errorless scaffolding hint after 10s idle
+  // Automatic errorless scaffolding visual hint after 10s idle
   useEffect(() => {
     if (phase === "pluck" && !hintActive) {
       if (hintTimer.current) clearTimeout(hintTimer.current);
       hintTimer.current = setTimeout(() => {
         setHintActive(true);
         playPineBreeze();
-        speak(
-          "Look for the bright tender green shoots with two leaves and a bud.",
-          locale,
-          rate
-        );
       }, 10000);
     }
     return () => {
       if (hintTimer.current) clearTimeout(hintTimer.current);
     };
-  }, [phase, hintActive, locale, rate]);
+  }, [phase, hintActive]);
 
   function handleLeafPluck(item: TeaItem) {
     if (pluckedIds.includes(item.id) || phase !== "pluck") return;

@@ -69,18 +69,6 @@ export function MakeMyTeaGame() {
 
   const current = steps[Math.min(progress, steps.length - 1)];
 
-  useEffect(() => {
-    if (done || !current) return;
-    speak(
-      `${t("dailyTasks.intro", { activity: joyTrigger })} ${t(
-        `dailyTasks.actions.${current.key}`
-      )}`,
-      locale,
-      rate
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress, done, current?.key]);
-
   useEffect(() => () => stopSpeaking(), []);
 
   function addStep() {

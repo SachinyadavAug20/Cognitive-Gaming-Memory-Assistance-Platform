@@ -84,12 +84,6 @@ export function RootBridgeGame() {
     ];
     setAnchors(initialAnchors);
     setPhase("build");
-
-    speak(
-      "Welcome to the Living Root Bridge Builder. Guide the living rubber fig tree roots across the mountain river gorge to connect the village.",
-      locale,
-      rate
-    );
   }
 
   // Automatic errorless scaffolding hint after 10s idle
