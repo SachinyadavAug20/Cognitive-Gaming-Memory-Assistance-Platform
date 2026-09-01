@@ -6,13 +6,15 @@
     "routine": {
       "title": "Today's Daily Routine",
       "label": "Today's Routine",
-      "morning_medicine": "Morning Medicine",
-      "water_reminder": "Water Reminder",
-      "family_photos": "Family Photos",
-      "medicine_time": "8:00 AM",
-      "water_count": "4 glasses today",
-"memories_count": "12 memories saved",
-    "now": "Now"
+      "morning_medicine": "Morning Medicine (BP & Vitamin)",
+      "water_reminder": "Hydration Check-In",
+      "doctor_appointment": "PHC Medical Check-Up",
+      "family_photos": "Family Memory Recall",
+      "medicine_time": "8:00 AM • 1 Pill with Water",
+      "water_count": "4 of 6 glasses today",
+      "appointment_time": "Dr. B. K. Sarma • Dispur PHC",
+      "memories_count": "12 memories with Sunita",
+      "now": "Now"
   },
     "patient": {
       "title": "I am a Patient",

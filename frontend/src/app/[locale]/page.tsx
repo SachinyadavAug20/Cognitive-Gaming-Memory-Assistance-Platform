@@ -89,18 +89,18 @@ export default function Home() {
                   </ChunkyButton>
                 }
               >
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-3 bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
-                    <span className="text-lg">🎫</span>
-                    <span className="font-bold text-sm text-ink">{t("kiosk.showCard")}</span>
+                <div className="space-y-2.5 flex-1 py-1">
+                  <div className="flex items-center gap-3 rounded-xl bg-amber-50/70 px-3.5 py-2 border border-black/15 shadow-xs">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-marigold text-white font-black text-xs">1</span>
+                    <span className="font-bold text-xs sm:text-sm text-ink">{t("kiosk.showCard")}</span>
                   </div>
-                  <div className="flex items-center gap-3 bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
-                    <span className="text-lg">📷</span>
-                    <span className="font-bold text-sm text-ink">{t("kiosk.scan")}</span>
+                  <div className="flex items-center gap-3 rounded-xl bg-amber-50/70 px-3.5 py-2 border border-black/15 shadow-xs">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-teal-700 text-white font-black text-xs">2</span>
+                    <span className="font-bold text-xs sm:text-sm text-ink">{t("kiosk.scan")}</span>
                   </div>
-                  <div className="flex items-center gap-3 bg-surface-muted rounded-lg px-3 py-1.5 border-2 border-border-soft">
-                    <span className="text-lg">✅</span>
-                    <span className="font-bold text-sm text-ink">{t("kiosk.start")}</span>
+                  <div className="flex items-center gap-3 rounded-xl bg-amber-50/70 px-3.5 py-2 border border-black/15 shadow-xs">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-white font-black text-xs">3</span>
+                    <span className="font-bold text-xs sm:text-sm text-ink">{t("kiosk.start")}</span>
                   </div>
                 </div>
               </PortalCard>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getMediaUrl } from "@/lib/api";
 import { speak, stopSpeaking } from "@/lib/speech";
+import { Heart, Volume2, X } from "lucide-react";
 
 interface MemoryLightboxProps {
   open: boolean;
@@ -62,7 +63,7 @@ export function MemoryLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-3 md:p-6"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -71,48 +72,78 @@ export function MemoryLightbox({
         type="button"
         aria-label={closeLabel}
         onClick={handleClose}
-        className="absolute inset-0 h-full w-full cursor-pointer bg-ink/80"
+        className="absolute inset-0 h-full w-full cursor-pointer bg-black/75 backdrop-blur-xs"
       />
-      <div className="relative flex max-h-[92vh] w-full max-w-2xl flex-col gap-4 overflow-y-auto rounded-3xl border-4 border-black bg-white p-5 shadow-[6px_6px_0_rgba(0,0,0,1)]">
-        <div className="flex items-start justify-between gap-3">
-          <h2 className="font-[family-name:var(--font-serif)] text-2xl font-bold text-ink">
-            {title}
-          </h2>
+      <div className="relative flex max-h-[92vh] w-full max-w-xl flex-col gap-4 overflow-y-auto rounded-3xl border-4 border-black bg-surface p-5 sm:p-6 shadow-[8px_8px_0px_#000] text-ink animate-in fade-in zoom-in-95 duration-150">
+        {/* Modal Header */}
+        <div className="flex items-center justify-between border-b-2 border-black/15 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-black bg-marigold text-white shadow-xs">
+              <Heart className="h-4 w-4" />
+            </span>
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-wider text-tea block">
+                Treasured Reminiscence
+              </span>
+              <h2 className="font-serif text-xl sm:text-2xl font-black text-ink leading-tight">
+                {title}
+              </h2>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleClose}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-surface hover:bg-surface-muted shadow-xs cursor-pointer"
+            aria-label={closeLabel}
+          >
+            <X className="h-5 w-5 text-ink" />
+          </button>
         </div>
 
+        {/* Media Frame */}
         {src ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={src}
-            alt={altText ?? title}
-            className="max-h-[45vh] w-full rounded-2xl border-4 border-black bg-surface-muted object-contain"
-          />
+          <div className="relative overflow-hidden rounded-2xl border-3 border-black bg-amber-50/50 p-2 shadow-[3px_3px_0px_#000]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={src}
+              alt={altText ?? title}
+              className="max-h-[42vh] w-full rounded-xl object-contain"
+            />
+          </div>
         ) : null}
 
+        {/* Memory Text Body */}
         {text ? (
-          <p className="rounded-2xl border-2 border-border bg-surface p-4 text-xl font-semibold leading-snug text-ink">
-            {text}
-          </p>
+          <div className="rounded-2xl border-2 border-black/20 bg-amber-50/40 p-4 shadow-inner">
+            <p className="font-serif text-base sm:text-lg font-bold leading-relaxed text-ink">
+              {text}
+            </p>
+          </div>
         ) : null}
 
-        {text ? (
-          <ListenButton
-            text={text}
-            langCode={langCode}
-            rate={rate}
-            listenLabel={listenLabel}
-            speakingLabel={speakingLabel}
-          />
-        ) : null}
+        {/* Action Controls */}
+        <div className="flex flex-col gap-2.5 pt-1">
+          {text ? (
+            <ListenButton
+              text={text}
+              langCode={langCode}
+              rate={rate}
+              listenLabel={listenLabel}
+              speakingLabel={speakingLabel}
+            />
+          ) : null}
 
-        <button
-          ref={closeRef}
-          type="button"
-          onClick={handleClose}
-          className="btn-tactile min-h-[64px] w-full rounded-2xl border-4 border-black bg-ink px-6 text-xl font-extrabold text-white"
-        >
-          ✕ {closeLabel}
-        </button>
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={handleClose}
+            className="btn-tactile flex min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl border-3 border-black bg-ink px-6 text-sm font-black text-white shadow-[3px_3px_0px_#000] hover:bg-black cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+            <span>{closeLabel}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -148,20 +179,13 @@ function ListenButton({
     <button
       type="button"
       onClick={handleClick}
-      className={`btn-tactile inline-flex min-h-[64px] items-center justify-center gap-3 rounded-2xl border-4 border-black px-6 text-xl font-extrabold ${
+      className={`btn-tactile flex min-h-[54px] w-full items-center justify-center gap-2.5 rounded-2xl border-3 border-black px-6 text-sm sm:text-base font-black shadow-[3px_3px_0px_#000] cursor-pointer ${
         speaking
-          ? "animate-pulse bg-marigold text-ink ring-4 ring-marigold/70"
-          : "bg-marigold text-ink"
+          ? "animate-pulse bg-marigold text-white ring-3 ring-amber-300"
+          : "bg-marigold text-white hover:bg-amber-600"
       }`}
     >
-      <span className="text-3xl">🔊</span>
-      {speaking && (
-        <span className="flex h-6 items-end gap-[3px]">
-          {[1, 2, 3, 4].map((i) => (
-            <span key={i} className="w-[4px] rounded-full bg-ink speak-bar" />
-          ))}
-        </span>
-      )}
+      <Volume2 className="h-5 w-5" />
       <span>{speaking ? speakingLabel : listenLabel}</span>
     </button>
   );

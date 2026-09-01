@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="100%" stop-color="#D1FAE5"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle with Border -->
+  <rect width="200" height="200" rx="36" fill="url(#bgGrad)"/>
+  <rect width="200" height="200" rx="36" fill="none" stroke="#000000" stroke-width="6"/>
+
+  <!-- Concentric Sensory Waves -->
+  <circle cx="100" cy="95" r="75" fill="none" stroke="#10B981" stroke-width="2" opacity="0.25"/>
+  <circle cx="100" cy="95" r="60" fill="none" stroke="#F59E0B" stroke-width="2" opacity="0.3"/>
+
+  <!-- Body / Kurta -->
+  <path d="M45 194 C45 145, 155 145, 155 194 Z" fill="#047857" stroke="#000000" stroke-width="5"/>
+  
+  <!-- Traditional Assamese Gamusa border trim -->
+  <path d="M85 148 L100 170 L115 148 L115 194 L85 194 Z" fill="#DC2626" stroke="#000000" stroke-width="3"/>
+  <path d="M92 160 L100 172 L108 160" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+  <path d="M90 178 L110 178" stroke="#FFFFFF" stroke-width="2"/>
+  
+  <!-- Neck -->
+  <rect x="86" y="120" width="28" height="30" rx="6" fill="#FBBF24" stroke="#000000" stroke-width="4"/>
+
+  <!-- Head -->
+  <ellipse cx="100" cy="96" rx="38" ry="42" fill="#FBBF24" stroke="#000000" stroke-width="5"/>
+
+  <!-- Dignified Silver/Grey Hair -->
+  <path d="M62 90 C62 52, 138 52, 138 90 C138 72, 126 60, 100 60 C74 60, 62 72, 62 90 Z" fill="#E5E7EB" stroke="#000000" stroke-width="5"/>
+  <path d="M59 92 C58 105, 64 115, 66 118" fill="none" stroke="#9CA3AF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M141 92 C142 105, 136 115, 134 118" fill="none" stroke="#9CA3AF" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Ears -->
+  <circle cx="62" cy="96" r="8" fill="#F59E0B" stroke="#000000" stroke-width="4"/>
+  <circle cx="138" cy="96" r="8" fill="#F59E0B" stroke="#000000" stroke-width="4"/>
+
+  <!-- Eyebrows -->
+  <path d="M76 82 Q86 78 94 82" fill="none" stroke="#4B5563" stroke-width="4" stroke-linecap="round"/>
+  <path d="M106 82 Q114 78 124 82" fill="none" stroke="#4B5563" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Friendly Eyes & Spectacles -->
+  <rect x="73" y="86" width="22" height="18" rx="6" fill="#FFFFFF" fill-opacity="0.6" stroke="#000000" stroke-width="3"/>
+  <rect x="105" y="86" width="22" height="18" rx="6" fill="#FFFFFF" fill-opacity="0.6" stroke="#000000" stroke-width="3"/>
+  <path d="M95 94 L105 94" stroke="#000000" stroke-width="3"/>
+  <path d="M63 92 L73 92" stroke="#000000" stroke-width="3"/>
+  <path d="M127 92 L137 92" stroke="#000000" stroke-width="3"/>
+
+  <!-- Pupils -->
+  <circle cx="84" cy="95" r="3.5" fill="#1F2937"/>
+  <circle cx="85" cy="93.5" r="1.2" fill="#FFFFFF"/>
+  <circle cx="116" cy="95" r="3.5" fill="#1F2937"/>
+  <circle cx="117" cy="93.5" r="1.2" fill="#FFFFFF"/>
+
+  <!-- Nose -->
+  <path d="M100 96 Q103 105 98 108" fill="none" stroke="#B45309" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Warm Gracious Smile -->
+  <path d="M85 116 Q100 128 115 116" fill="none" stroke="#000000" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Subtle Smile Cheeks -->
+  <circle cx="76" cy="110" r="5" fill="#F87171" opacity="0.3"/>
+  <circle cx="124" cy="110" r="5" fill="#F87171" opacity="0.3"/>
+</svg>

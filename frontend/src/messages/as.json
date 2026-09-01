@@ -5,15 +5,16 @@
   "comingSoon": "শীঘ্ৰেই আহি আছে",
     "routine": {
       "title": "আজিৰ দৈনিক দিনচৰ্যা",
-      "label": "আজিৰ দিনচৰ্যা",
-      "morning_medicine": "ৰাতিপুৱাৰ ঔষধ",
-      "water_reminder": "পানী খোৱাৰ সোঁৱৰণি",
-      "family_photos": "পৰিয়ালৰ ফটো",
-      "medicine_time": "ৰাতিপুৱা ৮:০০ বজাত",
-      "water_count": "আজি ৪ গিলাচ",
-"memories_count": "১২ টা স্মৃতি সংৰক্ষিত",
-    "now": "এতিয়া"
-  },
+      "morning_medicine": "ৰাতিপুৱাৰ ঔষধ (ৰক্তচাপ আৰু ভিটামিন)",
+      "water_reminder": "পানী খোৱাৰ নিয়মীয়া সোঁৱৰণি",
+      "doctor_appointment": "প্ৰাথমিক স্বাস্থ্য কেন্দ্ৰ পৰীক্ষা",
+      "family_photos": "পৰিয়ালৰ স্মৃতি সোঁৱৰণ",
+      "medicine_time": "ৰাতিপুৱা ৮:০০ বজাত • ১ টা বড়ি",
+      "water_count": "আজি ৬ গিলাচৰ ৪ গিলাচ",
+      "appointment_time": "ডাঃ বি. কে. শৰ্মা • দিছপুৰ পি.এইচ.চি.",
+      "memories_count": "সুনীতাৰ সৈতে ১২ টা স্মৃতি",
+      "now": "এতিয়া"
+    },
     "patient": {
       "title": "মই এজন ৰোগী",
       "subtitle": "ৰোগী পোৰ্টেল",

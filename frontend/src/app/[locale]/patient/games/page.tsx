@@ -13,6 +13,7 @@ import {
   Sparkles,
   Compass,
   Utensils,
+  Flower2,
 } from "lucide-react";
 import { GAMES, type ClinicalDomain } from "@/games/registry";
 import { usePatientDetail } from "@/games/usePatientDetail";
@@ -54,7 +55,7 @@ export default function GamesHubPage() {
           href="/patient"
           className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-4 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted"
         >
-          ← {t("backToRoutine")}
+          {t("backToRoutine")}
         </Link>
       </div>
 
@@ -123,6 +124,19 @@ export default function GamesHubPage() {
         >
           <Utensils className="h-3.5 w-3.5" />
           <span>Daily Living IADL ({GAMES.filter((g) => g.category === "iadl").length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setSelectedFilter("calm")}
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            selectedFilter === "calm"
+              ? "border-black bg-teal-700 text-white shadow-[2px_2px_0px_#000]"
+              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
+          }`}
+        >
+          <Flower2 className="h-3.5 w-3.5" />
+          <span>Sensory Calming ({GAMES.filter((g) => g.category === "calm").length})</span>
         </button>
       </div>
 

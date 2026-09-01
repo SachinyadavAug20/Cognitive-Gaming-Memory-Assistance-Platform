@@ -5,13 +5,14 @@
     "comingSoon": "जल्द आ रहा है",
     "routine": {
       "title": "आज की दैनिक दिनचर्या",
-      "label": "आज की दिनचर्या",
-      "morning_medicine": "सुबह की दवाई",
-      "water_reminder": "पानी का अनुस्मारक",
-      "family_photos": "परिवार की फ़ोटो",
-      "medicine_time": "सुबह 8:00 बजे",
-      "water_count": "4 गिलास आज",
-      "memories_count": "12 यादें सुरक्षित",
+      "morning_medicine": "सुबह की दवाई (रक्तचाप एवं विटामिन)",
+      "water_reminder": "जलपान जांच (हाइड्रेशन)",
+      "doctor_appointment": "प्राथमिक स्वास्थ्य केंद्र जांच",
+      "family_photos": "पारिवारिक स्मृति स्मरण",
+      "medicine_time": "सुबह 8:00 बजे • 1 गोली",
+      "water_count": "आज 6 में से 4 गिलास",
+      "appointment_time": "डॉ. बी. के. सरमा • दिसपुर PHC",
+      "memories_count": "सुनीता के साथ 12 यादें",
       "now": "अभी"
     },
     "patient": {

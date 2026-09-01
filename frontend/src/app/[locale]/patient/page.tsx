@@ -318,7 +318,7 @@ export default function PatientHome() {
             href="/"
             className="inline-flex items-center gap-1.5 text-ink-secondary hover:text-ink font-bold text-xs transition-colors"
           >
-            ← {t("back")}
+            {t("back")}
           </Link>
         </div>
       </div>
