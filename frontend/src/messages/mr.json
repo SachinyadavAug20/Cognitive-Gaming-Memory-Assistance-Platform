@@ -228,7 +228,7 @@
     }
   },
   "game": {
-    "back": "← मागे",
+    "back": "मागे",
     "score": "गुण: {score}"
   },
   "intake": {

@@ -30,6 +30,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -85,33 +86,50 @@ export function ProverbGame() {
         });
         setCurrentChallenge(res);
       } catch {
-        const fallback: AiProverbResponse = {
-          id: `fb-${roundNum}`,
-          category: cat,
-          partialVerseWithBlank:
-            roundNum === 0
-              ? "Bihu marks the arrival of spring and _____ in every home."
-              : roundNum === 1
-              ? "A drop of morning tea brings sweet _____ to the mind."
-              : "Like living tree roots, family bonds grow _____ across time.",
-          correctWord: roundNum === 0 ? "Joy" : roundNum === 1 ? "Warmth" : "Stronger",
-          candidateOptions:
-            roundNum === 0
-              ? ["Joy", "Frost", "Rain"]
-              : roundNum === 1
-              ? ["Warmth", "Cold", "Shadow"]
-              : ["Stronger", "Weaker", "Hollow"],
-          fullProverb:
-            roundNum === 0
-              ? "Bihu marks the arrival of spring and joy in every home."
-              : roundNum === 1
-              ? "A drop of morning tea brings sweet warmth to the mind."
-              : "Like living tree roots, family bonds grow stronger across time.",
-          explanationAndWisdom:
-            "Traditional folk wisdom celebrating nature, renewal, and generational love.",
-          regionOrigin: "North East Living Heritage",
-        };
-        setCurrentChallenge(fallback);
+        const PROVERB_BANK: AiProverbResponse[] = [
+          {
+            id: "as-1",
+            category: "BIHU_SONG",
+            partialVerseWithBlank: "Rongali Bihu marks the arrival of spring and _____ in every home.",
+            correctWord: "Joy",
+            candidateOptions: ["Joy", "Frost", "Rain"],
+            fullProverb: "Rongali Bihu marks the arrival of spring and joy in every home.",
+            explanationAndWisdom: "Traditional Assamese springtime saying celebrating renewal and family reunions.",
+            regionOrigin: "Assam Valley Heritage",
+          },
+          {
+            id: "me-2",
+            category: "NATURE_HARVEST",
+            partialVerseWithBlank: "Like the living root bridges of Cherrapunji, family bonds grow _____ across generations.",
+            correctWord: "Stronger",
+            candidateOptions: ["Stronger", "Weaker", "Hollow"],
+            fullProverb: "Like the living root bridges of Cherrapunji, family bonds grow stronger across generations.",
+            explanationAndWisdom: "Khasi indigenous wisdom celebrating deep root resilience and ancestral unity.",
+            regionOrigin: "Meghalaya Hill Heritage",
+          },
+          {
+            id: "mz-3",
+            category: "WISDOM",
+            partialVerseWithBlank: "When neighbors share mountain tea and rice, the whole village finds _____ and peace.",
+            correctWord: "Harmony",
+            candidateOptions: ["Harmony", "Dispute", "Winter"],
+            fullProverb: "When neighbors share mountain tea and rice, the whole village finds harmony and peace.",
+            explanationAndWisdom: "Mizo Tlawmngaihna proverb on selfless community kindness and shared blessings.",
+            regionOrigin: "Mizoram Living Heritage",
+          },
+          {
+            id: "mn-4",
+            category: "FAMILY_LOVE",
+            partialVerseWithBlank: "Like the floating islands of Loktak Lake, a patient heart stays _____ in every tide.",
+            correctWord: "Peaceful",
+            candidateOptions: ["Peaceful", "Restless", "Heavy"],
+            fullProverb: "Like the floating islands of Loktak Lake, a patient heart stays peaceful in every tide.",
+            explanationAndWisdom: "Manipuri folk saying celebrating serenity, gentle breathing, and spiritual calm.",
+            regionOrigin: "Manipur Valley Heritage",
+          },
+        ];
+        const selected = PROVERB_BANK[roundNum % PROVERB_BANK.length];
+        setCurrentChallenge(selected);
       } finally {
         setIsAiLoading(false);
       }
@@ -187,22 +205,24 @@ export function ProverbGame() {
     errorCount: errors,
   });
 
+  const str = getGameStrings("proverb", locale);
+
   if (loading)
     return (
-      <GameShell title="Folk Proverb & Rhyme Cloze" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="Folk Proverb & Rhyme Cloze" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="Folk Proverb & Rhyme Cloze" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -210,7 +230,7 @@ export function ProverbGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Semantic Association & Folklore // Module CDTx-14
+                Semantic Recall // Module CDTx-12
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-tea" />
@@ -222,10 +242,10 @@ export function ProverbGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              Folk Proverb & Rhyme Cloze
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Activate your semantic memory and cultural knowledge. Complete nostalgic North Eastern folk verses, Bihu sayings, and timeless proverbs.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -251,13 +271,13 @@ export function ProverbGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to Folk Proverb & Rhyme Cloze. Listen to the verse and fill in the missing word."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-            Start Verse Recall
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "play" ? (
@@ -391,8 +411,8 @@ export function ProverbGame() {
       ) : (
         /* PHASE: DONE CELEBRATION */
         <Celebration
-          title="Folk Proverbs Restored!"
-          subtitle="You recalled traditional sayings and stimulated semantic association pathways."
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
           xpEarned={105}
           accuracy={`${Math.max(0, Math.round(((taps - errors) / Math.max(1, taps)) * 100))}%`}
         >
@@ -403,7 +423,7 @@ export function ProverbGame() {
                   <CheckCircle2 className="h-4 w-4" /> Living Heritage Preserved
                 </span>
                 <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
-                  {completedProverbs.length} Verses
+                  {completedProverbs.length} {str.hudProgress}
                 </span>
               </div>
 
@@ -436,14 +456,14 @@ export function ProverbGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startGame}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Recall More Verses
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

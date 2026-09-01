@@ -22,6 +22,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 export interface RootAnchor {
   id: number;
@@ -165,11 +166,13 @@ export function RootBridgeGame() {
     );
   }
 
+  const str = getGameStrings("root-bridge", locale);
+
   if (loading) return <GameLoading />;
   if (error)
     return (
       <section className="pb-12">
-        <GameHeader title="Living Root Bridge" score={0} backHref="/patient/games" bgColor="bg-tea" />
+        <GameHeader title={str.title} score={0} backHref="/patient/games" bgColor="bg-tea" />
         <div className="mx-auto max-w-3xl px-4 pt-6">
           <GameError onRetry={reload} />
         </div>
@@ -178,26 +181,26 @@ export function RootBridgeGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title="Living Root Bridge Builder 🌳" score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader title={str.title} score={score} backHref="/patient/games" bgColor="bg-tea" />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
             <div className="text-6xl animate-bounce">🌳</div>
             <p className="font-serif text-3xl font-black text-ink">
-              Living Root Bridge Builder
+              {str.introTitle}
             </p>
             <p className="max-w-md text-lg font-semibold text-ink-secondary">
-              Guide living rubber fig tree roots across a scenic Meghalaya mountain gorge to build a bio-engineered village bridge.
+              {str.introSubtitle}
             </p>
 
             <AudioPrompt
-              text="Welcome to the Living Root Bridge Builder. Guide the aerial roots step-by-step across the mountain river."
-              label="Listen"
+              text={str.audioPrompt}
+              label={str.listenLabel}
               size="md"
             />
 
             <ChunkyButton variant="tea" size="2xl" onClick={startBridgeBuilding}>
-              Build Root Bridge 🌳
+              {str.startButton}
             </ChunkyButton>
           </div>
         ) : phase === "build" ? (
@@ -206,7 +209,7 @@ export function RootBridgeGame() {
             <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-2 border-black bg-surface px-4 py-2 shadow-sm">
               <span className="text-sm font-black text-emerald-800">🌉 Cherrapunji Ravine</span>
               <span className="text-xs font-bold text-ink-secondary">
-                {currentAnchorIdx} / {totalAnchors - 1} Spans Connected
+                {currentAnchorIdx} / {totalAnchors - 1} {str.hudProgress}
               </span>
             </div>
 
@@ -281,14 +284,14 @@ export function RootBridgeGame() {
           </div>
         ) : (
           /* PHASE: DONE CELEBRATION */
-          <Celebration icon={GitFork} title="Living Root Bridge Completed!">
+          <Celebration icon={GitFork} title={str.celebrationTitle}>
             <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
               <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
                 <h3 className="font-serif text-2xl font-black text-emerald-800">
-                  Meghalaya UNESCO Living Bridge
+                  {str.celebrationTitle}
                 </h3>
                 <p className="text-xs font-bold text-ink-secondary mt-1">
-                  You guided the living roots across the river. The bridge will endure for hundreds of years.
+                  {str.celebrationSubtitle}
                 </p>
 
                 {/* Music Button */}
@@ -310,13 +313,13 @@ export function RootBridgeGame() {
               {/* Actions */}
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ChunkyButton variant="tea" size="xl" onClick={startBridgeBuilding}>
-                  Build Another Span
+                  {str.playAgainButton}
                 </ChunkyButton>
                 <Link
-                  href="/patient"
+                  href="/patient/games"
                   className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
                 >
-                  ← Back to Home
+                  {str.backToHub}
                 </Link>
               </div>
             </div>

@@ -19,12 +19,21 @@ import {
   Feather,
   Clock,
   Boxes,
+  Bell,
+  Disc3,
+  Footprints,
+  Flower,
 } from "lucide-react";
 
 import { AlpanaGame } from "./alpana/AlpanaGame";
 import { RiverLanternsGame } from "./river-lanterns/RiverLanternsGame";
 import { LoomGame } from "./loom/LoomGame";
 import { DrumGame } from "./drum/DrumGame";
+import { HornbillFlightGame } from "./hornbill-flight/HornbillFlightGame";
+import { MajuliPotteryGame } from "./majuli-pottery/MajuliPotteryGame";
+import { BambooDanceGame } from "./bamboo-dance/BambooDanceGame";
+import { BrahmaputraBoatGame } from "./brahmaputra-boat/BrahmaputraBoatGame";
+import { DzukouBotanistGame } from "./dzukou-botanist/DzukouBotanistGame";
 import { MemoirScribeGame } from "./memoir-scribe/MemoirScribeGame";
 import { GrandchildChatGame } from "./grandchild-chat/GrandchildChatGame";
 import { MemoryDetectiveGame } from "./memory-detective/MemoryDetectiveGame";
@@ -34,9 +43,11 @@ import { ProverbGame } from "./proverb/ProverbGame";
 import { JigsawGame } from "./jigsaw/JigsawGame";
 import { WayfindingGame } from "./wayfinding/WayfindingGame";
 import { TeaHarvestGame } from "./tea-harvest/TeaHarvestGame";
+import { MonasteryBellGame } from "./monastery-bell/MonasteryBellGame";
 import { NostalgiaRadioGame } from "./radio/NostalgiaRadioGame";
 import { HeritageKitchenGame } from "./heritage-kitchen/HeritageKitchenGame";
 import { RootBridgeGame } from "./root-bridge/RootBridgeGame";
+import { DailyCareRoutineGame } from "./daily-routine/DailyCareRoutineGame";
 import { LotusLakeGame } from "./lotus-lake/LotusLakeGame";
 import { TimelineGame } from "./timeline/TimelineGame";
 import { SortingGame } from "./sorting/SortingGame";
@@ -56,7 +67,7 @@ export interface GameDef {
 }
 
 export const GAMES: GameDef[] = [
-  // ── DOMAIN 1: 3D COMPUTER VISION & KINESTHETIC PRAXIS ──
+  // ── DOMAIN 1: 3D COMPUTER VISION & KINESTHETIC PRAXIS (7 Modules) ──
   {
     id: "alpana",
     icon: Sparkles,
@@ -101,8 +112,41 @@ export const GAMES: GameDef[] = [
     recommended: true,
     component: DrumGame,
   },
+  {
+    id: "hornbill-flight",
+    icon: Feather,
+    titleKey: "hornbill.title",
+    descKey: "hornbill.desc",
+    accent: "bg-amber-800",
+    domain: "Visuomotor Glider Physics",
+    category: "vision-3d",
+    recommended: true,
+    component: HornbillFlightGame,
+  },
+  {
+    id: "majuli-pottery",
+    icon: Disc3,
+    titleKey: "pottery.title",
+    descKey: "pottery.desc",
+    accent: "bg-amber-900",
+    domain: "Tactile Motor Praxis",
+    category: "vision-3d",
+    recommended: true,
+    component: MajuliPotteryGame,
+  },
+  {
+    id: "bamboo-dance",
+    icon: Footprints,
+    titleKey: "bambooDance.title",
+    descKey: "bambooDance.desc",
+    accent: "bg-emerald-900",
+    domain: "Visuomotor Rhythm Step",
+    category: "vision-3d",
+    recommended: true,
+    component: BambooDanceGame,
+  },
 
-  // ── DOMAIN 2: AUTOBIOGRAPHICAL REMINISCENCE & MEMORY RETRIEVAL ──
+  // ── DOMAIN 2: AUTOBIOGRAPHICAL REMINISCENCE & MEMORY RETRIEVAL (6 Modules) ──
   {
     id: "grandchild-chat",
     icon: Coffee,
@@ -119,8 +163,8 @@ export const GAMES: GameDef[] = [
     icon: Search,
     titleKey: "memoryDetective.title",
     descKey: "memoryDetective.desc",
-    accent: "bg-marigold",
-    domain: "AI Clue & Face Recognition",
+    accent: "bg-amber-800",
+    domain: "Face & Clue Spaced Retrieval",
     category: "reminiscence",
     recommended: true,
     component: MemoryDetectiveGame,
@@ -130,22 +174,11 @@ export const GAMES: GameDef[] = [
     icon: Feather,
     titleKey: "memoirScribe.title",
     descKey: "memoirScribe.desc",
-    accent: "bg-purple-900",
-    domain: "AI Narrative Living Memoirs",
+    accent: "bg-amber-900",
+    domain: "AI Spoken Memoirs & Scribe",
     category: "reminiscence",
     recommended: true,
     component: MemoirScribeGame,
-  },
-  {
-    id: "jigsaw",
-    icon: Grid3X3,
-    titleKey: "jigsaw.title",
-    descKey: "jigsaw.desc",
-    accent: "bg-tea",
-    domain: "Visuospatial & Memory",
-    category: "reminiscence",
-    recommended: true,
-    component: JigsawGame,
   },
   {
     id: "timeline",
@@ -153,34 +186,78 @@ export const GAMES: GameDef[] = [
     titleKey: "timeline.title",
     descKey: "timeline.desc",
     accent: "bg-tea",
-    domain: "Spaced Autobiographical Recall",
+    domain: "Chronological Life Milestones",
+    category: "reminiscence",
+    recommended: false,
+    component: TimelineGame,
+  },
+  {
+    id: "jigsaw",
+    icon: Grid3X3,
+    titleKey: "jigsaw.title",
+    descKey: "jigsaw.desc",
+    accent: "bg-tea",
+    domain: "Visuospatial Family Puzzles",
     category: "reminiscence",
     recommended: true,
-    component: TimelineGame,
+    component: JigsawGame,
   },
   {
     id: "radio",
     icon: Radio,
     titleKey: "radio.title",
     descKey: "radio.desc",
-    accent: "bg-amber-800",
-    domain: "Auditory Reminiscence",
+    accent: "bg-amber-900",
+    domain: "Auditory Vintage Reminiscence",
     category: "reminiscence",
-    recommended: true,
+    recommended: false,
     component: NostalgiaRadioGame,
   },
 
-  // ── DOMAIN 3: ATTENTION & VISUOSPATIAL ORIENTATION ──
+  // ── DOMAIN 3: ATTENTION, WORKING MEMORY & SPATIAL ORIENTATION (7 Modules) ──
   {
     id: "tea-harvest",
     icon: Leaf,
     titleKey: "teaHarvest.title",
     descKey: "teaHarvest.desc",
-    accent: "bg-emerald-600",
+    accent: "bg-emerald-800",
     domain: "Selective Attention",
     category: "attention",
     recommended: true,
     component: TeaHarvestGame,
+  },
+  {
+    id: "monastery-bell",
+    icon: Bell,
+    titleKey: "monasteryBell.title",
+    descKey: "monasteryBell.desc",
+    accent: "bg-purple-900",
+    domain: "Auditory Working Memory Span",
+    category: "attention",
+    recommended: true,
+    component: MonasteryBellGame,
+  },
+  {
+    id: "brahmaputra-boat",
+    icon: Compass,
+    titleKey: "boat.title",
+    descKey: "boat.desc",
+    accent: "bg-sky-900",
+    domain: "Spatial Navigation & Tracking",
+    category: "attention",
+    recommended: true,
+    component: BrahmaputraBoatGame,
+  },
+  {
+    id: "dzukou-botanist",
+    icon: Flower,
+    titleKey: "botanist.title",
+    descKey: "botanist.desc",
+    accent: "bg-emerald-950",
+    domain: "Visual Discrimination & Search",
+    category: "attention",
+    recommended: true,
+    component: DzukouBotanistGame,
   },
   {
     id: "wayfinding",
@@ -216,7 +293,18 @@ export const GAMES: GameDef[] = [
     component: StorybookGame,
   },
 
-  // ── DOMAIN 4: EXECUTIVE FUNCTION & DAILY LIFE SKILLS (IADL) ──
+  // ── DOMAIN 4: EXECUTIVE FUNCTION & DAILY LIFE SKILLS (IADL) (5 Modules) ──
+  {
+    id: "daily-routine",
+    icon: Clock,
+    titleKey: "dailyRoutine.title",
+    descKey: "dailyRoutine.desc",
+    accent: "bg-amber-800",
+    domain: "Prospective Memory & Routine",
+    category: "iadl",
+    recommended: true,
+    component: DailyCareRoutineGame,
+  },
   {
     id: "heritage-kitchen",
     icon: Utensils,
@@ -262,7 +350,7 @@ export const GAMES: GameDef[] = [
     component: ProverbGame,
   },
 
-  // ── DOMAIN 5: SENSORY CALMING & MINDFULNESS ──
+  // ── DOMAIN 5: SENSORY CALMING & MINDFULNESS (1 Module) ──
   {
     id: "lotus-lake",
     icon: Flower2,

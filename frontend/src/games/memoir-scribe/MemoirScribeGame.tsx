@@ -28,6 +28,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -164,22 +165,24 @@ export function MemoirScribeGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("memoir-scribe", locale);
+
   if (loading)
     return (
-      <GameShell title="The Voice Reminiscence Scribe" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="The Voice Reminiscence Scribe" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="The Voice Reminiscence Scribe" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -187,10 +190,10 @@ export function MemoirScribeGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                AI Narrative Synthesis // Module CDTx-18
+                Semantic Synthesis & Reminiscence // Module CDTx-18
               </span>
             </div>
-            <ShieldCheck className="h-4 w-4 text-purple-700" />
+            <ShieldCheck className="h-4 w-4 text-purple-900" />
           </div>
 
           <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-purple-900 text-white shadow-[4px_4px_0px_#000]">
@@ -199,17 +202,17 @@ export function MemoirScribeGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The Living Memoir Scribe
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Speak or type heartfelt family memories. Our local AI transforms your words into an illustrated poetic Golden Page for your family memoir book.
+              {str.introSubtitle}
             </p>
           </div>
 
           {/* Prompt Selection Carousel */}
           <div className="w-full max-w-md space-y-2 text-left">
             <span className="text-xs font-black uppercase tracking-wider text-purple-900 block">
-              Choose a Memory Theme:
+              {str.hudAction}
             </span>
             <div className="grid gap-2">
               {prompts.map((p, idx) => (
@@ -232,13 +235,13 @@ export function MemoirScribeGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the Living Memoir Scribe. Choose a memory and tell your story."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-            Open Memoir Quill
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "write" ? (
@@ -354,8 +357,8 @@ export function MemoirScribeGame() {
       ) : (
         /* PHASE: DONE CELEBRATION */
         <Celebration
-          title="Living Memoir Page Archived!"
-          subtitle="Your personal family narrative has been transformed into a timeless digital memoir with high semantic richness."
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
           xpEarned={140}
           accuracy="100%"
         >
@@ -366,12 +369,12 @@ export function MemoirScribeGame() {
                   <CheckCircle2 className="h-4 w-4" /> Family Heritage Preserved
                 </span>
                 <span className="text-[10px] font-black uppercase rounded bg-purple-900 text-white px-2 py-0.5">
-                  1 Memoir Page
+                  1 {str.hudProgress}
                 </span>
               </div>
 
               <h3 className="font-serif text-xl font-black text-ink">
-                {memoirResult?.memoirTitle || "Cherished Living Heritage"}
+                {memoirResult?.memoirTitle || str.celebrationTitle}
               </h3>
               <p className="font-serif italic text-xs font-bold text-ink-secondary mt-1">
                 &ldquo;{memoirResult?.poeticNarrative}&rdquo;
@@ -395,14 +398,14 @@ export function MemoirScribeGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startGame}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Scribe Another Memoir
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

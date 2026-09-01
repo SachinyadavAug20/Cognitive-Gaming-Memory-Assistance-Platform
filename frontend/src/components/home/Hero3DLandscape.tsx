@@ -28,38 +28,42 @@ interface PresetConfig {
   sunPos: [number, number, number];
   ambientColor: number;
   ambientIntensity: number;
+  waterColor: number;
 }
 
 const ATMOSPHERE_CONFIGS: Record<TimeOfDay, PresetConfig> = {
   morning: {
     sky: 0xdbeafe,
     fog: 0xdbeafe,
-    fogDensity: 0.022,
+    fogDensity: 0.02,
     sunColor: 0xfef08a,
-    sunIntensity: 1.4,
-    sunPos: [12, 18, 10],
+    sunIntensity: 1.5,
+    sunPos: [14, 20, 12],
     ambientColor: 0xffffff,
-    ambientIntensity: 0.9,
+    ambientIntensity: 0.85,
+    waterColor: 0x0284c7,
   },
   golden: {
     sky: 0xfdba74,
     fog: 0xfdba74,
-    fogDensity: 0.028,
+    fogDensity: 0.026,
     sunColor: 0xf97316,
-    sunIntensity: 1.6,
-    sunPos: [18, 8, -6],
+    sunIntensity: 1.8,
+    sunPos: [20, 8, -8],
     ambientColor: 0xfef3c7,
     ambientIntensity: 0.75,
+    waterColor: 0xd97706,
   },
   night: {
-    sky: 0x090d16,
-    fog: 0x090d16,
-    fogDensity: 0.035,
+    sky: 0x070c18,
+    fog: 0x070c18,
+    fogDensity: 0.032,
     sunColor: 0x93c5fd,
-    sunIntensity: 0.7,
-    sunPos: [-10, 15, 10],
+    sunIntensity: 0.8,
+    sunPos: [-12, 16, 12],
     ambientColor: 0x1e293b,
-    ambientIntensity: 0.5,
+    ambientIntensity: 0.55,
+    waterColor: 0x0f172a,
   },
 };
 
@@ -92,6 +96,8 @@ export function Hero3DLandscape() {
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sunLightRef = useRef<THREE.DirectionalLight | null>(null);
   const ambientLightRef = useRef<THREE.AmbientLight | null>(null);
+  const waterMeshRef = useRef<THREE.Mesh | null>(null);
+  const lanternsGroupRef = useRef<THREE.Group | null>(null);
 
   const isRotatingRef = useRef(true);
   const isIntersectingRef = useRef(true);
@@ -117,6 +123,7 @@ export function Hero3DLandscape() {
     const scene = sceneRef.current;
     const sun = sunLightRef.current;
     const ambient = ambientLightRef.current;
+    const water = waterMeshRef.current;
     if (!scene || !sun || !ambient) return;
 
     const cfg = ATMOSPHERE_CONFIGS[timeOfDay];
@@ -132,6 +139,10 @@ export function Hero3DLandscape() {
 
     ambient.color = new THREE.Color(cfg.ambientColor);
     ambient.intensity = cfg.ambientIntensity;
+
+    if (water) {
+      (water.material as THREE.MeshStandardMaterial).color.setHex(cfg.waterColor);
+    }
   }, [timeOfDay]);
 
   // In-place update of Camera Preset target (smooth lerping)
@@ -167,7 +178,6 @@ export function Hero3DLandscape() {
       powerPreference: "high-performance",
     });
     renderer.setSize(width, height);
-    // Clamp DPR to 1.25 for buttery smooth 60 FPS on all screens
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.25));
     rendererRef.current = renderer;
     container.appendChild(renderer.domElement);
@@ -192,18 +202,26 @@ export function Hero3DLandscape() {
     const worldGroup = new THREE.Group();
     scene.add(worldGroup);
 
-    // 4. Meandering Brahmaputra River Plane
-    const waterGeo = new THREE.PlaneGeometry(36, 36, 24, 24);
+    // 4. Meandering Brahmaputra River Plane with Dynamic Wave Vertices
+    const waterGeo = new THREE.PlaneGeometry(40, 40, 32, 32);
     const waterMat = new THREE.MeshStandardMaterial({
-      color: 0x0284c7,
-      roughness: 0.15,
-      metalness: 0.7,
+      color: cfg.waterColor,
+      roughness: 0.1,
+      metalness: 0.8,
       flatShading: true,
     });
     const waterMesh = new THREE.Mesh(waterGeo, waterMat);
     waterMesh.rotation.x = -Math.PI / 2;
     waterMesh.position.y = 0;
     worldGroup.add(waterMesh);
+    waterMeshRef.current = waterMesh;
+
+    // Cache initial water vertex positions for wave animation
+    const posAttribute = waterGeo.attributes.position;
+    const initialZ = new Float32Array(posAttribute.count);
+    for (let i = 0; i < posAttribute.count; i++) {
+      initialZ[i] = posAttribute.getZ(i);
+    }
 
     // 5. Majuli Sandbanks (Chars)
     const charGeo = new THREE.CylinderGeometry(2.8, 3.4, 0.25, 8);
@@ -285,14 +303,14 @@ export function Hero3DLandscape() {
     createTerraceHill(-9, -15, 8.0, 8.0, himalayaMat);
     createTerraceHill(9, -15, 8.5, 8.5, himalayaMat);
 
-    // 7. InstancedMesh for 70 Tea Bushes (Extreme Performance: 1 Draw Call)
+    // 7. InstancedMesh for 80 Tea Bushes (Extreme Performance: 1 Draw Call)
     const bushGeo = new THREE.DodecahedronGeometry(0.45);
     const bushMat = new THREE.MeshStandardMaterial({
       color: 0x4ade80,
       roughness: 0.85,
       flatShading: true,
     });
-    const bushCount = 70;
+    const bushCount = 80;
     const bushInstanced = new THREE.InstancedMesh(bushGeo, bushMat, bushCount);
 
     const dummy = new THREE.Object3D();
@@ -352,6 +370,7 @@ export function Hero3DLandscape() {
     roof.rotation.y = Math.PI / 4;
     hutGroup.add(roof);
 
+    // Warm glowing lantern on stilt house
     const lantern = new THREE.Mesh(
       new THREE.SphereGeometry(0.12, 6, 6),
       new THREE.MeshBasicMaterial({ color: 0xfde047 })
@@ -388,7 +407,62 @@ export function Hero3DLandscape() {
     boatGroup.position.set(0.6, 0.18, 1.5);
     worldGroup.add(boatGroup);
 
-    // 10. Low-Poly Drifting Clouds
+    // 10. Floating Paper Memory Lanterns along the River
+    const lanternsGroup = new THREE.Group();
+    const lanternGeo = new THREE.OctahedronGeometry(0.18);
+    const lanternMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24 });
+    const lanternCount = 6;
+    const lanterns: THREE.Mesh[] = [];
+
+    for (let l = 0; l < lanternCount; l++) {
+      const lMesh = new THREE.Mesh(lanternGeo, lanternMat);
+      lMesh.position.set(-1.0 + (l % 3) * 1.2, 0.15, -4.0 + l * 2.2);
+      lanternsGroup.add(lMesh);
+      lanterns.push(lMesh);
+    }
+    worldGroup.add(lanternsGroup);
+    lanternsGroupRef.current = lanternsGroup;
+
+    // 11. Low-Poly Soaring Cranes Flock (Himalayan Migratory Birds)
+    const birdGroup = new THREE.Group();
+    const wingMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+    const birds: { mesh: THREE.Group; offset: number }[] = [];
+
+    for (let b = 0; b < 4; b++) {
+      const singleBird = new THREE.Group();
+      const leftWing = new THREE.Mesh(new THREE.BufferGeometry(), wingMat);
+      const rightWing = new THREE.Mesh(new THREE.BufferGeometry(), wingMat);
+
+      // Simple triangle wings
+      const wingVertices = new Float32Array([
+        0, 0, 0,
+        0.4, 0.1, -0.2,
+        0.2, 0, 0.3,
+      ]);
+      const leftWingGeo = new THREE.BufferGeometry();
+      leftWingGeo.setAttribute("position", new THREE.BufferAttribute(wingVertices, 3));
+      leftWing.geometry = leftWingGeo;
+
+      const rightWingVertices = new Float32Array([
+        0, 0, 0,
+        -0.4, 0.1, -0.2,
+        -0.2, 0, 0.3,
+      ]);
+      const rightWingGeo = new THREE.BufferGeometry();
+      rightWingGeo.setAttribute("position", new THREE.BufferAttribute(rightWingVertices, 3));
+      rightWing.geometry = rightWingGeo;
+
+      singleBird.add(leftWing);
+      singleBird.add(rightWing);
+      singleBird.position.set(-3.0 + b * 1.5, 7.5 + (b % 2) * 0.4, -6.0 - b * 1.2);
+      birdGroup.add(singleBird);
+      birds.push({ mesh: singleBird, offset: b * 0.5 });
+    }
+    worldGroup.add(birdGroup);
+
+
+
+    // 13. Low-Poly Drifting Clouds
     const cloudGroup = new THREE.Group();
     const cloudGeo = new THREE.DodecahedronGeometry(1.0);
     const cloudMat = new THREE.MeshStandardMaterial({
@@ -412,7 +486,7 @@ export function Hero3DLandscape() {
     }
     worldGroup.add(cloudGroup);
 
-    // 11. Mouse & Touch Orbit Handlers
+    // 14. Mouse & Touch Orbit Handlers
     let isDragging = false;
     let previousMouseX = 0;
     let previousMouseY = 0;
@@ -446,7 +520,7 @@ export function Hero3DLandscape() {
     window.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("pointerup", handlePointerUp);
 
-    // 12. Resize Handler
+    // 15. Resize Handler
     const handleResize = () => {
       if (!container || !camera || !renderer) return;
       const w = container.clientWidth;
@@ -457,13 +531,13 @@ export function Hero3DLandscape() {
     };
     window.addEventListener("resize", handleResize);
 
-    // 13. Page Visibility API: Auto-sleep when tab is hidden (0% GPU/Battery)
+    // 16. Page Visibility API: Auto-sleep when tab is hidden (0% GPU/Battery)
     const handleVisibilityChange = () => {
       isTabVisibleRef.current = document.visibilityState === "visible";
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // 14. IntersectionObserver: Auto-sleep when scrolled offscreen
+    // 17. IntersectionObserver: Auto-sleep when scrolled offscreen
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -474,7 +548,7 @@ export function Hero3DLandscape() {
     );
     observer.observe(container);
 
-    // 15. Animation Loop
+    // 18. Animation Loop (60 FPS Performance)
     let animationFrameId: number;
     const clock = new THREE.Clock();
 
@@ -496,11 +570,36 @@ export function Hero3DLandscape() {
         worldGroup.rotation.y += 0.0018;
       }
 
-      // Gentle river rocking for the canoe
+      // Dynamic Brahmaputra River Wave Undulation
+      const pos = waterGeo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const u = pos.getX(i);
+        const v = pos.getY(i);
+        const wave = Math.sin(u * 0.5 + elapsed * 1.5) * 0.08 + Math.cos(v * 0.5 + elapsed * 1.2) * 0.06;
+        pos.setZ(i, initialZ[i] + wave);
+      }
+      pos.needsUpdate = true;
+
+      // River rocking for canoe
       boatGroup.position.y = 0.18 + Math.sin(elapsed * 2.2) * 0.05;
       boatGroup.rotation.z = Math.sin(elapsed * 1.6) * 0.04;
       boatGroup.rotation.x = Math.cos(elapsed * 1.9) * 0.03;
       boatGroup.position.z = 1.5 + Math.sin(elapsed * 0.6) * 0.3;
+
+      // Floating Paper Memory Lanterns Drifting
+      lanterns.forEach((lan, idx) => {
+        lan.position.y = 0.14 + Math.sin(elapsed * 2.0 + idx) * 0.04;
+        lan.rotation.y = elapsed * 0.8 + idx;
+      });
+
+      // Flapping Soaring Cranes
+      birds.forEach((bird) => {
+        bird.mesh.position.x += 0.015;
+        if (bird.mesh.position.x > 12) bird.mesh.position.x = -12;
+        bird.mesh.position.y += Math.sin(elapsed * 3.0 + bird.offset) * 0.008;
+      });
+
+
 
       // Drifting clouds
       cloudGroup.rotation.y += 0.0006;
@@ -652,14 +751,14 @@ export function Hero3DLandscape() {
                 playTapFeedback();
                 setTimeOfDay("morning");
               }}
-              title="Morning Dawn"
-              className={`p-1 rounded-lg transition-colors cursor-pointer ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                 timeOfDay === "morning"
-                  ? "bg-tea text-white"
+                  ? "bg-tea text-white shadow-xs"
                   : "text-ink hover:bg-surface-muted"
               }`}
             >
-              <Sun className="h-3.5 w-3.5" />
+              <Sun className="h-3 w-3" />
+              <span>Sunrise</span>
             </button>
             <button
               type="button"
@@ -667,14 +766,14 @@ export function Hero3DLandscape() {
                 playTapFeedback();
                 setTimeOfDay("golden");
               }}
-              title="Golden Twilight"
-              className={`p-1 rounded-lg transition-colors cursor-pointer ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                 timeOfDay === "golden"
-                  ? "bg-marigold text-white"
+                  ? "bg-tea text-white shadow-xs"
                   : "text-ink hover:bg-surface-muted"
               }`}
             >
-              <Sunset className="h-3.5 w-3.5" />
+              <Sunset className="h-3 w-3" />
+              <span>Golden</span>
             </button>
             <button
               type="button"
@@ -682,14 +781,14 @@ export function Hero3DLandscape() {
                 playTapFeedback();
                 setTimeOfDay("night");
               }}
-              title="Starlit Night"
-              className={`p-1 rounded-lg transition-colors cursor-pointer ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
                 timeOfDay === "night"
-                  ? "bg-slate-900 text-white"
+                  ? "bg-tea text-white shadow-xs"
                   : "text-ink hover:bg-surface-muted"
               }`}
             >
-              <Moon className="h-3.5 w-3.5" />
+              <Moon className="h-3 w-3" />
+              <span>Night</span>
             </button>
           </div>
 
@@ -743,45 +842,41 @@ export function Hero3DLandscape() {
           <button
             type="button"
             onClick={() => setIsRotating(!isRotating)}
-            title={isRotating ? "Pause orbit rotation" : "Resume orbit rotation"}
-            className="p-1.5 rounded-xl border-2 border-black bg-surface text-ink text-xs font-black shadow-xs hover:bg-surface-muted transition-all cursor-pointer"
+            className={`p-1.5 rounded-xl border-2 border-black shadow-xs transition-colors cursor-pointer ${
+              isRotating ? "bg-tea text-white" : "bg-surface text-ink hover:bg-surface-muted"
+            }`}
+            title={isRotating ? "Pause Orbit Rotation" : "Resume Orbit Rotation"}
           >
-            <Compass
-              className={`h-3.5 w-3.5 text-tea ${isRotating ? "animate-spin" : ""}`}
-            />
+            <Compass className="h-3.5 w-3.5" />
           </button>
 
           {/* Calming Audio Toggle */}
           <button
             type="button"
             onClick={toggleAmbientAudio}
-            title={
-              isPlayingAudio
-                ? "Mute ambient nature audio"
-                : "Listen to river water & bamboo flute"
-            }
-            className={`px-2 py-1 rounded-xl border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer flex items-center gap-1 ${
-              isPlayingAudio
-                ? "bg-tea text-white"
-                : "bg-surface text-ink hover:bg-surface-muted"
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-xl border-2 border-black text-xs font-black shadow-xs transition-colors cursor-pointer ${
+              isPlayingAudio ? "bg-marigold text-white animate-pulse" : "bg-surface text-ink hover:bg-surface-muted"
             }`}
           >
             {isPlayingAudio ? (
-              <Volume2 className="h-3.5 w-3.5" />
+              <>
+                <Volume2 className="h-3.5 w-3.5" />
+                <span>Calm Audio</span>
+              </>
             ) : (
-              <VolumeX className="h-3.5 w-3.5" />
+              <>
+                <VolumeX className="h-3.5 w-3.5" />
+                <span>Calm Audio</span>
+              </>
             )}
-            <span className="text-[10px] hidden md:inline">
-              {isPlayingAudio ? "Audio On" : "Calm Audio"}
-            </span>
           </button>
 
-          {/* Fullscreen Zen Mode */}
+          {/* Fullscreen Toggle */}
           <button
             type="button"
             onClick={toggleFullscreen}
-            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen Zen Mode"}
-            className="p-1.5 rounded-xl border-2 border-black bg-surface text-ink text-xs font-black shadow-xs hover:bg-surface-muted transition-all cursor-pointer"
+            className="p-1.5 rounded-xl border-2 border-black bg-surface text-ink hover:bg-surface-muted shadow-xs transition-colors cursor-pointer"
+            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
           >
             {isFullscreen ? (
               <Minimize2 className="h-3.5 w-3.5" />
@@ -792,24 +887,18 @@ export function Hero3DLandscape() {
         </div>
       </div>
 
-      {/* 3D Canvas Viewport */}
+      {/* 3D WebGL Canvas Viewport */}
       <div
-        className={`relative w-full select-none cursor-grab active:cursor-grabbing overflow-hidden ${
+        ref={mountRef}
+        className={`w-full relative cursor-grab active:cursor-grabbing ${
           isFullscreen
-            ? "h-[75vh] w-full max-w-6xl rounded-2xl border-3 border-white shadow-2xl"
+            ? "h-[80vh] max-w-6xl rounded-2xl overflow-hidden border-3 border-white/20"
             : "h-[380px] sm:h-[460px] md:h-[500px]"
         }`}
       >
-        <div ref={mountRef} className="w-full h-full" />
-
-        {/* Ambient HUD Info Overlays */}
-        <div className="absolute bottom-3 left-3 pointer-events-none bg-surface/90 backdrop-blur-xs px-3 py-1.5 rounded-xl border-2 border-black text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>🌿 Drag to rotate • Scroll to zoom</span>
-        </div>
-
-        <div className="absolute top-3 right-3 pointer-events-none bg-surface/90 backdrop-blur-xs px-2.5 py-1 rounded-lg border-2 border-black text-[10px] font-bold text-ink-secondary shadow-xs flex items-center gap-1">
-          <Camera className="h-3 w-3 text-tea" />
+        {/* Floating Ambient Info Tag */}
+        <div className="absolute top-3 right-3 bg-surface/90 backdrop-blur-xs border-2 border-black px-3 py-1 rounded-xl text-xs font-black text-ink shadow-[2px_2px_0px_#000] pointer-events-none flex items-center gap-1.5">
+          <Camera className="h-3.5 w-3.5 text-tea" />
           <span>Brahmaputra Valley, Upper Assam</span>
         </div>
       </div>

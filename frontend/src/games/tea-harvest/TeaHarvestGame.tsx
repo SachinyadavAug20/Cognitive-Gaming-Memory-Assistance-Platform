@@ -22,6 +22,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 export interface TeaItem {
   id: string;
@@ -207,24 +208,26 @@ export function TeaHarvestGame() {
     );
   }
 
+  const str = getGameStrings("tea-harvest", locale);
+
   if (loading) return <GameLoading />;
   if (error)
     return (
-      <GameShell title="Two Leaves & A Bud" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="Two Leaves & A Bud 🌿" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
           <div className="text-6xl animate-bounce">🌱</div>
           <p className="font-serif text-3xl font-black text-ink">
-            Two Leaves & A Bud
+            {str.introTitle}
           </p>
           <p className="max-w-md text-lg font-semibold text-ink-secondary">
-            Harvest fresh morning tea shoots across the rolling green slopes of Upper Assam into your traditional woven basket.
+            {str.introSubtitle}
           </p>
 
           {/* Educational Target Showcase */}
@@ -246,13 +249,13 @@ export function TeaHarvestGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the Tea Harvest. Spot and pluck the fresh two leaves and a bud into your basket."
-            label="Listen"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="2xl" onClick={startHarvest}>
-            Start Morning Harvest 🌿
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "pluck" ? (
@@ -339,21 +342,21 @@ export function TeaHarvestGame() {
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration icon={Leaf} title="Morning Harvest Completed!">
+        <Celebration icon={Leaf} title={str.celebrationTitle}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
               <h3 className="font-serif text-2xl font-black text-tea">
                 Upper Assam Golden Flush
               </h3>
               <p className="text-xs font-bold text-ink-secondary mt-1">
-                Freshly plucked tender shoots ready for steaming fragrant tea.
+                {str.celebrationSubtitle}
               </p>
 
               {/* Harvest Basket Graphic */}
               <div className="mt-4 flex items-center justify-center gap-3 py-4 bg-[#0F230C] rounded-2xl border-3 border-black text-white">
                 <ShoppingBag className="h-12 w-12 text-amber-300" />
                 <div>
-                  <p className="text-lg font-black text-amber-300">{targetGoal} Shoots Collected</p>
+                  <p className="text-lg font-black text-amber-300">{targetGoal} {str.hudProgress}</p>
                   <p className="text-xs text-white/80">100% Pure First Flush Quality</p>
                 </div>
               </div>
@@ -377,13 +380,13 @@ export function TeaHarvestGame() {
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startHarvest}>
-                Harvest Another Flush
+                {str.playAgainButton}
               </ChunkyButton>
               <Link
-                href="/patient"
+                href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
               >
-                ← Back to Home
+                {str.backToHub}
               </Link>
             </div>
           </div>

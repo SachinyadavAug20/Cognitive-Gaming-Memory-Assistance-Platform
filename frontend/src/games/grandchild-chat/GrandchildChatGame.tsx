@@ -35,6 +35,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 const MAX_INPUT_CHARS = 120;
 
@@ -252,22 +253,24 @@ export function GrandchildChatGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("grandchild-chat", locale);
+
   if (loading)
     return (
-      <GameShell title="Conversational Reminiscence Protocol" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="Conversational Reminiscence Protocol" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="AI Reminiscence & Teatime Dialogue" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Dossier Header */}
@@ -287,10 +290,10 @@ export function GrandchildChatGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The Teatime Memory Dialogue
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              An interactive conversational therapeutic module. Connect with {persona.name} over morning tea, share memories, and stimulate semantic language recall.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -317,13 +320,13 @@ export function GrandchildChatGame() {
           </div>
 
           <AudioPrompt
-            text={`Welcome to the Teatime Dialogue. Connect with ${persona.name} to share memories and converse.`}
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startTeatime}>
-            Begin Teatime Conversation
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "chat" ? (
@@ -337,11 +340,31 @@ export function GrandchildChatGame() {
                 <span className="text-xs font-black text-ink">{persona.name}</span>
               </div>
             </div>
+
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  playPress();
+                  speak(
+                    locale === "hi"
+                      ? "गरमा-गरम इलायची चाय की एक घूंट लीजिए।"
+                      : locale === "as"
+                      ? "এঢোক গৰম ইলাচী চাহ খাওক।"
+                      : "Taking a warm sip of cardamom tea together.",
+                    locale,
+                    rate
+                  );
+                }}
+                className="btn-tactile flex items-center gap-1 rounded-lg border border-black bg-amber-100 hover:bg-amber-200 px-2 py-1 text-[11px] font-black text-amber-950 shadow-xs cursor-pointer"
+                title="Sip warm tea"
+              >
+                <span>☕ Sip Tea</span>
+              </button>
+
               <span className="text-[11px] font-bold text-ink-secondary">
-                Progress: {reminiscenceCount} / {targetInteractions} Exchanges
+                {reminiscenceCount} / {targetInteractions}
               </span>
-              <span className="h-2 w-2 rounded-full bg-tea animate-pulse" />
             </div>
           </div>
 
@@ -493,7 +516,7 @@ export function GrandchildChatGame() {
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration title="Reminiscence Session Completed">
+        <Celebration title={str.celebrationTitle}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
@@ -506,10 +529,10 @@ export function GrandchildChatGame() {
               </div>
 
               <h3 className="font-serif text-xl font-black text-ink">
-                Successful Cognitive Dialogue
+                {str.celebrationTitle}
               </h3>
               <p className="text-xs font-semibold text-ink-secondary mt-1 leading-relaxed">
-                You completed active multi-turn reminiscence with {persona.name}. Emotional grounding and semantic recall biomarkers have been securely updated.
+                {str.celebrationSubtitle}
               </p>
 
               <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
@@ -530,14 +553,14 @@ export function GrandchildChatGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startTeatime}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Repeat Session
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

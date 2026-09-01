@@ -22,9 +22,10 @@ import { speak, stopSpeaking } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
-import { speechRate, startLevel } from "@/games/config";
+import { speechRate, startLevel, calculateBilateralSymmetry } from "@/games/config";
 import { OpticalMotionTracker, type MotionEvent } from "@/lib/vision";
 import { DrumScene3D } from "./DrumScene3D";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -192,22 +193,24 @@ export function DrumGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("drum", locale);
+
   if (loading)
     return (
-      <GameShell title="3D Folk Rhythm Drummer" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="3D Folk Rhythm Drummer" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="The 3D Folk Rhythm Drummer: Dhol & Ksing" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -227,10 +230,10 @@ export function DrumGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The 3D Folk Rhythm Drummer
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Experience the celebratory beats of the Assamese Bihu Dhol and Khasi Ksing. Tap left and right or wave your hands in the air to play the traditional folk rhythm.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -256,13 +259,13 @@ export function DrumGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the 3D Folk Rhythm Drummer. Tap the drum or wave your hands to play traditional Bihu beats."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-            Start Drum Session
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "play" ? (
@@ -270,7 +273,7 @@ export function DrumGame() {
           {/* DRUM STATUS BAR & VISION TOGGLE */}
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
             <span className="text-xs font-black uppercase tracking-wider text-marigold flex items-center gap-1.5">
-              <Activity className="h-4 w-4" /> Beat: {hitsCount} / {TARGET_HITS}
+              <Activity className="h-4 w-4" /> {str.hudProgress}: {hitsCount} / {TARGET_HITS}
             </span>
 
             {/* Air-Drumming Camera Toggle */}
@@ -279,51 +282,41 @@ export function DrumGame() {
               onClick={toggleVisionMode}
               className={`btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer ${
                 isVisionActive
-                  ? "bg-tea text-white"
+                  ? "bg-marigold text-white"
                   : "bg-surface-muted text-ink hover:bg-surface"
               }`}
-              title="Toggle Webcam Hand Wave Motion Tracking"
             >
               <Camera className="h-3.5 w-3.5" />
-              <span>{isVisionActive ? "Air-Drumming Active" : "Enable Air-Drum"}</span>
+              <span>{isVisionActive ? "Air-Drumming Active" : "Enable Air Camera"}</span>
             </button>
           </div>
 
-          {/* VISION STRIKE ZONES HUD */}
-          {isVisionActive && (
-            <div className="w-full max-w-md grid grid-cols-2 gap-2 rounded-xl border-2 border-teal-800 bg-teal-50 p-2.5 shadow-xs">
-              <div className={`p-2 rounded-lg border-2 border-black text-center transition-all ${leftMotionLevel > 0.35 ? "bg-amber-300 scale-102" : "bg-white"}`}>
-                <span className="text-[10px] font-black uppercase text-amber-900 block">Left Zone (Dhum)</span>
-                <div className="w-full bg-amber-100 rounded-full h-1.5 mt-1 overflow-hidden">
-                  <div className="bg-amber-600 h-full transition-all duration-75" style={{ width: `${Math.min(100, leftMotionLevel * 100)}%` }} />
-                </div>
-              </div>
-
-              <div className={`p-2 rounded-lg border-2 border-black text-center transition-all ${rightMotionLevel > 0.35 ? "bg-red-300 scale-102" : "bg-white"}`}>
-                <span className="text-[10px] font-black uppercase text-red-900 block">Right Zone (Taak)</span>
-                <div className="w-full bg-red-100 rounded-full h-1.5 mt-1 overflow-hidden">
-                  <div className="bg-red-600 h-full transition-all duration-75" style={{ width: `${Math.min(100, rightMotionLevel * 100)}%` }} />
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* THREE.JS 3D DRUM CANVAS */}
-          <DrumScene3D
-            onDrumHit={handleDrumHit}
-            lastHitSide={lastHitSide}
-            lastHitTime={lastHitTime}
-          />
+          <div className="relative w-full max-w-md aspect-4/3 rounded-2xl border-3 border-black overflow-hidden shadow-[5px_5px_0px_#000] bg-black select-none">
+            <DrumScene3D
+              onDrumHit={handleDrumHit}
+              lastHitSide={lastHitSide}
+              lastHitTime={lastHitTime}
+            />
 
-          {/* BILATERAL TOUCH TRIGGER BUTTONS */}
-          <div className="w-full max-w-md grid grid-cols-2 gap-3">
+            {/* Vision Active Overlay Indicator */}
+            {isVisionActive && (
+              <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold flex items-center gap-1.5 animate-pulse">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                Air-Drum Optical (L: {Math.round(leftMotionLevel * 100)}% | R: {Math.round(rightMotionLevel * 100)}%)
+              </div>
+            )}
+          </div>
+
+          {/* DUAL DRUM HEAD HIT PADS */}
+          <div className="w-full max-w-md grid grid-cols-2 gap-3 pt-1">
             <button
               type="button"
               onClick={() => handleDrumHit("left")}
               className="btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black bg-amber-100 p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-amber-200 cursor-pointer"
             >
               <span className="text-sm font-black text-amber-950">LEFT DRUM HEAD</span>
-              <span className="text-[10px] font-bold text-amber-800 uppercase">Bass Beat (Dhum)</span>
+              <span className="text-[10px] font-bold text-amber-800 uppercase">Bass Dhum (Dhaa)</span>
             </button>
 
             <button
@@ -339,8 +332,8 @@ export function DrumGame() {
       ) : (
         /* PHASE: DONE CELEBRATION */
         <Celebration
-          title="Folk Rhythm Mastery Complete!"
-          subtitle="You played the traditional Bihu Dhol beats with optimal bilateral motor entrainment."
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
           xpEarned={120}
           accuracy="100%"
         >
@@ -356,7 +349,7 @@ export function DrumGame() {
               </div>
 
               <h3 className="font-serif text-xl font-black text-ink">
-                Bilateral Symmetry Index: Optimal
+                Bilateral Symmetry Index: {calculateBilateralSymmetry(leftHits, rightHits)}%
               </h3>
               <p className="text-xs font-semibold text-ink-secondary mt-1">
                 Left strikes ({leftHits}) and Right strikes ({rightHits}) demonstrate active bilateral hemisphere engagement.
@@ -380,14 +373,14 @@ export function DrumGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startGame}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Play Another Beat
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

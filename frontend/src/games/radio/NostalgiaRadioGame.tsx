@@ -25,6 +25,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 export interface RadioStation {
   id: string;
@@ -218,30 +219,30 @@ export function NostalgiaRadioGame() {
     );
   }
 
+  const str = getGameStrings("radio", locale);
+
   if (loading) return <GameLoading />;
   if (error)
     return (
-      <GameShell title="The Nostalgia Tuner" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="The Nostalgia Tuner 📻" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
           <div className="text-6xl animate-pulse">📻</div>
-          <p className="font-serif text-3xl font-black text-ink">
-            The Nostalgia Tuner
-          </p>
+          <p className="font-serif text-3xl font-black text-ink">{str.introTitle}</p>
           <p className="max-w-md text-lg font-semibold text-ink-secondary">
-            Tune into vintage All India Radio broadcasts to awaken nostalgic folk airs, church chimes, and family memories.
+            {str.introSubtitle}
           </p>
 
           {/* Stations List Preview */}
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_rgba(0,0,0,1)]">
             <span className="text-xs font-black uppercase tracking-wider text-tea">
-              Available Frequencies ({STATIONS.length} Stations)
+              {str.hudAction} ({STATIONS.length} Stations)
             </span>
             <div className="mt-2 space-y-2">
               {STATIONS.map((s) => (
@@ -259,13 +260,13 @@ export function NostalgiaRadioGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the Nostalgia Tuner. Turn the dial to explore vintage radio frequencies and cherished memories."
-            label="Listen"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="2xl" onClick={startRadio}>
-            Turn On Radio 📻
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "tune" ? (
@@ -317,10 +318,38 @@ export function NostalgiaRadioGame() {
               </div>
 
               {/* Current Station Callout in Dial */}
-              <div className="mt-2 text-center">
-                <span className="font-serif text-lg font-black text-amber-300">
+              <div className="mt-2 text-center flex items-center justify-between px-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newFreq = Math.max(530, currentFreq - 50);
+                    setCurrentFreq(newFreq);
+                    const matching = STATIONS.find((s) => Math.abs(s.freq - newFreq) <= 30);
+                    if (matching) tuneToStation(matching);
+                    else playRadioTune();
+                  }}
+                  className="btn-tactile px-2.5 py-1 rounded-lg border border-amber-500 bg-amber-950 text-amber-200 text-xs font-black hover:bg-amber-900 cursor-pointer shadow-xs"
+                >
+                  ⏪ -50 kHz
+                </button>
+
+                <span className="font-serif text-base sm:text-lg font-black text-amber-300">
                   {activeStation ? `${activeStation.title} (${activeStation.freq} kHz)` : `${currentFreq} kHz`}
                 </span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newFreq = Math.min(1600, currentFreq + 50);
+                    setCurrentFreq(newFreq);
+                    const matching = STATIONS.find((s) => Math.abs(s.freq - newFreq) <= 30);
+                    if (matching) tuneToStation(matching);
+                    else playRadioTune();
+                  }}
+                  className="btn-tactile px-2.5 py-1 rounded-lg border border-amber-500 bg-amber-950 text-amber-200 text-xs font-black hover:bg-amber-900 cursor-pointer shadow-xs"
+                >
+                  +50 kHz ⏩
+                </button>
               </div>
             </div>
 
@@ -396,14 +425,14 @@ export function NostalgiaRadioGame() {
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration icon={Radio} title="All Heritage Frequencies Discovered!">
+        <Celebration icon={Radio} title={str.celebrationTitle}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
               <h3 className="font-serif text-2xl font-black text-tea">
-                Akashvani Memory Broadcast
+                {str.celebrationTitle}
               </h3>
               <p className="text-xs font-bold text-ink-secondary mt-1">
-                You tuned into every timeless frequency across the North Eastern hills.
+                {str.celebrationSubtitle}
               </p>
 
               {/* Station Recap */}
@@ -435,13 +464,13 @@ export function NostalgiaRadioGame() {
             {/* Actions */}
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startRadio}>
-                Tune Again
+                {str.playAgainButton}
               </ChunkyButton>
               <Link
-                href="/patient"
+                href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
               >
-                ← Back to Home
+                {str.backToHub}
               </Link>
             </div>
           </div>

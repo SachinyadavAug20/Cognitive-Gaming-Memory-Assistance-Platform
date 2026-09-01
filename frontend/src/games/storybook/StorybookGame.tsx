@@ -35,6 +35,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -180,16 +181,18 @@ export function StorybookGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("storybook", locale);
+
   if (loading)
     return (
-      <GameShell title="Living Heritage Chronicle Protocol" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="Living Heritage Chronicle Protocol" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
@@ -197,7 +200,7 @@ export function StorybookGame() {
   const ThemeIcon = selectedTheme.icon;
 
   return (
-    <GameShell title="Living Heritage Chronicle & Storytelling" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -217,10 +220,10 @@ export function StorybookGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The Living Heritage Chronicle
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Step into an adaptive nostalgic narrative woven from North Eastern landscapes and cultural heritage. Make choices that steer how your story unfolds.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -258,13 +261,13 @@ export function StorybookGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the Living Heritage Chronicle. Select a tale and choose how your journey unfolds."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={() => startStory(STORY_THEMES[0])}>
-            Open Living Chronicle
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "story" ? (
@@ -357,7 +360,7 @@ export function StorybookGame() {
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration title="Chronicle Journey Complete">
+        <Celebration title={str.celebrationTitle}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
@@ -370,10 +373,10 @@ export function StorybookGame() {
               </div>
 
               <h3 className="font-serif text-xl font-black text-ink">
-                A Peaceful Memory Journey
+                {str.celebrationTitle}
               </h3>
               <p className="text-xs font-semibold text-ink-secondary mt-1 leading-relaxed">
-                You completed the story of {selectedTheme.title}. Your choices guided a calm, nostalgic narrative through North East India.
+                {str.celebrationSubtitle}
               </p>
 
               <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
@@ -394,14 +397,14 @@ export function StorybookGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={() => setPhase("intro")}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Read Another Story
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

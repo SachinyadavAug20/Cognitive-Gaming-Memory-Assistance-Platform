@@ -13,6 +13,8 @@ interface GameHeaderProps {
 
 export function GameHeader({ title, score, backHref, bgColor }: GameHeaderProps) {
   const t = useTranslations("game");
+  const rawBack = t("back") || "Back";
+  const cleanBack = rawBack.replace(/^[←\s]+/, "").trim();
 
   return (
     <div className={`${bgColor} border-b-3 border-black px-4 sm:px-6 py-3.5 text-white shadow-sm`}>
@@ -22,7 +24,7 @@ export function GameHeader({ title, score, backHref, bgColor }: GameHeaderProps)
           className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-white/20 px-3 py-1.5 text-xs font-black text-white hover:bg-white/30 shadow-[2px_2px_0px_#000]"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          <span>{t("back")}</span>
+          <span>{cleanBack}</span>
         </Link>
         <div className="flex items-center gap-2 min-w-0">
           <Paperclip className="h-4 w-4 text-white/80 shrink-0 hidden sm:inline" />

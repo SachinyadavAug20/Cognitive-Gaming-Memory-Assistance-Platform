@@ -27,6 +27,7 @@ import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { OpticalMotionTracker, type MotionEvent } from "@/lib/vision";
 import { RiverScene3D, type RiverTarget } from "./RiverScene3D";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -196,22 +197,24 @@ export function RiverLanternsGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("river-lanterns", locale);
+
   if (loading)
     return (
-      <GameShell title="3D Living River of Memories" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="3D Living River of Memories" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="The 3D Living River of Memories" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -219,10 +222,10 @@ export function RiverLanternsGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                3D WebGL & Optical Vision // Module CDTx-15
+                3D Optical Reminiscence // Module CDTx-19
               </span>
             </div>
-            <ShieldCheck className="h-4 w-4 text-teal-700" />
+            <ShieldCheck className="h-4 w-4 text-teal-800" />
           </div>
 
           <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-teal-800 text-white shadow-[4px_4px_0px_#000]">
@@ -231,10 +234,10 @@ export function RiverLanternsGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The 3D Living River of Memories
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Step beside the sunlit Brahmaputra waters. Watch floating 3D brass lanterns carrying your family memories, and wave your hand to send ripples across the river.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -260,13 +263,13 @@ export function RiverLanternsGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the Living River. Wave your hand or touch the screen to guide the memory lanterns."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startRiverGame}>
-            Begin 3D River Journey
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "river" ? (
@@ -380,8 +383,8 @@ export function RiverLanternsGame() {
       ) : (
         /* PHASE: DONE CELEBRATION */
         <Celebration
-          title="River of Memories Complete!"
-          subtitle="You guided all floating memory lanterns across the living river with visual depth tracking and motor coordination."
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
           xpEarned={120}
           accuracy="100%"
         >
@@ -392,7 +395,7 @@ export function RiverLanternsGame() {
                   <CheckCircle2 className="h-4 w-4" /> 3D Lantern Archive
                 </span>
                 <span className="text-[10px] font-black uppercase rounded bg-teal-800 text-white px-2 py-0.5">
-                  {unlockedLanterns.length} Unlocked
+                  {unlockedLanterns.length} {str.hudProgress}
                 </span>
               </div>
 
@@ -427,14 +430,14 @@ export function RiverLanternsGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startRiverGame}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Revisit 3D River
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

@@ -21,6 +21,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 export interface LotusLily {
   id: number;
@@ -151,11 +152,13 @@ export function LotusLakeGame() {
     );
   }
 
+  const str = getGameStrings("lotus-lake", locale);
+
   if (loading) return <GameLoading />;
   if (error)
     return (
       <section className="pb-12">
-        <GameHeader title="Lotus Ripples" score={0} backHref="/patient/games" bgColor="bg-tea" />
+        <GameHeader title={str.title} score={0} backHref="/patient/games" bgColor="bg-tea" />
         <div className="mx-auto max-w-3xl px-4 pt-6">
           <GameError onRetry={reload} />
         </div>
@@ -164,26 +167,26 @@ export function LotusLakeGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title="Lotus Ripples on Ward's Lake 🌸" score={bloomedCount} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader title={str.title} score={bloomedCount} backHref="/patient/games" bgColor="bg-tea" />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
             <div className="text-6xl animate-pulse">🪷</div>
             <p className="font-serif text-3xl font-black text-ink">
-              Lotus Ripples on Ward&apos;s Lake
+              {str.introTitle}
             </p>
             <p className="max-w-md text-lg font-semibold text-ink-secondary">
-              A serene, calming tactile water garden inspired by Ward&apos;s Lake. Touch the water to create liquid ripples and blossom lotus flowers.
+              {str.introSubtitle}
             </p>
 
             <AudioPrompt
-              text="Welcome to Ward's Lake. Gently touch the calm water to create soothing ripples and help the pink lotuses bloom."
-              label="Listen"
+              text={str.audioPrompt}
+              label={str.listenLabel}
               size="md"
             />
 
             <ChunkyButton variant="tea" size="2xl" onClick={startLake}>
-              Enter Calm Lake 🌸
+              {str.startButton}
             </ChunkyButton>
           </div>
         ) : phase === "play" ? (
@@ -262,14 +265,14 @@ export function LotusLakeGame() {
           </div>
         ) : (
           /* PHASE: DONE CELEBRATION */
-          <Celebration icon={Flower2} title="All Lilies in Bloom!">
+          <Celebration icon={Flower2} title={str.celebrationTitle}>
             <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
               <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
                 <h3 className="font-serif text-2xl font-black text-teal-800">
                   Ward&apos;s Lake Sanctuary
                 </h3>
                 <p className="text-xs font-bold text-ink-secondary mt-1">
-                  You brought peace and radiant blossoms to the waters today.
+                  {str.celebrationSubtitle}
                 </p>
 
                 {lakePhoto && lakePhoto.url ? (
@@ -306,13 +309,13 @@ export function LotusLakeGame() {
               {/* Actions */}
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ChunkyButton variant="tea" size="xl" onClick={startLake}>
-                  Visit Lake Again
+                  {str.playAgainButton}
                 </ChunkyButton>
                 <Link
-                  href="/patient"
+                  href="/patient/games"
                   className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
                 >
-                  ← Back to Home
+                  {str.backToHub}
                 </Link>
               </div>
             </div>

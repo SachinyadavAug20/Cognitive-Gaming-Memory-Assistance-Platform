@@ -384,7 +384,7 @@
     }
   },
   "game": {
-    "back": "← Back",
+    "back": "Back",
     "score": "Score: {score}"
   },
   "common": {
@@ -712,6 +712,34 @@
     "alpana": {
       "title": "Sacred Alpana Sand Drawing",
       "desc": "Trace sacred festive floor motifs using in-browser webcam air motion or touch"
+    },
+    "hornbill": {
+      "title": "Hornbill Mountain Glider",
+      "desc": "Soar above pine valleys steering the Great Indian Hornbill to collect golden mountain figs"
+    },
+    "pottery": {
+      "title": "Majuli River Pottery Lathe",
+      "desc": "Shape traditional Assamese terracotta pottery on the spinning lathe with tactile touch precision"
+    },
+    "monasteryBell": {
+      "title": "Tawang Sacred Chimes",
+      "desc": "Listen to sacred singing bowls and bells of Tawang Monastery and repeat melodic sequences"
+    },
+    "bambooDance": {
+      "title": "Cheraw Bamboo Dance Rhythm",
+      "desc": "Step to the festive rhythm of Mizoram's Cheraw bamboo staves with agile motor timing"
+    },
+    "boat": {
+      "title": "Brahmaputra Boat Navigator",
+      "desc": "Steer a traditional wooden riverboat across flowing river tides gathering pink lotuses"
+    },
+    "botanist": {
+      "title": "Dzukou Valley Botanist",
+      "desc": "Search mist-laden alpine meadows to discover rare Himalayan orchids and the sacred Dzukou Lily"
+    },
+    "dailyRoutine": {
+      "title": "Daily Care Routine & Wellness Clock",
+      "desc": "Practice essential daily health routines including medicine timing, hydration glasses, and clinic visits"
     }
   }
 }

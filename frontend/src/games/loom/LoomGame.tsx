@@ -26,6 +26,7 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { LoomScene3D } from "./LoomScene3D";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -121,22 +122,24 @@ export function LoomGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("loom", locale);
+
   if (loading)
     return (
-      <GameShell title="3D Heritage Loom" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="3D Heritage Loom" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="The 3D Heritage Loom: Rhythm of Muga Silk" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -156,10 +159,10 @@ export function LoomGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The 3D Heritage Loom
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Sit at a traditional wooden handloom (Tatxaal). Slide the 3D wooden shuttle back and forth to procedurally weave an authentic Assamese Muga Gamosa.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -185,13 +188,13 @@ export function LoomGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the 3D Heritage Loom. Slide the shuttle back and forth to weave your traditional silk cloth."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-            Start 3D Weaving
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "weave" ? (
@@ -199,7 +202,7 @@ export function LoomGame() {
           {/* WEAVING STATUS BAR */}
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
             <span className="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-              <ArrowLeftRight className="h-4 w-4" /> Row {rowsWoven} of {TARGET_ROWS}
+              <ArrowLeftRight className="h-4 w-4" /> {str.hudProgress}: {rowsWoven} / {TARGET_ROWS}
             </span>
             <div className="flex items-center gap-1">
               <Palette className="h-3.5 w-3.5 text-ink-secondary" />
@@ -218,31 +221,38 @@ export function LoomGame() {
           </div>
 
           {/* THREE.JS 3D LOOM CANVAS */}
-          <LoomScene3D
-            progressRows={rowsWoven}
-            shuttlePosition={shuttleSide}
-            threadColor={selectedColor.hex}
-            onShuttlePass={handleShuttlePass}
-          />
+          <div className="relative w-full max-w-md aspect-4/3 rounded-2xl border-3 border-black overflow-hidden shadow-[5px_5px_0px_#000] bg-black select-none">
+            <LoomScene3D
+              shuttlePosition={shuttleSide}
+              threadColor={selectedColor.hex}
+              progressRows={rowsWoven}
+              onShuttlePass={handleShuttlePass}
+            />
 
-          {/* INTERACTIVE SHUTTLE TAP ACTION BAR */}
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 shadow-[4px_4px_0px_#000] text-center space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-ink">
-                Shuttle Ready: <strong className="text-amber-800">{shuttleSide === -1 ? "Left Side" : "Right Side"}</strong>
+            {/* Pattern Progress Badge */}
+            <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold">
+              {Math.round((rowsWoven / TARGET_ROWS) * 100)}% Complete
+            </div>
+          </div>
+
+          {/* INTERACTIVE CONTROLS */}
+          <div className="w-full max-w-md flex flex-col items-center gap-3 pt-1">
+            <div className="w-full flex items-center justify-between px-1 text-xs font-black text-ink">
+              <span className="flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-full bg-tea" /> Muga Silk Ready
               </span>
               <button
                 type="button"
-                onClick={() => speak("Tap the button to slide the shuttle and lock the silk thread.", locale, rate)}
-                className="flex items-center gap-1 text-[11px] font-bold text-amber-900 hover:underline cursor-pointer"
+                onClick={() => speak("Slide the wooden shuttle from one side to the other to pass the weft thread.", locale, rate)}
+                className="flex items-center gap-1 text-tea hover:underline cursor-pointer"
               >
-                <Volume2 className="h-3.5 w-3.5" /> Guidance
+                <Volume2 className="h-3.5 w-3.5" /> Hear Guide
               </button>
             </div>
 
             <ChunkyButton variant="marigold" size="xl" onClick={handleShuttlePass}>
               <span className="flex items-center gap-2">
-                <ArrowLeftRight className="h-5 w-5" /> Slide Shuttle ({shuttleSide === -1 ? "Pass Right →" : "← Pass Left"})
+                <ArrowLeftRight className="h-5 w-5" /> {str.hudAction} ({shuttleSide === -1 ? "→" : "←"})
               </span>
             </ChunkyButton>
           </div>
@@ -250,8 +260,8 @@ export function LoomGame() {
       ) : (
         /* PHASE: DONE CELEBRATION */
         <Celebration
-          title="Traditional Gamosa Weaving Complete!"
-          subtitle="You rhythmically guided the 3D wooden shuttle to complete an authentic Assamese silk cloth."
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
           xpEarned={120}
           accuracy="100%"
         >
@@ -291,14 +301,14 @@ export function LoomGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startGame}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Weave Another Pattern
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

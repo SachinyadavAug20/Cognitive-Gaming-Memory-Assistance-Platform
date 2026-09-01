@@ -22,8 +22,9 @@ import { speak } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
-import { speechRate, startLevel } from "@/games/config";
+import { speechRate, startLevel, smoothKineticTrajectory } from "@/games/config";
 import { OpticalMotionTracker, type MotionEvent } from "@/lib/vision";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -78,6 +79,7 @@ export function AlpanaGame() {
     LOTUS_MOTIF_POINTS.map((p) => ({ ...p, hit: false }))
   );
   const trailRef = useRef<{ x: number; y: number; age: number }[]>([]);
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
 
   // Particle & Canvas Drawing Loop
   const drawCanvas = useCallback(() => {
@@ -108,13 +110,11 @@ export function AlpanaGame() {
       const py = pt.y * h;
       ctx.beginPath();
       ctx.arc(px, py, pt.hit ? 14 : 10, 0, Math.PI * 2);
-      ctx.fillStyle = pt.hit ? "#FBBF24" : "rgba(255, 255, 255, 0.3)";
+      ctx.fillStyle = pt.hit ? "#F59E0B" : "rgba(254, 240, 138, 0.4)";
       ctx.fill();
-      if (pt.hit) {
-        ctx.strokeStyle = "#FFFFFF";
-        ctx.lineWidth = 3;
-        ctx.stroke();
-      }
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = pt.hit ? "#FFFFFF" : "#FBBF24";
+      ctx.stroke();
     });
 
     // Draw Glow Dust Trail
@@ -147,9 +147,17 @@ export function AlpanaGame() {
     }
   }, []);
 
-  // Update touch or optical point
+  // Update touch or optical point with AI Kinetic Tremor Neutralizer
   const handlePointInput = useCallback(
-    (nx: number, ny: number) => {
+    (rawNx: number, rawNy: number) => {
+      const smoothed = smoothKineticTrajectory(
+        { x: rawNx, y: rawNy },
+        lastPointRef.current,
+        0.35
+      );
+      lastPointRef.current = smoothed;
+      const { x: nx, y: ny } = smoothed;
+
       trailRef.current.push({ x: nx, y: ny, age: 0 });
 
       let newlyHit = false;
@@ -257,22 +265,24 @@ export function AlpanaGame() {
     errorCount: 0,
   });
 
+  const str = getGameStrings("alpana", locale);
+
   if (loading)
     return (
-      <GameShell title="Sacred Alpana Sand Drawing" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="Sacred Alpana Sand Drawing" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title="Sacred Alpana Sand Drawing" score={coveragePct}>
+    <GameShell title={str.title} score={coveragePct}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-[#EFE9DF] px-3.5 py-1.5 shadow-[2px_2px_0px_#000]">
@@ -291,10 +301,10 @@ export function AlpanaGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              Sacred Alpana Sand Drawing
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              Trace sacred festive floor art using camera hand motion or touch. Connect the glowing nodes to reveal the traditional North Eastern lotus motif.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -314,51 +324,56 @@ export function AlpanaGame() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-marigold" />
-                <span>Multi-sensory particle feedback and culturally soothing music</span>
+                <span>AI tremor-smoothing filter (Kalman Scaffold)</span>
               </div>
             </div>
           </div>
 
           <AudioPrompt
-            text="Welcome to Sacred Alpana Sand Drawing. Wave your hand in the air to trace the sacred lotus pattern."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-            Start Drawing Session
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "draw" ? (
         <div className="flex flex-col items-center gap-3.5 py-1">
-          {/* STATUS BAR & CAMERA TOGGLE */}
+          {/* TRACKING STATUS & CONTROLS */}
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
-            <span className="text-xs font-black uppercase tracking-wider text-purple-900 flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4" /> Motif Completion: {coveragePct}%
+            <span className="text-xs font-black uppercase tracking-wider text-purple-950 flex items-center gap-1.5">
+              <Sparkles className="h-4 w-4 text-purple-700" /> {str.hudProgress}: {coveragePct}%
             </span>
 
             <button
               type="button"
               onClick={toggleVisionMode}
               className={`btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer ${
-                isVisionActive
-                  ? "bg-purple-900 text-white"
-                  : "bg-surface-muted text-ink hover:bg-surface"
+                isVisionActive ? "bg-tea text-white" : "bg-surface-muted text-ink"
               }`}
             >
               <Camera className="h-3.5 w-3.5" />
-              <span>{isVisionActive ? "Air Canvas Active" : "Enable Air Canvas"}</span>
+              <span>{isVisionActive ? "Hand Motion Active" : "Camera Air Canvas"}</span>
             </button>
           </div>
 
-          {/* INTERACTIVE CANVAS */}
-          <div className="relative w-full max-w-md aspect-square rounded-2xl border-3 border-black overflow-hidden shadow-[5px_5px_0px_#000] select-none touch-none">
+          {/* SACRED ALPANA CANVAS */}
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] bg-black">
             <canvas
               ref={canvasRef}
-              width={400}
+              width={480}
               height={400}
-              className="w-full h-full cursor-crosshair"
+              className="w-full h-[340px] sm:h-[380px] block cursor-crosshair"
+              onPointerDown={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const nx = (e.clientX - rect.left) / rect.width;
+                const ny = (e.clientY - rect.top) / rect.height;
+                handlePointInput(nx, ny);
+              }}
               onPointerMove={(e) => {
+                if (e.buttons !== 1) return;
                 const rect = e.currentTarget.getBoundingClientRect();
                 const nx = (e.clientX - rect.left) / rect.width;
                 const ny = (e.clientY - rect.top) / rect.height;
@@ -373,8 +388,8 @@ export function AlpanaGame() {
         </div>
       ) : (
         <Celebration
-          title="Sacred Alpana Revealed!"
-          subtitle="You traced the North Eastern festive lotus motif with fluid kinesthetic coordination."
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
           xpEarned={140}
           accuracy="100%"
         >
@@ -411,14 +426,14 @@ export function AlpanaGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="tea" size="xl" onClick={startGame}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Draw Another Motif
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

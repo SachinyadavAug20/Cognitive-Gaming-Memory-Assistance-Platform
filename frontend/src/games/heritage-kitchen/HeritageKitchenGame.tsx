@@ -22,6 +22,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 
 export interface RecipeStep {
   id: string;
@@ -62,6 +63,30 @@ const RECIPES: Recipe[] = [
       { id: "onion", name: "Chopped Onions & Ginger", emoji: "🧅", actionDesc: "Sauté onions till golden" },
       { id: "bay", name: "Bay Leaves & Cardamom", emoji: "🍃", actionDesc: "Add aromatic hill spices" },
       { id: "rice", name: "Highland Sticky Rice", emoji: "🍚", actionDesc: "Stir in the washed local rice" },
+    ],
+  },
+  {
+    id: "thukpa",
+    title: "Sikkimese Mountain Thukpa",
+    subtitle: "Warming Himalayan noodle broth with mountain herbs",
+    emoji: "🍜",
+    steps: [
+      { id: "broth", name: "Clear Mountain Broth", emoji: "🥣", actionDesc: "Simmer fragrant herb broth" },
+      { id: "veggies", name: "Bok Choy & Carrots", emoji: "🥬", actionDesc: "Add crisp mountain greens" },
+      { id: "noodles", name: "Handmade Wheat Noodles", emoji: "🍜", actionDesc: "Drop in fresh soft noodles" },
+      { id: "garlic", name: "Fried Mountain Garlic", emoji: "🧄", actionDesc: "Garnish with golden crispy garlic" },
+    ],
+  },
+  {
+    id: "bai",
+    title: "Mizo Herbal Bai",
+    subtitle: "Soothing indigenous vegetable & bamboo shoot stew",
+    emoji: "🌱",
+    steps: [
+      { id: "water", name: "Spring Water Base", emoji: "💧", actionDesc: "Bring fresh hill spring water to boil" },
+      { id: "bamboo", name: "Fresh Bamboo Shoots", emoji: "🎍", actionDesc: "Add tender sliced mountain bamboo shoots" },
+      { id: "greens", name: "Local Mustard Greens", emoji: "🥬", actionDesc: "Fold in freshly harvested greens" },
+      { id: "herbs", name: "Steamed Fermented Soya", emoji: "🌿", actionDesc: "Season with fragrant mountain herbs" },
     ],
   },
 ];
@@ -217,11 +242,13 @@ export function HeritageKitchenGame() {
     );
   }
 
+  const str = getGameStrings("heritage-kitchen", locale);
+
   if (loading) return <GameLoading />;
   if (error)
     return (
       <section className="pb-12">
-        <GameHeader title="Heritage Kitchen" score={0} backHref="/patient/games" bgColor="bg-tea" />
+        <GameHeader title={str.title} score={0} backHref="/patient/games" bgColor="bg-tea" />
         <div className="mx-auto max-w-3xl px-4 pt-6">
           <GameError onRetry={reload} />
         </div>
@@ -230,22 +257,22 @@ export function HeritageKitchenGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title="Grandmother's Heritage Kitchen 🍲" score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader title={str.title} score={score} backHref="/patient/games" bgColor="bg-tea" />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
             <div className="text-6xl animate-bounce">🍲</div>
             <p className="font-serif text-3xl font-black text-ink">
-              Grandmother&apos;s Heritage Kitchen
+              {str.introTitle}
             </p>
             <p className="max-w-md text-lg font-semibold text-ink-secondary">
-              Cook traditional North-Eastern dishes step-by-step with authentic native ingredients and aromatic kitchen sounds.
+              {str.introSubtitle}
             </p>
 
             {/* Recipe Selection Cards */}
             <div className="w-full max-w-md space-y-3">
               <span className="text-xs font-black uppercase tracking-wider text-tea">
-                Choose a Heritage Dish to Prepare
+                {str.hudAction}
               </span>
               <div className="grid gap-3">
                 {RECIPES.map((r, idx) => (
@@ -269,8 +296,8 @@ export function HeritageKitchenGame() {
             </div>
 
             <AudioPrompt
-              text="Welcome to Grandmother's Kitchen. Choose a recipe and prepare step-by-step."
-              label="Listen"
+              text={str.audioPrompt}
+              label={str.listenLabel}
               size="md"
             />
 
@@ -322,14 +349,26 @@ export function HeritageKitchenGame() {
                 )}
               </div>
 
-              {/* Current Action Prompt */}
-              {currentStep && (
-                <div className="mt-3 text-center z-10">
+              {/* TACTILE WOODEN LADLE STIR BUTTON */}
+              <div className="mt-3 flex items-center justify-center gap-2 z-10">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playSizzle();
+                    setIsSizzling(true);
+                    setTimeout(() => setIsSizzling(false), 900);
+                  }}
+                  className="btn-tactile flex items-center gap-1.5 rounded-full border-2 border-amber-500 bg-amber-900/80 px-3 py-1 text-xs font-black text-amber-200 shadow-md hover:bg-amber-800 active:translate-y-0.5 cursor-pointer"
+                >
+                  <span>🥄 Stir with Ladle</span>
+                </button>
+
+                {currentStep && (
                   <span className="text-xs font-black text-amber-200 bg-black/60 px-3 py-1 rounded-full border border-amber-500/40">
                     Next: {currentStep.name}
                   </span>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* HINT BANNER IF ACTIVE */}
@@ -372,20 +411,20 @@ export function HeritageKitchenGame() {
           </div>
         ) : (
           /* PHASE: DONE CELEBRATION */
-          <Celebration icon={Utensils} title="Dish Prepared with Care!">
+          <Celebration icon={Utensils} title={str.celebrationTitle}>
             <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
               <div className="relative w-full rounded-3xl border-4 border-black bg-[#FAF5EE] p-5 shadow-[6px_6px_0px_rgba(0,0,0,1)] text-ink select-none">
                 <h3 className="font-serif text-2xl font-black text-tea">
                   {recipe.title}
                 </h3>
                 <p className="text-xs font-bold text-ink-secondary mt-1">
-                  Freshly simmered with heritage spices and comforting aromas.
+                  {str.celebrationSubtitle}
                 </p>
 
                 {/* Recipe Ingredients Summary */}
                 <div className="mt-3 space-y-1 border-t border-border pt-2">
                   <span className="text-[11px] font-black uppercase tracking-wider text-ink-secondary">
-                    Ingredients Added:
+                    {str.hudProgress}:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {recipe.steps.map((s) => (
@@ -415,13 +454,13 @@ export function HeritageKitchenGame() {
               {/* Actions */}
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ChunkyButton variant="tea" size="xl" onClick={() => startCooking((recipeIdx + 1) % RECIPES.length)}>
-                  Cook Next Recipe
+                  {str.playAgainButton}
                 </ChunkyButton>
                 <Link
-                  href="/patient"
+                  href="/patient/games"
                   className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
                 >
-                  ← Back to Home
+                  {str.backToHub}
                 </Link>
               </div>
             </div>

@@ -10,7 +10,6 @@ import {
   Volume2,
   Calendar,
   Sparkles,
-  Trophy,
 } from "lucide-react";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -20,7 +19,7 @@ import { patientLangCode } from "@/lib/i18n";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { playEncourage, playCalmTone, playTapFeedback } from "@/lib/sound";
 import { speak } from "@/lib/speech";
-import { speechRate } from "@/games/config";
+import { speechRate, getDigitalBonsaiGrowthStage } from "@/games/config";
 import { AudioToggle } from "@/components/ui/AudioToggle";
 import { TherapySuiteGrid } from "@/components/patient-dashboard/TherapySuiteGrid";
 import { MemorySpotlightCard } from "@/components/patient-dashboard/MemorySpotlightCard";
@@ -230,29 +229,37 @@ export default function PatientHome() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-5 space-y-6 flex-1 w-full">
-        {/* DAILY BRAIN PROGRESS REINFORCEMENT BANNER */}
-        <div className="w-full rounded-2xl border-3 border-black bg-gradient-to-r from-amber-100 via-amber-50 to-emerald-50 p-4 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-marigold text-white shadow-xs">
-              <Trophy className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-amber-700" /> Daily Brain Exercises
-              </span>
-              <h3 className="font-serif text-sm sm:text-base font-black text-ink">
-                2 of 3 Modules Completed Today
-              </h3>
-            </div>
-          </div>
+        {/* DAILY BRAIN PROGRESS & DIGITAL MEMORY BONSAI */}
+        {(() => {
+          const bonsai = getDigitalBonsaiGrowthStage(detail?.medicalProfile?.gameConfig?.startLevel ? 6 : 4);
+          return (
+            <div className="w-full rounded-2xl border-3 border-black bg-gradient-to-r from-amber-100 via-amber-50 to-emerald-50 p-4 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-black bg-emerald-100 text-2xl shadow-xs">
+                  {bonsai.emoji}
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-900 flex items-center gap-1">
+                    <Sparkles className="h-3 w-3 text-emerald-700" /> Digital Memory Bonsai • {bonsai.title}
+                  </span>
+                  <h3 className="font-serif text-sm sm:text-base font-black text-ink">
+                    2 of 3 Modules Completed Today
+                  </h3>
+                  <p className="text-[11px] font-semibold text-emerald-800 hidden sm:block">
+                    {bonsai.description}
+                  </p>
+                </div>
+              </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="flex-1 sm:w-32 bg-white rounded-full h-2.5 border-2 border-black overflow-hidden">
-              <div className="bg-tea h-full w-[66%]" />
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="flex-1 sm:w-28 bg-white rounded-full h-2.5 border-2 border-black overflow-hidden">
+                  <div className="bg-tea h-full w-[66%]" />
+                </div>
+                <span className="text-xs font-black text-tea whitespace-nowrap">66% Done</span>
+              </div>
             </div>
-            <span className="text-xs font-black text-tea whitespace-nowrap">66% Done</span>
-          </div>
-        </div>
+          );
+        })()}
 
         {/* 1. THERAPY SUITE SECTION */}
         <TherapySuiteGrid gamesTitle={t("gamesTitle")} />

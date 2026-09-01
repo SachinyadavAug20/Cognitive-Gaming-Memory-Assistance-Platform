@@ -378,12 +378,17 @@ export function TimelineGame() {
           <p className="mx-auto max-w-lg px-4 text-lg font-semibold text-ink-secondary">
             {journey.length} {t("timeline.memoriesShared")}
           </p>
-          <Link
-            href="/patient"
-            className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-border bg-tea px-6 py-3 font-bold text-ink-inverse"
-          >
-            {t("backToRoutine")}
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+            <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
+              <span>{locale === "hi" ? "जीवन यात्रा फिर से देखें 🔄" : locale === "as" ? "জীৱন যাত্ৰা পুনৰ চাওক 🔄" : "Walk Timeline Again 🔄"}</span>
+            </ChunkyButton>
+            <Link
+              href="/patient/games"
+              className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-border bg-surface px-6 py-3 font-bold text-ink shadow-[2px_2px_0px_#000]"
+            >
+              {locale === "hi" ? "← थेरेपी केंद्र" : locale === "as" ? "← থেৰাপী কক্ষ" : "← Back to Therapy Suite"}
+            </Link>
+          </div>
         </Celebration>
       )}
     </GameShell>

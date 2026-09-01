@@ -36,6 +36,7 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import type { FamilyMemberItem } from "@/types";
+import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -201,16 +202,18 @@ export function MemoryDetectiveGame() {
     errorCount,
   });
 
+  const str = getGameStrings("memory-detective", locale);
+
   if (loading)
     return (
-      <GameShell title="Progressive Cued Recall Protocol" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title="Progressive Cued Recall Protocol" score={0}>
+      <GameShell title={str.title} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
@@ -223,7 +226,7 @@ export function MemoryDetectiveGame() {
       : cluesData?.directClue3;
 
   return (
-    <GameShell title="Progressive Cued Recall & Face Recognition" score={score}>
+    <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
           {/* Government Paperclip Header */}
@@ -231,7 +234,7 @@ export function MemoryDetectiveGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Memory Recall Protocol // Module CDTx-02
+                Spaced Retrieval // Module CDTx-15
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-tea" />
@@ -243,10 +246,10 @@ export function MemoryDetectiveGame() {
 
           <div className="space-y-1">
             <h2 className="font-serif text-3xl font-black text-ink">
-              The Memory Identification Protocol
+              {str.introTitle}
             </h2>
             <p className="max-w-md text-sm font-semibold text-ink-secondary leading-relaxed">
-              A 3-tier progressive cued recall assessment. Listen to gentle clues from personal history and identify beloved family members from verified photographic portraits.
+              {str.introSubtitle}
             </p>
           </div>
 
@@ -282,13 +285,13 @@ export function MemoryDetectiveGame() {
           </div>
 
           <AudioPrompt
-            text="Welcome to the Memory Identification Protocol. Listen to clues and identify your loved ones."
-            label="Listen to Instructions"
+            text={str.audioPrompt}
+            label={str.listenLabel}
             size="md"
           />
 
           <ChunkyButton variant="marigold" size="xl" onClick={startDetective}>
-            Begin Identification Protocol
+            {str.startButton}
           </ChunkyButton>
         </div>
       ) : phase === "play" ? (
@@ -370,15 +373,17 @@ export function MemoryDetectiveGame() {
               {targets.map((cand) => {
                 const isShaking = shakeCardId === String(cand.id);
                 return (
-                  <button
+                  <div
                     key={cand.id}
-                    type="button"
-                    onClick={() => handleCardSelection(cand)}
-                    className={`btn-tactile group flex items-center justify-between rounded-2xl border-3 border-black bg-surface p-3.5 text-left shadow-[3px_3px_0px_#000] hover:bg-tea-light hover:border-tea transition-transform active:translate-y-0.5 cursor-pointer ${
+                    className={`group flex items-center justify-between rounded-2xl border-3 border-black bg-surface p-3 text-left shadow-[3px_3px_0px_#000] hover:bg-tea-light hover:border-tea transition-transform ${
                       isShaking ? "animate-shake border-red-500" : ""
                     }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => handleCardSelection(cand)}
+                      className="flex-1 flex items-center gap-3 cursor-pointer text-left"
+                    >
                       {cand.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -397,9 +402,36 @@ export function MemoryDetectiveGame() {
                           {cand.relation || "Family Record"}
                         </p>
                       </div>
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLightboxPhoto({
+                            url: cand.photoUrl ? (getMediaUrl(cand.photoUrl) ?? "") : "",
+                            title: cand.name,
+                            note: `${cand.relation || "Family Member"} — ${cand.notes || "Beloved member of the family heritage archive."}`,
+                          });
+                        }}
+                        className="p-2 rounded-xl border border-black/30 bg-amber-50 hover:bg-amber-200 text-ink text-xs font-black flex items-center gap-1 shadow-xs cursor-pointer"
+                        title="Inspect full memory photo"
+                      >
+                        <Search className="h-3.5 w-3.5 text-amber-900" />
+                        <span className="hidden sm:inline">Inspect</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleCardSelection(cand)}
+                        className="btn-tactile p-2 rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] cursor-pointer"
+                        title="Choose this person"
+                      >
+                        <ArrowRight className="h-4 w-4 font-black" />
+                      </button>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-tea font-black" />
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -407,7 +439,7 @@ export function MemoryDetectiveGame() {
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration title="Identification Protocol Completed">
+        <Celebration title={str.celebrationTitle}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
@@ -420,10 +452,10 @@ export function MemoryDetectiveGame() {
               </div>
 
               <h3 className="font-serif text-xl font-black text-ink">
-                All Subjects Successfully Recognized
+                {str.celebrationTitle}
               </h3>
               <p className="text-xs font-semibold text-ink-secondary mt-1 leading-relaxed">
-                You recognized all family members and loved ones with high cued accuracy. Associative memory graph benchmarks have been updated.
+                {str.celebrationSubtitle}
               </p>
 
               <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
@@ -444,14 +476,14 @@ export function MemoryDetectiveGame() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <ChunkyButton variant="marigold" size="xl" onClick={startDetective}>
                 <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> Repeat Protocol
+                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
               >
-                ← Back to Therapy Suite
+                {str.backToHub}
               </Link>
             </div>
           </div>

@@ -61,13 +61,14 @@ export function BazaarGame() {
   const level = resolveAdaptiveLevel(patientId, "bazaar", startLevel(detail));
   const rate = speechRate(detail);
 
-  const [phase, setPhase] = useState<"intro" | "shop" | "done">("intro");
+  const [phase, setPhase] = useState<"intro" | "shop" | "pay" | "done">("intro");
   const [itemIndex, setItemIndex] = useState(0);
   const [budget, setBudget] = useState(200);
   const [purchasedItems, setPurchasedItems] = useState<string[]>([]);
   const [turnData, setTurnData] = useState<AiBazaarResponse | null>(null);
   const [isAiResponding, setIsAiResponding] = useState(false);
   const [typedMessage, setTypedMessage] = useState("");
+  const [paidSum, setPaidSum] = useState(0);
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
@@ -102,50 +103,47 @@ export function BazaarGame() {
         setIsAiResponding(false);
       }
     },
-    [patientId, currentItem, budget]
+    [budget, currentItem.initialPrice, currentItem.name, patientId]
   );
 
   const startBazaar = useCallback(() => {
+    stopSpeaking();
     playPress();
     setPhase("shop");
     setItemIndex(0);
     setBudget(200);
     setPurchasedItems([]);
+    setPaidSum(0);
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    loadMerchantTurn("Hello shopkeeper! How much for this item?");
+    loadMerchantTurn("Hello! What fresh items do you have today?");
   }, [loadMerchantTurn]);
 
-  const handleUserReply = (message: string) => {
-    if (!message.trim() || isAiResponding) return;
-    setTaps((t) => t + 1);
-    stopSpeaking();
+  const handleCoinAdd = (val: number) => {
     playPress();
-    setTypedMessage("");
+    setTaps((t) => t + 1);
+    const targetPrice = turnData?.finalPrice || currentItem.initialPrice;
+    const nextPaid = paidSum + val;
+    setPaidSum(nextPaid);
 
-    // Check if agreeing to purchase
-    const isBuying =
-      message.toLowerCase().includes("take") ||
-      message.toLowerCase().includes("buy") ||
-      message.toLowerCase().includes("thank") ||
-      message.toLowerCase().includes("yes");
-
-    if (isBuying && turnData) {
+    if (nextPaid >= targetPrice) {
       playCorrect();
-      const newBudget = Math.max(0, budget - turnData.finalPrice);
-      setBudget(newBudget);
-      const updated = [...purchasedItems, currentItem.name];
-      setPurchasedItems(updated);
+      const updatedBudget = Math.max(0, budget - targetPrice);
+      setBudget(updatedBudget);
+      setPurchasedItems((prev) => [...prev, currentItem.name]);
 
-      if (itemIndex + 1 < MARKET_ITEMS.length) {
-        setTimeout(() => {
+      speak(`Exact payment of ₹${targetPrice} received! Thank you, Dadu.`, locale, rate);
+
+      setTimeout(() => {
+        if (itemIndex + 1 < MARKET_ITEMS.length) {
           const nextIdx = itemIndex + 1;
           setItemIndex(nextIdx);
-          loadMerchantTurn("Hello! What is your price for this next item?");
-        }, 1800);
-      } else {
-        setTimeout(() => {
+          setPaidSum(0);
+          setPhase("shop");
+          const nextItem = MARKET_ITEMS[nextIdx];
+          speak(`Next stall: Look at this beautiful ${nextItem.name}.`, locale, rate);
+        } else {
           playComplete();
           setPhase("done");
           if (startedAt) {
@@ -159,8 +157,31 @@ export function BazaarGame() {
               errorCount: 0,
             });
           }
-        }, 1800);
-      }
+        }
+      }, 1500);
+    } else {
+      speak(`You have added ₹${nextPaid}. Need ₹${targetPrice - nextPaid} more.`, locale, rate);
+    }
+  };
+
+  const handleUserReply = (message: string) => {
+    if (!message.trim() || isAiResponding) return;
+    setTaps((t) => t + 1);
+    stopSpeaking();
+    playPress();
+    setTypedMessage("");
+
+    const isBuying =
+      message.toLowerCase().includes("take") ||
+      message.toLowerCase().includes("buy") ||
+      message.toLowerCase().includes("thank") ||
+      message.toLowerCase().includes("yes");
+
+    if (isBuying && turnData) {
+      setPaidSum(0);
+      setPhase("pay");
+      const targetPrice = turnData.finalPrice || currentItem.initialPrice;
+      speak(`The bill is ₹${targetPrice}. Please count out the notes and coins from your wallet.`, locale, rate);
     } else {
       loadMerchantTurn(message);
     }
@@ -361,6 +382,78 @@ export function BazaarGame() {
                   </button>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      ) : phase === "pay" ? (
+        <div className="flex flex-col items-center gap-4 py-1 text-center">
+          {/* PAYMENT BILL HUD */}
+          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000] text-left">
+            <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-2">
+              <span className="text-xs font-black uppercase text-tea flex items-center gap-1.5">
+                <ShoppingBag className="h-4 w-4" /> Bill for {currentItem.name}
+              </span>
+              <span className="text-xs font-black bg-tea text-white px-2 py-0.5 rounded">
+                Target: ₹{turnData?.finalPrice || currentItem.initialPrice}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold text-ink-secondary">Paid on Counter:</p>
+                <p className="font-serif text-2xl font-black text-tea">₹{paidSum}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs font-bold text-ink-secondary">Remaining to pay:</p>
+                <p className="font-serif text-lg font-black text-amber-900">
+                  ₹{Math.max(0, (turnData?.finalPrice || currentItem.initialPrice) - paidSum)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* COINS & NOTES WALLET DRAWER */}
+          <div className="w-full max-w-md bg-[#FAF5EE] p-4 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] space-y-3">
+            <span className="text-xs font-black uppercase tracking-wider text-ink block text-left">
+              👛 Tap Coins & Notes to Pay Bill:
+            </span>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <button
+                type="button"
+                onClick={() => handleCoinAdd(10)}
+                className="btn-tactile flex flex-col items-center justify-center p-3 rounded-xl border-2 border-black bg-amber-100 font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-200 active:translate-y-0.5 cursor-pointer"
+              >
+                <span className="text-2xl">🪙</span>
+                <span className="text-sm mt-1">+ ₹10 Coin</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCoinAdd(20)}
+                className="btn-tactile flex flex-col items-center justify-center p-3 rounded-xl border-2 border-black bg-emerald-100 font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-emerald-200 active:translate-y-0.5 cursor-pointer"
+              >
+                <span className="text-2xl">💵</span>
+                <span className="text-sm mt-1">+ ₹20 Note</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCoinAdd(50)}
+                className="btn-tactile flex flex-col items-center justify-center p-3 rounded-xl border-2 border-black bg-cyan-100 font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-cyan-200 active:translate-y-0.5 cursor-pointer"
+              >
+                <span className="text-2xl">💶</span>
+                <span className="text-sm mt-1">+ ₹50 Note</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCoinAdd(100)}
+                className="btn-tactile flex flex-col items-center justify-center p-3 rounded-xl border-2 border-black bg-purple-100 font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-purple-200 active:translate-y-0.5 cursor-pointer"
+              >
+                <span className="text-2xl">💷</span>
+                <span className="text-sm mt-1">+ ₹100 Note</span>
+              </button>
             </div>
           </div>
         </div>
