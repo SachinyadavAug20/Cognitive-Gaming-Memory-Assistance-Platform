@@ -1,0 +1,14 @@
+{
+  "name": "a-day-in-my-world",
+  "version": "1.0.0",
+  "description": "A Day in My World - a 3D therapeutic home/village game for cognitive rehabilitation",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "three": "^0.160.0"
+  }
+}
