@@ -91,12 +91,6 @@ export function LotusLakeGame() {
     ];
     setLotuses(initialLotuses);
     setPhase("play");
-
-    speak(
-      "Welcome to Ward's Lake. Gently touch the calm water to create soothing ripples and help the pink lotuses bloom.",
-      locale,
-      rate
-    );
   }
 
   function handleLakeTouch(e: React.MouseEvent<HTMLDivElement>) {

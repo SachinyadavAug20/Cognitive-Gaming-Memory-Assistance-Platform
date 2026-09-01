@@ -9,25 +9,26 @@ import {
   ShieldCheck,
   ArrowRight,
   Activity,
-  Award,
   Layers,
+  Sparkles,
+  Compass,
+  Utensils,
 } from "lucide-react";
-import { GAMES } from "@/games/registry";
+import { GAMES, type ClinicalDomain } from "@/games/registry";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { startLevel } from "@/games/config";
 import { GameError, GameLoading } from "@/components/games/GameState";
 
+type FilterKey = "all" | ClinicalDomain;
+
 export default function GamesHubPage() {
   const t = useTranslations("games");
   const { detail, loading, error, reload } = usePatientDetail();
-  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [selectedFilter, setSelectedFilter] = useState<FilterKey>("all");
 
   const filteredGames = GAMES.filter((g) => {
     if (selectedFilter === "all") return true;
-    if (selectedFilter === "recommended") return g.recommended;
-    if (selectedFilter === "ai") return g.domain.startsWith("AI");
-    if (selectedFilter === "3d") return g.domain.includes("3D");
-    return true;
+    return g.category === selectedFilter;
   });
 
   return (
@@ -45,7 +46,7 @@ export default function GamesHubPage() {
             <Brain className="h-8 w-8 text-tea shrink-0" /> Cognitive Therapy Modules
           </h1>
           <p className="text-xs sm:text-sm font-semibold text-ink-secondary mt-1">
-            Culturally tailored interactive clinical games for elderly dementia care
+            Culturally tailored clinical therapeutic games for elderly dementia care in North East India
           </p>
         </div>
 
@@ -57,7 +58,7 @@ export default function GamesHubPage() {
         </Link>
       </div>
 
-      {/* Filter Tabs */}
+      {/* 5 Evidence-Based Clinical Domain Filter Tabs */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <button
           type="button"
@@ -71,41 +72,57 @@ export default function GamesHubPage() {
           <Layers className="h-3.5 w-3.5" />
           <span>All Modules ({GAMES.length})</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setSelectedFilter("3d")}
+          onClick={() => setSelectedFilter("vision-3d")}
           className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "3d"
+            selectedFilter === "vision-3d"
               ? "border-black bg-teal-800 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Activity className="h-3.5 w-3.5" />
-          <span>3D & Vision ({GAMES.filter((g) => g.domain.includes("3D")).length})</span>
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>3D & Vision ({GAMES.filter((g) => g.category === "vision-3d").length})</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setSelectedFilter("ai")}
+          onClick={() => setSelectedFilter("reminiscence")}
           className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "ai"
+            selectedFilter === "reminiscence"
               ? "border-black bg-purple-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
           <Brain className="h-3.5 w-3.5" />
-          <span>AI Reminiscence ({GAMES.filter((g) => g.domain.startsWith("AI")).length})</span>
+          <span>Reminiscence & Memory ({GAMES.filter((g) => g.category === "reminiscence").length})</span>
         </button>
+
         <button
           type="button"
-          onClick={() => setSelectedFilter("recommended")}
+          onClick={() => setSelectedFilter("attention")}
           className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "recommended"
-              ? "border-black bg-marigold text-white shadow-[2px_2px_0px_#000]"
+            selectedFilter === "attention"
+              ? "border-black bg-emerald-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Award className="h-3.5 w-3.5" />
-          <span>Flagship Clinical CDTx</span>
+          <Compass className="h-3.5 w-3.5" />
+          <span>Attention & Spatial ({GAMES.filter((g) => g.category === "attention").length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setSelectedFilter("iadl")}
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+            selectedFilter === "iadl"
+              ? "border-black bg-amber-700 text-white shadow-[2px_2px_0px_#000]"
+              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
+          }`}
+        >
+          <Utensils className="h-3.5 w-3.5" />
+          <span>Daily Living IADL ({GAMES.filter((g) => g.category === "iadl").length})</span>
         </button>
       </div>
 
@@ -132,7 +149,7 @@ export default function GamesHubPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-sm font-black text-ink leading-tight">
-                        {t(game.titleKey)}
+                        {t.has(game.titleKey) ? t(game.titleKey) : game.domain}
                       </span>
                       {game.recommended && (
                         <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-white shadow-sm flex items-center gap-1">
@@ -144,7 +161,7 @@ export default function GamesHubPage() {
                       <Activity className="h-3 w-3" /> {game.domain}
                     </span>
                     <p className="mt-1.5 text-xs font-semibold text-ink-secondary line-clamp-2 leading-relaxed">
-                      {t(game.descKey)}
+                      {t.has(game.descKey) ? t(game.descKey) : ""}
                     </p>
                   </div>
                 </div>
@@ -152,7 +169,7 @@ export default function GamesHubPage() {
                 <div className="flex items-center justify-between border-t-2 border-black/10 pt-2 text-[11px] font-bold text-ink-secondary">
                   <span>Level {startLevel(detail)} Adaptive</span>
                   <span className="rounded-lg bg-tea px-2.5 py-1 text-xs font-black text-white group-hover:bg-emerald-800 flex items-center gap-1">
-                    <span>Start</span>
+                    <span>Start Session</span>
                     <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
