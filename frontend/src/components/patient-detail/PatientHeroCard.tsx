@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ClinicalDossierExport } from "@/components/clinical/ClinicalDossierExport";
+import { ClinicalReportExportModal } from "@/components/patient-detail/ClinicalReportExportModal";
 import type { PatientDetailRecord } from "@/types";
 
 interface PatientHeroCardProps {
@@ -65,6 +66,7 @@ export function PatientHeroCard({
             </div>
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <ClinicalReportExportModal patient={patient} age={age ?? null} stage={stage} />
               <ClinicalDossierExport patient={patient} age={age} />
               <Link
                 href={`/caregiver/patients/${patient.id}/card`}

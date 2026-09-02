@@ -17,13 +17,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameSessionService {
 
     private static final Logger log = LoggerFactory.getLogger(GameSessionService.class);
     private static final String OLLAMA_URL = "http://localhost:11434/api/generate";
-    private static final String MODEL = "llama3.2:3b";
+    private static final String MODEL = "qwen2.5:1.5b";
     private static final int TIMEOUT_MS = 10_000;
 
     private final GameSessionRepository gameSessionRepository;
@@ -112,8 +113,13 @@ public class GameSessionService {
      * Generate 3-sentence plain-language clinical summary via Ollama for ASHA workers
      */
     public String generateAiClinicalSummary(Long patientId, List<GameSession> recentSessions) {
-        Patient patient = patientRepository.findById(patientId).orElse(null);
-        String patientName = patient != null ? patient.getName() : "The patient";
+        Patient patient = (patientId != null && patientId > 0)
+                ? patientRepository.findById(patientId).orElse(null)
+                : patientRepository.findAll().stream().findFirst().orElse(null);
+
+        String patientName = patient != null ? patient.getName() : "Pratima Borah";
+        String lang = patient != null && patient.getPreferredLanguage() != null ? patient.getPreferredLanguage() : "English";
+        String culture = patient != null && patient.getCulturalBackground() != null ? patient.getCulturalBackground() : "North East India (Assam)";
 
         if (recentSessions == null || recentSessions.isEmpty()) {
             return patientName + " has not completed any interactive sessions yet.";
@@ -124,17 +130,54 @@ public class GameSessionService {
         double accuracy = latest.getAccuracyPercentage() != null ? latest.getAccuracyPercentage() : 100.0;
         int motorMs = latest.getMotorReactionTimeMs() != null ? latest.getMotorReactionTimeMs() : 1200;
         int hesitation = latest.getHesitationCount() != null ? latest.getHesitationCount() : 0;
+        int spatial = latest.getSpatialRecallScore() != null ? latest.getSpatialRecallScore() : 100;
+
+        double avgAccuracy = recentSessions.stream()
+                .mapToDouble(s -> s.getAccuracyPercentage() != null ? s.getAccuracyPercentage() : 100.0)
+                .average()
+                .orElse(accuracy);
+
+        double avgLatency = recentSessions.stream()
+                .mapToDouble(s -> s.getMotorReactionTimeMs() != null ? s.getMotorReactionTimeMs() : 1200.0)
+                .average()
+                .orElse(motorMs);
+
+        String recentGamesList = recentSessions.stream()
+                .map(s -> s.getGameType().replace("_", " "))
+                .distinct()
+                .limit(4)
+                .collect(Collectors.joining(", "));
 
         String prompt = String.format(
-                "Patient %s completed a %s session with %.1f%% accuracy, %dms motor latency, and %d hesitation instances. " +
-                "Write a concise 3-sentence plain-language clinical summary of their spatial and motor cognitive status for an ASHA community health worker.",
-                patientName, gameType, accuracy, motorMs, hesitation
+                "You are an empathetic geriatric cognitive specialist creating a brief clinical progress note for an ASHA community health worker.\n\n" +
+                "PATIENT PROFILE:\n" +
+                "- Name: %s\n" +
+                "- Region & Culture: %s\n" +
+                "- Preferred Language: %s\n\n" +
+                "COGNITIVE TELEMETRY DATA:\n" +
+                "- Latest Therapy Module: %s\n" +
+                "- Session Accuracy: %.1f%% (Rolling Average: %.1f%%)\n" +
+                "- Motor Response Latency: %d ms (Rolling Average: %.0f ms)\n" +
+                "- Spatial Recall Index: %d / 100\n" +
+                "- Hesitation Instances: %d\n" +
+                "- Recent Activities: %s\n\n" +
+                "INSTRUCTIONS:\n" +
+                "Write exactly 3 concise, highly supportive sentences in plain English:\n" +
+                "1. Summarize their spatial orientation and recall performance during the session.\n" +
+                "2. Assess their motor latency and coordination calmness.\n" +
+                "3. Provide one actionable, culturally sensitive recommendation for daily care and family encouragement.\n" +
+                "Do not use markdown headers or bullet points.",
+                patientName, culture, lang,
+                gameType.replace("_", " "), accuracy, avgAccuracy,
+                motorMs, avgLatency,
+                spatial, hesitation,
+                recentGamesList
         );
 
         try {
             String raw = callOllama(prompt);
             if (raw != null && !raw.trim().isEmpty()) {
-                return raw.trim();
+                return raw.trim().replaceAll("^\"|\"$", "");
             }
         } catch (Exception e) {
             log.warn("Ollama AI summary unavailable, using rule-based clinical fallback: {}", e.getMessage());
@@ -142,9 +185,9 @@ public class GameSessionService {
 
         // Clinical Rule-Based Fallback
         return String.format(
-                "%s exhibited steady spatial recognition during the %s session with %.0f%% accuracy. " +
-                "Motor reaction speed averaged %dms with calm bilateral coordination. " +
-                "Recommended for continued daily cognitive stimulation and hydration check-ins.",
+                "%s exhibited steady spatial recall and engagement during the %s session with %.0f%% accuracy. " +
+                "Motor reaction speed averaged %dms with calm bilateral coordination and minimal hesitation. " +
+                "Recommended for continued daily cognitive stimulation, warm family conversations, and hydration check-ins.",
                 patientName, gameType.replace("_", " "), accuracy, motorMs
         );
     }
@@ -159,6 +202,11 @@ public class GameSessionService {
             body.put("model", MODEL);
             body.put("prompt", prompt);
             body.put("stream", false);
+            body.put("options", Map.of(
+                    "temperature", 0.3,
+                    "num_predict", 250,
+                    "num_ctx", 1024
+            ));
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<String> response = restTemplate.postForEntity(OLLAMA_URL, entity, String.class);

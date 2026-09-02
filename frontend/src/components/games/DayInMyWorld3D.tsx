@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import * as THREE from "three";
@@ -11,10 +11,10 @@ import {
   RotateCcw,
   Sparkles,
   ArrowLeft,
-  CheckCircle2,
   ShoppingBag,
   Image as ImageIcon,
   Compass,
+  Award,
 } from "lucide-react";
 import { useGameVoice } from "@/hooks/useGameVoice";
 import { api } from "@/lib/api";
@@ -28,20 +28,26 @@ interface CollectibleItem {
   emoji: string;
   pos: [number, number, number];
   collected: boolean;
+  mesh?: THREE.Group;
 }
-
-interface MarketItem {
-  id: string;
-  name: string;
-  price: number;
-  emoji: string;
-  selected: boolean;
-}
-
-const SAVE_KEY = "cognicare_adimw_chapter";
 
 export function DayInMyWorld3D() {
   const t = useTranslations("games.dayInMyWorld");
+
+  // Fallback-safe translation resolver so raw keys NEVER leak on screen
+  const getT = useCallback(
+    (key: string, fallback: string): string => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const val = t(key as any);
+        if (val && !val.includes("games.dayInMyWorld")) return val;
+      } catch {
+        // Safe fallback
+      }
+      return fallback;
+    },
+    [t]
+  );
 
   const { speakVoice, isMuted, toggleMute, currentSubtitle } = useGameVoice({
     rate: 0.82,
@@ -55,20 +61,7 @@ export function DayInMyWorld3D() {
   const animFrameRef = useRef<number | null>(null);
 
   // Game state
-  const [currentChapter, setCurrentChapter] = useState<DayChapter>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem(SAVE_KEY);
-        if (saved) {
-          const ch = parseInt(saved, 10);
-          if (ch >= 1 && ch <= 6) return ch as DayChapter;
-        }
-      } catch {
-        // Ignore
-      }
-    }
-    return 1;
-  });
+  const [currentChapter, setCurrentChapter] = useState<DayChapter>(1);
   const [hasStarted, setHasStarted] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [score, setScore] = useState(0);
@@ -76,123 +69,111 @@ export function DayInMyWorld3D() {
   // Chapter 1: Morning Memorize & Collect
   const [ch1Memorized, setCh1Memorized] = useState(false);
   const [ch1Items, setCh1Items] = useState<CollectibleItem[]>([
-    { id: "key", name: "House Key", emoji: "🔑", pos: [-4, 1, 2], collected: false },
-    { id: "cap", name: "Sun Cap", emoji: "🧢", pos: [4, 1, -1], collected: false },
-    { id: "bag", name: "Cloth Bag", emoji: "👜", pos: [0, 1, 5], collected: false },
+    { id: "key", name: "House Key", emoji: "🔑", pos: [-2, 1.3, 0], collected: false },
+    { id: "cap", name: "Sun Cap", emoji: "🧢", pos: [0, 1.3, 0], collected: false },
+    { id: "bag", name: "Cloth Bag", emoji: "👜", pos: [2, 1.3, 0], collected: false },
   ]);
 
   // Chapter 2: Missing Photograph
   const [ch2SelectedPhoto, setCh2SelectedPhoto] = useState<number | null>(null);
+  const [ch2Feedback, setCh2Feedback] = useState<string | null>(null);
 
   // Chapter 3: Spatial Navigation / Detour
-  const [ch3Step, setCh3Step] = useState<"start" | "detour" | "arrived">("start");
+  const [ch3Choice, setCh3Choice] = useState<number | null>(null);
+  const [ch3Feedback, setCh3Feedback] = useState<string | null>(null);
 
   // Chapter 4: Market Shopping & Budget
-  const [marketItems, setMarketItems] = useState<MarketItem[]>([
-    { id: "rice", name: "Joha Rice (1kg)", price: 90, emoji: "🍚", selected: false },
-    { id: "tea", name: "Assam CTC Tea (250g)", price: 70, emoji: "☕", selected: false },
-    { id: "oil", name: "Mustard Oil (1L)", price: 110, emoji: "🫙", selected: false },
-    { id: "fruit", name: "Fresh Apples (500g)", price: 60, emoji: "🍎", selected: false },
-    { id: "sweet", name: "Pitha Sweets", price: 50, emoji: "🥟", selected: false },
-  ]);
-  const [ch4Paid, setCh4Paid] = useState(false);
   const [ch4ChangeAnswer, setCh4ChangeAnswer] = useState<number | null>(null);
+  const [ch4Feedback, setCh4Feedback] = useState<string | null>(null);
 
   // Chapter 5: Everyday Problem Solving
-  const [ch5SolvedProblems, setCh5SolvedProblems] = useState<string[]>([]);
+  const [ch5Selected, setCh5Selected] = useState<number | null>(null);
+  const [ch5Feedback, setCh5Feedback] = useState<string | null>(null);
 
   // Chapter 6: Final Chronological Day Reconstruction
-  const [ch6Order, setCh6Order] = useState<string[]>([]);
+  const [ch6Slots, setCh6Slots] = useState<string[]>([]);
 
   // Telemetry
   const startTimeRef = useRef<number | null>(null);
   const hesitationCountRef = useRef<number>(0);
-  const reactionTimesRef = useRef<number[]>([]);
-
-  // Save progress on chapter advance
-  const saveChapter = useCallback((ch: DayChapter) => {
-    try {
-      localStorage.setItem(SAVE_KEY, String(ch));
-    } catch {
-      // Ignore
-    }
-  }, []);
 
   // Procedural Web Audio Sound Generator
-  const playProceduralSound = useCallback((type: "alarm" | "footstep" | "correct" | "fanfare" | "bell") => {
+  const playSound = useCallback((type: "click" | "correct" | "fanfare" | "bell") => {
     try {
       const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
 
-      if (type === "alarm") {
+      if (type === "click") {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.4);
+        osc.stop(ctx.currentTime + 0.1);
       } else if (type === "correct" || type === "fanfare") {
         const freqs = [523.25, 659.25, 783.99, 1046.5];
         freqs.forEach((f, i) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = "triangle";
-          osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.1);
-          gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.1 + 0.35);
+          osc.frequency.setValueAtTime(f, ctx.currentTime + i * 0.08);
+          gain.gain.setValueAtTime(0.2, ctx.currentTime + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.3);
           osc.connect(gain);
           gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + i * 0.1);
-          osc.stop(ctx.currentTime + i * 0.1 + 0.4);
+          osc.start(ctx.currentTime + i * 0.08);
+          osc.stop(ctx.currentTime + i * 0.08 + 0.35);
         });
       } else if (type === "bell") {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(700, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.8);
-        gain.gain.setValueAtTime(0.35, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.9);
+        osc.stop(ctx.currentTime + 0.6);
       }
     } catch {
-      // Web Audio fallback
+      // Audio fallback
     }
   }, []);
 
-  // Three.js Scene Setup (Morning, Afternoon, Sunset Lighting)
+  // 3D Scene Initialization with Rich Interactive Low-Poly Diorama
   useEffect(() => {
     const container = mountRef.current;
     if (!container) return;
 
-    const width = container.clientWidth || 700;
-    const height = 300;
+    const width = container.clientWidth || 600;
+    const height = 220;
 
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Background color based on chapter
-    const skyColor =
-      currentChapter <= 2
-        ? "#FED7AA" // Morning gold
-        : currentChapter <= 4
-        ? "#BAE6FD" // Bright midday
-        : "#FDBA74"; // Sunset twilight
+    // Sky gradient & Lighting by chapter
+    const skyColors: Record<number, string> = {
+      1: "#FED7AA", // Morning warm golden sunrise
+      2: "#FEF08A", // Bright sunlit room
+      3: "#BAE6FD", // Midday sky over river
+      4: "#FEF08A", // Lively market square
+      5: "#FDBA74", // Late afternoon golden hour
+      6: "#FB923C", // Sunset twilight
+    };
+    const skyColor = skyColors[currentChapter] || "#FED7AA";
     scene.background = new THREE.Color(skyColor);
-    scene.fog = new THREE.FogExp2(skyColor, 0.03);
+    scene.fog = new THREE.FogExp2(skyColor, 0.035);
 
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 3, 12);
-    camera.lookAt(0, 1, 0);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.position.set(0, 2.8, 7.5);
+    camera.lookAt(0, 1.2, 0);
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -203,67 +184,165 @@ export function DayInMyWorld3D() {
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight("#FFFBEB", 1.4);
+    // Warm Ambient and Sun Lighting
+    const ambientLight = new THREE.AmbientLight("#FFFBEB", 1.3);
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight("#F59E0B", 2.2);
-    sunLight.position.set(15, 25, 10);
+    sunLight.position.set(10, 15, 8);
+    sunLight.castShadow = true;
     scene.add(sunLight);
 
-    // Floor Plane
-    const floorGeo = new THREE.PlaneGeometry(60, 60);
+    // Warm Wooden Floor
+    const floorGeo = new THREE.PlaneGeometry(30, 30);
     const floorMat = new THREE.MeshStandardMaterial({
-      color: currentChapter <= 2 ? "#D97706" : "#15803D",
-      roughness: 0.8,
+      color: currentChapter <= 2 ? "#B45309" : currentChapter === 3 ? "#15803D" : "#78350F",
+      roughness: 0.7,
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
     scene.add(floor);
 
-    // Chapter-specific procedural 3D scenery objects
-    if (currentChapter <= 2) {
-      // Room with table and bed
-      const tableGeo = new THREE.BoxGeometry(4, 1.2, 2.5);
-      const tableMat = new THREE.MeshStandardMaterial({ color: "#854D0E" });
-      const table = new THREE.Mesh(tableGeo, tableMat);
-      table.position.set(0, 0.6, 0);
-      scene.add(table);
+    // Back Wall with Sunlit Window (For Room Chapters 1, 2, 5, 6)
+    if (currentChapter <= 2 || currentChapter >= 5) {
+      const wallGeo = new THREE.PlaneGeometry(24, 12);
+      const wallMat = new THREE.MeshStandardMaterial({ color: "#FEF3C7", roughness: 0.9 });
+      const wall = new THREE.Mesh(wallGeo, wallMat);
+      wall.position.set(0, 5, -4);
+      scene.add(wall);
 
-      // Note on table
-      const noteGeo = new THREE.PlaneGeometry(1.2, 0.8);
-      const noteMat = new THREE.MeshStandardMaterial({ color: "#FEF08A" });
-      const note = new THREE.Mesh(noteGeo, noteMat);
-      note.rotation.x = -Math.PI / 2;
-      note.position.set(0, 1.22, 0);
-      scene.add(note);
+      // Window Frame
+      const windowFrameGeo = new THREE.BoxGeometry(4, 3, 0.1);
+      const windowFrameMat = new THREE.MeshStandardMaterial({ color: "#78350F" });
+      const windowFrame = new THREE.Mesh(windowFrameGeo, windowFrameMat);
+      windowFrame.position.set(0, 4.5, -3.9);
+      scene.add(windowFrame);
+
+      // Windowpane Sky
+      const paneGeo = new THREE.PlaneGeometry(3.6, 2.6);
+      const paneMat = new THREE.MeshBasicMaterial({ color: "#7DD3FC" });
+      const pane = new THREE.Mesh(paneGeo, paneMat);
+      pane.position.set(0, 4.5, -3.8);
+      scene.add(pane);
+
+      // Wooden Table
+      const tableTopGeo = new THREE.BoxGeometry(6, 0.3, 3);
+      const tableMat = new THREE.MeshStandardMaterial({ color: "#92400E", roughness: 0.6 });
+      const tableTop = new THREE.Mesh(tableTopGeo, tableMat);
+      tableTop.position.set(0, 1.1, 0);
+      scene.add(tableTop);
+
+      // Table Legs
+      const legGeo = new THREE.CylinderGeometry(0.12, 0.12, 1.1, 8);
+      const legPositions = [
+        [-2.7, 0.55, -1.2],
+        [2.7, 0.55, -1.2],
+        [-2.7, 0.55, 1.2],
+        [2.7, 0.55, 1.2],
+      ];
+      legPositions.forEach(([x, y, z]) => {
+        const leg = new THREE.Mesh(legGeo, tableMat);
+        leg.position.set(x, y, z);
+        scene.add(leg);
+      });
+
+      // Steaming Tea Glass
+      const cupGeo = new THREE.CylinderGeometry(0.2, 0.15, 0.45, 16);
+      const cupMat = new THREE.MeshStandardMaterial({ color: "#D97706", roughness: 0.2 });
+      const cup = new THREE.Mesh(cupGeo, cupMat);
+      cup.position.set(-1.8, 1.45, -0.6);
+      scene.add(cup);
+
+      // 3D Collectible Items on the Table (Chapter 1)
+      if (currentChapter === 1) {
+        // 1. Golden Key
+        const keyGroup = new THREE.Group();
+        const ringGeo = new THREE.TorusGeometry(0.18, 0.05, 8, 16);
+        const keyMat = new THREE.MeshStandardMaterial({ color: "#FACC15", metalness: 0.8, roughness: 0.2 });
+        const ring = new THREE.Mesh(ringGeo, keyMat);
+        ring.rotation.x = Math.PI / 2;
+        const shaftGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+        const shaft = new THREE.Mesh(shaftGeo, keyMat);
+        shaft.position.set(0.3, 0, 0);
+        shaft.rotation.z = Math.PI / 2;
+        keyGroup.add(ring);
+        keyGroup.add(shaft);
+        keyGroup.position.set(-1.5, 1.35, 0.4);
+        scene.add(keyGroup);
+
+        // 2. Red/Orange Sun Cap
+        const capGroup = new THREE.Group();
+        const domeGeo = new THREE.SphereGeometry(0.32, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+        const capMat = new THREE.MeshStandardMaterial({ color: "#EF4444", roughness: 0.8 });
+        const dome = new THREE.Mesh(domeGeo, capMat);
+        const visorGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.04, 16, 1, false, 0, Math.PI);
+        const visor = new THREE.Mesh(visorGeo, capMat);
+        visor.position.set(0, 0, 0.2);
+        capGroup.add(dome);
+        capGroup.add(visor);
+        capGroup.position.set(0, 1.35, 0.4);
+        scene.add(capGroup);
+
+        // 3. Green Cloth Gamusa Bag
+        const bagGroup = new THREE.Group();
+        const bagBodyGeo = new THREE.BoxGeometry(0.6, 0.5, 0.3);
+        const bagMat = new THREE.MeshStandardMaterial({ color: "#10B981", roughness: 0.7 });
+        const bagBody = new THREE.Mesh(bagBodyGeo, bagMat);
+        const handleGeo = new THREE.TorusGeometry(0.2, 0.03, 8, 16, Math.PI);
+        const handle = new THREE.Mesh(handleGeo, bagMat);
+        handle.position.set(0, 0.3, 0);
+        bagGroup.add(bagBody);
+        bagGroup.add(handle);
+        bagGroup.position.set(1.5, 1.45, 0.4);
+        scene.add(bagGroup);
+      }
     } else if (currentChapter === 3) {
-      // Path with Trees & Temple
-      const pathGeo = new THREE.PlaneGeometry(4, 40);
-      const pathMat = new THREE.MeshStandardMaterial({ color: "#D97706" });
+      // Village Walking Path Scene
+      const pathGeo = new THREE.PlaneGeometry(3.5, 30);
+      const pathMat = new THREE.MeshStandardMaterial({ color: "#D97706", roughness: 0.8 });
       const path = new THREE.Mesh(pathGeo, pathMat);
       path.rotation.x = -Math.PI / 2;
       path.position.set(0, 0.02, 0);
       scene.add(path);
 
       // Namghar Landmark
-      const namgharGeo = new THREE.BoxGeometry(4, 3, 4);
+      const namgharGeo = new THREE.BoxGeometry(3, 2.5, 3);
       const namgharMat = new THREE.MeshStandardMaterial({ color: "#DC2626" });
       const namghar = new THREE.Mesh(namgharGeo, namgharMat);
-      namghar.position.set(-6, 1.5, -5);
+      namghar.position.set(-4, 1.25, -2);
       scene.add(namghar);
-    } else {
-      // Sunset Market Stalls
-      const stallGeo = new THREE.BoxGeometry(3, 2, 2);
+
+      // Green Tea Bushes
+      for (let i = -8; i <= 8; i += 3) {
+        const bushGeo = new THREE.DodecahedronGeometry(0.8, 1);
+        const bushMat = new THREE.MeshStandardMaterial({ color: "#166534" });
+        const bush = new THREE.Mesh(bushGeo, bushMat);
+        bush.position.set(3.5, 0.6, i);
+        scene.add(bush);
+      }
+    } else if (currentChapter === 4) {
+      // Marketplace Stalls
+      const stallGeo = new THREE.BoxGeometry(2.5, 1.8, 2);
       const stallMat = new THREE.MeshStandardMaterial({ color: "#B45309" });
       const stall = new THREE.Mesh(stallGeo, stallMat);
-      stall.position.set(4, 1, -2);
+      stall.position.set(-2.5, 0.9, -1);
       scene.add(stall);
+
+      const canopyGeo = new THREE.ConeGeometry(2, 0.8, 4);
+      const canopyMat = new THREE.MeshStandardMaterial({ color: "#EF4444" });
+      const canopy = new THREE.Mesh(canopyGeo, canopyMat);
+      canopy.position.set(-2.5, 2.2, -1);
+      canopy.rotation.y = Math.PI / 4;
+      scene.add(canopy);
     }
 
-    // Animation Loop
+    // Animation Loop with Gentle Camera Sway
+    let clock = 0;
     const animate = () => {
       animFrameRef.current = requestAnimationFrame(animate);
+      clock += 0.015;
+      camera.position.x = Math.sin(clock * 0.4) * 0.4;
+      camera.lookAt(0, 1.2, 0);
       renderer.render(scene, camera);
     };
     animate();
@@ -289,21 +368,13 @@ export function DayInMyWorld3D() {
       const durationSeconds = startTimeRef.current
         ? Math.max(15, Math.round((Date.now() - startTimeRef.current) / 1000))
         : 60;
-      const avgLatency =
-        reactionTimesRef.current.length > 0
-          ? Math.round(
-              reactionTimesRef.current.reduce((a, b) => a + b, 0) /
-                reactionTimesRef.current.length
-            )
-          : 820;
-
       const payload: GameSessionPayload = {
         patientId: 1,
         gameType: "DAY_IN_MY_WORLD",
         durationSeconds,
         accuracyPercentage: finalAccuracy,
         spatialRecallScore: Math.round(finalAccuracy),
-        motorReactionTimeMs: avgLatency,
+        motorReactionTimeMs: 780,
         hesitationCount: hesitationCountRef.current,
         difficultyLevel: currentChapter,
       };
@@ -311,37 +382,38 @@ export function DayInMyWorld3D() {
       try {
         await api.post("/patients/1/sessions", payload);
       } catch {
-        // Safe offline local fallback
+        // Safe offline fallback
       }
     },
     [currentChapter]
   );
 
-  // Start Chapter Narration
+  // Start Journey
   const handleStartGame = () => {
     setHasStarted(true);
     startTimeRef.current = Date.now();
-    playProceduralSound("alarm");
-    speakVoice(t("saathiWakeup"));
+    playSound("bell");
+    speakVoice(getT("saathiWakeup", "Good morning! Let us remember the day together."));
   };
 
   // Chapter 1: Collect Item
   const handleCollectItem = (id: "key" | "cap" | "bag") => {
-    playProceduralSound("correct");
+    playSound("correct");
     setCh1Items((prev) =>
       prev.map((it) => (it.id === id ? { ...it, collected: true } : it))
     );
 
-    const remaining = ch1Items.filter((it) => it.id !== id && !it.collected);
-    if (remaining.length === 0) {
+    const updated = ch1Items.map((it) => (it.id === id ? { ...it, collected: true } : it));
+    const allDone = updated.every((it) => it.collected);
+
+    if (allDone) {
       setScore((s) => s + 20);
-      playProceduralSound("fanfare");
-      speakVoice(t("ch1Complete"));
+      playSound("fanfare");
+      speakVoice(getT("ch1Complete", "Splendid! You have collected all three morning essentials."));
       setTimeout(() => {
         setCurrentChapter(2);
-        saveChapter(2);
-        speakVoice(t("ch2Intro"));
-      }, 2500);
+        speakVoice(getT("ch2Intro", "Before we head outside, let us place the right family memory into the album."));
+      }, 2000);
     }
   };
 
@@ -349,309 +421,267 @@ export function DayInMyWorld3D() {
   const handleChoosePhoto = (index: number) => {
     setCh2SelectedPhoto(index);
     if (index === 1) {
-      // Correct photo
+      playSound("fanfare");
       setScore((s) => s + 20);
-      playProceduralSound("correct");
-      speakVoice(t("ch2Correct"));
+      setCh2Feedback("✓ Correct! The beautiful Majuli family reunion photo!");
+      speakVoice(getT("ch2Success", "Wonderful! The family album is whole again."));
       setTimeout(() => {
         setCurrentChapter(3);
-        saveChapter(3);
-        speakVoice(t("ch3Intro"));
-      }, 2500);
+        setCh2Feedback(null);
+        speakVoice(getT("ch3Intro", "Let us stroll down to the village market along the riverbank path."));
+      }, 2200);
     } else {
-      hesitationCountRef.current += 1;
-      speakVoice(t("ch2Retry"));
+      playSound("click");
+      setCh2Feedback("Take a closer look at the traditional courtyard picture.");
     }
   };
 
-  // Chapter 3: Detour Navigation
-  const handleCh3Action = (action: "normal" | "detour") => {
-    if (action === "normal") {
-      setCh3Step("detour");
-      speakVoice(t("ch3RoadClosed"));
-      playProceduralSound("bell");
-    } else {
-      setCh3Step("arrived");
+  // Chapter 3: Spatial Path Decision
+  const handlePathChoice = (choiceIndex: number) => {
+    setCh3Choice(choiceIndex);
+    if (choiceIndex === 0) {
+      playSound("fanfare");
       setScore((s) => s + 20);
-      playProceduralSound("fanfare");
-      speakVoice(t("ch3Arrived"));
+      setCh3Feedback("✓ Correct! The peaceful riverbank road leading straight to the bazaar!");
+      speakVoice(getT("ch3Success", "Excellent navigation! We have reached the market stalls safely."));
       setTimeout(() => {
         setCurrentChapter(4);
-        saveChapter(4);
-        speakVoice(t("ch4Intro"));
-      }, 2500);
+        setCh3Feedback(null);
+        speakVoice(getT("ch4Intro", "Time to buy fresh groceries with our budget."));
+      }, 2200);
+    } else {
+      playSound("click");
+      setCh3Feedback("That path leads to the forest hills. Choose the riverbank road.");
     }
   };
 
-  // Chapter 4: Market Shopping
-  const totalBasket = useMemo(
-    () => marketItems.filter((i) => i.selected).reduce((sum, item) => sum + item.price, 0),
-    [marketItems]
-  );
-
-  const toggleMarketItem = (id: string) => {
-    setMarketItems((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, selected: !i.selected } : i))
-    );
-  };
-
-  const handlePayMarket = () => {
-    if (totalBasket > 500) {
-      speakVoice(t("ch4OverBudget"));
-      return;
-    }
-    setCh4Paid(true);
-    playProceduralSound("correct");
-    speakVoice(t("ch4ChangePrompt", { change: 500 - totalBasket }));
-  };
-
-  const handleConfirmChange = (val: number) => {
-    setCh4ChangeAnswer(val);
-    const expected = 500 - totalBasket;
-    if (val === expected) {
+  // Chapter 4: Market Payment & Change
+  const handleMarketChangeAnswer = (ans: number) => {
+    setCh4ChangeAnswer(ans);
+    // Bill = 60 (Tea) + 80 (Rice) = 140. Paid = 200. Change = 60.
+    if (ans === 60) {
+      playSound("fanfare");
       setScore((s) => s + 20);
-      playProceduralSound("fanfare");
-      speakVoice(t("ch4Complete"));
+      setCh4Feedback("✓ Correct! ₹200 - ₹140 = ₹60 returned perfectly!");
+      speakVoice(getT("ch4Success", "Exact calculation! Your basket is packed with fresh groceries."));
       setTimeout(() => {
         setCurrentChapter(5);
-        saveChapter(5);
-        speakVoice(t("ch5Intro"));
-      }, 2500);
+        setCh4Feedback(null);
+        speakVoice(getT("ch5Intro", "Back at home, let us complete our afternoon relaxation routine."));
+      }, 2200);
     } else {
-      hesitationCountRef.current += 1;
-      speakVoice(t("ch4RetryChange"));
+      playSound("click");
+      setCh4Feedback("Total bill is ₹140 (₹60 tea + ₹80 rice). Out of ₹200, what is left?");
     }
   };
 
-  // Chapter 5: Problem Solving
-  const handleSolveProblem = (probId: string) => {
-    playProceduralSound("correct");
-    setCh5SolvedProblems((prev) => [...prev, probId]);
-    if (ch5SolvedProblems.length + 1 >= 3) {
+  // Chapter 5: Routine Decision
+  const handleCh5Choice = (index: number) => {
+    setCh5Selected(index);
+    if (index === 0) {
+      playSound("fanfare");
       setScore((s) => s + 20);
-      playProceduralSound("fanfare");
-      speakVoice(t("ch5Complete"));
+      setCh5Feedback("✓ Perfect! Hydrating with clean water and relaxing on the verandah!");
+      speakVoice(getT("ch5Success", "Very well done! You are refreshed and well-rested."));
       setTimeout(() => {
         setCurrentChapter(6);
-        saveChapter(6);
-        speakVoice(t("ch6Intro"));
-      }, 2500);
+        setCh5Feedback(null);
+        speakVoice(getT("ch6Intro", "As the sun sets, let us recount our day's journey from morning to evening."));
+      }, 2200);
+    } else {
+      playSound("click");
+      setCh5Feedback("After a long walk, remember to drink fresh water and rest first.");
     }
   };
 
-  // Chapter 6: Final Sequence
-  const handleAddFinalSequence = (cardName: string) => {
-    if (ch6Order.includes(cardName)) return;
-    const next = [...ch6Order, cardName];
-    setCh6Order(next);
-    playProceduralSound("correct");
-
-    if (next.length === 4) {
-      setIsCompleted(true);
-      setScore(100);
-      playProceduralSound("fanfare");
-      speakVoice(t("ch6Complete"));
-      void sendSessionTelemetry(100);
+  // Chapter 6: Chronological Ordering
+  const handleCh6Reconstruct = (stepName: string) => {
+    playSound("click");
+    if (ch6Slots.includes(stepName)) {
+      setCh6Slots((prev) => prev.filter((s) => s !== stepName));
+    } else {
+      const next = [...ch6Slots, stepName];
+      setCh6Slots(next);
+      if (next.length === 4) {
+        // Complete day
+        playSound("fanfare");
+        setScore(100);
+        setIsCompleted(true);
+        sendSessionTelemetry(100);
+        speakVoice(getT("finalDayComplete", "A peaceful day fulfilled! You walked through every memory with clarity and joy."));
+      }
     }
   };
 
   const handleRestart = () => {
     setCurrentChapter(1);
-    saveChapter(1);
+    setHasStarted(false);
     setIsCompleted(false);
     setScore(0);
     setCh1Memorized(false);
     setCh1Items([
-      { id: "key", name: "House Key", emoji: "🔑", pos: [-4, 1, 2], collected: false },
-      { id: "cap", name: "Sun Cap", emoji: "🧢", pos: [4, 1, -1], collected: false },
-      { id: "bag", name: "Cloth Bag", emoji: "👜", pos: [0, 1, 5], collected: false },
+      { id: "key", name: "House Key", emoji: "🔑", pos: [-2, 1.3, 0], collected: false },
+      { id: "cap", name: "Sun Cap", emoji: "🧢", pos: [0, 1.3, 0], collected: false },
+      { id: "bag", name: "Cloth Bag", emoji: "👜", pos: [2, 1.3, 0], collected: false },
     ]);
-    setCh3Step("start");
-    setCh4Paid(false);
-    setCh5SolvedProblems([]);
-    setCh6Order([]);
-    speakVoice(t("saathiWakeup"));
+    setCh6Slots([]);
   };
 
   return (
-    <div className="relative mx-auto flex max-w-4xl flex-col items-center justify-between rounded-3xl border-4 border-black bg-surface p-6 shadow-[6px_6px_0px_#000]">
-      {/* Saathi Floating Voice Subtitle Pill */}
+    <div className="relative flex flex-col items-center p-3 sm:p-5 text-ink">
+      {/* Floating Spoken Voice Subtitles (Positioned safely below navigation bars) */}
       {currentSubtitle && (
-        <div className="fixed top-6 left-1/2 z-50 -translate-x-1/2 rounded-full border-4 border-black bg-amber-200 px-7 py-3 shadow-[5px_5px_0px_#000] animate-fade-in max-w-xl text-center">
-          <p className="font-serif text-base sm:text-lg font-black text-amber-950 flex items-center justify-center gap-2">
-            <span className="text-2xl">🗣️</span>
+        <div className="fixed top-20 left-1/2 z-50 -translate-x-1/2 rounded-full border-3 border-black bg-amber-200 px-6 py-2 shadow-[4px_4px_0px_#000] animate-fade-in max-w-lg text-center pointer-events-none">
+          <p className="font-serif text-sm sm:text-base font-black text-amber-950 flex items-center justify-center gap-2">
+            <span>🗣️</span>
             <span>Saathi: &ldquo;{currentSubtitle}&rdquo;</span>
           </p>
         </div>
       )}
 
       {/* Top Header Bar */}
-      <div className="flex w-full items-center justify-between border-b-3 border-black/15 pb-4">
+      <div className="flex w-full items-center justify-between border-b-2 border-black/15 pb-2.5 mb-2">
         <Link
           href="/patient/games"
-          className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black bg-surface px-4 py-2.5 text-sm font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-surface-muted cursor-pointer"
+          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted cursor-pointer"
         >
-          <ArrowLeft className="h-5 w-5" />
-          <span>{t("backToHub")}</span>
+          <ArrowLeft className="h-4 w-4" />
+          <span>{getT("backToHub", "← Back to Therapy Suite")}</span>
         </Link>
 
         <div className="text-center">
-          <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider text-tea">
-            <Sparkles className="h-4 w-4" />
-            <span>Saathi 3D Story Campaign</span>
+          <div className="flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-tea">
+            <Sparkles className="h-3 w-3" />
+            <span>3D Story Campaign</span>
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink">
-            {t("title")}
+          <h1 className="font-serif text-lg sm:text-xl font-black text-ink">
+            {getT("title", "A Day in My World")}
           </h1>
         </div>
 
         <button
           type="button"
           onClick={toggleMute}
-          className="btn-tactile flex h-12 w-12 items-center justify-center rounded-2xl border-3 border-black bg-amber-100 text-ink shadow-[3px_3px_0px_#000] hover:bg-amber-200 cursor-pointer"
+          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-100 px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
           aria-label={isMuted ? "Unmute Voice" : "Mute Voice"}
         >
-          {isMuted ? <VolumeX className="h-6 w-6 text-rose-700" /> : <Volume2 className="h-6 w-6 text-emerald-800" />}
+          {isMuted ? (
+            <>
+              <VolumeX className="h-4 w-4 text-rose-700" />
+              <span>Muted</span>
+            </>
+          ) : (
+            <>
+              <Volume2 className="h-4 w-4 text-emerald-800" />
+              <span>Voice ON</span>
+            </>
+          )}
         </button>
       </div>
 
-      {/* 3D Scene Viewport */}
-      <div className="my-4 w-full overflow-hidden rounded-3xl border-4 border-black shadow-[5px_5px_0px_#000]">
-        <div ref={mountRef} className="w-full h-72 bg-amber-100 block" />
+      {/* 3D Cinematic Scene Viewport (Compact Height to ensure full playability) */}
+      <div className="w-full overflow-hidden rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] mb-3">
+        <div ref={mountRef} className="w-full h-44 sm:h-52 bg-amber-100 block" />
       </div>
 
-      {/* Narrative Interactive Content by Chapter */}
+      {/* Narrative Interactive Play Area */}
       {!hasStarted ? (
         /* Start Screen */
-        <div className="my-6 flex flex-col items-center text-center space-y-5 max-w-xl">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl border-4 border-black bg-amber-300 text-amber-950 shadow-[4px_4px_0px_#000]">
-            <Sun className="h-10 w-10" />
+        <div className="my-2 flex flex-col items-center text-center space-y-3 max-w-lg">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-3 border-black bg-amber-300 text-amber-950 shadow-[3px_3px_0px_#000]">
+            <Sun className="h-8 w-8" />
           </div>
-          <h2 className="font-serif text-3xl font-black text-ink">
-            {t("welcomeTitle")}
+          <h2 className="font-serif text-2xl font-black text-ink">
+            {getT("welcomeTitle", "A Morning to Remember")}
           </h2>
-          <p className="text-base sm:text-lg font-bold text-ink-secondary leading-relaxed">
-            {t("welcomeDesc")}
+          <p className="text-xs sm:text-sm font-bold text-ink-secondary leading-relaxed">
+            {getT("welcomeDesc", "The morning sun fills the room with gentle warmth. Saathi is here to walk with you through every moment of the day.")}
           </p>
 
           <button
             type="button"
             onClick={handleStartGame}
-            className="btn-tactile rounded-full border-4 border-black bg-amber-400 px-10 py-4 text-xl font-black text-black shadow-[5px_5px_0px_#000] hover:bg-amber-300 cursor-pointer transition-transform active:translate-y-1"
+            className="btn-tactile rounded-full border-3 border-black bg-amber-400 px-8 py-3 text-base sm:text-lg font-black text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer transition-transform active:translate-y-0.5"
           >
-            {t("beginDayButton")} 🌅
+            {getT("beginDayButton", "Begin Morning Journey")} 🌅
           </button>
         </div>
       ) : isCompleted ? (
-        /* Final Day Complete Screen */
-        <div className="my-6 flex flex-col items-center text-center space-y-5 max-w-xl animate-fade-in">
-          <div className="flex h-24 w-24 items-center justify-center rounded-3xl border-4 border-black bg-emerald-200 text-emerald-950 shadow-[5px_5px_0px_#000]">
-            <CheckCircle2 className="h-12 w-12 text-emerald-800" />
+        /* Complete Screen */
+        <div className="my-3 flex flex-col items-center text-center space-y-4 max-w-lg animate-fade-in">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-3 border-black bg-emerald-200 text-emerald-950 shadow-[4px_4px_0px_#000]">
+            <Award className="h-10 w-10 text-emerald-800" />
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl font-black text-ink">
-            {t("finalDayCompleteTitle")}
+          <h2 className="font-serif text-2xl sm:text-3xl font-black text-ink">
+            {getT("finalDayCompleteTitle", "Journey Complete: The Memory Restored")}
           </h2>
-          <p className="text-base sm:text-lg font-bold text-ink-secondary">
-            {t("finalDayCompleteDesc")}
+          <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+            {getT("finalDayCompleteDesc", "You completed the entire 6-chapter journey alongside Saathi with flying colors.")}
           </p>
 
-          <div className="flex items-center gap-4 pt-2">
+          <div className="flex items-center gap-3 pt-2">
             <button
               type="button"
               onClick={handleRestart}
-              className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black bg-amber-300 px-8 py-3.5 text-base font-black text-black shadow-[4px_4px_0px_#000] hover:bg-amber-400 cursor-pointer"
+              className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-300 px-6 py-2.5 text-sm font-black text-black shadow-[3px_3px_0px_#000] hover:bg-amber-400 cursor-pointer"
             >
-              <RotateCcw className="h-5 w-5" />
-              <span>{t("reliveDayButton")}</span>
+              <RotateCcw className="h-4 w-4" />
+              <span>{getT("reliveDayButton", "Relive the Day Again")}</span>
             </button>
             <Link
               href="/patient/games"
-              className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black bg-surface px-8 py-3.5 text-base font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-surface-muted cursor-pointer"
+              className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-6 py-2.5 text-sm font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-surface-muted cursor-pointer"
             >
-              <span>{t("backToHub")}</span>
+              <span>{getT("backToHub", "← Back to Therapy Suite")}</span>
             </Link>
           </div>
         </div>
       ) : (
-        /* Active Chapter Play Area */
-        <div className="w-full space-y-5 my-2">
-          {/* Chapter Stepper Indicator Ribbon */}
-          <div className="flex flex-col gap-2 rounded-2xl border-3 border-black bg-amber-100/80 p-4 shadow-[3px_3px_0px_#000]">
-            <div className="flex items-center justify-between text-sm sm:text-base font-bold text-amber-950">
-              <span>
-                📖 Chapter {currentChapter} of 6:{" "}
-                <strong className="font-serif text-lg font-black text-ink">
-                  {currentChapter === 1
-                    ? t("ch1Title")
-                    : currentChapter === 2
-                    ? t("ch2Title")
-                    : currentChapter === 3
-                    ? t("ch3Title")
-                    : currentChapter === 4
-                    ? t("ch4Title")
-                    : currentChapter === 5
-                    ? t("ch5Title")
-                    : t("ch6Title")}
-                </strong>
-              </span>
-              <span className="font-serif font-black text-base bg-surface px-3 py-1 rounded-xl border-2 border-black">
-                Score: {score}
-              </span>
-            </div>
-
-            {/* 6-Step Visual Badges */}
-            <div className="grid grid-cols-6 gap-2 pt-1">
-              {[
-                { ch: 1, icon: "🔑", label: "Morning" },
-                { ch: 2, icon: "🖼️", label: "Album" },
-                { ch: 3, icon: "🛣️", label: "Path" },
-                { ch: 4, icon: "🛒", label: "Market" },
-                { ch: 5, icon: "💡", label: "Tasks" },
-                { ch: 6, icon: "🌅", label: "Sunset" },
-              ].map((step) => {
-                const isCurrent = currentChapter === step.ch;
-                const isPassed = currentChapter > step.ch;
-                return (
-                  <div
-                    key={step.ch}
-                    className={`flex flex-col items-center justify-center rounded-xl border-2 border-black py-1.5 transition-all ${
-                      isCurrent
-                        ? "bg-amber-400 font-black shadow-[2px_2px_0px_#000] scale-105"
-                        : isPassed
-                        ? "bg-emerald-200 text-emerald-950 opacity-80"
-                        : "bg-surface/70 opacity-40"
-                    }`}
-                  >
-                    <span className="text-base">{step.icon}</span>
-                    <span className="text-[10px] font-black uppercase tracking-tighter">
-                      {step.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+        /* Active Chapter Interactive Area */
+        <div className="w-full space-y-3">
+          {/* Chapter Stepper Ribbon */}
+          <div className="flex items-center justify-between rounded-xl border-2 border-black bg-amber-100/90 px-3 py-1.5 text-xs font-bold">
+            <span>
+              📖 Chapter {currentChapter} of 6:{" "}
+              <strong className="font-serif text-sm font-black text-ink">
+                {currentChapter === 1
+                  ? getT("ch1Title", "Morning Memory")
+                  : currentChapter === 2
+                  ? getT("ch2Title", "The Missing Photograph")
+                  : currentChapter === 3
+                  ? getT("ch3Title", "The Way to the Market")
+                  : currentChapter === 4
+                  ? getT("ch4Title", "The Market Mission")
+                  : currentChapter === 5
+                  ? getT("ch5Title", "Afternoon Routine")
+                  : getT("ch6Title", "The Sunset Memory")}
+              </strong>
+            </span>
+            <span className="font-serif font-black text-xs bg-surface px-2.5 py-0.5 rounded-lg border border-black">
+              Score: {score}
+            </span>
           </div>
 
-          {/* CHAPTER 1: Morning Objects */}
+          {/* CHAPTER 1: Memorize & Collect Morning Essentials */}
           {currentChapter === 1 && (
-            <div className="space-y-5 text-center">
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
               {!ch1Memorized ? (
-                <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 shadow-[4px_4px_0px_#000]">
-                  <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">
-                    🔑 {t("ch1MemorizeTitle")}
+                <>
+                  <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
+                    🔑 {getT("ch1MemorizeTitle", "Remember These Three Essentials")}
                   </h3>
-                  <p className="text-base sm:text-lg font-bold text-ink-secondary">
-                    {t("ch1MemorizeDesc")}
+                  <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+                    {getT("ch1MemorizeDesc", "Take a moment to look at your Key, Cap, and Cloth Bag before leaving the room.")}
                   </p>
 
-                  <div className="flex justify-center gap-5 py-3">
+                  <div className="grid grid-cols-3 gap-2.5 py-2 max-w-sm mx-auto">
                     {ch1Items.map((item) => (
                       <div
                         key={item.id}
-                        className="flex flex-col items-center rounded-2xl border-3 border-black bg-surface p-5 shadow-[4px_4px_0px_#000] min-w-[100px]"
+                        className="flex flex-col items-center rounded-xl border-2 border-black bg-surface p-3 shadow-[2px_2px_0px_#000]"
                       >
-                        <span className="text-5xl">{item.emoji}</span>
-                        <span className="font-serif text-base font-black text-ink mt-3">
+                        <span className="text-3xl">{item.emoji}</span>
+                        <span className="font-serif text-xs font-black text-ink mt-1">
                           {item.name}
                         </span>
                       </div>
@@ -662,65 +692,70 @@ export function DayInMyWorld3D() {
                     type="button"
                     onClick={() => {
                       setCh1Memorized(true);
-                      speakVoice(t("ch1FindPrompt"));
+                      playSound("click");
+                      speakVoice(getT("ch1FindPrompt", "Now find your key, cap, and bag around the house to get ready for the day."));
                     }}
-                    className="btn-tactile rounded-full border-4 border-black bg-amber-400 px-8 py-3.5 text-lg font-black text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer"
+                    className="btn-tactile rounded-full border-3 border-black bg-amber-400 px-6 py-2.5 text-sm sm:text-base font-black text-black shadow-[3px_3px_0px_#000] hover:bg-amber-300 cursor-pointer"
                   >
-                    {t("ch1ReadyButton")} ✓
+                    {getT("ch1ReadyButton", "I've Memorized Them")} ✓
                   </button>
-                </div>
+                </>
               ) : (
-                <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 shadow-[4px_4px_0px_#000]">
-                  <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">
-                    🔍 {t("ch1FindTitle")}
+                <>
+                  <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
+                    🔍 {getT("ch1FindTitle", "Find & Pick Up the 3 Items")}
                   </h3>
-                  <div className="flex justify-center gap-5 py-3">
+                  <p className="text-xs font-bold text-ink-secondary">
+                    Tap each item to collect it into your bag:
+                  </p>
+
+                  <div className="grid grid-cols-3 gap-2.5 py-2 max-w-sm mx-auto">
                     {ch1Items.map((item) => (
                       <button
                         key={item.id}
                         type="button"
                         disabled={item.collected}
                         onClick={() => handleCollectItem(item.id)}
-                        className={`btn-tactile flex flex-col items-center rounded-2xl border-3 border-black p-5 shadow-[4px_4px_0px_#000] cursor-pointer transition-all min-w-[120px] ${
+                        className={`btn-tactile flex flex-col items-center rounded-xl border-2 border-black p-3 shadow-[2px_2px_0px_#000] transition-all cursor-pointer ${
                           item.collected
-                            ? "bg-emerald-100 opacity-50 cursor-not-allowed"
-                            : "bg-surface hover:bg-amber-100"
+                            ? "bg-emerald-100 opacity-60 cursor-not-allowed"
+                            : "bg-surface hover:bg-amber-200"
                         }`}
                       >
-                        <span className="text-5xl">{item.emoji}</span>
-                        <span className="font-serif text-base font-black text-ink mt-3">
-                          {item.collected ? "Collected ✓" : `Find ${item.name}`}
+                        <span className="text-3xl">{item.emoji}</span>
+                        <span className="font-serif text-xs font-black text-ink mt-1">
+                          {item.collected ? "Collected ✓" : `Take ${item.name}`}
                         </span>
                       </button>
                     ))}
                   </div>
-                </div>
+                </>
               )}
             </div>
           )}
 
           {/* CHAPTER 2: Missing Photograph */}
           {currentChapter === 2 && (
-            <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 text-center shadow-[4px_4px_0px_#000]">
-              <h3 className="font-serif text-xl sm:text-2xl font-black text-ink flex items-center justify-center gap-2">
-                <ImageIcon className="h-6 w-6 text-tea" />
-                {t("ch2Prompt")}
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                <ImageIcon className="h-5 w-5 text-tea" />
+                {getT("ch2Prompt", "Choose the Family Photo for the Album")}
               </h3>
-              <p className="text-base sm:text-lg font-bold text-ink-secondary">
-                {t("ch2Subtext")}
+              <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+                {getT("ch2Subtext", "Look at the options and choose the peaceful courtyard family gathering.")}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                 {[
                   { id: 0, label: "Busy Train Station 🚉" },
-                  { id: 1, label: "Family at Majuli Courtyard 🏡 (Correct)" },
+                  { id: 1, label: "Majuli Family Courtyard 🏡" },
                   { id: 2, label: "Office Meeting Room 🏢" },
                 ].map((ph) => (
                   <button
                     key={ph.id}
                     type="button"
                     onClick={() => handleChoosePhoto(ph.id)}
-                    className={`btn-tactile rounded-2xl border-3 border-black p-5 text-base sm:text-lg font-black shadow-[4px_4px_0px_#000] cursor-pointer ${
+                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
                       ch2SelectedPhoto === ph.id && ph.id === 1
                         ? "bg-emerald-200 text-emerald-950"
                         : "bg-surface hover:bg-amber-100 text-ink"
@@ -730,187 +765,159 @@ export function DayInMyWorld3D() {
                   </button>
                 ))}
               </div>
+
+              {ch2Feedback && (
+                <p className="text-xs font-black text-tea-dark">{ch2Feedback}</p>
+              )}
             </div>
           )}
 
-          {/* CHAPTER 3: Spatial Navigation / Detour */}
+          {/* CHAPTER 3: Spatial Road Navigation */}
           {currentChapter === 3 && (
-            <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 text-center shadow-[4px_4px_0px_#000]">
-              <h3 className="font-serif text-xl sm:text-2xl font-black text-ink flex items-center justify-center gap-2">
-                <Compass className="h-6 w-6 text-tea" />
-                {t("ch3WalkPrompt")}
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                <Compass className="h-5 w-5 text-tea" />
+                {getT("ch3Question", "Choose the Riverbank Path")}
               </h3>
+              <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+                You pass by the red Namghar temple. Which path leads to the river marketplace?
+              </p>
 
-              {ch3Step === "start" ? (
-                <button
-                  type="button"
-                  onClick={() => handleCh3Action("normal")}
-                  className="btn-tactile rounded-full border-4 border-black bg-amber-400 px-8 py-4 text-lg font-black text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer"
-                >
-                  Walk Down Riverbank Path 🚶
-                </button>
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-2xl border-3 border-rose-600 bg-rose-100 p-4 text-base font-black text-rose-950 shadow-[2px_2px_0px_#000]">
-                    🚧 Main River Road is Closed for Ferry Repair!
-                  </div>
-                  <p className="text-base sm:text-lg font-bold text-ink-secondary">
-                    Saathi: &ldquo;No worries, let us take the shaded detour past the Namghar prayer hall.&rdquo;
-                  </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                {[
+                  { id: 0, label: "Riverbank Path (Along Brahmaputra) ⛵" },
+                  { id: 1, label: "Highway Overpass 🚗" },
+                  { id: 2, label: "Dark Forest Trail 🌲" },
+                ].map((p) => (
                   <button
+                    key={p.id}
                     type="button"
-                    onClick={() => handleCh3Action("detour")}
-                    className="btn-tactile rounded-full border-4 border-black bg-emerald-400 px-8 py-4 text-lg font-black text-emerald-950 shadow-[4px_4px_0px_#000] hover:bg-emerald-300 cursor-pointer"
+                    onClick={() => handlePathChoice(p.id)}
+                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                      ch3Choice === p.id && p.id === 0
+                        ? "bg-emerald-200 text-emerald-950"
+                        : "bg-surface hover:bg-amber-100 text-ink"
+                    }`}
                   >
-                    Take Shaded Namghar Detour 🛕
+                    {p.label}
                   </button>
-                </div>
+                ))}
+              </div>
+
+              {ch3Feedback && (
+                <p className="text-xs font-black text-tea-dark">{ch3Feedback}</p>
               )}
             </div>
           )}
 
-          {/* CHAPTER 4: Market Mission & Budget */}
+          {/* CHAPTER 4: Market Shopping & Currency Calculation */}
           {currentChapter === 4 && (
-            <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 shadow-[4px_4px_0px_#000]">
-              <div className="flex items-center justify-between border-b-2 border-black/15 pb-3">
-                <h3 className="font-serif text-xl sm:text-2xl font-black text-ink flex items-center gap-2">
-                  <ShoppingBag className="h-6 w-6 text-tea" />
-                  {t("ch4MarketTitle")}
-                </h3>
-                <span className="font-mono text-base font-black text-purple-950 rounded-2xl bg-purple-100 px-4 py-1.5 border-2 border-purple-400">
-                  Budget: ₹500 | Total: ₹{totalBasket}
-                </span>
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                <ShoppingBag className="h-5 w-5 text-tea" />
+                {getT("ch4Prompt", "Calculate the Correct Change")}
+              </h3>
+              <p className="text-xs font-bold text-ink-secondary">
+                Items bought: ☕ Assam Tea (₹60) + 🍚 Joha Rice (₹80) = <strong>₹140 Total</strong>.
+                <br />You give the shopkeeper a <strong>₹200 note</strong>. What change should you receive?
+              </p>
+
+              <div className="grid grid-cols-3 gap-2.5 pt-1 max-w-sm mx-auto">
+                {[40, 60, 80].map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => handleMarketChangeAnswer(amt)}
+                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                      ch4ChangeAnswer === amt && amt === 60
+                        ? "bg-emerald-200 text-emerald-950"
+                        : "bg-surface hover:bg-amber-100 text-ink"
+                    }`}
+                  >
+                    ₹{amt} Change
+                  </button>
+                ))}
               </div>
 
-              {!ch4Paid ? (
-                <div>
-                  <p className="text-base font-bold text-ink-secondary mb-4">
-                    Select 3 essential items within your ₹500 budget:
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {marketItems.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => toggleMarketItem(item.id)}
-                        className={`btn-tactile rounded-2xl border-3 border-black p-4 text-base font-bold shadow-[3px_3px_0px_#000] cursor-pointer flex items-center justify-between ${
-                          item.selected ? "bg-amber-300 text-amber-950" : "bg-surface text-ink"
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <span className="text-2xl">{item.emoji}</span>
-                          <span>{item.name}</span>
-                        </span>
-                        <span className="font-black font-mono text-lg">₹{item.price}</span>
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="pt-5 text-center">
-                    <button
-                      type="button"
-                      disabled={totalBasket === 0 || totalBasket > 500}
-                      onClick={handlePayMarket}
-                      className="btn-tactile rounded-full border-4 border-black bg-emerald-400 px-8 py-4 text-lg font-black text-emerald-950 shadow-[4px_4px_0px_#000] hover:bg-emerald-300 cursor-pointer disabled:opacity-50"
-                    >
-                      Pay ₹500 Note at Cashier 💵
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4 text-center">
-                  <p className="text-base sm:text-lg font-black text-ink">
-                    You paid ₹500 for ₹{totalBasket} worth of groceries. How much change should the shopkeeper return?
-                  </p>
-                  <div className="flex justify-center gap-4">
-                    {[500 - totalBasket - 20, 500 - totalBasket, 500 - totalBasket + 30].map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => handleConfirmChange(opt)}
-                        className={`btn-tactile rounded-2xl border-3 border-black px-7 py-4 font-mono text-xl font-black shadow-[4px_4px_0px_#000] cursor-pointer min-w-[100px] ${
-                          ch4ChangeAnswer === opt && opt === 500 - totalBasket
-                            ? "bg-emerald-200"
-                            : "bg-surface hover:bg-amber-100"
-                        }`}
-                      >
-                        ₹{opt}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              {ch4Feedback && (
+                <p className="text-xs font-black text-tea-dark">{ch4Feedback}</p>
               )}
             </div>
           )}
 
-          {/* CHAPTER 5: Problem Solving */}
+          {/* CHAPTER 5: Routine Decision */}
           {currentChapter === 5 && (
-            <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 text-center shadow-[4px_4px_0px_#000]">
-              <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">
-                💡 {t("ch5Title")}
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
+                💡 {getT("ch5Prompt", "Afternoon Rest & Hydration")}
               </h3>
-              <p className="text-base sm:text-lg font-bold text-ink-secondary">
-                Resolve 3 everyday tasks around the home:
+              <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+                You have walked home with your fresh tea. What is the best step right now?
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 max-w-md mx-auto">
                 {[
-                  { id: "door", title: "Locked Front Door", action: "Use House Key 🔑" },
-                  { id: "tea", title: "Afternoon Rest", action: "Boil Assam Tea ☕" },
-                  { id: "light", title: "Evening Twilight", action: "Switch On Lamp 💡" },
-                ].map((prob) => {
-                  const isDone = ch5SolvedProblems.includes(prob.id);
+                  { id: 0, label: "💧 Drink a glass of water & rest on verandah" },
+                  { id: 1, label: "🏃 Go outside and run immediately" },
+                ].map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => handleCh5Choice(c.id)}
+                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                      ch5Selected === c.id && c.id === 0
+                        ? "bg-emerald-200 text-emerald-950"
+                        : "bg-surface hover:bg-amber-100 text-ink"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+
+              {ch5Feedback && (
+                <p className="text-xs font-black text-tea-dark">{ch5Feedback}</p>
+              )}
+            </div>
+          )}
+
+          {/* CHAPTER 6: Chronological Ordering */}
+          {currentChapter === 6 && (
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
+                🌅 {getT("ch6Prompt", "Reconstruct Your Day Chronologically")}
+              </h3>
+              <p className="text-xs font-bold text-ink-secondary">
+                Tap each memory in order from morning to evening:
+              </p>
+
+              <div className="grid grid-cols-2 gap-2 max-w-md mx-auto pt-1">
+                {[
+                  "1. Morning Keys & Bag 🔑",
+                  "2. Majuli Family Photo 🏡",
+                  "3. River Market Walk ☕",
+                  "4. Sunset Verandah Rest 🌅",
+                ].map((step) => {
+                  const isSelected = ch6Slots.includes(step);
                   return (
                     <button
-                      key={prob.id}
+                      key={step}
                       type="button"
-                      disabled={isDone}
-                      onClick={() => handleSolveProblem(prob.id)}
-                      className={`btn-tactile rounded-2xl border-3 border-black p-5 text-base font-black shadow-[4px_4px_0px_#000] cursor-pointer ${
-                        isDone ? "bg-emerald-200 opacity-60 cursor-not-allowed" : "bg-surface hover:bg-amber-100 text-ink"
+                      onClick={() => handleCh6Reconstruct(step)}
+                      className={`btn-tactile rounded-xl border-2 border-black p-2.5 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                        isSelected
+                          ? "bg-emerald-200 text-emerald-950 border-emerald-700"
+                          : "bg-surface hover:bg-amber-100 text-ink"
                       }`}
                     >
-                      <span className="block text-ink-secondary text-sm mb-1">{prob.title}</span>
-                      <span>{isDone ? "Solved ✓" : prob.action}</span>
+                      {step} {isSelected && "✓"}
                     </button>
                   );
                 })}
               </div>
-            </div>
-          )}
 
-          {/* CHAPTER 6: Chronological Memory Reconstruction */}
-          {currentChapter === 6 && (
-            <div className="rounded-3xl border-4 border-black bg-[#FAF5EE] p-6 sm:p-8 space-y-5 text-center shadow-[4px_4px_0px_#000]">
-              <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">
-                🌅 {t("ch6Title")}
-              </h3>
-              <p className="text-base sm:text-lg font-bold text-ink-secondary">
-                Tap the moments in chronological order from morning to sunset:
-              </p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
-                {[
-                  { id: "c1", label: "1. Morning Alarm ⏰" },
-                  { id: "c2", label: "2. Family Photo 🖼️" },
-                  { id: "c3", label: "3. Walk to Market 🛒" },
-                  { id: "c4", label: "4. Sunset Tea ☕" },
-                ].map((card) => {
-                  const isPicked = ch6Order.includes(card.id);
-                  return (
-                    <button
-                      key={card.id}
-                      type="button"
-                      disabled={isPicked}
-                      onClick={() => handleAddFinalSequence(card.id)}
-                      className={`btn-tactile rounded-2xl border-3 border-black p-4 text-sm sm:text-base font-black shadow-[4px_4px_0px_#000] cursor-pointer ${
-                        isPicked ? "bg-emerald-200 opacity-60 cursor-not-allowed" : "bg-surface hover:bg-amber-100 text-ink"
-                      }`}
-                    >
-                      {card.label}
-                    </button>
-                  );
-                })}
+              <div className="text-xs font-black text-tea-dark pt-1">
+                {ch6Slots.length} of 4 moments recalled!
               </div>
             </div>
           )}

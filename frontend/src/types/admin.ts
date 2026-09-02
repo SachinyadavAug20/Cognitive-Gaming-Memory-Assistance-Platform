@@ -219,3 +219,18 @@ export interface AdminEmergencyBroadcast {
   dispatchedAt: string;
   dispatchStatus: string;
 }
+
+export interface AdminEpidemiologicalSurveillance {
+  state: string;
+  stateCode: string;
+  estimatedElderlyPopulation: number;
+  screenedPatientsCount: number;
+  mciPrevalencePct: number;
+  dementiaPrevalencePct: number;
+  earlyInterventionIndexPct: number;
+  remoteTerrainBarrierIndex: "EXTREME_HILL" | "RIVERINE_ISLAND" | "BORDER_TERRAIN" | "ACCESSIBLE_VALLEY" | string;
+  offlineSyncDelayAvgHours: number;
+  activeAshaUnits: number;
+  highRiskWanderingFlagged: number;
+  sundowningAgitationHotspots: string[];
+}

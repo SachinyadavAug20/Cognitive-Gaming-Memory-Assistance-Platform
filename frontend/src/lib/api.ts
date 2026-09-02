@@ -5,7 +5,17 @@
  */
 const AUTH_STORAGE_KEY = "cognicare-auth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+export function getApiBase(): string {
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") {
+      return "http://localhost:8080/api/v1";
+    }
+    // Dynamic match for tablet / mobile accessing via LAN IP
+    return `http://${host}:8080/api/v1`;
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+}
 
 const LOGIN_URL = "/en/kiosk/login";
 
@@ -58,7 +68,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const token = getAuthToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const apiBase = getApiBase();
+  const res = await fetch(`${apiBase}${path}`, {
     ...options,
     headers,
   });
@@ -74,7 +85,8 @@ async function requestMultipart<T>(path: string, formData: FormData): Promise<T>
   const token = getAuthToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const apiBase = getApiBase();
+  const res = await fetch(`${apiBase}${path}`, {
     method: "POST",
     body: formData,
     headers,
@@ -91,7 +103,8 @@ export function getMediaUrl(path?: string | null): string | null {
   if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("blob:") || path.startsWith("data:")) {
     return path;
   }
-  const baseUrl = API_BASE.replace(/\/api\/v1\/?$/, "");
+  const apiBase = getApiBase();
+  const baseUrl = apiBase.replace(/\/api\/v1\/?$/, "");
   if (path.startsWith("/uploads/")) {
     return `${baseUrl}${path}`;
   }

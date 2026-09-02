@@ -26,6 +26,7 @@ import { MemorySpotlightCard } from "@/components/patient-dashboard/MemorySpotli
 import { SensoryCalmCard } from "@/components/patient-dashboard/SensoryCalmCard";
 import { DailyMoodTracker, type MoodKey } from "@/components/patient-dashboard/DailyMoodTracker";
 import { DailyRoutineSchedule } from "@/components/patient-dashboard/DailyRoutineSchedule";
+import { SaathiVoiceCompanion } from "@/components/patient-dashboard/SaathiVoiceCompanion";
 
 interface MoodLogEntry {
   mood: string;
@@ -76,7 +77,7 @@ export default function PatientHome() {
 
   const patientName = detail?.name ?? patient?.name ?? "";
   const langCode = patientLangCode(
-    detail?.preferredLanguage ?? patient?.languagePreference ?? locale
+    locale || detail?.preferredLanguage || patient?.languagePreference
   );
   const rate = speechRate(detail);
 
@@ -341,6 +342,18 @@ export default function PatientHome() {
         closeLabel="Close"
         listenLabel="Listen"
         speakingLabel="Speaking..."
+      />
+
+      {/* Interactive Saathi AI Voice Companion */}
+      <SaathiVoiceCompanion
+        key={locale}
+        patientName={patientName}
+        langCode={langCode}
+        currentLocale={locale}
+        rate={rate}
+        familyMembers={detail?.familyMembers}
+        familiarPlaces={detail?.familiarPlaces}
+        joyTriggers={detail?.joyTriggers ?? undefined}
       />
     </div>
   );

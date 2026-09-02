@@ -132,7 +132,7 @@ export default function GamesHubPage() {
               <span>Flagship 3D Story Campaign • Saathi AI Companion</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
-              A Day in My World (৬-অধ্যায় কাহিনী)
+              A Day in My World (6-Chapter 3D Story)
             </h2>
             <p className="text-xs sm:text-sm font-medium text-amber-100 max-w-xl leading-relaxed">
               Step into an immersive morning-to-evening 3D journey guided by your gentle voice companion Saathi. Retrieve morning essentials, explore village markets, and reconnect with timeless family memories.
