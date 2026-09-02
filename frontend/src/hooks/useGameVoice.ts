@@ -2,6 +2,13 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocale } from "next-intl";
+import {
+  speakText,
+  stopSpeaking,
+  isEnabled,
+  setSoundsEnabled,
+  unlockAudio,
+} from "@/lib/sound";
 
 interface UseGameVoiceOptions {
   pitch?: number;
@@ -11,47 +18,17 @@ interface UseGameVoiceOptions {
 
 export function useGameVoice(options: UseGameVoiceOptions = {}) {
   const locale = useLocale();
-  const { pitch = 1.0, rate = 0.82, initialMuted = false } = options;
+  const { rate = 0.82, initialMuted = false } = options;
 
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isMuted, setIsMuted] = useState(initialMuted);
+  const [isMuted, setIsMuted] = useState(() => initialMuted || !isEnabled());
   const [currentSubtitle, setCurrentSubtitle] = useState<string | null>(null);
 
   const subtitleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Map locale to appropriate Indian English / Regional BCP 47 language tag
-  const getBcp47Lang = useCallback((loc: string): string => {
-    switch (loc) {
-      case "as":
-        return "as-IN";
-      case "bn":
-        return "bn-IN";
-      case "hi":
-        return "hi-IN";
-      case "mr":
-        return "mr-IN";
-      case "ne":
-        return "ne-NP";
-      case "mni":
-        return "mni-IN";
-      case "brx":
-        return "brx-IN";
-      case "grt":
-        return "grt-IN";
-      case "kha":
-        return "kha-IN";
-      case "lus":
-        return "lus-IN";
-      default:
-        return "en-IN";
-    }
-  }, []);
-
   // Stop currently playing speech
   const stopVoice = useCallback(() => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
+    stopSpeaking();
     setIsSpeaking(false);
   }, []);
 
@@ -60,55 +37,41 @@ export function useGameVoice(options: UseGameVoiceOptions = {}) {
     (text: string, customRate?: number) => {
       if (!text || typeof window === "undefined") return;
 
+      unlockAudio();
+
       // Update visual subtitle pill
       setCurrentSubtitle(text);
       if (subtitleTimeoutRef.current) clearTimeout(subtitleTimeoutRef.current);
       subtitleTimeoutRef.current = setTimeout(() => {
         setCurrentSubtitle(null);
-      }, Math.max(4000, text.length * 80));
+      }, Math.max(4000, text.length * 85));
 
-      if (isMuted) return;
+      if (isMuted || !isEnabled()) return;
 
-      if (!("speechSynthesis" in window)) {
-        return;
-      }
-
-      window.speechSynthesis.cancel();
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = getBcp47Lang(locale);
-      utterance.rate = customRate ?? rate;
-      utterance.pitch = pitch;
-
-      // Attempt matching appropriate voice
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        const langPrefix = getBcp47Lang(locale).split("-")[0];
-        const match =
-          voices.find((v) => v.lang.startsWith(langPrefix)) ||
-          voices.find((v) => v.lang.includes("IN")) ||
-          voices[0];
-        if (match) utterance.voice = match;
-      }
-
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-
-      window.speechSynthesis.speak(utterance);
+      speakText(
+        text,
+        locale,
+        customRate ?? rate,
+        () => setIsSpeaking(true),
+        () => setIsSpeaking(false)
+      );
     },
-    [locale, isMuted, pitch, rate, getBcp47Lang]
+    [locale, isMuted, rate]
   );
 
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => {
       const next = !prev;
-      if (next && typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
+      if (next) {
+        stopVoice();
+        setSoundsEnabled(false);
+      } else {
+        setSoundsEnabled(true);
+        unlockAudio();
       }
       return next;
     });
-  }, []);
+  }, [stopVoice]);
 
   useEffect(() => {
     return () => {

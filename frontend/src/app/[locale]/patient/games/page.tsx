@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Brain,
   Paperclip,
@@ -18,6 +18,7 @@ import {
   X,
   Play,
   Camera,
+  Volume2,
 } from "lucide-react";
 import { GAMES, type ClinicalDomain } from "@/games/registry";
 import { usePatientDetail } from "@/games/usePatientDetail";
@@ -29,6 +30,8 @@ import { ArrowEscape } from "@/components/games/ArrowEscape";
 import { BihuDholBeats } from "@/components/games/BihuDholBeats";
 import { VoiceOfBrahmaputra } from "@/components/games/VoiceOfBrahmaputra";
 import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
+import { speakText, unlockAudio } from "@/lib/sound";
+import { getGameStrings, getHubStrings } from "@/lib/gameI18n";
 
 type FilterKey = "all" | ClinicalDomain;
 type ActiveModalGame =
@@ -41,7 +44,9 @@ type ActiveModalGame =
   | null;
 
 export default function GamesHubPage() {
+  const locale = useLocale();
   const t = useTranslations("games");
+  const hub = getHubStrings(locale);
   const { detail, loading, error, reload } = usePatientDetail();
   const [selectedFilter, setSelectedFilter] = useState<FilterKey>("all");
   const [activeModalGame, setActiveModalGame] = useState<ActiveModalGame>(null);
@@ -51,6 +56,18 @@ export default function GamesHubPage() {
     return g.category === selectedFilter;
   });
 
+  // Localized Strings for Featured Games
+  const dayInWorld = getGameStrings("day-in-my-world", locale);
+  const majuliWalk = getGameStrings("majuli-walk", locale);
+  const teaHarvest = getGameStrings("tea-harvest-vision", locale);
+  const bihuDhol = getGameStrings("bihu-dhol", locale);
+  const brahmaputraVoice = getGameStrings("brahmaputra-voice", locale);
+
+  const handleSpeak = (text: string) => {
+    unlockAudio();
+    speakText(text, locale, 0.82);
+  };
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
       {/* Active Modal Fullscreen Game Overlay with Clear Elderly-Friendly Exit Button */}
@@ -58,33 +75,26 @@ export default function GamesHubPage() {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-6 animate-fade-in flex flex-col items-center justify-start">
           <div className="sticky top-2 z-50 w-full max-w-4xl flex items-center justify-between bg-ink/90 border-3 border-black text-white p-3 rounded-2xl shadow-[4px_4px_0px_#000] mb-3">
             <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full bg-emerald-400 animate-ping" />
-              <span className="font-serif font-black text-sm sm:text-base text-white">
-                {activeModalGame === "day-in-my-world"
-                  ? "🌅 A Day in My World (6-Chapter 3D Story & Saathi AI)"
-                  : activeModalGame === "majuli-walk"
-                  ? "🏞️ Majuli Village Walk (3D Spatial Memory)"
-                  : activeModalGame === "tea-harvest-vision"
-                  ? "🌿 Tea Garden Harvest (Motion Tracking)"
-                  : activeModalGame === "bihu-dhol"
-                  ? "🥁 Bihu Dhol Beats (Rhythm & Grounding)"
-                  : activeModalGame === "brahmaputra-voice"
-                  ? "🌊 Voice of the Brahmaputra (Spoken Recall)"
-                  : "🎋 Pathways: Bamboo Arrow Labyrinth"}
+              <span className="font-serif font-black text-base sm:text-lg">
+                {activeModalGame === "day-in-my-world" && dayInWorld.title}
+                {activeModalGame === "majuli-walk" && majuliWalk.title}
+                {activeModalGame === "tea-harvest-vision" && teaHarvest.title}
+                {activeModalGame === "bihu-dhol" && bihuDhol.title}
+                {activeModalGame === "brahmaputra-voice" && brahmaputraVoice.title}
               </span>
             </div>
 
             <button
               type="button"
               onClick={() => setActiveModalGame(null)}
-              className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-white bg-rose-600 px-4 py-2 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-rose-700 cursor-pointer"
+              className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-rose-500 hover:bg-rose-600 px-4 py-2 text-xs sm:text-sm font-black text-white shadow-[2px_2px_0px_#000] cursor-pointer"
             >
               <X className="h-4 w-4" />
-              <span>Exit Game / Back to Hub</span>
+              <span>{hub.back}</span>
             </button>
           </div>
 
-          <div className="w-full max-w-4xl rounded-3xl overflow-hidden bg-[#FAF6F0] shadow-2xl border-4 border-black">
+          <div className="w-full max-w-4xl">
             {activeModalGame === "day-in-my-world" && <DayInMyWorld3D />}
             {activeModalGame === "majuli-walk" && <MajuliWalk3D />}
             {activeModalGame === "tea-harvest-vision" && <TeaHarvestVision />}
@@ -101,14 +111,14 @@ export default function GamesHubPage() {
           <div className="flex items-center gap-2 mb-1 text-tea">
             <Paperclip className="h-4 w-4 text-ink" />
             <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-              MDoNER Cognitive Digital Therapeutics (CDTx) Suite
+              {hub.headerSub}
             </span>
           </div>
           <h1 className="font-serif text-3xl font-black text-ink flex items-center gap-2">
-            <Brain className="h-8 w-8 text-tea shrink-0" /> Cognitive Therapy Modules
+            <Brain className="h-8 w-8 text-tea shrink-0" /> {hub.headerTitle}
           </h1>
           <p className="text-xs sm:text-sm font-semibold text-ink-secondary mt-1">
-            Culturally tailored spatial, kinesthetic, and memory games for elderly dementia care in North East India
+            {hub.headerDesc}
           </p>
         </div>
 
@@ -116,7 +126,7 @@ export default function GamesHubPage() {
           href="/patient"
           className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-4 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted"
         >
-          {t("backToRoutine")}
+          {hub.backToRoutine}
         </Link>
       </div>
 
@@ -129,30 +139,40 @@ export default function GamesHubPage() {
           <div className="space-y-1.5 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm">
               <Sparkles className="h-3.5 w-3.5 text-amber-200" />
-              <span>Flagship 3D Story Campaign • Saathi AI Companion</span>
+              <span>{hub.flagshipBadge}</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
-              A Day in My World (6-Chapter 3D Story)
+              {dayInWorld.introTitle || dayInWorld.title}
             </h2>
             <p className="text-xs sm:text-sm font-medium text-amber-100 max-w-xl leading-relaxed">
-              Step into an immersive morning-to-evening 3D journey guided by your gentle voice companion Saathi. Retrieve morning essentials, explore village markets, and reconnect with timeless family memories.
+              {dayInWorld.introSubtitle}
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setActiveModalGame("day-in-my-world")}
-            className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm font-black text-amber-950 shadow-[4px_4px_0px_#000] hover:bg-amber-100 flex items-center gap-2 shrink-0 cursor-pointer"
-          >
-            <Play className="h-4 w-4 fill-amber-950" />
-            <span>Launch 3D Journey 🌅</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => handleSpeak(`${dayInWorld.title}. ${dayInWorld.audioPrompt}`)}
+              className="btn-tactile rounded-2xl border-3 border-black bg-amber-200 p-3.5 text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer"
+              title={hub.listenGuide}
+            >
+              <Volume2 className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveModalGame("day-in-my-world")}
+              className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm font-black text-amber-950 shadow-[4px_4px_0px_#000] hover:bg-amber-100 flex items-center gap-2 cursor-pointer"
+            >
+              <Play className="h-4 w-4 fill-amber-950" />
+              <span>{hub.flagshipCta}</span>
+            </button>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 pt-2">
           <Sparkles className="h-4 w-4 text-amber-600" />
           <span className="text-xs font-black uppercase tracking-wider text-ink">
-            Featured Spatial, Vision & Acoustic Modules
+            {hub.featuredSectionTitle}
           </span>
         </div>
 
@@ -164,14 +184,21 @@ export default function GamesHubPage() {
                 <span className="rounded-full bg-amber-400 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm flex items-center gap-1">
                   <Footprints className="h-3.5 w-3.5" /> 3D Spatial
                 </span>
-                <span className="text-xs font-black text-white/80">Majuli Island</span>
+                <button
+                  type="button"
+                  onClick={() => handleSpeak(`${majuliWalk.title}. ${majuliWalk.audioPrompt}`)}
+                  className="btn-tactile flex h-6 w-6 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title={hub.listenGuide}
+                >
+                  <Volume2 className="h-3 w-3" />
+                </button>
               </div>
 
               <h2 className="font-serif text-lg font-black text-white">
-                Majuli Village Walk
+                {majuliWalk.title}
               </h2>
               <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                Take a serene 3D sunrise walk along the Brahmaputra riverbank and recall traditional landmarks.
+                {majuliWalk.introSubtitle}
               </p>
             </div>
 
@@ -183,7 +210,7 @@ export default function GamesHubPage() {
                 className="btn-tactile rounded-xl border-2 border-black bg-amber-400 px-3.5 py-1.5 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-300 flex items-center gap-1.5 cursor-pointer"
               >
                 <Play className="h-3 w-3 fill-black" />
-                <span>Play 3D</span>
+                <span>{hub.play3D}</span>
               </button>
             </div>
           </div>
@@ -195,14 +222,21 @@ export default function GamesHubPage() {
                 <span className="rounded-full bg-emerald-400 px-3 py-1 text-[10px] font-black uppercase text-emerald-950 shadow-sm flex items-center gap-1">
                   <Camera className="h-3.5 w-3.5" /> Motion Vision
                 </span>
-                <span className="text-xs font-black text-white/80">Assam Hills</span>
+                <button
+                  type="button"
+                  onClick={() => handleSpeak(`${teaHarvest.title}. ${teaHarvest.audioPrompt}`)}
+                  className="btn-tactile flex h-6 w-6 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title={hub.listenGuide}
+                >
+                  <Volume2 className="h-3 w-3" />
+                </button>
               </div>
 
               <h2 className="font-serif text-lg font-black text-white">
-                Tea Garden Harvest
+                {teaHarvest.title}
               </h2>
               <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                Wave your hand in the air to pluck tender two leaves and a bud into your traditional basket.
+                {teaHarvest.introSubtitle}
               </p>
             </div>
 
@@ -214,7 +248,7 @@ export default function GamesHubPage() {
                 className="btn-tactile rounded-xl border-2 border-black bg-emerald-400 px-3.5 py-1.5 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-emerald-300 flex items-center gap-1.5 cursor-pointer"
               >
                 <Play className="h-3 w-3 fill-black" />
-                <span>Play Vision</span>
+                <span>{hub.playVision}</span>
               </button>
             </div>
           </div>
@@ -226,14 +260,21 @@ export default function GamesHubPage() {
                 <span className="rounded-full bg-amber-300 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm flex items-center gap-1">
                   <Activity className="h-3.5 w-3.5" /> Web Audio Drum
                 </span>
-                <span className="text-xs font-black text-white/80">Folk Rhythm</span>
+                <button
+                  type="button"
+                  onClick={() => handleSpeak(`${bihuDhol.title}. ${bihuDhol.audioPrompt}`)}
+                  className="btn-tactile flex h-6 w-6 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title={hub.listenGuide}
+                >
+                  <Volume2 className="h-3 w-3" />
+                </button>
               </div>
 
               <h2 className="font-serif text-lg font-black text-white">
-                Bihu Dhol Beats
+                {bihuDhol.title}
               </h2>
               <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                Tap the traditional dhol in sync with gentle Assamese beats to reduce agitation and ground motor rhythm.
+                {bihuDhol.introSubtitle}
               </p>
             </div>
 
@@ -245,7 +286,7 @@ export default function GamesHubPage() {
                 className="btn-tactile rounded-xl border-2 border-black bg-amber-300 px-3.5 py-1.5 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-200 flex items-center gap-1.5 cursor-pointer"
               >
                 <Play className="h-3 w-3 fill-black" />
-                <span>Play Drum</span>
+                <span>{hub.playDrum}</span>
               </button>
             </div>
           </div>
@@ -257,14 +298,21 @@ export default function GamesHubPage() {
                 <span className="rounded-full bg-cyan-300 px-3 py-1 text-[10px] font-black uppercase text-cyan-950 shadow-sm flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5" /> Speech Recall
                 </span>
-                <span className="text-xs font-black text-white/80">River Glow</span>
+                <button
+                  type="button"
+                  onClick={() => handleSpeak(`${brahmaputraVoice.title}. ${brahmaputraVoice.audioPrompt}`)}
+                  className="btn-tactile flex h-6 w-6 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title={hub.listenGuide}
+                >
+                  <Volume2 className="h-3 w-3" />
+                </button>
               </div>
 
               <h2 className="font-serif text-lg font-black text-white">
-                Voice of Brahmaputra
+                {brahmaputraVoice.title}
               </h2>
               <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                Listen to the sacred river breeze and speak the completing word of the traditional folk verse.
+                {brahmaputraVoice.introSubtitle}
               </p>
             </div>
 
@@ -276,7 +324,7 @@ export default function GamesHubPage() {
                 className="btn-tactile rounded-xl border-2 border-black bg-cyan-300 px-3.5 py-1.5 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-cyan-200 flex items-center gap-1.5 cursor-pointer"
               >
                 <Play className="h-3 w-3 fill-black" />
-                <span>Play Voice</span>
+                <span>{hub.playVoice}</span>
               </button>
             </div>
           </div>
@@ -295,7 +343,7 @@ export default function GamesHubPage() {
           }`}
         >
           <Layers className="h-3.5 w-3.5" />
-          <span>All Modules ({GAMES.length})</span>
+          <span>{hub.filterAll} ({GAMES.length})</span>
         </button>
 
         <button
@@ -308,7 +356,7 @@ export default function GamesHubPage() {
           }`}
         >
           <Sparkles className="h-3.5 w-3.5" />
-          <span>3D & Vision ({GAMES.filter((g) => g.category === "vision-3d").length})</span>
+          <span>{hub.filterVision3D} ({GAMES.filter((g) => g.category === "vision-3d").length})</span>
         </button>
 
         <button
@@ -321,7 +369,7 @@ export default function GamesHubPage() {
           }`}
         >
           <Brain className="h-3.5 w-3.5" />
-          <span>Reminiscence & Memory ({GAMES.filter((g) => g.category === "reminiscence").length})</span>
+          <span>{hub.filterReminiscence} ({GAMES.filter((g) => g.category === "reminiscence").length})</span>
         </button>
 
         <button
@@ -334,7 +382,7 @@ export default function GamesHubPage() {
           }`}
         >
           <Compass className="h-3.5 w-3.5" />
-          <span>Attention & Spatial ({GAMES.filter((g) => g.category === "attention").length})</span>
+          <span>{hub.filterAttention} ({GAMES.filter((g) => g.category === "attention").length})</span>
         </button>
 
         <button
@@ -347,7 +395,7 @@ export default function GamesHubPage() {
           }`}
         >
           <Utensils className="h-3.5 w-3.5" />
-          <span>Daily Living IADL ({GAMES.filter((g) => g.category === "iadl").length})</span>
+          <span>{hub.filterIadl} ({GAMES.filter((g) => g.category === "iadl").length})</span>
         </button>
 
         <button
@@ -360,7 +408,7 @@ export default function GamesHubPage() {
           }`}
         >
           <Flower2 className="h-3.5 w-3.5" />
-          <span>Sensory Calming ({GAMES.filter((g) => g.category === "calm").length})</span>
+          <span>{hub.filterCalm} ({GAMES.filter((g) => g.category === "calm").length})</span>
         </button>
       </div>
 
@@ -372,11 +420,18 @@ export default function GamesHubPage() {
         <div className="grid gap-3.5 sm:grid-cols-2">
           {filteredGames.map((game) => {
             const Icon = game.icon || Brain;
+            const gameStrings = getGameStrings(game.id, locale);
+            const cardTitle = gameStrings.title || (t.has(game.titleKey) ? t(game.titleKey) : game.domain);
+            const cardDesc = gameStrings.introSubtitle || (t.has(game.descKey) ? t(game.descKey) : "");
+            const voiceText = `${cardTitle}. ${gameStrings.audioPrompt || cardDesc}`;
+            const levelLabel = hub.levelAdaptive.replace("{level}", String(startLevel(detail)));
+
             return (
               <Link
                 key={game.id}
                 href={`/patient/games/${game.id}`}
-                className="btn-tactile group flex flex-col justify-between gap-3 rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000] transition-transform hover:scale-[1.02] cursor-pointer"
+                data-voice-desc={voiceText}
+                className="game-card btn-tactile group flex flex-col justify-between gap-3 rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000] transition-transform hover:scale-[1.02] cursor-pointer relative"
               >
                 <div className="flex items-start gap-3.5">
                   <div
@@ -385,29 +440,47 @@ export default function GamesHubPage() {
                     <Icon className="h-7 w-7 text-white stroke-[2.5]" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="text-sm font-black text-ink leading-tight">
-                        {t.has(game.titleKey) ? t(game.titleKey) : game.domain}
-                      </span>
-                      {game.recommended && (
-                        <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-white shadow-sm flex items-center gap-1">
-                          <ShieldCheck className="h-2.5 w-2.5" /> CDTx
+                    <div className="flex flex-wrap items-center justify-between gap-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-black text-ink leading-tight">
+                          {cardTitle}
                         </span>
-                      )}
+                        {game.recommended && (
+                          <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-white shadow-sm flex items-center gap-1">
+                            <ShieldCheck className="h-2.5 w-2.5" /> CDTx
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Quick Audio Preview Button */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleSpeak(voiceText);
+                        }}
+                        className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-black/30 bg-amber-100 text-ink hover:bg-amber-300 hover:border-black cursor-pointer shadow-xs"
+                        title={hub.listenGuide}
+                        aria-label={`Listen to description of ${cardTitle}`}
+                      >
+                        <Volume2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
+
                     <span className="inline-flex items-center gap-1 mt-1 rounded bg-tea-light px-2 py-0.5 text-[10px] font-extrabold text-tea border border-tea/30">
                       <Activity className="h-3 w-3" /> {game.domain}
                     </span>
                     <p className="mt-1.5 text-xs font-semibold text-ink-secondary line-clamp-2 leading-relaxed">
-                      {t.has(game.descKey) ? t(game.descKey) : ""}
+                      {cardDesc}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between border-t-2 border-black/10 pt-2 text-[11px] font-bold text-ink-secondary">
-                  <span>Level {startLevel(detail)} Adaptive</span>
+                  <span>{levelLabel}</span>
                   <span className="rounded-lg bg-tea px-2.5 py-1 text-xs font-black text-white group-hover:bg-emerald-800 flex items-center gap-1">
-                    <span>Start Session</span>
+                    <span>{hub.startSession}</span>
                     <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>

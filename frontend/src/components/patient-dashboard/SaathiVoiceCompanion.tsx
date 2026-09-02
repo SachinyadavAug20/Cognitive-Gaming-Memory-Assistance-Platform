@@ -10,7 +10,7 @@ import {
   Globe,
 } from "lucide-react";
 import { speak, stopSpeaking } from "@/lib/speech";
-import { playPress, playTapFeedback, playCalmTone } from "@/lib/sound";
+import { playPress, playTapFeedback, playCalmTone, unlockAudio } from "@/lib/sound";
 
 export interface SaathiLanguageOption {
   code: string;
@@ -209,10 +209,14 @@ export function SaathiVoiceCompanion({
 
   const speakVoice = useCallback(
     (text: string, bcp47Tag?: string) => {
-      setIsSpeaking(true);
-      speak(text, bcp47Tag || activeLangConfig.bcp47, rate);
-      const duration = Math.max(2000, text.split(" ").length * 350);
-      setTimeout(() => setIsSpeaking(false), duration);
+      unlockAudio();
+      speak(
+        text,
+        bcp47Tag || activeLangConfig.bcp47,
+        rate,
+        () => setIsSpeaking(true),
+        () => setIsSpeaking(false)
+      );
     },
     [activeLangConfig.bcp47, rate]
   );

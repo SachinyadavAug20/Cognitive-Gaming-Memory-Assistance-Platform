@@ -51,8 +51,8 @@
       "complete": "Ngai!"
     },
     "wayfinding": {
-      "title": "Lam remh rawh",
-      "complete": "Ngai!"
+      "title": "Khawchhung Kal Leh In Kawn",
+      "desc": "Khawchhung hmun hriat lar paltlanga mahni in thlen lehna"
     },
     "dailyTasks": {
       "title": "Ka tea siam rawh",
@@ -74,17 +74,18 @@
       "title": "Hriatrengna Lemlem Puzzle",
       "desc": "Thlalak bung hrang hrang remkhawma chhungte hmel siam thatna"
     },
-    "wayfinding": {
-      "title": "Khawchhung Kal Leh In Kawn",
-      "desc": "Khawchhung hmun hriat lar paltlanga mahni in thlen lehna"
-    },
     "weaving": {
       "title": "Puan Bu & Puan Tahna",
       "desc": "Puanchei leh puan mawi tak tak zai hrang hrang nena tah chhuahna"
     },
     "teaHarvest": {
-      "title": "Thingpui Hnah Hring & Par",
-      "desc": "Thingpui huan hring mawi tak atanga thingpui hnah thar lawr khawmna"
+      "title": "Thingpui Hnah Lawr (Motion Vision)",
+      "subtitle": "Kut vaiin thingpui hnah thar leh a par lawr la, bawmah dah rawh.",
+      "cameraPermission": "Camera hman phalna pe rawh",
+      "waveToPluck": "Kut vaiin thingpui hnah lawr rawh 👋",
+      "leavesPlucked": "Hnah lawr zat: {count}",
+      "basketFull": "Bawm thingpui hnahin a khat e!",
+      "gentleHint": "Muangchangin kut vai la, hnah hring va tawk rawh."
     },
     "radio": {
       "title": "Akashvani Radio Hlunte",
@@ -145,15 +146,6 @@
       "speakPromptNamghar": "Namghar lam pan rawh",
       "speakPromptChangGhar": "Thing in lam hawi rawh",
       "speakPromptRiverGhat": "Lui kamah va thleng rawh"
-    },
-    "teaHarvest": {
-      "title": "Thingpui Hnah Lawr (Motion Vision)",
-      "subtitle": "Kut vaiin thingpui hnah thar leh a par lawr la, bawmah dah rawh.",
-      "cameraPermission": "Camera hman phalna pe rawh",
-      "waveToPluck": "Kut vaiin thingpui hnah lawr rawh 👋",
-      "leavesPlucked": "Hnah lawr zat: {count}",
-      "basketFull": "Bawm thingpui hnahin a khat e!",
-      "gentleHint": "Muangchangin kut vai la, hnah hring va tawk rawh."
     },
     "bihuDhol": {
       "title": "Khuang & Dhol Tumna (Rilru Hahdamna)",
@@ -251,9 +243,18 @@
       "title": "Hriatrengna Huan (Game Hrang Hrang)",
       "desc": "Pangpar inmil zawng la, thil danglam hre chhuak la, rimawi kal dan zui rawh.",
       "subgames": {
-        "memoryMatch": { "name": "Pangpar Inmil 🌸", "desc": "Pangpar inmil zawng rawh" },
-        "whatChanged": { "name": "Eng Nge Danglam? 👁️", "desc": "Thil danglam hre chhuak rawh" },
-        "sequence": { "name": "Indawt Hre Reng Rawh 🔢", "desc": "Indawt dan zui rawh" }
+        "memoryMatch": {
+          "name": "Pangpar Inmil 🌸",
+          "desc": "Pangpar inmil zawng rawh"
+        },
+        "whatChanged": {
+          "name": "Eng Nge Danglam? 👁️",
+          "desc": "Thil danglam hre chhuak rawh"
+        },
+        "sequence": {
+          "name": "Indawt Hre Reng Rawh 🔢",
+          "desc": "Indawt dan zui rawh"
+        }
       },
       "memoryMatch": {
         "name": "Pangpar Inmil",
@@ -282,7 +283,9 @@
         "good": "I ti tha hle mai!",
         "tryAgain": "Khel leh ang u!"
       },
-      "stats": { "score": "Huan Score" },
+      "stats": {
+        "score": "Huan Score"
+      },
       "playAgain": "Khel nawn leh rawh",
       "backToHub": "Therapy Hub-ah let leh rawh"
     },
@@ -302,5 +305,84 @@
       "playAgain": "Zawng nawn leh rawh",
       "backToHub": "Therapy Hub-ah let leh rawh"
     }
+  },
+  "nav": {
+    "online": "Online",
+    "offline": "Offline",
+    "sos": "TANPUINA KAN MAMAWH"
+  },
+  "common": {
+    "back": "Kir leh rawh",
+    "continue": "Chhunzawm rawh",
+    "start": "Tan rawh",
+    "finish": "Zo ta",
+    "retry": "Ti nawn leh rawh",
+    "close": "Khar rawh",
+    "listen": "Ngaithla rawh",
+    "speaking": "A tawng mek...",
+    "error": "Dik lo a awm",
+    "loading": "Loading...",
+    "pts": "Points"
+  },
+  "game": {
+    "back": "← Kir leh rawh",
+    "score": "Score",
+    "complete": "I ti tha e! I zo ta!",
+    "playAgain": "Khel nawn leh rawh",
+    "soundOn": "Ri On",
+    "soundOff": "Ri Off",
+    "listen": "Ngaithla rawh"
+  },
+  "puzzle": {
+    "title": "Hriatrengna Puzzle",
+    "subtitle": "Thlalak rem khawm rawh",
+    "start": "Tan rawh",
+    "wellDone": "I ti tha hle mai!"
+  },
+  "wayfinding": {
+    "title": "Khaw Pui Kawng",
+    "subtitle": "In lam pan rawh",
+    "start": "Tan rawh",
+    "landmark": "Hmun Pawimawh",
+    "reached": "In i thleng ta e!"
+  },
+  "caregiver": {
+    "title": "Enkawltu Portal",
+    "dashboard": "Dashboard",
+    "patients": "Damlo te",
+    "sessions": "Nitintin Infiamna",
+    "alerts": "Hriattirna",
+    "telemetry": "Telemetry",
+    "addPatient": "Damlo Thar",
+    "medicalProfile": "Enkawlna Chhinchhiahna",
+    "familyPhotos": "Chhungkaw Thlalak",
+    "save": "Vawng tha rawh"
+  },
+  "intake": {
+    "title": "Damlo Ziak Lut Rawh",
+    "name": "Hming",
+    "age": "Kum",
+    "gender": "Mipa/Hmeichhia",
+    "language": "Tawng",
+    "caregiverName": "Enkawltu Hming",
+    "caregiverPhone": "Phone Number",
+    "submit": "Ziak Lut Rawh"
+  },
+  "options": {
+    "title": "Settings",
+    "fontSize": "Hawrawp Lian",
+    "contrast": "High Contrast",
+    "airMouse": "Virtual Air Mouse",
+    "listenFirst": "Aw Ngaithlakna"
+  },
+  "audio": {
+    "welcome": "CogniCare-ah kan lo lawm a che.",
+    "guide": "Hahdam takin thluak tihchakna tan rawh le."
+  },
+  "idcard": {
+    "title": "Health Card",
+    "scan": "Scan rawh",
+    "print": "Card print rawh",
+    "qrNote": "QR Code hi scan rawh."
   }
 }

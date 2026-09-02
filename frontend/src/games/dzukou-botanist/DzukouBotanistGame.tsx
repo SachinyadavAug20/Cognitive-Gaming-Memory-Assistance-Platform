@@ -36,7 +36,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12 min-h-screen bg-[#FAF6F0]">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-emerald-950" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-emerald-950"
+        gameId="dzukou-botanist"
+      />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
   );

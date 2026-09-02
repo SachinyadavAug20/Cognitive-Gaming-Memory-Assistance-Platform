@@ -38,7 +38,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12 min-h-screen bg-[#FAF6F0]">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-marigold" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-marigold"
+        gameId="drum"
+      />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
   );
@@ -122,17 +128,27 @@ export function DrumGame() {
       setRightMotionLevel(evt.rightEnergy);
 
       const now = Date.now();
-      const STRIKE_COOLDOWN = 320; // Debounce threshold in ms for distinct air drum strokes
-      const STRIKE_ENERGY_THRESHOLD = 0.38;
+      const STRIKE_COOLDOWN = 280; // Debounce threshold in ms for distinct air drum strokes
+      const STRIKE_ENERGY_THRESHOLD = 0.32;
 
+      // Check for Bilateral Double-Clap
       if (
-        evt.leftEnergy > STRIKE_ENERGY_THRESHOLD &&
+        evt.gesture === "BILATERAL_CLAP" &&
+        now - lastStrikeTimeRef.current.left > STRIKE_COOLDOWN &&
+        now - lastStrikeTimeRef.current.right > STRIKE_COOLDOWN
+      ) {
+        lastStrikeTimeRef.current.left = now;
+        lastStrikeTimeRef.current.right = now;
+        handleDrumHit("left");
+        setTimeout(() => handleDrumHit("right"), 60);
+      } else if (
+        (evt.leftHand !== null || evt.leftEnergy > STRIKE_ENERGY_THRESHOLD) &&
         now - lastStrikeTimeRef.current.left > STRIKE_COOLDOWN
       ) {
         lastStrikeTimeRef.current.left = now;
         handleDrumHit("left");
       } else if (
-        evt.rightEnergy > STRIKE_ENERGY_THRESHOLD &&
+        (evt.rightHand !== null || evt.rightEnergy > STRIKE_ENERGY_THRESHOLD) &&
         now - lastStrikeTimeRef.current.right > STRIKE_COOLDOWN
       ) {
         lastStrikeTimeRef.current.right = now;

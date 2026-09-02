@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { LOCALE_MAP } from "@/lib/i18n";
+import { speakText, unlockAudio } from "@/lib/sound";
 
 interface AudioPromptProps {
   text: string;
@@ -19,22 +19,18 @@ export function AudioPrompt({
 }: AudioPromptProps) {
   const locale = useLocale();
   const t = useTranslations("games");
-  const resolvedLang = lang ?? LOCALE_MAP[locale] ?? "en-US";
   const [speaking, setSpeaking] = useState(false);
 
   const speak = useCallback(() => {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = resolvedLang;
-      utterance.rate = 0.85;
-      utterance.pitch = 1.05;
-      utterance.onstart = () => setSpeaking(true);
-      utterance.onend = () => setSpeaking(false);
-      utterance.onerror = () => setSpeaking(false);
-      window.speechSynthesis.speak(utterance);
-    }
-  }, [text, resolvedLang]);
+    unlockAudio();
+    speakText(
+      text,
+      lang || locale,
+      0.82,
+      () => setSpeaking(true),
+      () => setSpeaking(false)
+    );
+  }, [text, lang, locale]);
 
   const sizes = {
     md: "text-base px-5 py-3 min-h-[56px] rounded-xl",
@@ -43,8 +39,9 @@ export function AudioPrompt({
 
   return (
     <button
+      type="button"
       onClick={speak}
-      className={`btn-tactile bg-surface text-ink border-border inline-flex items-center gap-3 font-bold ${sizes[size]} ${
+      className={`btn-tactile bg-surface text-ink border-border inline-flex items-center gap-3 font-bold cursor-pointer ${sizes[size]} ${
         speaking
           ? "ring-4 ring-marigold/70 animate-pulse border-2 border-marigold"
           : ""

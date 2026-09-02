@@ -52,8 +52,14 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-tea" />
+    <section className="pb-12 bg-[#FAF6F0] min-h-screen">
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-tea"
+        gameId="tea-harvest"
+      />
       <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
     </section>
   );

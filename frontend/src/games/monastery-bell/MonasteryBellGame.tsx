@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import {
@@ -17,7 +17,7 @@ import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { playPress, playCorrect, playComplete, playLifeSong } from "@/lib/sound";
+import { playPress, playCorrect, playComplete, playLifeSong, playMonasteryBell, unlockAudio } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
@@ -36,7 +36,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12 min-h-screen bg-[#FAF6F0]">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-purple-900" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-purple-900"
+        gameId="monastery-bell"
+      />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
   );
@@ -106,7 +112,6 @@ export function MonasteryBellGame() {
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
-  const audioCtxRef = useRef<AudioContext | null>(null);
   const TOTAL_ROUNDS = 3;
 
   useSessionGuard({
@@ -120,36 +125,8 @@ export function MonasteryBellGame() {
 
   // Synthesize rich harmonic bell chime using Web Audio API
   const playChimeTone = useCallback((freq: number) => {
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new AudioCtx();
-      }
-      const ctx = audioCtxRef.current;
-      if (ctx.state === "suspended") ctx.resume();
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      // Sine wave with overtone
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-      osc.stop(ctx.currentTime + 1.9);
-    } catch {
-      // Fallback sound
-      playPress();
-    }
+    unlockAudio();
+    playMonasteryBell(freq);
   }, []);
 
   // Generate sequence for current round

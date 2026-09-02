@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import {
   Brain,
   Coffee,
@@ -18,7 +19,10 @@ import {
   Music,
   Sparkles,
   Waves,
+  Volume2,
 } from "lucide-react";
+import { getGameStrings } from "@/lib/gameI18n";
+import { speakText, unlockAudio } from "@/lib/sound";
 
 interface TherapySuiteGridProps {
   gamesTitle: string;
@@ -27,6 +31,19 @@ interface TherapySuiteGridProps {
 const CARD = "border-3 border-black rounded-2xl shadow-[4px_4px_0px_rgba(0,0,0,1)]";
 
 export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
+  const locale = useLocale();
+
+  // Localized game definitions
+  const chatStrings = getGameStrings("grandchild-chat", locale);
+  const detectiveStrings = getGameStrings("memory-detective", locale);
+  const drumStrings = getGameStrings("drum", locale);
+  const alpanaStrings = getGameStrings("alpana", locale);
+
+  const handleSpeak = (text: string) => {
+    unlockAudio();
+    speakText(text, locale, 0.82);
+  };
+
   return (
     <section aria-labelledby="games-title">
       <div className="flex items-center justify-between border-b-2 border-black/15 pb-2">
@@ -49,30 +66,48 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
         {/* 1. AI Reminiscence Card */}
         <Link
           href="/patient/games/grandchild-chat"
-          className={`${CARD} btn-tactile group flex flex-col justify-between gap-3 bg-tea p-5 text-white transition-transform hover:scale-[1.01]`}
+          data-voice-desc={`${chatStrings.title}. ${chatStrings.audioPrompt}`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between gap-3 bg-tea p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           <div className="flex items-start gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-white/40 bg-white/20 shadow-sm text-white">
               <Coffee className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-lg font-black tracking-tight text-white">
-                  The Grandchild&apos;s Teatime Chat
-                </span>
-                <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase text-white shadow-sm flex items-center gap-0.5">
-                  <ShieldCheck className="h-2.5 w-2.5" /> AI CDTx
-                </span>
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-black tracking-tight text-white">
+                    {chatStrings.title}
+                  </span>
+                  <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase text-white shadow-sm flex items-center gap-0.5">
+                    <ShieldCheck className="h-2.5 w-2.5" /> CDTx
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSpeak(`${chatStrings.title}. ${chatStrings.audioPrompt}`);
+                  }}
+                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title="Listen to Game Audio Guide"
+                  aria-label={`Listen to ${chatStrings.title}`}
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
               </div>
+
               <p className="mt-1 text-xs font-semibold text-white/90 line-clamp-2 leading-relaxed">
-                Have a warm morning tea dialogue, share stories, and illuminate nostalgic family memories.
+                {chatStrings.introSubtitle}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-white/20 pt-2 text-xs font-bold text-white/90">
             <span>Multi-Turn Dialogue</span>
             <span className="rounded-lg bg-white px-3 py-1 text-xs font-black text-tea shadow-sm group-hover:bg-surface-muted flex items-center gap-1">
-              <span>Start Chat</span>
+              <span>{chatStrings.startButton || "Start Chat"}</span>
               <ArrowRight className="h-3 w-3" />
             </span>
           </div>
@@ -81,30 +116,48 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
         {/* 2. AI Detective Card */}
         <Link
           href="/patient/games/memory-detective"
-          className={`${CARD} btn-tactile group flex flex-col justify-between gap-3 bg-[#2D3748] p-5 text-white transition-transform hover:scale-[1.01]`}
+          data-voice-desc={`${detectiveStrings.title}. ${detectiveStrings.audioPrompt}`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between gap-3 bg-[#2D3748] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           <div className="flex items-start gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-white/40 bg-white/20 shadow-sm text-white">
               <Search className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-lg font-black tracking-tight text-amber-300">
-                  The Memory Detective
-                </span>
-                <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase text-white shadow-sm">
-                  3-Tier Recall
-                </span>
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-black tracking-tight text-amber-300">
+                    {detectiveStrings.title}
+                  </span>
+                  <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase text-white shadow-sm">
+                    3-Tier Recall
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSpeak(`${detectiveStrings.title}. ${detectiveStrings.audioPrompt}`);
+                  }}
+                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title="Listen to Game Audio Guide"
+                  aria-label={`Listen to ${detectiveStrings.title}`}
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
               </div>
+
               <p className="mt-1 text-xs font-semibold text-white/90 line-clamp-2 leading-relaxed">
-                Listen to gentle clues from personal history and identify loved ones from verified portraits.
+                {detectiveStrings.introSubtitle}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-white/20 pt-2 text-xs font-bold text-white/90">
             <span>Face Recognition</span>
             <span className="rounded-lg bg-marigold px-3 py-1 text-xs font-black text-white shadow-sm group-hover:bg-amber-600 flex items-center gap-1">
-              <span>Identify</span>
+              <span>{detectiveStrings.startButton || "Identify"}</span>
               <ArrowRight className="h-3 w-3" />
             </span>
           </div>
@@ -113,30 +166,48 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
         {/* 3. 3D Bihu Dhol Drummer */}
         <Link
           href="/patient/games/drum"
-          className={`${CARD} btn-tactile group flex flex-col justify-between gap-3 bg-[#D97706] p-5 text-white transition-transform hover:scale-[1.01]`}
+          data-voice-desc={`${drumStrings.title}. ${drumStrings.audioPrompt}`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between gap-3 bg-[#D97706] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           <div className="flex items-start gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-white/40 bg-white/20 shadow-sm text-white">
               <Music className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-lg font-black tracking-tight text-white">
-                  3D Folk Rhythm Drummer
-                </span>
-                <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-black uppercase text-amber-900 shadow-sm">
-                  Air-Drum Vision
-                </span>
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-black tracking-tight text-white">
+                    {drumStrings.title}
+                  </span>
+                  <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-black uppercase text-amber-900 shadow-sm">
+                    Air-Drum
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSpeak(`${drumStrings.title}. ${drumStrings.audioPrompt}`);
+                  }}
+                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title="Listen to Game Audio Guide"
+                  aria-label={`Listen to ${drumStrings.title}`}
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
               </div>
+
               <p className="mt-1 text-xs font-semibold text-white/90 line-clamp-2 leading-relaxed">
-                Play celebratory Bihu Dhol and Khasi Ksing beats with bilateral webcam air-drumming.
+                {drumStrings.introSubtitle}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-white/20 pt-2 text-xs font-bold text-white/90">
             <span>Bilateral Motor</span>
             <span className="rounded-lg bg-white px-3 py-1 text-xs font-black text-amber-900 shadow-sm group-hover:bg-surface-muted flex items-center gap-1">
-              <span>Play Beats</span>
+              <span>{drumStrings.startButton || "Play Beats"}</span>
               <ArrowRight className="h-3 w-3" />
             </span>
           </div>
@@ -145,30 +216,48 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
         {/* 4. Sacred Alpana Sand Drawing */}
         <Link
           href="/patient/games/alpana"
-          className={`${CARD} btn-tactile group flex flex-col justify-between gap-3 bg-[#581C87] p-5 text-white transition-transform hover:scale-[1.01]`}
+          data-voice-desc={`${alpanaStrings.title}. ${alpanaStrings.audioPrompt}`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between gap-3 bg-[#581C87] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           <div className="flex items-start gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-white/40 bg-white/20 shadow-sm text-white">
               <Sparkles className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-lg font-black tracking-tight text-white">
-                  Sacred Alpana Sand Drawing
-                </span>
-                <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[9px] font-black uppercase text-purple-950 shadow-sm">
-                  Air-Canvas
-                </span>
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg font-black tracking-tight text-white">
+                    {alpanaStrings.title}
+                  </span>
+                  <span className="rounded-full bg-amber-400 px-2 py-0.5 text-[9px] font-black uppercase text-purple-950 shadow-sm">
+                    Air-Canvas
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSpeak(`${alpanaStrings.title}. ${alpanaStrings.audioPrompt}`);
+                  }}
+                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title="Listen to Game Audio Guide"
+                  aria-label={`Listen to ${alpanaStrings.title}`}
+                >
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
               </div>
+
               <p className="mt-1 text-xs font-semibold text-white/90 line-clamp-2 leading-relaxed">
-                Wave your hand to trace sacred North Eastern lotus and festive floor motifs with stardust particles.
+                {alpanaStrings.introSubtitle}
               </p>
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-white/20 pt-2 text-xs font-bold text-white/90">
             <span>Visuospatial Flow</span>
             <span className="rounded-lg bg-amber-400 px-3 py-1 text-xs font-black text-purple-950 shadow-sm group-hover:bg-amber-300 flex items-center gap-1">
-              <span>Draw Motif</span>
+              <span>{alpanaStrings.startButton || "Draw Motif"}</span>
               <ArrowRight className="h-3 w-3" />
             </span>
           </div>
@@ -177,60 +266,31 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
 
       {/* Quick Access horizontal pills for additional games */}
       <div className="mt-3.5 flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-thin">
-        <Link
-          href="/patient/games/river-lanterns"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-teal-800/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-teal-800/25 shadow-xs"
-        >
-          <Waves className="h-3.5 w-3.5 text-teal-800" /> River Lanterns
-        </Link>
-        <Link
-          href="/patient/games/storybook"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-800/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-amber-800/25 shadow-xs"
-        >
-          <BookOpen className="h-3.5 w-3.5 text-amber-800" /> Living Chronicle
-        </Link>
-        <Link
-          href="/patient/games/jigsaw"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-tea/25 shadow-xs"
-        >
-          <Grid3X3 className="h-3.5 w-3.5 text-tea" /> Jigsaw Puzzle
-        </Link>
-        <Link
-          href="/patient/games/wayfinding"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-emerald-800/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-emerald-800/25 shadow-xs"
-        >
-          <Compass className="h-3.5 w-3.5 text-emerald-800" /> Wayfinding
-        </Link>
-        <Link
-          href="/patient/games/tea-harvest"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-emerald-600/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-emerald-600/25 shadow-xs"
-        >
-          <Leaf className="h-3.5 w-3.5 text-emerald-600" /> Tea Harvest
-        </Link>
-        <Link
-          href="/patient/games/radio"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-800/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-amber-800/25 shadow-xs"
-        >
-          <Radio className="h-3.5 w-3.5 text-amber-800" /> Akashvani Radio
-        </Link>
-        <Link
-          href="/patient/games/lotus-lake"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-teal-600/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-teal-600/25 shadow-xs"
-        >
-          <Flower2 className="h-3.5 w-3.5 text-teal-600" /> Lotus Lake
-        </Link>
-        <Link
-          href="/patient/games/heritage-kitchen"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-terracotta/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-terracotta/25 shadow-xs"
-        >
-          <Utensils className="h-3.5 w-3.5 text-terracotta" /> Kitchen
-        </Link>
-        <Link
-          href="/patient/games/root-bridge"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-green-800/15 px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-green-800/25 shadow-xs"
-        >
-          <GitFork className="h-3.5 w-3.5 text-green-800" /> Root Bridge
-        </Link>
+        {[
+          { id: "river-lanterns", icon: Waves, color: "bg-teal-800/15 text-teal-800" },
+          { id: "storybook", icon: BookOpen, color: "bg-amber-800/15 text-amber-800" },
+          { id: "jigsaw", icon: Grid3X3, color: "bg-tea/15 text-tea" },
+          { id: "wayfinding", icon: Compass, color: "bg-emerald-800/15 text-emerald-800" },
+          { id: "tea-harvest", icon: Leaf, color: "bg-emerald-600/15 text-emerald-600" },
+          { id: "radio", icon: Radio, color: "bg-amber-800/15 text-amber-800" },
+          { id: "lotus-lake", icon: Flower2, color: "bg-teal-600/15 text-teal-600" },
+          { id: "heritage-kitchen", icon: Utensils, color: "bg-terracotta/15 text-terracotta" },
+          { id: "root-bridge", icon: GitFork, color: "bg-green-800/15 text-green-800" },
+        ].map((item) => {
+          const itemStrings = getGameStrings(item.id, locale);
+          const ItemIcon = item.icon;
+          return (
+            <Link
+              key={item.id}
+              href={`/patient/games/${item.id}`}
+              data-voice-desc={`${itemStrings.title}. ${itemStrings.audioPrompt}`}
+              className={`btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black px-3.5 py-2 text-xs font-black text-ink shrink-0 hover:bg-amber-100 shadow-xs ${item.color}`}
+            >
+              <ItemIcon className="h-3.5 w-3.5" />
+              <span>{itemStrings.title}</span>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

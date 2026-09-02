@@ -16,7 +16,7 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useGameVoice } from "@/hooks/useGameVoice";
 import { submitGameSessionTelemetry } from "@/lib/gameTelemetry";
 import { useAuthStore } from "@/store/useAuthStore";
-import { playComplete, playLifeSong } from "@/lib/sound";
+import { playComplete, playLifeSong, playDholBeat, unlockAudio } from "@/lib/sound";
 
 export function BihuDholBeats() {
   const t = useTranslations("games.bihuDhol");
@@ -43,69 +43,10 @@ export function BihuDholBeats() {
   const lastTapTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Web Audio Synthesizer Context
-  const audioCtxRef = useRef<AudioContext | null>(null);
-
   // Synthesize traditional Assamese Dhol Hand-Drum Acoustic Pulse
   const triggerDholSound = useCallback((accent = false) => {
-    try {
-      const AudioContextClass =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!audioCtxRef.current) {
-        audioCtxRef.current = new AudioContextClass();
-      }
-      const ctx = audioCtxRef.current;
-      if (ctx.state === "suspended") {
-        void ctx.resume();
-      }
-
-      const now = ctx.currentTime;
-
-      // 1. Deep Bass Resonance Membrane
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      // Warm sweep: 130Hz -> 45Hz
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(accent ? 145 : 120, now);
-      osc.frequency.exponentialRampToValueAtTime(45, now + 0.32);
-
-      // Low pass filter for wooden warmth
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(320, now);
-
-      // Exponential gain decay
-      gain.gain.setValueAtTime(accent ? 0.8 : 0.6, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.36);
-
-      // 2. High "Taal" Rim Snap (Leather edge strike)
-      const rimOsc = ctx.createOscillator();
-      const rimGain = ctx.createGain();
-
-      rimOsc.type = "triangle";
-      rimOsc.frequency.setValueAtTime(accent ? 360 : 280, now);
-      rimOsc.frequency.exponentialRampToValueAtTime(160, now + 0.12);
-
-      rimGain.gain.setValueAtTime(accent ? 0.35 : 0.2, now);
-      rimGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-
-      rimOsc.connect(rimGain);
-      rimGain.connect(ctx.destination);
-
-      rimOsc.start(now);
-      rimOsc.stop(now + 0.15);
-    } catch {
-      // Audio fallback
-    }
+    unlockAudio();
+    playDholBeat(accent);
   }, []);
 
   // Metronome Pulse Loop

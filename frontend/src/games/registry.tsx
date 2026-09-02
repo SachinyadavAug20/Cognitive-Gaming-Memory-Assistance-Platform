@@ -61,6 +61,9 @@ import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
 import { BazaarBuddiesGame } from "./bazaar-buddies/BazaarBuddiesGame";
 import { MemoryGardenGame } from "./memory-garden/MemoryGardenGame";
 import { MemoryRoadGame } from "./memory-road/MemoryRoadGame";
+import { TeaGardenCatchGame } from "./tea-garden-catch/TeaGardenCatchGame";
+import { ButterflySanctuaryGame } from "./butterfly-sanctuary/ButterflySanctuaryGame";
+import { LotusPainterGame } from "./lotus-painter/LotusPainterGame";
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -77,7 +80,40 @@ export interface GameDef {
 }
 
 export const GAMES: GameDef[] = [
-  // ── DOMAIN 1: 3D COMPUTER VISION & KINESTHETIC PRAXIS (7 Modules) ──
+  // ── DOMAIN 1: 3D COMPUTER VISION & KINESTHETIC PRAXIS (10 Modules) ──
+  {
+    id: "lotus-painter",
+    icon: Waves,
+    titleKey: "lotusPainter.title",
+    descKey: "lotusPainter.desc",
+    accent: "bg-teal-950",
+    domain: "OpenCV Optical Air-Canvas & Lotus Bloom",
+    category: "vision-3d",
+    recommended: true,
+    component: LotusPainterGame,
+  },
+  {
+    id: "butterfly-sanctuary",
+    icon: Flower2,
+    titleKey: "butterflySanctuary.title",
+    descKey: "butterflySanctuary.desc",
+    accent: "bg-purple-900",
+    domain: "OpenCV Optical Hand Perch Stabilization",
+    category: "vision-3d",
+    recommended: true,
+    component: ButterflySanctuaryGame,
+  },
+  {
+    id: "tea-garden-catch",
+    icon: Leaf,
+    titleKey: "teaGardenCatch.title",
+    descKey: "teaGardenCatch.desc",
+    accent: "bg-teal-900",
+    domain: "OpenCV Dual-Hand Kinesthetic Harvest",
+    category: "vision-3d",
+    recommended: true,
+    component: TeaGardenCatchGame,
+  },
   {
     id: "alpana",
     icon: Sparkles,

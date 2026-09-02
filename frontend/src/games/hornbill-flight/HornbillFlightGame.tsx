@@ -40,7 +40,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12 min-h-screen bg-[#FAF6F0]">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-amber-800" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-amber-800"
+        gameId="hornbill-flight"
+      />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
   );
@@ -320,11 +326,12 @@ export function HornbillFlightGame() {
 
   // Optical Motion Tracking
   const handleMotionEvent = useCallback((evt: MotionEvent) => {
-    if (evt.hasMotion && evt.energy > 0.2) {
+    if (evt.hasMotion) {
+      const activeHand = evt.rightHand || evt.leftHand || { x: evt.x, y: evt.y };
       const smoothed = smoothKineticTrajectory(
-        { x: evt.x, y: evt.y },
+        { x: activeHand.x, y: activeHand.y },
         lastPointRef.current,
-        0.3
+        0.35
       );
       lastPointRef.current = smoothed;
       birdPosRef.current.x = smoothed.x;

@@ -648,6 +648,9 @@ export function Hero3DLandscape() {
           }
         ).webkitAudioContext;
       const ctx = new AudioCtx();
+      if (ctx.state === "suspended") {
+        void ctx.resume();
+      }
       audioContextRef.current = ctx;
 
       // 1. Water Ripples (Filtered Noise)

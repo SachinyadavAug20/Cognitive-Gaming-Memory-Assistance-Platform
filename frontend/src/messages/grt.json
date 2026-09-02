@@ -79,8 +79,13 @@
       "desc": "Dakmanda aro muga kilko doke rongchinggipa noksako taribo"
     },
     "teaHarvest": {
-      "title": "Bijak Gni & Ku·dimba Sa",
-      "desc": "Cha baganni gital bijak gni aro ku·dimba sako chimongbo"
+      "title": "Cha Bijak Chimongani (Motion Vision)",
+      "subtitle": "Jakko mo·ate bijak gni aro ku·dimba sako chimonge kokona chipbo.",
+      "cameraPermission": "Kamera on·ani on·bo",
+      "waveToPluck": "Jak mo·ate bijak chimongbo 👋",
+      "leavesPlucked": "Chimongimin bijak: {count}",
+      "basketFull": "Kok gital bijakrangchi gapaha!",
+      "gentleHint": "Tom·tome jakko mo·ate tangsek bijakko nina jotton kabo."
     },
     "radio": {
       "title": "Akashvani Gitcham Radio",
@@ -141,15 +146,6 @@
       "speakPromptNamghar": "Namgharona re·ba",
       "speakPromptChangGhar": "Bol nokona nibo",
       "speakPromptRiverGhat": "Chibima ghato sokba"
-    },
-    "teaHarvest": {
-      "title": "Cha Bijak Chimongani (Motion Vision)",
-      "subtitle": "Jakko mo·ate bijak gni aro ku·dimba sako chimonge kokona chipbo.",
-      "cameraPermission": "Kamera on·ani on·bo",
-      "waveToPluck": "Jak mo·ate bijak chimongbo 👋",
-      "leavesPlucked": "Chimongimin bijak: {count}",
-      "basketFull": "Kok gital bijakrangchi gapaha!",
-      "gentleHint": "Tom·tome jakko mo·ate tangsek bijakko nina jotton kabo."
     },
     "bihuDhol": {
       "title": "Dama Dokani & Surna Rona (Tom·tomani)",
@@ -247,9 +243,18 @@
       "title": "Gisik Ra·ani Buring (Kal·ani Suite)",
       "desc": "Bibal jora sandibo, dingtanganiko u·ibo aro sur gita tap kabo.",
       "subgames": {
-        "memoryMatch": { "name": "Bibal Jora 🌸", "desc": "Bibal jora sandibo" },
-        "whatChanged": { "name": "Mai Dingtangaha? 👁️", "desc": "Dingtang ko u·ibo" },
-        "sequence": { "name": "Rikongko Gisik Ra·bo 🔢", "desc": "Rikong gita tap kabo" }
+        "memoryMatch": {
+          "name": "Bibal Jora 🌸",
+          "desc": "Bibal jora sandibo"
+        },
+        "whatChanged": {
+          "name": "Mai Dingtangaha? 👁️",
+          "desc": "Dingtang ko u·ibo"
+        },
+        "sequence": {
+          "name": "Rikongko Gisik Ra·bo 🔢",
+          "desc": "Rikong gita tap kabo"
+        }
       },
       "memoryMatch": {
         "name": "Bibal Jora",
@@ -278,7 +283,9 @@
         "good": "Namgipa jotton!",
         "tryAgain": "Kal·tapna!"
       },
-      "stats": { "score": "Buring Score" },
+      "stats": {
+        "score": "Buring Score"
+      },
       "playAgain": "Kal·tapbo",
       "backToHub": "Therapy nokona re·bapilbo"
     },
@@ -298,5 +305,84 @@
       "playAgain": "Rama sanditapbo",
       "backToHub": "Therapy nokona re·bapilbo"
     }
+  },
+  "nav": {
+    "online": "Online",
+    "offline": "Offline",
+    "sos": "SOS DAKCHAKANI"
+  },
+  "common": {
+    "back": "Re·bapilbo",
+    "continue": "Chalaibo",
+    "start": "A·bachengbo",
+    "finish": "Matchotaha",
+    "retry": "Daktaibo",
+    "close": "Chipbo",
+    "listen": "Knatimbo",
+    "speaking": "Agantenga...",
+    "error": "Gualaha",
+    "loading": "Loading...",
+    "pts": "Points"
+  },
+  "game": {
+    "back": "← Re·bapilbo",
+    "score": "Score",
+    "complete": "Nama! Matchotaha!",
+    "playAgain": "Kal·taibo",
+    "soundOn": "Sound On",
+    "soundOff": "Sound Off",
+    "listen": "Knatimbo"
+  },
+  "puzzle": {
+    "title": "Gisik Puzzle",
+    "subtitle": "Bimangko chimongbo",
+    "start": "A·bachengbo",
+    "wellDone": "Matchotaha!"
+  },
+  "wayfinding": {
+    "title": "Songjinmani Rama",
+    "subtitle": "Nokona re·angbo",
+    "start": "A·bachengbo",
+    "landmark": "Biap",
+    "reached": "Nokona sokaha!"
+  },
+  "caregiver": {
+    "title": "Ni-rokgipani Portal",
+    "dashboard": "Dashboard",
+    "patients": "Sagiparang",
+    "sessions": "Salanti Kal·ani",
+    "alerts": "Alerts",
+    "telemetry": "Telemetry",
+    "addPatient": "Sagipa Gital",
+    "medicalProfile": "Sam-Bikro",
+    "familyPhotos": "Nokgipani Photo",
+    "save": "Rikibo"
+  },
+  "intake": {
+    "title": "Sagipako Biming Segani",
+    "name": "Biming",
+    "age": "Bilsi",
+    "gender": "Me·asa/Me·chik",
+    "language": "Ku·sik",
+    "caregiverName": "Ni-rokgipani Biming",
+    "caregiverPhone": "Phone Number",
+    "submit": "Matchotbo"
+  },
+  "options": {
+    "title": "Settings",
+    "fontSize": "Dal·gipa Font",
+    "contrast": "High Contrast",
+    "airMouse": "Virtual Air Mouse",
+    "listenFirst": "Ku·rang Knatimani"
+  },
+  "audio": {
+    "welcome": "CogniCare-ona namchapbeona.",
+    "guide": "Tom·tome gisik kal·aniko a·bachengbo."
+  },
+  "idcard": {
+    "title": "Health Card",
+    "scan": "Scan ka·bo",
+    "print": "Card print ka·bo",
+    "qrNote": "QR Code-ko scan ka·bo."
   }
 }

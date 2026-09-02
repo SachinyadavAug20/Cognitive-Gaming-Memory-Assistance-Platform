@@ -51,8 +51,8 @@
       "complete": "মনন দু!"
     },
     "wayfinding": {
-      "title": "পথ মনন দৌ",
-      "complete": "মনন দু!"
+      "title": "Iaid Lynti Shnong",
+      "desc": "Iaid lyngba ki lynti shnong ban poi suk sha la iing"
     },
     "dailyTasks": {
       "title": "মোৰ চাহ",
@@ -74,17 +74,18 @@
       "title": "Pyniasoh Dur Jingkynmaw",
       "desc": "Pyniasoh ia ki dkhot dur ban pynim biang ia ki dur jingkynmaw"
     },
-    "wayfinding": {
-      "title": "Iaid Lynti Shnong",
-      "desc": "Iaid lyngba ki lynti shnong ban poi suk sha la iing"
-    },
     "weaving": {
       "title": "Ka Thain Jainsem & Ryndia",
       "desc": "Thain ia ki jain ryndia bad muga da ki sur thain kiba sngewtynnat"
     },
     "teaHarvest": {
-      "title": "Arsla bad uwei u Tnat Sha",
-      "desc": "Kheit ia ki sla sha kiba jem na ki kper sha ba jyrngam"
+      "title": "Kheit Sla Sha (Motion Vision)",
+      "subtitle": "Pynkhih ia ki kti ban kheit ia ki ar sla bad uwei u tnat sha ha shang.",
+      "cameraPermission": "Ai bor ia ka camera",
+      "waveToPluck": "Pynkhih kti ban kheit sla sha 👋",
+      "leavesPlucked": "Ki sla sha ba la kheit: {count}",
+      "basketFull": "Ka shang ka la dap bha da ki sla sha!",
+      "gentleHint": "Pynkhih jem ia ki kti bad ktah ia ki sla jyrngam."
     },
     "radio": {
       "title": "Radio Akashvani Rim",
@@ -145,15 +146,6 @@
       "speakPromptNamghar": "Iaid sha ka Namghar",
       "speakPromptChangGhar": "Peit sha ka iing dieng",
       "speakPromptRiverGhat": "Poi sha rud wah"
-    },
-    "teaHarvest": {
-      "title": "Kheit Sla Sha (Motion Vision)",
-      "subtitle": "Pynkhih ia ki kti ban kheit ia ki ar sla bad uwei u tnat sha ha shang.",
-      "cameraPermission": "Ai bor ia ka camera",
-      "waveToPluck": "Pynkhih kti ban kheit sla sha 👋",
-      "leavesPlucked": "Ki sla sha ba la kheit: {count}",
-      "basketFull": "Ka shang ka la dap bha da ki sla sha!",
-      "gentleHint": "Pynkhih jem ia ki kti bad ktah ia ki sla jyrngam."
     },
     "bihuDhol": {
       "title": "Ka Sur Ksing & Dhol (Jingsuk Jingmut)",
@@ -251,9 +243,18 @@
       "title": "Kper Jingkynmaw (Jingialehkai Suite)",
       "desc": "Pyniasoh syntu, ithuh ia kaba kylla bad bud ia ka sur jingrwai.",
       "subgames": {
-        "memoryMatch": { "name": "Pyniasoh Syntu 🌸", "desc": "Wad ia ki shijor syntu" },
-        "whatChanged": { "name": "Kaei Kaba Kylla? 👁️", "desc": "Ithuh ia kaba kylla" },
-        "sequence": { "name": "Kynmaw ia ka Ryntih 🔢", "desc": "Bud ryntih katkum ka sur" }
+        "memoryMatch": {
+          "name": "Pyniasoh Syntu 🌸",
+          "desc": "Wad ia ki shijor syntu"
+        },
+        "whatChanged": {
+          "name": "Kaei Kaba Kylla? 👁️",
+          "desc": "Ithuh ia kaba kylla"
+        },
+        "sequence": {
+          "name": "Kynmaw ia ka Ryntih 🔢",
+          "desc": "Bud ryntih katkum ka sur"
+        }
       },
       "memoryMatch": {
         "name": "Pyniasoh Syntu",
@@ -282,7 +283,9 @@
         "good": "Jingpyrshang ba bha!",
         "tryAgain": "Ialehkai biang!"
       },
-      "stats": { "score": "Kper Score" },
+      "stats": {
+        "score": "Kper Score"
+      },
       "playAgain": "Ialehkai biang",
       "backToHub": "Wanphai sha Therapy Hub"
     },
@@ -302,5 +305,84 @@
       "playAgain": "Wad lynti biang",
       "backToHub": "Wanphai sha Therapy Hub"
     }
+  },
+  "nav": {
+    "online": "Online",
+    "offline": "Offline",
+    "sos": "JINGIARAP KYNDIT"
+  },
+  "common": {
+    "back": "Leit Phai",
+    "continue": "Iaibteng",
+    "start": "Sdang",
+    "finish": "La Dep",
+    "retry": "Pyrshang Biang",
+    "close": "Khad",
+    "listen": "Sngap",
+    "speaking": "Kren...",
+    "error": "Don jingbakla",
+    "loading": "Loading...",
+    "pts": "Points"
+  },
+  "game": {
+    "back": "← Leit Phai",
+    "score": "Score",
+    "complete": "Bha bha! La dep!",
+    "playAgain": "Ialeh Biang",
+    "soundOn": "Sur On",
+    "soundOff": "Sur Off",
+    "listen": "Sngap"
+  },
+  "puzzle": {
+    "title": "Jingialehkai Dur",
+    "subtitle": "Pyniad lang ia ki dur",
+    "start": "Sdang",
+    "wellDone": "Phi la leh bha!"
+  },
+  "wayfinding": {
+    "title": "Lynti Shnong",
+    "subtitle": "Leit phai sha iing",
+    "start": "Sdang Jingiaid",
+    "landmark": "Jaka Tynrai",
+    "reached": "Phi la poi sha iing!"
+  },
+  "caregiver": {
+    "title": "Portal u Nongsumar",
+    "dashboard": "Dashboard",
+    "patients": "Ki Nongpang",
+    "sessions": "Jingialehkai Man Ka Sngi",
+    "alerts": "Khubor",
+    "telemetry": "Telemetry",
+    "addPatient": "Pynrung Nongpang Thymmai",
+    "medicalProfile": "Jingsumar",
+    "familyPhotos": "Dur Kiba Ha Iing",
+    "save": "Kynshew"
+  },
+  "intake": {
+    "title": "Rejista Nongpang",
+    "name": "Kyrteng",
+    "age": "Rta",
+    "gender": "Shynrang/Kynthei",
+    "language": "Ktien",
+    "caregiverName": "Kyrteng Nongsumar",
+    "caregiverPhone": "Phone",
+    "submit": "Pynkut"
+  },
+  "options": {
+    "title": "Settings",
+    "fontSize": "Font Kiba Heh",
+    "contrast": "High Contrast",
+    "airMouse": "Virtual Air Mouse",
+    "listenFirst": "Sur Kren"
+  },
+  "audio": {
+    "welcome": "Pdiang sngewbha sha CogniCare.",
+    "guide": "Shong suk bad sdang ia ka jingpynkhlain jingmut."
+  },
+  "idcard": {
+    "title": "Health Card",
+    "scan": "Scan ia u QR",
+    "print": "Print ia ka Card",
+    "qrNote": "Pyndonkam ia une u QR code."
   }
 }

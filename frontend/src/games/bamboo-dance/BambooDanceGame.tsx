@@ -18,7 +18,7 @@ import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { playPress, playCorrect, playComplete, playLifeSong } from "@/lib/sound";
+import { playPress, playCorrect, playComplete, playLifeSong, playBambooClap } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
@@ -37,7 +37,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12 min-h-screen bg-[#FAF6F0]">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-emerald-900" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-emerald-900"
+        gameId="bamboo-dance"
+      />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
   );
@@ -59,7 +65,6 @@ export function BambooDanceGame() {
 
   const TARGET_STEPS = 8;
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
 
   useSessionGuard({
     patientId: patientId ?? 0,
@@ -69,36 +74,6 @@ export function BambooDanceGame() {
     taps,
     errorCount: 0,
   });
-
-  // Synthesize traditional Mizo Khuang drum beat & bamboo clap
-  const playBambooClap = useCallback((isOpen: boolean) => {
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!audioCtxRef.current) audioCtxRef.current = new AudioCtx();
-      const ctx = audioCtxRef.current;
-      if (ctx.state === "suspended") ctx.resume();
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = isOpen ? "sine" : "triangle";
-      osc.frequency.setValueAtTime(isOpen ? 180 : 320, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.15);
-
-      gain.gain.setValueAtTime(0.25, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-      osc.stop(ctx.currentTime + 0.2);
-    } catch {
-      playPress();
-    }
-  }, []);
 
   // Bamboo Rhythm Metronome Loop
   useEffect(() => {
@@ -117,7 +92,7 @@ export function BambooDanceGame() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [level, phase, playBambooClap]);
+  }, [level, phase]);
 
   const handleStep = (targetLane: 0 | 1 | 2) => {
     if (phase !== "dance") return;

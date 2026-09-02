@@ -13,6 +13,9 @@ import {
   Music,
   Waves,
   Volume2,
+  Hand,
+  ArrowRight,
+  Heart,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -40,7 +43,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12 min-h-screen bg-[#FAF6F0]">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-teal-800" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-teal-800"
+        gameId="river-lanterns"
+      />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
   );
@@ -102,7 +111,7 @@ export function RiverLanternsGame() {
         });
       });
     }
-    return list.length >= 2 ? list.slice(0, 4) : FALLBACK_TARGETS;
+    return list.length >= 2 ? list.slice(0, 3) : FALLBACK_TARGETS;
   }, [detail]);
 
   const [phase, setPhase] = useState<"intro" | "river" | "done">("intro");
@@ -118,7 +127,7 @@ export function RiverLanternsGame() {
   const currentTarget = targets[currentTargetIndex] || targets[0];
   const score = unlockedLanterns.length * 35;
 
-  // Initialize Optical Motion Tracker
+  // Optical Motion Tracker
   useEffect(() => {
     let tracker: OpticalMotionTracker | null = null;
 
@@ -149,7 +158,12 @@ export function RiverLanternsGame() {
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-  }, []);
+    speak(
+      `Welcome to the Brahmaputra River. Touch the glowing golden lantern floating near the shore to bring back your memories with ${targets[0]?.name || "your family"}.`,
+      locale,
+      rate
+    );
+  }, [locale, rate, targets]);
 
   const handleSelectLantern = (target: RiverTarget) => {
     setTaps((t) => t + 1);
@@ -170,7 +184,7 @@ export function RiverLanternsGame() {
     if (currentTargetIndex + 1 < targets.length) {
       const nextIdx = currentTargetIndex + 1;
       setCurrentTargetIndex(nextIdx);
-      speak(`Now guide the river ripples toward ${targets[nextIdx].name}'s lantern.`, locale, rate);
+      speak(`Wonderful! Now touch the glowing lantern for ${targets[nextIdx].name}.`, locale, rate);
     } else {
       playComplete();
       setPhase("done");
@@ -216,7 +230,7 @@ export function RiverLanternsGame() {
   return (
     <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
-        <div className="flex flex-col items-center gap-6 py-6 text-center">
+        <div className="flex flex-col items-center gap-6 py-4 text-center">
           {/* Government Paperclip Header */}
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-[#EFE9DF] px-3.5 py-1.5 shadow-[2px_2px_0px_#000]">
             <div className="flex items-center gap-2">
@@ -241,24 +255,22 @@ export function RiverLanternsGame() {
             </p>
           </div>
 
-          {/* Technology Highlights */}
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
-            <span className="text-xs font-black uppercase tracking-wider text-teal-800 block mb-2">
-              Therapeutic Features:
+          {/* Simple 3-Step Guide */}
+          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000] space-y-2.5">
+            <span className="text-xs font-black uppercase tracking-wider text-teal-800 block">
+              How to Play (Very Easy):
             </span>
-            <div className="space-y-2 text-xs font-bold text-ink">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-teal-700" />
-                <span>3D WebGL dynamic water ripples & floating brass lanterns</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-marigold" />
-                <span>Client-side optical camera motion tracking (No video saved)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-teal-700" />
-                <span>Encourages gentle upper-body range of motion & visual depth focus</span>
-              </div>
+            <div className="flex items-center gap-3 text-xs font-bold text-ink">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-white font-black text-xs shrink-0">1</span>
+              <span>Watch the glowing golden lanterns float gently along the Brahmaputra river.</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs font-bold text-ink">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-white font-black text-xs shrink-0">2</span>
+              <span>Tap the water, tap the floating lantern, or press the big button below.</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs font-bold text-ink">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-800 text-white font-black text-xs shrink-0">3</span>
+              <span>Reconnect with warm family photos and hear peaceful memories.</span>
             </div>
           </div>
 
@@ -273,109 +285,172 @@ export function RiverLanternsGame() {
           </ChunkyButton>
         </div>
       ) : phase === "river" ? (
-        <div className="flex flex-col items-center gap-3.5 py-1">
-          {/* CAMERA & STAGE STATUS BAR */}
-          <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
-            <button
-              type="button"
-              onClick={() => setCameraActive(!cameraActive)}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black border-2 border-black transition-all cursor-pointer ${
-                cameraActive
-                  ? "bg-teal-700 text-white shadow-sm"
-                  : "bg-surface text-ink hover:bg-surface-muted"
-              }`}
-            >
-              <Camera className="h-3.5 w-3.5" />
-              <span>{cameraActive ? "Camera Vision: ON" : "Enable Camera Vision"}</span>
-            </button>
+        <div className="flex flex-col items-center gap-4 py-1">
+          {/* STEP PROGRESS BREADCRUMB */}
+          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-3 shadow-[4px_4px_0px_#000]">
+            <div className="flex items-center justify-between text-xs font-black mb-2">
+              <span className="text-teal-800 uppercase tracking-wider">
+                Progress: Lantern {currentTargetIndex + 1} of {targets.length}
+              </span>
+              <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-teal-900 border border-teal-400 text-[10px]">
+                {unlockedLanterns.length}/{targets.length} Illuminated
+              </span>
+            </div>
 
-            <span className="text-xs font-black text-ink">
-              Lantern {currentTargetIndex + 1} of {targets.length}
-            </span>
+            <div className="grid grid-cols-3 gap-2">
+              {targets.map((tgt, idx) => {
+                const isCompleted = unlockedLanterns.some((l) => l.id === tgt.id);
+                const isCurrent = idx === currentTargetIndex;
+                return (
+                  <button
+                    key={tgt.id}
+                    type="button"
+                    onClick={() => {
+                      setCurrentTargetIndex(idx);
+                      handleSelectLantern(tgt);
+                    }}
+                    className={`flex items-center gap-1.5 p-1.5 rounded-xl border-2 text-[11px] font-black cursor-pointer transition-all ${
+                      isCompleted
+                        ? "bg-emerald-100 border-emerald-600 text-emerald-950"
+                        : isCurrent
+                        ? "bg-amber-100 border-amber-600 text-amber-950 shadow-sm animate-pulse"
+                        : "bg-surface-muted border-black/20 text-ink-muted"
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700 shrink-0" />
+                    ) : (
+                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black/10 text-[9px]">
+                        {idx + 1}
+                      </span>
+                    )}
+                    <span className="truncate">{tgt.name}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* MOTION DETECTED FLASH BADGE */}
-          {cameraActive && (
-            <div className="w-full max-w-md flex items-center justify-between text-[11px] font-bold text-ink-secondary px-1">
-              <span>Wave hands to cast ripples</span>
-              <span className={`px-2 py-0.5 rounded border transition-colors ${motionDetected ? "bg-teal-100 text-teal-800 border-teal-500 font-black" : "text-ink-secondary border-transparent"}`}>
-                {motionDetected ? "🌊 Hand Motion Detected" : "Watching for gestures..."}
-              </span>
-            </div>
-          )}
+          {/* THREE.JS 3D RIVER CANVAS WITH PULSING BEACON */}
+          <div className="w-full max-w-md relative">
+            <RiverScene3D
+              targets={targets}
+              activeTargetIndex={currentTargetIndex}
+              motionCoords={motionCoords}
+              onSelectTarget={handleSelectLantern}
+            />
 
-          {/* THREE.JS 3D RIVER CANVAS */}
-          <RiverScene3D
-            targets={targets}
-            activeTargetIndex={currentTargetIndex}
-            motionCoords={motionCoords}
-            onSelectTarget={handleSelectLantern}
-          />
-
-          {/* INSTRUCTION PROMPT BAR */}
-          <div className="w-full max-w-md rounded-xl border-2 border-black bg-[#FAF5EE] px-4 py-2.5 shadow-[2px_2px_0px_#000] flex items-center justify-between text-left">
-            <div>
-              <span className="text-[10px] font-black uppercase text-teal-800 block">
-                Target Lantern:
+            {/* FLOATING HINT BADGE OVER RIVER */}
+            <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+              <span className="rounded-xl border-2 border-black bg-white/90 backdrop-blur px-3 py-1 text-xs font-black text-ink shadow-[2px_2px_0px_#000] flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-amber-500 animate-spin" />
+                Target: {currentTarget.name} ({currentTarget.relationOrType})
               </span>
-              <span className="text-sm font-black text-ink">{currentTarget.name}</span>
+
+              {cameraActive && (
+                <span className={`rounded-xl border-2 border-black px-2.5 py-1 text-[10px] font-black shadow-[2px_2px_0px_#000] ${motionDetected ? "bg-teal-300 text-teal-950" : "bg-white/90 text-ink"}`}>
+                  {motionDetected ? "🌊 Ripple Cast" : "Vision Active"}
+                </span>
+              )}
             </div>
+          </div>
+
+          {/* GIANT HIGH-CONTRAST TACTILE CATCH BUTTON */}
+          <div className="w-full max-w-md space-y-2.5">
             <button
               type="button"
-              onClick={() =>
-                speak(
-                  `Wave your hand or touch the water to reach ${currentTarget.name}'s lantern.`,
-                  locale,
-                  rate
-                )
-              }
-              className="flex items-center gap-1.5 rounded-lg border border-black bg-white px-2.5 py-1 text-xs font-bold text-ink hover:bg-surface-muted cursor-pointer"
+              onClick={() => handleSelectLantern(currentTarget)}
+              className="btn-tactile w-full flex items-center justify-center gap-3 rounded-2xl border-4 border-black bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 p-4 text-ink shadow-[6px_6px_0px_#000] hover:scale-[1.02] active:translate-y-1 transition-all cursor-pointer select-none"
             >
-              <Volume2 className="h-3.5 w-3.5" />
-              <span>Listen</span>
+              <Hand className="h-6 w-6 text-amber-900 shrink-0" />
+              <div className="text-left">
+                <span className="text-xs font-black uppercase text-amber-950 block">
+                  Tap to Catch Floating Lantern:
+                </span>
+                <span className="font-serif text-lg font-black text-ink">
+                  🏮 Catch {currentTarget.name}&apos;s Memory Lantern
+                </span>
+              </div>
             </button>
+
+            {/* Optional Camera Motion Toggle */}
+            <div className="flex items-center justify-between px-1">
+              <button
+                type="button"
+                onClick={() => setCameraActive(!cameraActive)}
+                className="flex items-center gap-1 text-[11px] font-bold text-ink-secondary hover:text-ink cursor-pointer"
+              >
+                <Camera className="h-3.5 w-3.5" />
+                <span>{cameraActive ? "Disable Camera Wave" : "Optional: Wave Hand at Camera"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  speak(
+                    `Touch the water or press the yellow button to catch ${currentTarget.name}'s lantern.`,
+                    locale,
+                    rate
+                  )
+                }
+                className="flex items-center gap-1 text-[11px] font-bold text-teal-800 hover:underline cursor-pointer"
+              >
+                <Volume2 className="h-3.5 w-3.5" />
+                <span>Voice Guidance</span>
+              </button>
+            </div>
           </div>
 
           {/* REVEALED LANTERN MEMORY CAPSULE MODAL */}
           {activeRevealedTarget && (
-            <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 shadow-[5px_5px_0px_#000] text-left animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between border-b-2 border-black/10 pb-2 mb-3">
+            <div className="w-full max-w-md rounded-3xl border-4 border-black bg-surface p-5 shadow-[6px_6px_0px_#000] text-left animate-in fade-in zoom-in-95 duration-200 space-y-4">
+              <div className="flex items-center justify-between border-b-2 border-black/10 pb-2">
                 <span className="text-xs font-black uppercase text-teal-800 flex items-center gap-1.5">
-                  <Sparkles className="h-4 w-4" /> Lantern Memory Unlocked
+                  <Sparkles className="h-4 w-4 text-amber-500" /> Lantern Memory Illuminated
                 </span>
-                <span className="text-[10px] font-black uppercase rounded bg-teal-100 text-teal-800 px-2 py-0.5 border border-teal-300">
+                <span className="text-xs font-black uppercase rounded-full bg-teal-100 text-teal-900 px-3 py-0.5 border border-teal-400 flex items-center gap-1">
+                  <Heart className="h-3 w-3 text-rose-600 fill-rose-600" />
                   {activeRevealedTarget.relationOrType}
                 </span>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={activeRevealedTarget.photoUrl}
                   alt={activeRevealedTarget.name}
-                  className="h-16 w-16 rounded-xl border-2 border-black object-cover shadow-sm shrink-0"
+                  className="h-20 w-20 rounded-2xl border-3 border-black object-cover shadow-[2px_2px_0px_#000] shrink-0"
                 />
                 <div>
-                  <h3 className="font-serif text-lg font-black text-ink leading-tight">
+                  <h3 className="font-serif text-xl font-black text-ink leading-tight">
                     {activeRevealedTarget.name}
                   </h3>
-                  <p className="text-xs font-semibold text-ink-secondary mt-1 line-clamp-2">
+                  <p className="text-xs font-semibold text-ink-secondary mt-1.5 leading-relaxed">
                     {activeRevealedTarget.notes}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center justify-between pt-2 border-t-2 border-black/10">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t-2 border-black/10">
                 <button
                   type="button"
                   onClick={() => speak(activeRevealedTarget.notes, locale, rate)}
-                  className="flex items-center gap-1.5 text-xs font-bold text-teal-800 hover:underline cursor-pointer"
+                  className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-white px-3 py-2 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000] cursor-pointer"
                 >
-                  <Volume2 className="h-3.5 w-3.5" /> Hear Memory Story
+                  <Volume2 className="h-4 w-4 text-teal-800" />
+                  <span>Hear Story</span>
                 </button>
-                <ChunkyButton variant="tea" size="xl" onClick={advanceNextTarget}>
-                  Next Lantern →
-                </ChunkyButton>
+
+                <button
+                  type="button"
+                  onClick={advanceNextTarget}
+                  className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-tea px-5 py-2.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-emerald-800 cursor-pointer"
+                >
+                  <span>
+                    {currentTargetIndex + 1 < targets.length ? "Next Memory Lantern" : "Complete Ceremony"}
+                  </span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
           )}
@@ -402,12 +477,15 @@ export function RiverLanternsGame() {
               <h3 className="font-serif text-xl font-black text-ink">
                 All Memory Lanterns Gathered
               </h3>
-              <div className="mt-3 grid grid-cols-2 gap-2 border-t border-black/10 pt-2.5">
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 border-t border-black/10 pt-3">
                 {unlockedLanterns.map((l, i) => (
-                  <div key={i} className="flex items-center gap-2 rounded-xl border border-black/20 bg-white p-1.5">
+                  <div key={i} className="flex items-center gap-2.5 rounded-xl border-2 border-black bg-white p-2 shadow-xs">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={l.photoUrl} alt={l.name} className="h-8 w-8 rounded-lg object-cover border border-black" />
-                    <span className="text-xs font-black truncate">{l.name}</span>
+                    <img src={l.photoUrl} alt={l.name} className="h-10 w-10 rounded-lg object-cover border border-black" />
+                    <div>
+                      <span className="text-xs font-black block truncate">{l.name}</span>
+                      <span className="text-[10px] font-bold text-teal-800 uppercase">{l.relationOrType}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -416,13 +494,13 @@ export function RiverLanternsGame() {
                 <button
                   type="button"
                   onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
+                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3.5 py-2 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
                   <Music className="h-4 w-4 text-ink" />
                   <span className="text-xs font-black">Play Folk Flute</span>
                 </button>
                 <span className="text-xs font-bold text-ink-secondary">
-                  Assessment Complete
+                  Ceremony Complete
                 </span>
               </div>
             </div>

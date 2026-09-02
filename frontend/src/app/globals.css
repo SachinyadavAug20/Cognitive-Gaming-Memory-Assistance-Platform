@@ -664,5 +664,31 @@ html.high-contrast-mode {
   background-color: #FFFF00 !important;
 }
 
+/* ── 9. Universal Switch Access & Focus Visibility ── */
+:focus-visible {
+  outline: 4px solid #F59E0B !important;
+  outline-offset: 3px !important;
+  border-radius: 8px !important;
+}
 
+.high-contrast-mode :focus-visible {
+  outline: 4px solid #FFFF00 !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 6px #000000 !important;
+}
 
+/* Tactile Click Ripple on Dwell Activation */
+@keyframes dwell-ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.dwell-ripple-effect {
+  animation: dwell-ripple 0.45s ease-out forwards;
+}
