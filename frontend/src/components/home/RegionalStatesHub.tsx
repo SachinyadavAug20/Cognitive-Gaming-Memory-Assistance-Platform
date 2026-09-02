@@ -171,6 +171,8 @@ export function RegionalStatesHub() {
             <button
               key={st.id}
               type="button"
+              role="tab"
+              aria-selected={isSelected}
               onClick={() => handleSelectState(st.id)}
               className={`btn-tactile flex flex-col items-center justify-center p-2 rounded-xl border-2 border-black transition-all cursor-pointer ${
                 isSelected

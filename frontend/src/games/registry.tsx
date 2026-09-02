@@ -23,6 +23,7 @@ import {
   Disc3,
   Footprints,
   Flower,
+  Sun,
 } from "lucide-react";
 
 import { AlpanaGame } from "./alpana/AlpanaGame";
@@ -56,6 +57,10 @@ import { MajuliWalk3D } from "@/components/games/MajuliWalk3D";
 import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
 import { BihuDholBeats } from "@/components/games/BihuDholBeats";
 import { VoiceOfBrahmaputra } from "@/components/games/VoiceOfBrahmaputra";
+import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
+import { BazaarBuddiesGame } from "./bazaar-buddies/BazaarBuddiesGame";
+import { MemoryGardenGame } from "./memory-garden/MemoryGardenGame";
+import { MemoryRoadGame } from "./memory-road/MemoryRoadGame";
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -426,6 +431,50 @@ export const GAMES: GameDef[] = [
     recommended: true,
     component: VoiceOfBrahmaputra,
   },
+  {
+    id: "day-in-my-world",
+    icon: Sun,
+    titleKey: "dayInMyWorld.title",
+    descKey: "dayInMyWorld.subtitle",
+    accent: "bg-[#D97706]",
+    domain: "6-Chapter 3D Story Campaign & Saathi AI",
+    category: "reminiscence",
+    recommended: true,
+    component: DayInMyWorld3D,
+  },
+  {
+    id: "bazaar-buddies",
+    icon: Store,
+    titleKey: "bazaarBuddies.title",
+    descKey: "bazaarBuddies.desc",
+    accent: "bg-[#059669]",
+    domain: "IADL Budget & Money Management",
+    category: "iadl",
+    recommended: true,
+    component: BazaarBuddiesGame,
+  },
+  {
+    id: "memory-garden",
+    icon: Flower,
+    titleKey: "memoryGarden.title",
+    descKey: "memoryGarden.desc",
+    accent: "bg-[#7C3AED]",
+    domain: "Multi-Activity Memory Suite",
+    category: "attention",
+    recommended: true,
+    component: MemoryGardenGame,
+  },
+  {
+    id: "memory-road",
+    icon: Compass,
+    titleKey: "memoryRoad.title",
+    descKey: "memoryRoad.desc",
+    accent: "bg-[#2563EB]",
+    domain: "Road Safety & Visual Search",
+    category: "attention",
+    recommended: true,
+    component: MemoryRoadGame,
+  },
 ];
 
 export const GAME_BY_ID: Record<string, GameDef> = {
@@ -484,5 +533,49 @@ export const GAME_BY_ID: Record<string, GameDef> = {
     category: "reminiscence",
     recommended: true,
     component: VoiceOfBrahmaputra,
+  },
+  "day-in-my-world": {
+    id: "day-in-my-world",
+    icon: Sun,
+    titleKey: "dayInMyWorld.title",
+    descKey: "dayInMyWorld.subtitle",
+    accent: "bg-[#D97706]",
+    domain: "6-Chapter 3D Story Campaign & Saathi AI",
+    category: "reminiscence",
+    recommended: true,
+    component: DayInMyWorld3D,
+  },
+  "bazaar-buddies": {
+    id: "bazaar-buddies",
+    icon: Store,
+    titleKey: "bazaarBuddies.title",
+    descKey: "bazaarBuddies.desc",
+    accent: "bg-[#059669]",
+    domain: "IADL Budget & Money Management",
+    category: "iadl",
+    recommended: true,
+    component: BazaarBuddiesGame,
+  },
+  "memory-garden": {
+    id: "memory-garden",
+    icon: Flower,
+    titleKey: "memoryGarden.title",
+    descKey: "memoryGarden.desc",
+    accent: "bg-[#7C3AED]",
+    domain: "Multi-Activity Memory Suite",
+    category: "attention",
+    recommended: true,
+    component: MemoryGardenGame,
+  },
+  "memory-road": {
+    id: "memory-road",
+    icon: Compass,
+    titleKey: "memoryRoad.title",
+    descKey: "memoryRoad.desc",
+    accent: "bg-[#2563EB]",
+    domain: "Road Safety & Visual Search",
+    category: "attention",
+    recommended: true,
+    component: MemoryRoadGame,
   },
 };

@@ -102,19 +102,20 @@ export function AccessibilityToolbar() {
 
           <span className="text-black/30">|</span>
 
-          {/* High Contrast Toggle */}
+          {/* High Contrast Toggle (GIGW Standard) */}
           <button
             type="button"
             onClick={toggleHighContrast}
-            className={`flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-black border transition-all cursor-pointer ${
+            aria-pressed={highContrast}
+            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-black border-2 transition-all cursor-pointer ${
               highContrast
-                ? "bg-black text-amber-300 border-black"
-                : "bg-surface text-ink border-black/30 hover:border-black"
+                ? "bg-amber-400 text-black border-black shadow-xs"
+                : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
             }`}
-            title="Toggle High Contrast Mode (GIGW Standard)"
+            title="Toggle High Contrast Mode (GIGW / WCAG AAA Standard)"
           >
-            <Eye className="h-3 w-3" />
-            <span>{highContrast ? "Contrast: ON" : "Contrast"}</span>
+            <Eye className="h-3.5 w-3.5" />
+            <span>{highContrast ? "Contrast: ON" : "Contrast Mode"}</span>
           </button>
 
           {/* Font Size Scaler (A- / A / A+) */}

@@ -28,9 +28,17 @@ import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
 import { ArrowEscape } from "@/components/games/ArrowEscape";
 import { BihuDholBeats } from "@/components/games/BihuDholBeats";
 import { VoiceOfBrahmaputra } from "@/components/games/VoiceOfBrahmaputra";
+import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
 
 type FilterKey = "all" | ClinicalDomain;
-type ActiveModalGame = "majuli-walk" | "tea-harvest-vision" | "arrow-escape" | "bihu-dhol" | "brahmaputra-voice" | null;
+type ActiveModalGame =
+  | "day-in-my-world"
+  | "majuli-walk"
+  | "tea-harvest-vision"
+  | "arrow-escape"
+  | "bihu-dhol"
+  | "brahmaputra-voice"
+  | null;
 
 export default function GamesHubPage() {
   const t = useTranslations("games");
@@ -52,7 +60,9 @@ export default function GamesHubPage() {
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-emerald-400 animate-ping" />
               <span className="font-serif font-black text-sm sm:text-base text-white">
-                {activeModalGame === "majuli-walk"
+                {activeModalGame === "day-in-my-world"
+                  ? "🌅 A Day in My World (6-Chapter 3D Story & Saathi AI)"
+                  : activeModalGame === "majuli-walk"
                   ? "🏞️ Majuli Village Walk (3D Spatial Memory)"
                   : activeModalGame === "tea-harvest-vision"
                   ? "🌿 Tea Garden Harvest (Motion Tracking)"
@@ -75,6 +85,7 @@ export default function GamesHubPage() {
           </div>
 
           <div className="w-full max-w-4xl rounded-3xl overflow-hidden bg-[#FAF6F0] shadow-2xl border-4 border-black">
+            {activeModalGame === "day-in-my-world" && <DayInMyWorld3D />}
             {activeModalGame === "majuli-walk" && <MajuliWalk3D />}
             {activeModalGame === "tea-harvest-vision" && <TeaHarvestVision />}
             {activeModalGame === "arrow-escape" && <ArrowEscape />}
@@ -113,10 +124,35 @@ export default function GamesHubPage() {
       {/* FEATURED SPATIAL & COMPUTER VISION EXPERIENCES HERO SHOWCASE              */}
       {/* ========================================================================= */}
       <div className="mb-8 space-y-4">
-        <div className="flex items-center gap-2">
+        {/* Flagship: A Day in My World 3D Story Campaign Banner */}
+        <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="space-y-1.5 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm">
+              <Sparkles className="h-3.5 w-3.5 text-amber-200" />
+              <span>Flagship 3D Story Campaign • Saathi AI Companion</span>
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
+              A Day in My World (৬-অধ্যায় কাহিনী)
+            </h2>
+            <p className="text-xs sm:text-sm font-medium text-amber-100 max-w-xl leading-relaxed">
+              Step into an immersive morning-to-evening 3D journey guided by your gentle voice companion Saathi. Retrieve morning essentials, explore village markets, and reconnect with timeless family memories.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setActiveModalGame("day-in-my-world")}
+            className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm font-black text-amber-950 shadow-[4px_4px_0px_#000] hover:bg-amber-100 flex items-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Play className="h-4 w-4 fill-amber-950" />
+            <span>Launch 3D Journey 🌅</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 pt-2">
           <Sparkles className="h-4 w-4 text-amber-600" />
           <span className="text-xs font-black uppercase tracking-wider text-ink">
-            Featured Spatial & Motion Interactive Modules
+            Featured Spatial, Vision & Acoustic Modules
           </span>
         </div>
 

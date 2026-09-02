@@ -24,16 +24,24 @@ export function useGameVoice(options: UseGameVoiceOptions = {}) {
     switch (loc) {
       case "as":
         return "as-IN";
+      case "bn":
+        return "bn-IN";
       case "hi":
         return "hi-IN";
       case "mr":
         return "mr-IN";
-      case "bn":
-        return "bn-IN";
-      case "mni":
-        return "mni-IN";
       case "ne":
         return "ne-NP";
+      case "mni":
+        return "mni-IN";
+      case "brx":
+        return "brx-IN";
+      case "grt":
+        return "grt-IN";
+      case "kha":
+        return "kha-IN";
+      case "lus":
+        return "lus-IN";
       default:
         return "en-IN";
     }

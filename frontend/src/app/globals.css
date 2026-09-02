@@ -442,26 +442,230 @@ html {
   animation: thread-shimmer 2s infinite linear;
 }
 
-/* ── GIGW High Contrast Accessibility Mode ── */
-.high-contrast-mode {
-  filter: contrast(125%) saturate(110%);
+/* ══════════════════════════════════════════════════════════════
+   GIGW & WCAG 2.1 AAA HIGH CONTRAST CLINICAL ACCESSIBILITY MODE
+   ══════════════════════════════════════════════════════════════ */
+
+html.high-contrast-mode {
+  --color-canvas: #000000;
+  --color-surface: #000000;
+  --color-surface-muted: #000000;
+  --color-ink: #FFFFFF;
+  --color-ink-secondary: #FFFFFF;
+  --color-ink-soft: #FFFFFF;
+  --color-ink-inverse: #000000;
+  --color-border: #FFFFFF;
+  --color-border-soft: #FFFFFF;
+  --color-marigold: #FFFF00;
+  --color-marigold-hover: #FACC15;
+  --color-marigold-light: #000000;
+  --color-terracotta: #FFFF00;
+  --color-terracotta-hover: #FACC15;
+  --color-terracotta-light: #000000;
+  --color-tea: #00FF66;
+  --color-tea-hover: #22C55E;
+  --color-tea-light: #000000;
+  --color-sky: #00FFFF;
+  --color-sky-light: #000000;
+  --color-brick: #FF3333;
+  --color-brick-light: #000000;
+  --color-cream: #000000;
+  --color-warm-surface: #000000;
+  --color-surface-cream: #000000;
 }
-.high-contrast-mode body {
-  background-color: #0A0A0A !important;
+
+/* ── 1. Pure Pitch-Black Canvas & Reset Background Noise ── */
+.high-contrast-mode body,
+.high-contrast-mode html {
+  background-color: #000000 !important;
   color: #FFFFFF !important;
 }
-.high-contrast-mode .bg-surface,
+
+.high-contrast-mode .paper-texture {
+  background-image: none !important;
+  background-color: #000000 !important;
+}
+
+/* ── 2. Universal Solid Black Surface & Container Overrides ── */
+.high-contrast-mode main,
+.high-contrast-mode section,
+.high-contrast-mode header,
+.high-contrast-mode footer,
+.high-contrast-mode nav,
+.high-contrast-mode .scrapbook-card,
+.high-contrast-mode .polaroid,
 .high-contrast-mode .bg-canvas,
-.high-contrast-mode .scrapbook-card {
-  background-color: #121212 !important;
+.high-contrast-mode .bg-surface,
+.high-contrast-mode .bg-surface-muted,
+.high-contrast-mode .bg-white,
+.high-contrast-mode .bg-white\/70,
+.high-contrast-mode .bg-white\/90,
+.high-contrast-mode .bg-surface\/70,
+.high-contrast-mode [class*="bg-gradient-"],
+.high-contrast-mode [class*="from-"],
+.high-contrast-mode [class*="bg-\[\#FAF"],
+.high-contrast-mode [class*="bg-\[\#EFE"],
+.high-contrast-mode [class*="bg-amber-50"],
+.high-contrast-mode [class*="bg-amber-100"],
+.high-contrast-mode [class*="bg-amber-200"],
+.high-contrast-mode [class*="bg-amber-300"],
+.high-contrast-mode [class*="bg-emerald-50"],
+.high-contrast-mode [class*="bg-emerald-100"],
+.high-contrast-mode [class*="bg-emerald-200"],
+.high-contrast-mode [class*="bg-tea-light"],
+.high-contrast-mode [class*="bg-stone-"],
+.high-contrast-mode [class*="bg-gray-"],
+.high-contrast-mode [class*="bg-zinc-"],
+.high-contrast-mode [class*="bg-purple-100"],
+.high-contrast-mode [class*="bg-teal-100"],
+.high-contrast-mode [class*="bg-sky-100"] {
+  background-image: none !important;
+  background-color: #000000 !important;
   color: #FFFFFF !important;
-  border-color: #F59E0B !important;
 }
-.high-contrast-mode .text-ink {
+
+/* ── 3. High-Contrast Text Color Hierarchy (WCAG AAA 21:1) ── */
+.high-contrast-mode p,
+.high-contrast-mode h1,
+.high-contrast-mode h2,
+.high-contrast-mode h3,
+.high-contrast-mode h4,
+.high-contrast-mode h5,
+.high-contrast-mode h6,
+.high-contrast-mode span,
+.high-contrast-mode label,
+.high-contrast-mode li,
+.high-contrast-mode [class*="text-ink"],
+.high-contrast-mode [class*="text-ink-secondary"],
+.high-contrast-mode [class*="text-black"],
+.high-contrast-mode [class*="text-stone-"],
+.high-contrast-mode [class*="text-gray-"],
+.high-contrast-mode [class*="text-amber-9"],
+.high-contrast-mode [class*="text-amber-8"],
+.high-contrast-mode [class*="text-emerald-9"],
+.high-contrast-mode [class*="text-emerald-8"],
+.high-contrast-mode [class*="text-emerald-7"],
+.high-contrast-mode [class*="text-teal-9"],
+.high-contrast-mode [class*="text-teal-8"],
+.high-contrast-mode [class*="text-teal-7"],
+.high-contrast-mode [class*="text-purple-9"],
+.high-contrast-mode [class*="text-purple-8"] {
   color: #FFFFFF !important;
 }
-.high-contrast-mode .text-ink-secondary {
-  color: #E5E7EB !important;
+
+/* ── 4. Electric High-Visibility Yellow Accents (#FFFF00) ── */
+.high-contrast-mode a,
+.high-contrast-mode [class*="text-marigold"],
+.high-contrast-mode [class*="text-amber-3"],
+.high-contrast-mode [class*="text-amber-4"],
+.high-contrast-mode [class*="text-amber-5"],
+.high-contrast-mode [class*="text-yellow-"],
+.high-contrast-mode .text-tea {
+  color: #FFFF00 !important;
 }
+
+.high-contrast-mode a:hover {
+  text-decoration: underline !important;
+  color: #FFFF00 !important;
+}
+
+/* ── 5. Crisp Structural Borders & Outlines ── */
+.high-contrast-mode [class*="border-"],
+.high-contrast-mode [class*="border-black"],
+.high-contrast-mode [class*="border-border"],
+.high-contrast-mode hr {
+  border-color: #FFFFFF !important;
+}
+
+.high-contrast-mode [class*="border-tea"],
+.high-contrast-mode [class*="border-marigold"],
+.high-contrast-mode [class*="border-yellow"] {
+  border-color: #FFFF00 !important;
+}
+
+.high-contrast-mode [class*="shadow-"] {
+  box-shadow: 0 0 0 2px #FFFFFF !important;
+}
+
+/* ── 6. High-Contrast Interactive Buttons & State Pills ── */
+.high-contrast-mode button,
+.high-contrast-mode .btn-tactile,
+.high-contrast-mode .btn-chunky {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+  box-shadow: 0 0 0 1px #FFFFFF !important;
+}
+
+.high-contrast-mode button:hover,
+.high-contrast-mode .btn-tactile:hover,
+.high-contrast-mode .btn-chunky:hover {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+  border-color: #FFFF00 !important;
+  box-shadow: 0 0 0 2px #FFFF00 !important;
+}
+
+.high-contrast-mode button:hover *,
+.high-contrast-mode .btn-tactile:hover *,
+.high-contrast-mode .btn-chunky:hover * {
+  color: #000000 !important;
+}
+
+/* Primary Active / Selected Elements (Yellow Anchor) */
+.high-contrast-mode .btn-chunky-marigold,
+.high-contrast-mode .bg-marigold,
+.high-contrast-mode [aria-selected="true"],
+.high-contrast-mode button[class*="bg-tea text-white"],
+.high-contrast-mode [class*="bg-amber-400"] {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+.high-contrast-mode .btn-chunky-marigold *,
+.high-contrast-mode .bg-marigold *,
+.high-contrast-mode [aria-selected="true"] *,
+.high-contrast-mode button[class*="bg-tea text-white"] *,
+.high-contrast-mode [class*="bg-amber-400"] * {
+  color: #000000 !important;
+}
+
+/* Emergency / SOS Elements */
+.high-contrast-mode [class*="bg-brick"],
+.high-contrast-mode [class*="bg-red-"] {
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+.high-contrast-mode [class*="bg-brick"] *,
+.high-contrast-mode [class*="bg-red-"] * {
+  color: #FFFFFF !important;
+}
+
+/* ── 7. Accessible Form Controls, Inputs & Dropdowns ── */
+.high-contrast-mode input,
+.high-contrast-mode select,
+.high-contrast-mode textarea {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+.high-contrast-mode input:focus,
+.high-contrast-mode select:focus,
+.high-contrast-mode textarea:focus {
+  outline: 3px solid #FFFF00 !important;
+  outline-offset: 2px !important;
+}
+
+/* ── 8. Progress Bars ── */
+.high-contrast-mode [class*="bg-tea h-full"],
+.high-contrast-mode [class*="bg-marigold h-full"],
+.high-contrast-mode [class*="bg-emerald-"] {
+  background-color: #FFFF00 !important;
+}
+
 
 

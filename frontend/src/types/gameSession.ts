@@ -4,7 +4,11 @@ export type GameTypeKey =
   | "BIHU_DHOL"
   | "MEMORY_PIECES"
   | "ARROW_ESCAPE"
-  | "VOICE_BRAHMAPUTRA";
+  | "VOICE_BRAHMAPUTRA"
+  | "DAY_IN_MY_WORLD"
+  | "BAZAAR_BUDDIES"
+  | "MEMORY_GARDEN"
+  | "MEMORY_ROAD";
 
 export interface GameSessionPayload {
   patientId: number;
