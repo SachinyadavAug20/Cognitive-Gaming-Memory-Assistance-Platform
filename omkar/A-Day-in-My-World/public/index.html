@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Day in My World — Story</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/node_modules/three/build/three.module.js",
+        "three/addons/": "/three/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <canvas id="scene"></canvas>
+
+    <!-- Crosshair -->
+    <div id="crosshair">+</div>
+
+    <!-- Chapter card -->
+    <div id="chapterCard" class="chapter-card hidden">
+      <div class="cc-num"></div>
+      <div class="cc-title"></div>
+      <div class="cc-sub"></div>
+    </div>
+
+    <!-- Dialogue box -->
+    <div id="dialogue" class="dialogue hidden">
+      <div class="d-name">🗣️ Saathi</div>
+      <div class="d-text"></div>
+      <button id="dNext" class="d-next" title="Continue">▼</button>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- Interaction prompt -->
+    <div id="prompt" class="fade"></div>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div class="hud-left">🏠 A Day in My World</div>
+      <div class="hud-right">
+        <button id="btnProgress" title="Progress">🏆</button>
+        <button id="btnHelp" title="How to play">❓</button>
+        <button id="btnMute" title="Sound">🔊</button>
+      </div>
+    </div>
+
+    <!-- Objective / level -->
+    <div id="objective" class="objective fade"></div>
+    <div id="levelLabel" class="level fade"></div>
+
+    <!-- Start menu -->
+    <div id="menu" class="overlay">
+      <div class="menu-box">
+        <div class="menu-emoji">🌅</div>
+        <h1>A Day in My World</h1>
+        <p class="sub">A guided story about remembering. Saathi is here to help.</p>
+        <div class="places">
+          🌅 Opening &nbsp; 🎮 5 Chapters &nbsp; 🧠 Memory
+        </div>
+        <div id="menuProgress" class="menu-progress hidden"></div>
+        <button id="btnContinue" class="secondary hidden">▶ Continue</button>
+        <button id="btnPlay" class="primary">▶ Begin the Story</button>
+        <button id="btnControls" class="secondary">Show Controls</button>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div id="controls" class="overlay hidden">
+      <div class="menu-box">
+        <h2>🎮 How to Play</h2>
+        <ul class="ctrl-list">
+          <li><b>W A S D</b> — walk around</li>
+          <li><b>Mouse</b> — look around</li>
+          <li><b>Click</b> — lock mouse / interact</li>
+          <li><b>E</b> — interact / pick up</li>
+          <li><b>Esc</b> — release mouse</li>
+          <li>🗣️ <b>Saathi</b> guides you through each chapter</li>
+        </ul>
+        <button id="btnControlsClose" class="primary">Got it</button>
+      </div>
+    </div>
+
+    <!-- Pause -->
+    <div id="pause" class="overlay hidden">
+      <div class="menu-box">
+        <h2>⏸ Paused</h2>
+        <button id="btnResume" class="primary">Resume</button>
+        <button id="btnExit" class="secondary">Exit to Menu</button>
+      </div>
+    </div>
+
+    <!-- Activity / minigame overlay -->
+    <div id="activityUI" class="overlay hidden">
+      <div class="menu-box activity-wide">
+        <h3 class="a-title"></h3>
+        <div class="a-sub"></div>
+        <div class="a-body"></div>
+        <div class="a-footer"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
