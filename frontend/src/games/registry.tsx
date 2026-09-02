@@ -51,6 +51,7 @@ import { DailyCareRoutineGame } from "./daily-routine/DailyCareRoutineGame";
 import { LotusLakeGame } from "./lotus-lake/LotusLakeGame";
 import { TimelineGame } from "./timeline/TimelineGame";
 import { SortingGame } from "./sorting/SortingGame";
+import { ArrowEscape } from "@/components/games/ArrowEscape";
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -362,8 +363,32 @@ export const GAMES: GameDef[] = [
     recommended: false,
     component: LotusLakeGame,
   },
+
+  // ── DOMAIN 6: SPATIAL VECTOR RECOGNITION & PLANNING (1 Module) ──
+  {
+    id: "arrow-escape",
+    icon: Compass,
+    titleKey: "arrowEscape.title",
+    descKey: "arrowEscape.desc",
+    accent: "bg-[#5C3D2E]",
+    domain: "Spatial Planning & Vector Clearance",
+    category: "attention",
+    recommended: true,
+    component: ArrowEscape,
+  },
 ];
 
-export const GAME_BY_ID: Record<string, GameDef> = Object.fromEntries(
-  GAMES.map((g) => [g.id, g])
-);
+export const GAME_BY_ID: Record<string, GameDef> = {
+  ...Object.fromEntries(GAMES.map((g) => [g.id, g])),
+  pathways: {
+    id: "pathways",
+    icon: Compass,
+    titleKey: "arrowEscape.title",
+    descKey: "arrowEscape.desc",
+    accent: "bg-[#5C3D2E]",
+    domain: "Spatial Planning & Vector Clearance",
+    category: "attention",
+    recommended: true,
+    component: ArrowEscape,
+  },
+};

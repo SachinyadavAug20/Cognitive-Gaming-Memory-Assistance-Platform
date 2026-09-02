@@ -269,10 +269,10 @@ export function RhythmHillsGame() {
                   Play Rhythms Again
                 </ChunkyButton>
                 <Link
-                  href="/patient"
+                  href="/patient/games"
                   className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-border bg-surface px-6 py-3 font-extrabold text-ink hover:bg-surface-muted shadow-[2px_2px_0px_rgba(0,0,0,1)]"
                 >
-                  ← Back to Home
+                  {locale === "hi" ? "← थेरेपी केंद्र" : locale === "as" ? "← থেৰাপী কক্ষ" : "← Back to Therapy Suite"}
                 </Link>
               </div>
             </div>

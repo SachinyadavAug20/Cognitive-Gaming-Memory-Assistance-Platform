@@ -109,32 +109,57 @@ export function MakeMyTeaGame() {
     <GameShell title={t("dailyTasks.title")} score={progress}>
       {done ? (
         <Celebration emoji="🍵" title={t("dailyTasks.complete")}>
-          <p className="text-xl font-bold text-ink">{t("dailyTasks.ready")}</p>
-          <Link
-            href="/patient"
-            className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-border bg-tea px-6 py-3 font-bold text-ink-inverse"
-          >
-            {t("backToRoutine")}
-          </Link>
+          <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
+            <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
+              <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
+                <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
+                  ☕ Lal Saah Tea Freshly Brewed
+                </span>
+                <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
+                  5/5 Steps Complete
+                </span>
+              </div>
+
+              <h3 className="font-serif text-xl font-black text-ink">
+                Warm Cardamom Red Tea is Ready!
+              </h3>
+              <p className="text-xs font-semibold text-ink-secondary mt-1">
+                You followed every step of the authentic morning tea recipe. Sit back, relax, and take a warm sip.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
+                <span>{locale === "hi" ? "फिर से चाय बनाएं ☕" : locale === "as" ? "পুনৰ চাহ বনাওক ☕" : "Brew Another Cup ☕"}</span>
+              </ChunkyButton>
+              <Link
+                href="/patient/games"
+                className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
+              >
+                {locale === "hi" ? "← थेरेपी केंद्र" : locale === "as" ? "← থেৰাপী কক্ষ" : "← Back to Therapy Suite"}
+              </Link>
+            </div>
+          </div>
         </Celebration>
       ) : (
-        <div className="flex flex-col items-center gap-8 py-6">
+        <div className="flex flex-col items-center gap-6 py-4 text-center">
           <AudioPrompt
             text={t("dailyTasks.intro", { activity: joyTrigger })}
             label={t("listen")}
             size="md"
           />
 
-          <div className="flex items-center gap-2">
+          {/* STEP PROGRESS ICONS */}
+          <div className="flex items-center gap-2.5">
             {steps.map((step, i) => (
               <div
                 key={step.key}
-                className={`flex h-12 w-12 items-center justify-center rounded-xl border-2 text-2xl transition-all ${
+                className={`flex h-12 w-12 items-center justify-center rounded-2xl border-3 text-2xl transition-all shadow-[2px_2px_0px_#000] ${
                   i < progress
-                    ? "border-tea bg-tea-light"
+                    ? "border-tea bg-tea-light text-tea"
                     : i === progress
-                    ? "scale-110 border-terracotta bg-terracotta-light"
-                    : "border-border-soft bg-surface-muted opacity-50"
+                    ? "scale-110 border-terracotta bg-terracotta-light ring-4 ring-amber-400"
+                    : "border-black/20 bg-surface-muted opacity-50"
                 }`}
               >
                 {step.emoji}
@@ -142,38 +167,28 @@ export function MakeMyTeaGame() {
             ))}
           </div>
 
-          <p className="text-lg font-bold text-ink-secondary">
+          <p className="text-xs font-black uppercase tracking-wider text-ink-secondary">
             {t("dailyTasks.step", {
               current: String(progress + 1),
               total: String(steps.length),
             })}
           </p>
 
-          <div className="flex min-h-[240px] w-full max-w-md flex-col items-center justify-center gap-4 rounded-3xl border-2 border-dashed border-tea bg-tea-light/40 p-6">
-            {progress === 0 ? (
-              <p className="text-lg font-bold text-ink-secondary">
-                {t("dailyTasks.intro", { activity: joyTrigger })}
-              </p>
-            ) : (
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                {steps.slice(0, progress).map((step, i) => (
-                  <span
-                    key={step.key}
-                    className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-tea bg-surface text-4xl shadow-sm"
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  >
-                    {step.emoji}
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="text-8xl">{current.emoji}</div>
+          {/* INTERACTIVE BRASS TEA POT CONTAINER */}
+          <div className="relative flex min-h-[220px] w-full max-w-md flex-col items-center justify-center gap-3 rounded-3xl border-3 border-black bg-gradient-to-b from-[#FAF3E0] to-[#EFE3C3] p-6 shadow-[5px_5px_0px_#000] overflow-hidden">
+            <div className="text-8xl animate-bounce" style={{ animationDuration: "2s" }}>
+              {current.emoji}
+            </div>
+
+            <p className="font-serif text-lg font-black text-ink">
+              {t(`dailyTasks.actions.${current.key}`)}
+            </p>
           </div>
 
           <ChunkyButton
             variant="terracotta"
             size="2xl"
-            icon={<span className="text-4xl">👉</span>}
+            icon={<span className="text-3xl">👉</span>}
             onClick={addStep}
           >
             {t(`dailyTasks.actions.${current.key}`)}
