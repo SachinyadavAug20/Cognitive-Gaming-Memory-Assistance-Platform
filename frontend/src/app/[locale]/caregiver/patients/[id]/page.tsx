@@ -17,6 +17,7 @@ import { FamilyNetworkCard } from "@/components/patient-detail/FamilyNetworkCard
 import { FamiliarPlacesCard } from "@/components/patient-detail/FamiliarPlacesCard";
 import { PatientLifeStoryCard } from "@/components/patient-detail/PatientLifeStoryCard";
 import { DemographicsAdminCard } from "@/components/patient-detail/DemographicsAdminCard";
+import { CognitiveGamingProgressCard } from "@/components/patient-detail/CognitiveGamingProgressCard";
 
 function getStageBadgeStyle(stage?: string | null) {
   if (!stage) return "bg-surface-muted text-ink-secondary border-border-soft";
@@ -179,6 +180,9 @@ export default function CaregiverPatientDetail() {
                 </div>
               </div>
             </div>
+
+            {/* SECTION: Cognitive Gaming Telemetry & Adaptive AI Progress */}
+            <CognitiveGamingProgressCard patientId={patient.id} />
 
             {/* SECTION 2: Family & Care Network */}
             <FamilyNetworkCard

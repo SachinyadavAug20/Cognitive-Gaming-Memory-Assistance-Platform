@@ -740,6 +740,70 @@
     "dailyRoutine": {
       "title": "Daily Care Routine & Wellness Clock",
       "desc": "Practice essential daily health routines including medicine timing, hydration glasses, and clinic visits"
+    },
+    "majuli": {
+      "title": "Majuli Village Walk (3D Spatial Memory)",
+      "subtitle": "Stroll along the sunrise path on Majuli Island and recall sacred cultural landmarks.",
+      "walkingPrompt": "Step Forward Along Sunrise Path 👣",
+      "walking": "Walking Along Path...",
+      "lookAround": "Look around using the angle controls to spot landmarks.",
+      "lookLeft": "◀ Look Left",
+      "lookAhead": "Ahead ▲",
+      "lookRight": "Look Right ▶",
+      "currentLandmark": "Current Landmark",
+      "spatialPrompt": "Spatial Memory Prompt:",
+      "questionNamghar": "Which sacred prayer hall did we just pass on our left?",
+      "questionChangGhar": "What traditional raised stilt house was standing on our right?",
+      "questionRiverGhat": "Where has our peaceful walking path led us at the journey's end?",
+      "correctFeedback": "Correct! Excellent spatial memory.",
+      "retryFeedback": "Let us take a closer look.",
+      "scoreSummary": "Spatial Memory Verified",
+      "playAgain": "Walk Path Again",
+      "backToHub": "← Back to Therapy Suite",
+      "welcomeSpeech": "Welcome to the Majuli Island Village Walk. Tap Step Forward to take a serene walk down the sunrise path.",
+      "speakPromptNamghar": "Look to your left, we are passing the sacred Auniati Satra Namghar prayer hall.",
+      "speakPromptChangGhar": "Look to your right, standing above the green fields is the traditional Mising bamboo stilt house.",
+      "speakPromptRiverGhat": "You have reached the serene Kamalabari River Ghat overlooking the sunlit Brahmaputra River."
+    },
+    "teaHarvest": {
+      "title": "Tea Garden Harvest (Webcam Motion Tracking)",
+      "subtitle": "Wave your hand in the air to pluck fresh tea buds into your traditional Khorahi basket.",
+      "cameraPermission": "Camera tracking active. Move your hand gently across the screen.",
+      "waveToPluck": "Wave hand or tap to pluck fresh shoots",
+      "leavesPlucked": "Shoots Harvested",
+      "basketFull": "Harvest Complete! Your basket is brimming with fresh Assam tea leaves.",
+      "gentleHint": "Move your hand gently over the glowing leaves to harvest them.",
+      "encouragement": "Very good! Keep your hand gentle.",
+      "playAgain": "Harvest New Bush",
+      "backToHub": "← Back to Therapy Suite",
+      "welcomeSpeech": "Welcome to Tea Garden Harvest. Wave your hand in the air or touch the fresh two leaves and a bud to harvest them."
+    },
+    "bihuDhol": {
+      "title": "Bihu Dhol Beats (Rhythm & Grounding)",
+      "subtitle": "Tap the traditional Assamese dhol in rhythm to calm agitation and practice motor coordination.",
+      "tapPrompt": "Tap in Rhythm with the Drum 🥁",
+      "bpmText": "Tempo: {bpm} BPM",
+      "goodRhythm": "Good Rhythm 🎵",
+      "gentleTouch": "Gentle Touch 🌿",
+      "rhythmScore": "Rhythm Accuracy: {score}%",
+      "calmComplete": "Rhythmic Therapy Session Complete",
+      "calmSubtitle": "Your motor rhythm aligned smoothly with the calming Assamese beat.",
+      "playAgain": "Play Dhol Again",
+      "backToHub": "← Back to Therapy Suite"
+    },
+    "brahmaputraVoice": {
+      "title": "Voice of the Brahmaputra (Spoken Folk Recall)",
+      "subtitle": "Listen to the sacred river breeze and speak the completing word of the traditional folk verse.",
+      "listeningPrompt": "Listening... speak aloud clearly into microphone 🎙️",
+      "tapToSpeak": "Tap Microphone to Speak 🎙️",
+      "proverbPrompt": "Complete the River Proverb:",
+      "spokenAnswer": "Your spoken answer:",
+      "correctFeedback": "Wonderful! The river echoes with your wisdom.",
+      "retryFeedback": "Gentle try! Let us speak the folk verse together.",
+      "scoreSummary": "Spoken Recall Harmony: {score}%",
+      "playAgain": "Recall Next River Proverb",
+      "backToHub": "← Back to Therapy Suite",
+      "welcomeSpeech": "Welcome to Voice of the Brahmaputra. Speak the traditional wisdom to make the river glow."
     }
   }
 }

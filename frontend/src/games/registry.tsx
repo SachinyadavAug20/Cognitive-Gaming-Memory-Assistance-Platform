@@ -52,6 +52,10 @@ import { LotusLakeGame } from "./lotus-lake/LotusLakeGame";
 import { TimelineGame } from "./timeline/TimelineGame";
 import { SortingGame } from "./sorting/SortingGame";
 import { ArrowEscape } from "@/components/games/ArrowEscape";
+import { MajuliWalk3D } from "@/components/games/MajuliWalk3D";
+import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
+import { BihuDholBeats } from "@/components/games/BihuDholBeats";
+import { VoiceOfBrahmaputra } from "@/components/games/VoiceOfBrahmaputra";
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -376,6 +380,52 @@ export const GAMES: GameDef[] = [
     recommended: true,
     component: ArrowEscape,
   },
+
+  // ── DOMAIN 7: ADVANCED SPATIAL 3D & WEBCAM VISION MODULES ──
+  {
+    id: "majuli-walk",
+    icon: Footprints,
+    titleKey: "majuliWalk.title",
+    descKey: "majuliWalk.desc",
+    accent: "bg-[#2D5A27]",
+    domain: "3D Spatial Memory Navigation",
+    category: "vision-3d",
+    recommended: true,
+    component: MajuliWalk3D,
+  },
+  {
+    id: "tea-harvest-vision",
+    icon: Leaf,
+    titleKey: "teaHarvestVision.title",
+    descKey: "teaHarvestVision.desc",
+    accent: "bg-[#14532D]",
+    domain: "OpenCV Motion Tracking Harvest",
+    category: "vision-3d",
+    recommended: true,
+    component: TeaHarvestVision,
+  },
+  {
+    id: "bihu-dhol",
+    icon: Music,
+    titleKey: "bihuDhol.title",
+    descKey: "bihuDhol.desc",
+    accent: "bg-[#78350F]",
+    domain: "Adaptive Acoustic Drum Rhythm",
+    category: "calm",
+    recommended: true,
+    component: BihuDholBeats,
+  },
+  {
+    id: "brahmaputra-voice",
+    icon: Waves,
+    titleKey: "brahmaputraVoice.title",
+    descKey: "brahmaputraVoice.subtitle",
+    accent: "bg-[#0F2B38]",
+    domain: "Spoken Proverb Recall & River Glow Canvas",
+    category: "reminiscence",
+    recommended: true,
+    component: VoiceOfBrahmaputra,
+  },
 ];
 
 export const GAME_BY_ID: Record<string, GameDef> = {
@@ -390,5 +440,49 @@ export const GAME_BY_ID: Record<string, GameDef> = {
     category: "attention",
     recommended: true,
     component: ArrowEscape,
+  },
+  "majuli-walk": {
+    id: "majuli-walk",
+    icon: Footprints,
+    titleKey: "majuliWalk.title",
+    descKey: "majuliWalk.desc",
+    accent: "bg-[#2D5A27]",
+    domain: "3D Spatial Memory Navigation",
+    category: "vision-3d",
+    recommended: true,
+    component: MajuliWalk3D,
+  },
+  "tea-harvest-vision": {
+    id: "tea-harvest-vision",
+    icon: Leaf,
+    titleKey: "teaHarvestVision.title",
+    descKey: "teaHarvestVision.desc",
+    accent: "bg-[#14532D]",
+    domain: "OpenCV Motion Tracking Harvest",
+    category: "vision-3d",
+    recommended: true,
+    component: TeaHarvestVision,
+  },
+  "bihu-dhol": {
+    id: "bihu-dhol",
+    icon: Music,
+    titleKey: "bihuDhol.title",
+    descKey: "bihuDhol.desc",
+    accent: "bg-[#78350F]",
+    domain: "Adaptive Acoustic Drum Rhythm",
+    category: "calm",
+    recommended: true,
+    component: BihuDholBeats,
+  },
+  "brahmaputra-voice": {
+    id: "brahmaputra-voice",
+    icon: Waves,
+    titleKey: "brahmaputraVoice.title",
+    descKey: "brahmaputraVoice.subtitle",
+    accent: "bg-[#0F2B38]",
+    domain: "Spoken Proverb Recall & River Glow Canvas",
+    category: "reminiscence",
+    recommended: true,
+    component: VoiceOfBrahmaputra,
   },
 };

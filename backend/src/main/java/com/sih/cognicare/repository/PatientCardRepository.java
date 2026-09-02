@@ -16,4 +16,6 @@ public interface PatientCardRepository extends JpaRepository<PatientCard, UUID> 
     List<PatientCard> findAllByPatientIdAndIsActiveTrue(Long patientId);
 
     Optional<PatientCard> findTopByPatientIdAndIsActiveTrue(Long patientId);
+
+    long countByIsActiveTrue();
 }
