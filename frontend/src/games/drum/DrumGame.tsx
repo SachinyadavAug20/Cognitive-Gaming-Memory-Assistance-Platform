@@ -29,6 +29,22 @@ import { getGameStrings } from "@/lib/gameI18n";
 
 type DrumState = "ARMED" | "COOLDOWN" | "WAITING_LIFT";
 
+// Traditional Assamese Bihu Dhol Rhythm Sequence (Call & Response Pattern)
+const BIHU_BEAT_SEQUENCE: ("left" | "right")[] = [
+  "left",  // Dhum
+  "right", // Taak
+  "left",  // Dhum
+  "right", // Taak
+  "left",  // Dhum
+  "left",  // Dhum
+  "right", // Taak
+  "right", // Taak
+  "left",  // Dhum
+  "right", // Taak
+  "left",  // Dhum
+  "right", // Taak
+];
+
 function GameShell({
   title,
   score,
@@ -90,6 +106,7 @@ export function DrumGame() {
 
   const TARGET_HITS = 12;
   const score = Math.round((hitsCount / TARGET_HITS) * 100);
+  const currentTargetSide = BIHU_BEAT_SEQUENCE[hitsCount % BIHU_BEAT_SEQUENCE.length];
 
   const handleDrumHit = useCallback(
     (side: "left" | "right") => {
@@ -501,6 +518,43 @@ export function DrumGame() {
             </div>
           )}
 
+          {/* VISUAL RHYTHM CONDUCTOR (CALL & RESPONSE FOR DEMENTIA PATIENTS) */}
+          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-3 shadow-[3px_3px_0px_#000] text-center space-y-1.5">
+            <div className="flex items-center justify-between text-[11px] font-black uppercase text-ink-secondary">
+              <span className="flex items-center gap-1.5">
+                <Music className="h-3.5 w-3.5 text-marigold" />
+                <span>Bihu Rhythm Conductor</span>
+              </span>
+              <span className="text-marigold font-mono">Beat {(hitsCount % 4) + 1} of 4</span>
+            </div>
+
+            <div className="flex items-center justify-center py-0.5">
+              {currentTargetSide === "left" ? (
+                <div className="flex items-center gap-2 rounded-xl border-2 border-amber-600 bg-amber-100 px-4 py-1.5 text-amber-950 font-black text-xs sm:text-sm animate-pulse shadow-xs">
+                  <span className="text-lg">👈</span>
+                  <span>HIT LEFT HEAD! (Bass Dhum)</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 rounded-xl border-2 border-red-600 bg-red-100 px-4 py-1.5 text-red-950 font-black text-xs sm:text-sm animate-pulse shadow-xs">
+                  <span>HIT RIGHT HEAD! (Treble Taak)</span>
+                  <span className="text-lg">👉</span>
+                </div>
+              )}
+            </div>
+
+            {/* 4-Beat Measure Dots */}
+            <div className="flex items-center justify-center gap-2 pt-0.5">
+              {[0, 1, 2, 3].map((b) => (
+                <span
+                  key={b}
+                  className={`h-2.5 w-2.5 rounded-full border border-black transition-all ${
+                    (hitsCount % 4) === b ? "bg-marigold scale-125 shadow-xs" : "bg-black/20"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
           {/* THREE.JS 3D DRUM CANVAS */}
           <div className="relative w-full max-w-md aspect-4/3 rounded-2xl border-3 border-black overflow-hidden shadow-[5px_5px_0px_#000] bg-black select-none">
             <DrumScene3D
@@ -648,7 +702,11 @@ export function DrumGame() {
             <button
               type="button"
               onClick={() => handleDrumHit("left")}
-              className="btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black bg-amber-100 p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-amber-200 cursor-pointer"
+              className={`btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 cursor-pointer transition-all ${
+                currentTargetSide === "left"
+                  ? "bg-amber-200 ring-4 ring-amber-400 animate-pulse"
+                  : "bg-amber-100 hover:bg-amber-200"
+              }`}
             >
               <span className="text-sm font-black text-amber-950">LEFT DRUM HEAD</span>
               <span className="text-[10px] font-bold text-amber-800 uppercase">Bass Dhum (Dhaa)</span>
@@ -657,7 +715,11 @@ export function DrumGame() {
             <button
               type="button"
               onClick={() => handleDrumHit("right")}
-              className="btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black bg-red-100 p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-red-200 cursor-pointer"
+              className={`btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 cursor-pointer transition-all ${
+                currentTargetSide === "right"
+                  ? "bg-red-200 ring-4 ring-red-400 animate-pulse"
+                  : "bg-red-100 hover:bg-red-200"
+              }`}
             >
               <span className="text-sm font-black text-red-950">RIGHT DRUM HEAD</span>
               <span className="text-[10px] font-bold text-red-800 uppercase">Treble Snare (Taak)</span>

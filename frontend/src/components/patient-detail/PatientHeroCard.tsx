@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { ClinicalDossierExport } from "@/components/clinical/ClinicalDossierExport";
 import { ClinicalReportExportModal } from "@/components/patient-detail/ClinicalReportExportModal";
 import type { PatientDetailRecord } from "@/types";

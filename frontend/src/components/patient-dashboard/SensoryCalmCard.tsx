@@ -1,6 +1,6 @@
 "use client";
 
-import { Music, Volume2 } from "lucide-react";
+import { Music, Volume2, Sparkles } from "lucide-react";
 
 interface SensoryCalmCardProps {
   title: string;
@@ -10,6 +10,7 @@ interface SensoryCalmCardProps {
   listenLabel: string;
   onPlayTone: () => void;
   onListenText: (text: string) => void;
+  onPlayGamma?: () => void;
 }
 
 const CARD = "border-3 border-black rounded-2xl shadow-[4px_4px_0px_rgba(0,0,0,1)]";
@@ -22,6 +23,7 @@ export function SensoryCalmCard({
   listenLabel,
   onPlayTone,
   onListenText,
+  onPlayGamma,
 }: SensoryCalmCardProps) {
   return (
     <div className={`${CARD} bg-surface p-4 flex flex-col justify-between text-left min-h-[220px]`}>
@@ -44,6 +46,16 @@ export function SensoryCalmCard({
           <Music className="h-4 w-4" />
           <span>{playLabel}</span>
         </button>
+        {onPlayGamma && (
+          <button
+            type="button"
+            onClick={onPlayGamma}
+            className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-400 px-3.5 py-2 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer"
+          >
+            <Sparkles className="h-4 w-4 text-black" />
+            <span>40Hz Gamma Rhythm</span>
+          </button>
+        )}
         <button
           type="button"
           onClick={() => onListenText(comfortText)}

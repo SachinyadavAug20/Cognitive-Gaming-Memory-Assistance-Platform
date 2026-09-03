@@ -55,31 +55,31 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
   return (
     <nav
       aria-label="Main Navigation"
-      className="w-full border-b-3 border-black bg-white/95 px-3 py-2 sm:px-6 md:py-2.5 shadow-sm backdrop-blur-md"
+      className="w-full border-b-3 border-black bg-white/95 px-2 sm:px-4 md:px-6 py-2 shadow-sm backdrop-blur-md overflow-x-clip"
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 sm:gap-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-3 flex-nowrap">
         {/* Left: Brand Identity */}
-        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-          <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors">
-            <Brain className="h-5 w-5 sm:h-5.5 sm:w-5.5" />
+        <Link href="/" className="flex items-center gap-2 group shrink-0">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors">
+            <Brain className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-serif text-lg sm:text-xl font-black leading-tight text-ink">
+            <div className="flex items-center gap-1">
+              <span className="font-serif text-base sm:text-lg font-black leading-tight text-ink">
                 CogniCare
               </span>
               <span className="hidden sm:inline-flex items-center px-1.5 py-0.2 rounded border border-tea/40 bg-tea-light text-[9px] font-black uppercase text-tea">
                 CDTx
               </span>
             </div>
-            <p className="text-[9px] font-extrabold uppercase tracking-wider text-ink-secondary">
+            <p className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-ink-secondary whitespace-nowrap">
               Memory Care // MDoNER Track
             </p>
           </div>
         </Link>
 
-        {/* Center: Quick Primary Page Navigation (Visible on lg+ viewports) */}
-        <div className="hidden lg:flex items-center gap-1.5 font-sans">
+        {/* Center: Quick Primary Page Navigation (Visible on ultra-wide 2xl+ viewports) */}
+        <div className="hidden 2xl:flex items-center gap-1.5 font-sans">
           {navLinks.map((item) => {
             const isActive = item.exact
               ? pathname === item.href
@@ -104,11 +104,11 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
         </div>
 
         {/* Right: Actions, Language, Caregiver Portal, and Emergency SOS */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Live Connectivity Badge */}
           <div
             suppressHydrationWarning
-            className={`hidden items-center gap-1.5 rounded-xl border-2 border-black px-2 py-1 text-xs font-black shadow-[2px_2px_0px_#000] sm:flex ${
+            className={`hidden md:flex items-center gap-1.5 rounded-xl border-2 border-black px-2 py-1 text-xs font-black shadow-[2px_2px_0px_#000] shrink-0 ${
               online ? "bg-tea-light text-tea" : "bg-marigold-light text-marigold"
             }`}
             title={online ? "Online (Server Connected)" : "Offline Mode (Local Storage Synced)"}
@@ -118,24 +118,24 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
           </div>
 
           {/* Multilingual Selector */}
-          <LanguageSelector />
+          <LanguageSelector className="shrink-0" />
 
           {/* Caregiver & Healthcare Worker Portal Link */}
           <Link
             href="/caregiver"
-            className="flex min-h-[36px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-surface hover:bg-tea-light hover:border-tea px-2.5 sm:px-3 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px]"
+            className="flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-surface hover:bg-tea-light hover:border-tea px-2 sm:px-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] shrink-0"
             title="Caregiver & Healthcare Worker Portal"
           >
             <ShieldCheck className="h-3.5 w-3.5 text-tea shrink-0" />
-            <span className="hidden md:inline">Caregiver Portal</span>
-            <span className="md:hidden">Caregiver</span>
+            <span className="hidden lg:inline">Caregiver Portal</span>
+            <span className="lg:hidden">Caregiver</span>
           </Link>
 
           {/* Emergency SOS Button */}
-          <Link href="tel:108">
+          <Link href="tel:108" className="shrink-0">
             <button
               type="button"
-              className="flex min-h-[36px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick hover:bg-red-700 px-2.5 sm:px-3.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] animate-pulse"
+              className="flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick hover:bg-red-700 px-2 sm:px-3 text-xs font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] animate-pulse"
               title="Emergency Tele-MANAS / Ambulance SOS Call (108)"
             >
               <PhoneCall className="h-3.5 w-3.5" />

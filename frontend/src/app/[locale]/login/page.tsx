@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { QuickAccessLinks } from "@/components/auth/QuickAccessLinks";
 import { KioskLoginSection } from "@/components/auth/KioskLoginSection";

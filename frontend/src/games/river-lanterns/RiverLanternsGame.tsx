@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Sparkles,
@@ -133,7 +133,8 @@ export function RiverLanternsGame() {
 
     if (cameraActive && phase === "river") {
       tracker = new OpticalMotionTracker((evt: MotionEvent) => {
-        if (evt.hasMotion) {
+        // Clinical guard: Ignore movements in upper camera zone (patient's face/head)
+        if (evt.hasMotion && evt.y > 0.26) {
           setMotionCoords({ x: evt.x, y: evt.y });
           setMotionDetected(true);
           setTimeout(() => setMotionDetected(false), 300);

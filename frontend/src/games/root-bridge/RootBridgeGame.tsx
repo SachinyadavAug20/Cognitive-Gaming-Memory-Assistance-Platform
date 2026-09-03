@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { GitFork, Music } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -207,42 +207,99 @@ export function RootBridgeGame() {
           <div className="flex flex-col items-center gap-5 py-4">
             {/* BRIDGE PROGRESS HEADER */}
             <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-2 border-black bg-surface px-4 py-2 shadow-sm">
-              <span className="text-sm font-black text-emerald-800">🌉 Cherrapunji Ravine</span>
+              <span className="text-sm font-black text-emerald-800 flex items-center gap-1.5">
+                <span>🌉</span> Cherrapunji Living Bridge
+              </span>
               <span className="text-xs font-bold text-ink-secondary">
-                {currentAnchorIdx} / {totalAnchors - 1} {str.hudProgress}
+                Strands Woven: <strong className="text-tea">{currentAnchorIdx * 3} Lines</strong> ({currentAnchorIdx} / {totalAnchors - 1})
               </span>
             </div>
 
             {/* MOUNTAIN GORGE & ROOT BRIDGE CANVAS */}
             <div className="relative w-full max-w-sm sm:max-w-md aspect-[16/10] rounded-3xl border-4 border-[#1E3A18] bg-[#0A1A0E] p-4 shadow-[8px_8px_0px_rgba(0,0,0,0.9)] overflow-hidden select-none flex flex-col justify-between">
               <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80">
-                🌿 Meghalaya Living Bridge
+                🌿 Meghalaya Botanical Engineering
               </div>
 
               {/* Blue River Stream at the bottom */}
-              <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-cyan-900 via-cyan-800 to-transparent flex items-center justify-center opacity-60">
-                <span className="text-xs font-black text-cyan-200">🌊 Mountain River Gorge</span>
+              <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-cyan-900 via-cyan-800/80 to-transparent flex items-center justify-center opacity-70">
+                <span className="text-[11px] font-black text-cyan-200">🌊 Umshiang River Rapids</span>
               </div>
 
-              {/* Woven Root Strands connecting anchors */}
-              <svg className="absolute inset-0 h-full w-full pointer-events-none z-10">
+              {/* MULTI-STRAND LIVING ROOT LINES (Woven botanical vines, catenary curves, leaf nodes) */}
+              <svg className="absolute inset-0 h-full w-full pointer-events-none z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
                 {anchors.map((a, i) => {
                   if (i === 0) return null;
                   const prev = anchors[i - 1];
                   const isLinked = a.connected;
+                  const midX = (prev.x + a.x) / 2;
 
                   return (
-                    <line
-                      key={`root-line-${i}`}
-                      x1={`${prev.x}%`}
-                      y1="50%"
-                      x2={`${a.x}%`}
-                      y2="50%"
-                      stroke={isLinked ? "#F59E0B" : "rgba(255,255,255,0.2)"}
-                      strokeWidth={isLinked ? 6 : 2}
-                      strokeDasharray={isLinked ? "none" : "6,6"}
-                      className="transition-all duration-700"
-                    />
+                    <g key={`root-strands-${i}`}>
+                      {/* 1. Upper Arched Handrail Root Line */}
+                      <path
+                        d={`M ${prev.x} 42 Q ${midX} 35 ${a.x} 42`}
+                        stroke={isLinked ? "#F59E0B" : "rgba(255,255,255,0.18)"}
+                        strokeWidth={isLinked ? 3.5 : 1.5}
+                        strokeDasharray={isLinked ? "none" : "3,3"}
+                        fill="none"
+                        className="transition-all duration-700"
+                      />
+
+                      {/* 2. Main Heavy Footpath Suspension Root Vine */}
+                      <path
+                        d={`M ${prev.x} 58 Q ${midX} 65 ${a.x} 58`}
+                        stroke={isLinked ? "#B45309" : "rgba(255,255,255,0.15)"}
+                        strokeWidth={isLinked ? 4.5 : 2}
+                        strokeDasharray={isLinked ? "none" : "4,4"}
+                        fill="none"
+                        className="transition-all duration-700"
+                      />
+
+                      {/* 3. Secondary Braided Reinforcement Root Vine */}
+                      <path
+                        d={`M ${prev.x} 60 Q ${midX} 68 ${a.x} 60`}
+                        stroke={isLinked ? "#78350F" : "rgba(255,255,255,0.1)"}
+                        strokeWidth={isLinked ? 3 : 1.5}
+                        fill="none"
+                        className="transition-all duration-700"
+                      />
+
+                      {/* 4. Vertical Hanging Tendril Lines (Cross Lattice Strands) */}
+                      {isLinked && (
+                        <>
+                          <line
+                            x1={prev.x + (a.x - prev.x) * 0.25}
+                            y1={40}
+                            x2={prev.x + (a.x - prev.x) * 0.25}
+                            y2={61}
+                            stroke="#10B981"
+                            strokeWidth={1.5}
+                            className="animate-pulse"
+                          />
+                          <line
+                            x1={prev.x + (a.x - prev.x) * 0.5}
+                            y1={35}
+                            x2={prev.x + (a.x - prev.x) * 0.5}
+                            y2={65}
+                            stroke="#059669"
+                            strokeWidth={2}
+                          />
+                          <line
+                            x1={prev.x + (a.x - prev.x) * 0.75}
+                            y1={40}
+                            x2={prev.x + (a.x - prev.x) * 0.75}
+                            y2={61}
+                            stroke="#10B981"
+                            strokeWidth={1.5}
+                            className="animate-pulse"
+                          />
+                          {/* Small Botanical Leaf Bud Nodes */}
+                          <circle cx={midX} cy={35} r={1.5} fill="#34D399" />
+                          <circle cx={midX} cy={65} r={1.8} fill="#F59E0B" />
+                        </>
+                      )}
+                    </g>
                   );
                 })}
               </svg>

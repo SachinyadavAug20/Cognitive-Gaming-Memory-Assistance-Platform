@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Volume2,

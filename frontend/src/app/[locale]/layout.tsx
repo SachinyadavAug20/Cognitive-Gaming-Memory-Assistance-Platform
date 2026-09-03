@@ -163,9 +163,9 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
         <StructuredData locale={locale} />
       </head>
-      <body className="min-h-screen bg-canvas text-ink paper-texture">
+      <body className="min-h-screen bg-canvas text-ink paper-texture overflow-x-hidden">
         <NextIntlClientProvider messages={messages} locale={locale}>
-          <div className="sticky top-0 z-50 w-full select-none shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+          <div className="sticky top-0 z-50 w-full select-none shadow-[0_4px_20px_rgba(0,0,0,0.06)] overflow-x-clip">
             <AccessibilityToolbar />
             <AppHeader />
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Brain,
@@ -94,7 +94,7 @@ export default function GamesHubPage() {
             </button>
           </div>
 
-          <div className="w-full max-w-4xl">
+          <div className="w-full max-w-4xl rounded-3xl border-4 border-black bg-[#FAF6F0] p-3 sm:p-6 shadow-[8px_8px_0px_#000] text-ink overflow-hidden">
             {activeModalGame === "day-in-my-world" && <DayInMyWorld3D />}
             {activeModalGame === "majuli-walk" && <MajuliWalk3D />}
             {activeModalGame === "tea-harvest-vision" && <TeaHarvestVision />}

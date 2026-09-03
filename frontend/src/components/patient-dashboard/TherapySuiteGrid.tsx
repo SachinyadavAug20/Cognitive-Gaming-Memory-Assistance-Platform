@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Brain,
@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { getGameStrings } from "@/lib/gameI18n";
 import { speakText, unlockAudio } from "@/lib/sound";
+import { GAMES } from "@/games/registry";
 
 interface TherapySuiteGridProps {
   gamesTitle: string;
@@ -57,7 +58,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           href="/patient/games"
           className="text-xs font-black text-tea flex items-center gap-1 hover:underline group cursor-pointer"
         >
-          <span>View All 18 Modules</span>
+          <span>View All {GAMES.length} Modules</span>
           <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
       </div>

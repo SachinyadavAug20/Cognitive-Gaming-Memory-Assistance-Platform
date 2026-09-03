@@ -805,6 +805,46 @@ export function playStepSound(): void {
   playNote(85, now + 0.02, 0.06, 0.08, "sine");
 }
 
+/** 
+ * Clinical 40 Hz Gamma Sensory Stimulation Pulse 
+ * (Evokes 40Hz neural oscillations for dementia neuroplasticity and microglia stimulation)
+ */
+export function playGammaStimulation(): void {
+  const ctx = ensureAudioContext();
+  if (!ctx || !_duckGain) return;
+  try {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+
+    // 432 Hz warm harmonic carrier tone
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(432, now);
+
+    // 40 Hz Gamma Neuromodulation
+    lfo.type = "sine";
+    lfo.frequency.setValueAtTime(40, now);
+    lfoGain.gain.setValueAtTime(0.4, now);
+    lfo.connect(lfoGain.gain);
+
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.12, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
+
+    osc.connect(gain);
+    gain.connect(_duckGain);
+
+    osc.start(now);
+    lfo.start(now);
+    osc.stop(now + 3.2);
+    lfo.stop(now + 3.2);
+  } catch {
+    playCalmTone();
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Ambient Soundscape Loop
 // ---------------------------------------------------------------------------

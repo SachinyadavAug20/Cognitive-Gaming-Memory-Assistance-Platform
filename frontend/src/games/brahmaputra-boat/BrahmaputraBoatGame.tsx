@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Compass,
@@ -130,16 +130,28 @@ export function BrahmaputraBoatGame() {
       ctx.fillStyle = waterGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // River currents / ripples
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-      ctx.lineWidth = 2;
-      for (let i = 0; i < 8; i++) {
-        const ry = ((tick * 2 + i * 60) % h);
+      // River currents / flowing stream lines (Brahmaputra hydro-currents)
+      for (let i = 0; i < 12; i++) {
+        const ry = ((tick * 1.8 + i * 45) % h);
+        ctx.strokeStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.25)" : "rgba(147, 197, 253, 0.3)";
+        ctx.lineWidth = i % 3 === 0 ? 3 : 1.5;
         ctx.beginPath();
         ctx.moveTo(0, ry);
-        ctx.bezierCurveTo(w * 0.3, ry + 10, w * 0.7, ry - 10, w, ry);
+        ctx.bezierCurveTo(w * 0.25, ry + 12 * Math.sin(tick * 0.05 + i), w * 0.75, ry - 12 * Math.cos(tick * 0.05 + i), w, ry);
         ctx.stroke();
       }
+
+      // Boat Wake Lines (Trailing ripple lines behind the country boat)
+      const curBx = boatPosRef.current.x * w;
+      const curBy = boatPosRef.current.y * h;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(curBx - 12, curBy + 18);
+      ctx.lineTo(curBx - 28, curBy + 45 + (tick % 8));
+      ctx.moveTo(curBx + 12, curBy + 18);
+      ctx.lineTo(curBx + 28, curBy + 45 + (tick % 8));
+      ctx.stroke();
 
       // 3. Render & Collect Floating Lotuses
       let collectedNow = 0;

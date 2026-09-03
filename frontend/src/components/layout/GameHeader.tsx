@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, Award, Paperclip, Volume2 } from "lucide-react";
 import { AudioToggle } from "@/components/ui/AudioToggle";

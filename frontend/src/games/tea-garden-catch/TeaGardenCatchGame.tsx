@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Camera,
@@ -102,29 +102,29 @@ export function TeaGardenCatchGame() {
       const updated = prevItems.map((item) => {
         if (item.caught) return item;
 
-        // Check distance to Left Hand
+        // Check distance to Left Hand (exclude upper face region Y <= 0.26)
         let hit = false;
-        if (evt.leftHand) {
+        if (evt.leftHand && evt.leftHand.y > 0.26) {
           const dx = item.x - evt.leftHand.x;
           const dy = item.y - evt.leftHand.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 0.18) hit = true;
+          if (dist < 0.16) hit = true;
         }
 
-        // Check distance to Right Hand
-        if (!hit && evt.rightHand) {
+        // Check distance to Right Hand (exclude upper face region Y <= 0.26)
+        if (!hit && evt.rightHand && evt.rightHand.y > 0.26) {
           const dx = item.x - evt.rightHand.x;
           const dy = item.y - evt.rightHand.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 0.18) hit = true;
+          if (dist < 0.16) hit = true;
         }
 
-        // Check distance to primary centroid
-        if (!hit && evt.hasMotion) {
+        // Fallback: Check primary centroid strictly in lower interactive field (Y > 0.35)
+        if (!hit && evt.hasMotion && evt.y > 0.35 && evt.energy > 0.15) {
           const dx = item.x - evt.x;
           const dy = item.y - evt.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 0.16) hit = true;
+          if (dist < 0.15) hit = true;
         }
 
         if (hit) {

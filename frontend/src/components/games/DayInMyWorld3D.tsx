@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import * as THREE from "three";
 import {
@@ -10,7 +10,6 @@ import {
   VolumeX,
   RotateCcw,
   Sparkles,
-  ArrowLeft,
   ShoppingBag,
   Image as ImageIcon,
   Compass,
@@ -506,22 +505,18 @@ export function DayInMyWorld3D() {
 
       {/* Top Header Bar */}
       <div className="flex w-full items-center justify-between border-b-2 border-black/15 pb-2.5 mb-2">
-        <Link
-          href="/patient/games"
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted cursor-pointer"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>{getT("backToHub", "← Back to Therapy Suite")}</span>
-        </Link>
+        <div className="flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000]">
+          <Sparkles className="h-3.5 w-3.5 text-tea" />
+          <span>Chapter {currentChapter} of 6</span>
+        </div>
 
         <div className="text-center">
-          <div className="flex items-center justify-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-tea">
-            <Sparkles className="h-3 w-3" />
-            <span>3D Story Campaign</span>
-          </div>
           <h1 className="font-serif text-lg sm:text-xl font-black text-ink">
             {getT("title", "A Day in My World")}
           </h1>
+          <p className="text-[10px] font-bold text-ink-secondary uppercase tracking-wider">
+            Reminiscence & Routine Recall
+          </p>
         </div>
 
         <button
@@ -553,13 +548,13 @@ export function DayInMyWorld3D() {
       {!hasStarted ? (
         /* Start Screen */
         <div className="my-2 flex flex-col items-center text-center space-y-3 max-w-lg">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border-3 border-black bg-amber-300 text-amber-950 shadow-[3px_3px_0px_#000]">
-            <Sun className="h-8 w-8" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-3 border-black bg-amber-300 text-amber-950 shadow-[3px_3px_0px_#000]">
+            <Sun className="h-9 w-9" />
           </div>
-          <h2 className="font-serif text-2xl font-black text-ink">
+          <h2 className="font-serif text-2xl sm:text-3xl font-black text-ink">
             {getT("welcomeTitle", "A Morning to Remember")}
           </h2>
-          <p className="text-xs sm:text-sm font-bold text-ink-secondary leading-relaxed">
+          <p className="text-sm sm:text-base font-bold text-ink-secondary leading-relaxed max-w-md">
             {getT("welcomeDesc", "The morning sun fills the room with gentle warmth. Saathi is here to walk with you through every moment of the day.")}
           </p>
 

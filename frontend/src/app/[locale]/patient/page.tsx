@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
 import {
@@ -17,7 +17,7 @@ import { useIdleTimeout } from "@/hooks/useIdleTimeout";
 import { getMediaUrl } from "@/lib/api";
 import { patientLangCode } from "@/lib/i18n";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
-import { playEncourage, playCalmTone, playTapFeedback, unlockAudio } from "@/lib/sound";
+import { playEncourage, playCalmTone, playGammaStimulation, playTapFeedback, unlockAudio } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { speechRate, getDigitalBonsaiGrowthStage } from "@/games/config";
 import { AudioToggle } from "@/components/ui/AudioToggle";
@@ -364,7 +364,7 @@ export default function PatientHome() {
   });
 
   return (
-    <div className="min-h-[100vh] pb-8 flex flex-col bg-[#FAF6F0]">
+    <div className="min-h-[100vh] pb-32 flex flex-col bg-[#FAF6F0]">
       {/* Patient Header Banner */}
       <div className="bg-tea border-b-4 border-black px-4 pt-5 pb-5 md:px-6 text-white shadow-sm">
         <div className="max-w-3xl mx-auto flex flex-col gap-3.5">
@@ -490,7 +490,7 @@ export default function PatientHome() {
             />
 
             <div className="grid gap-4 md:grid-cols-2">
-              {/* Sensory Calming Flute Audio */}
+              {/* Sensory Calming Flute Audio & 40Hz Gamma Stimulation */}
               <SensoryCalmCard
                 title={t("wellbeing.calmTitle")}
                 hint={t("wellbeing.calmHint")}
@@ -498,6 +498,7 @@ export default function PatientHome() {
                 playLabel={t("wellbeing.calmPlay")}
                 listenLabel={t("wellbeing.calmListen")}
                 onPlayTone={playCalmTone}
+                onPlayGamma={playGammaStimulation}
                 onListenText={(text) => speak(text, langCode, rate)}
               />
 

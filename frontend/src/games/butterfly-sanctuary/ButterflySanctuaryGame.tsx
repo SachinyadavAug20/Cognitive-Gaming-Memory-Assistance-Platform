@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Camera,
@@ -222,16 +222,19 @@ export function ButterflySanctuaryGame() {
       const updated = prev.map((bf) => {
         if (bf.perched) return bf;
 
-        // Check if hand is near the butterfly
-        const handX = evt.rightHand?.x ?? evt.leftHand?.x ?? evt.x;
-        const handY = evt.rightHand?.y ?? evt.leftHand?.y ?? evt.y;
+        // Check if deliberate hand is near the butterfly (exclude face zone Y <= 0.26)
+        const hand = evt.rightHand || evt.leftHand;
+        const handX = hand ? hand.x : evt.x;
+        const handY = hand ? hand.y : evt.y;
+
+        if (handY <= 0.26) return bf; // Filter out face region
 
         const dx = bf.x - handX;
         const dy = bf.y - handY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 0.22) {
-          const nextProg = bf.perchedProgress + 8;
+        if (dist < 0.20) {
+          const nextProg = bf.perchedProgress + 3; // Calm, steady hold (~1.2s of steady hand)
           if (nextProg >= 100) {
             newlyPerched = true;
             return {

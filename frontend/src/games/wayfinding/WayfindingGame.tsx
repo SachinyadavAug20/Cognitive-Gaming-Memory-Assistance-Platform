@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Compass, Music, MapPin } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -435,7 +435,7 @@ export function WayfindingGame() {
             {/* Ambient Mountain Terrain Background Elements */}
             <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#4ADE80_1px,transparent_1px)] [background-size:16px_16px]" />
             <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80">
-              🌲 Pine Hills Trail
+              🌲 Pine Hills Trail • Path Home: {Math.round((stepIndex / Math.max(1, route.length - 1)) * 100)}%
             </div>
 
             {/* Stepping Trail Path Nodes */}
@@ -447,13 +447,22 @@ export function WayfindingGame() {
 
                 return (
                   <div key={step.id} className="relative flex flex-1 flex-col items-center gap-1 min-w-[70px]">
-                    {/* Connecting Stepping Stone Path Line */}
+                    {/* Connecting Topographical Trail Line */}
                     {idx > 0 && (
-                      <div
-                        className={`absolute top-7 right-1/2 -left-1/2 h-1.5 -z-0 rounded-full transition-all duration-500 ${
-                          idx <= stepIndex ? "bg-marigold" : "bg-white/20 border-dashed"
-                        }`}
-                      />
+                      <div className="absolute top-7 right-1/2 -left-1/2 flex items-center justify-center -z-0 pointer-events-none">
+                        <div
+                          className={`w-full h-2 rounded-full transition-all duration-700 ${
+                            idx <= stepIndex
+                              ? "bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.8)]"
+                              : "bg-white/20 border border-dashed border-white/40"
+                          }`}
+                        />
+                        {idx <= stepIndex && (
+                          <span className="absolute text-[10px] animate-pulse">
+                            👣
+                          </span>
+                        )}
+                      </div>
                     )}
 
                     {/* Milestone Pin Icon */}

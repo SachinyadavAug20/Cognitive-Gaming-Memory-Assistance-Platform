@@ -1,34 +1,8 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
+import { GAMES } from "@/games/registry";
 
-const GAME_IDS = [
-  "alpana",
-  "river-lanterns",
-  "loom",
-  "drum",
-  "hornbill-flight",
-  "majuli-pottery",
-  "monastery-bell",
-  "bamboo-dance",
-  "brahmaputra-boat",
-  "dzukou-botanist",
-  "memoir-scribe",
-  "grandchild-chat",
-  "memory-detective",
-  "storybook",
-  "jigsaw",
-  "timeline",
-  "tea-harvest",
-  "radio",
-  "root-bridge",
-  "daily-routine",
-  "heritage-kitchen",
-  "bazaar",
-  "sorting",
-  "proverb",
-  "lotus-lake",
-  "wayfinding",
-];
+const GAME_IDS = GAMES.map((g) => g.id);
 
 const CORE_PAGES = [
   { path: "", priority: 1.0, changeFrequency: "daily" as const },
@@ -72,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  // 2. All 18 CDTx Serious Games across all 11 locales
+  // 2. All 38 CDTx Serious Games across all 11 locales
   for (const gameId of GAME_IDS) {
     const gameSubpath = `/patient/games/${gameId}`;
     for (const locale of routing.locales) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Sparkles,
@@ -235,9 +235,10 @@ export function LoomGame() {
               onShuttlePass={handleShuttlePass}
             />
 
-            {/* Pattern Progress Badge */}
-            <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold">
-              {Math.round((rowsWoven / TARGET_ROWS) * 100)}% Complete
+            {/* Thread Line Metrics Badge */}
+            <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+              <span>🧵 Weft Lines: {rowsWoven} / {TARGET_ROWS} &bull; Warp Lines: 42 Strands</span>
             </div>
           </div>
 

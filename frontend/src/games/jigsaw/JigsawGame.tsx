@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Grid3X3, Volume2, Music } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";

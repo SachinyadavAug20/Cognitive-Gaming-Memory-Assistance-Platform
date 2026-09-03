@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { GAME_BY_ID } from "@/games/registry";
 

@@ -1,22 +1,18 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Coffee,
   User,
   Send,
-  Sparkles,
   Paperclip,
   ShieldCheck,
-  CheckCircle2,
-  ArrowRight,
-  Music,
-  RotateCcw,
-  MessageSquareText,
-  X,
-  Bot,
+  Mic,
+  MicOff,
+  Volume2,
+  Heart,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -27,17 +23,15 @@ import {
   playPress,
   playCorrect,
   playComplete,
-  playLifeSong,
+  playTapFeedback,
 } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
-import { api, getMediaUrl, type AiChatResponse } from "@/lib/api";
+import { api, type AiChatResponse } from "@/lib/api";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { getGameStrings } from "@/lib/gameI18n";
-
-const MAX_INPUT_CHARS = 120;
 
 function GameShell({
   title,
@@ -83,10 +77,14 @@ export function GrandchildChatGame() {
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [reminiscenceCount, setReminiscenceCount] = useState(0);
   const [activePhoto, setActivePhoto] = useState<{ url: string; title: string; note: string } | null>(null);
+  const [isListening, setIsListening] = useState(false);
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
   const chatScrollRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
+  const sendResponseRef = useRef<(text: string) => void>(() => {});
 
   const persona = useMemo(() => {
     if (detail?.familyMembers && detail.familyMembers.length > 0) {
@@ -96,7 +94,7 @@ export function GrandchildChatGame() {
         relation: first.relation || "Grandchild",
       };
     }
-    return { name: "Rohan (Loving Grandson)", relation: "Grandchild" };
+    return { name: "Manash Borah (Loving Grandson)", relation: "Grandchild" };
   }, [detail]);
 
   const familyPhotos = useMemo(() => {
@@ -104,7 +102,7 @@ export function GrandchildChatGame() {
   }, [detail]);
 
   const targetInteractions = 4;
-  const score = reminiscenceCount * 25;
+  const score = Math.min(100, reminiscenceCount * 25);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -114,49 +112,129 @@ export function GrandchildChatGame() {
     }, 100);
   };
 
-  const startTeatime = useCallback(async () => {
+  // Get culturally authentic default messages
+  const getDefaultContent = useCallback(() => {
+    if (locale === "hi") {
+      return {
+        greeting: "नमस्ते दादाजी! मैंने आपके लिए अदरक और इलायची वाली गरमा-गरम चाय बनाई है। आइए, साथ बैठकर एक चुस्की लेते हैं! आज आपका मन कैसा है?",
+        replies: [
+          "चाय बहुत स्वादिष्ट बनी है, बेटा! ☕",
+          "आज की सुबह बहुत शांत और सुखद रही। 🌸",
+          "गुवाहाटी में तुम्हारा काम कैसा चल रहा है? 🏡",
+          "चलो भूपेन हज़ारिका जी का कोई गीत सुनते हैं। 📻",
+        ],
+      };
+    }
+    if (locale === "as") {
+      return {
+        greeting: "নমস্কাৰ দেউতা! মই আপোনাৰ বাবে আদা আৰু ইলাচী দি গৰম ৰঙা চাহ বনাইছোঁ। আহক, একেলগে একাপ চাহ খাওঁ! আজি আপোনাৰ দিনটো কেনে লাগিছে?",
+        replies: [
+          "চাহ কাপ বৰ সোৱাদ হৈছে, বোপা! ☕",
+          "আজি ৰাতিপুৱাটো বৰ শান্ত আছিল। 🌸",
+          "গুৱাহাটীত তোমাৰ খবৰ কোৱাচোন। 🏡",
+          "আহক ড০ ভূপেন হাজৰিকাৰ গান শুনোঁ। 📻",
+        ],
+      };
+    }
+    return {
+      greeting: "Deuta, good afternoon! I brewed warm cardamom Assam tea for us. Look how fragrant it is! How are you feeling today?",
+      replies: [
+        "The tea smells wonderful, dear! ☕",
+        "I had a very peaceful morning today. 🌸",
+        "Tell me how your day went in Guwahati. 🏡",
+        "Let us put on some sweet folk music. 📻",
+      ],
+    };
+  }, [locale]);
+
+  // Start Teatime with INSTANT Warm Opening (No waiting on blank void!)
+  const startTeatime = useCallback(() => {
     playPress();
     setPhase("chat");
-    setMessages([]);
     setTypedMessage("");
     setReminiscenceCount(0);
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
-    setIsAiThinking(true);
+    setIsAiThinking(false);
 
-    try {
-      const res: AiChatResponse = await api.aiChat({
-        patientId,
-        userMessage: "Hello my dear, let us have morning tea together.",
-        personaName: persona.name,
-      });
+    const { greeting, replies } = getDefaultContent();
 
-      const initialMsg: MessageItem = {
-        id: "msg-0",
-        sender: "ai",
-        text: res.replyText || "Hello! I am so happy to sit with you today. Shall I pour some warm cardamom tea?",
-        time: "Just now",
-      };
+    const initialMsg: MessageItem = {
+      id: "msg-0",
+      sender: "ai",
+      text: greeting,
+      time: "Just now",
+    };
 
-      setMessages([initialMsg]);
-      setQuickReplies(res.suggestedQuickReplies || ["Yes, sweet cardamom tea please!", "Tell me how your day was, dear!"]);
-    } catch {
-      const fallbackMsg: MessageItem = {
-        id: "msg-0",
-        sender: "ai",
-        text: "Hello! It is so wonderful to sit together for warm tea. How are you feeling this beautiful morning?",
-        time: "Just now",
-      };
-      setMessages([fallbackMsg]);
-      setQuickReplies(["I feel wonderful, thank you!", "The morning breeze is so peaceful."]);
-    } finally {
-      setIsAiThinking(false);
-      scrollToBottom();
+    setMessages([initialMsg]);
+    setQuickReplies(replies);
+    scrollToBottom();
+
+    speak(greeting, locale, rate);
+  }, [getDefaultContent, locale, rate]);
+
+  // Voice Recognition Setup
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recog = new SpeechRecognition();
+        recog.continuous = false;
+        recog.interimResults = false;
+        recog.lang = locale === "hi" ? "hi-IN" : locale === "as" ? "as-IN" : "en-IN";
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        recog.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          if (transcript) {
+            sendResponseRef.current(transcript);
+          }
+          setIsListening(false);
+        };
+
+        recog.onerror = () => {
+          setIsListening(false);
+        };
+
+        recog.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current = recog;
+      }
     }
-  }, [patientId, persona.name]);
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, [locale]);
 
+  const toggleMic = () => {
+    playPress();
+    if (!recognitionRef.current) {
+      speak("Voice input is ready. You can also tap any of the quick reply buttons below.", locale, rate);
+      return;
+    }
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      stopSpeaking();
+      try {
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch {
+        setIsListening(false);
+      }
+    }
+  };
+
+  // Send Response (Either via quick reply, voice, or text)
   const sendResponse = async (textToSend: string) => {
+    sendResponseRef.current = sendResponse;
     const trimmed = textToSend.trim();
     if (!trimmed || isAiThinking) return;
 
@@ -208,12 +286,16 @@ export function GrandchildChatGame() {
       const aiMsg: MessageItem = {
         id: `ai-${msgIndex + 1}`,
         sender: "ai",
-        text: res.replyText || "That is so wonderful to hear! I love listening to your stories.",
+        text: res.replyText || (locale === "as" ? "আপোনাৰ লগত কথা পাতি বৰ ভাল লাগিল! চাহ কাপ খাই লওক দেউতা।" : "That is so wonderful to hear! I love sitting with you."),
         time: "Just now",
       };
 
       setMessages((prev) => [...prev, aiMsg]);
-      setQuickReplies(res.suggestedQuickReplies || ["Tell me another memory!", "Let us drink our tea."]);
+      setQuickReplies(res.suggestedQuickReplies || [
+        "Tell me about our old village memories. 🌾",
+        "Let us take another sip of tea. ☕",
+        "The weather is very pleasant today. 🌤️",
+      ]);
       playCorrect();
       speak(aiMsg.text, locale, rate);
 
@@ -232,22 +314,42 @@ export function GrandchildChatGame() {
               errorCount: 0,
             });
           }
-        }, 3500);
+        }, 3200);
       }
     } catch {
+      // Immediate loving local fallback so elder NEVER hangs
       const fallbackAiMsg: MessageItem = {
         id: `ai-${msgIndex + 1}`,
         sender: "ai",
-        text: "I love hearing that! Every moment we share together is so precious to me.",
+        text: locale === "as"
+          ? "মই সদায় আপোনাৰ কথাবোৰ শুনি বৰ আনন্দ পাওঁ! চাহৰ লগত বিস্কুটো খাওকচোন।"
+          : locale === "hi"
+          ? "आपकी बातें सुनकर मुझे बहुत अच्छा लगता है! आराम से चाय पीजिए, मैं आपके साथ हूँ।"
+          : "I love listening to you! Every moment we share together is so precious. Take another sip of tea.",
         time: "Just now",
       };
       setMessages((prev) => [...prev, fallbackAiMsg]);
-      setQuickReplies(["Tell me another story!", "Yes, it is very peaceful."]);
+      setQuickReplies([
+        "Tell me more about your work! 🏡",
+        "The tea is so comforting. ☕",
+        "You take care of yourself too, son. 💛",
+      ]);
       speak(fallbackAiMsg.text, locale, rate);
     } finally {
       setIsAiThinking(false);
       scrollToBottom();
     }
+  };
+
+  // Interactive Teatime Sip Action
+  const handleSipTea = () => {
+    playTapFeedback();
+    const sipText = locale === "as"
+      ? "*এঢোক গৰম চাহ খোৱা হ'ল* বৰ সোৱাদ ইলাচী চাহ!"
+      : locale === "hi"
+      ? "*चाय की एक घूंट ली* वाह, बहुत ही लाजवाब चाय बनी है!"
+      : "*Sips warm tea* Ah, wonderful cardamom tea!";
+    sendResponse(sipText);
   };
 
   useSessionGuard({
@@ -303,23 +405,24 @@ export function GrandchildChatGame() {
             </p>
           </div>
 
+          {/* Assigned Family Relative Card */}
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
             <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
               <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5" /> Assigned Dialogue Companion
+                <User className="h-3.5 w-3.5" /> Assigned Teatime Companion
               </span>
               <span className="text-[10px] font-bold uppercase rounded bg-tea/10 px-2 py-0.5 text-tea border border-tea">
-                Local AI Persona
+                Loving Grandchild
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-black bg-[#EFE9DF] text-ink shadow-sm">
-                <User className="h-6 w-6" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-amber-950 shadow-sm text-2xl">
+                👨‍🦱
               </div>
               <div>
                 <p className="text-base font-black text-ink">{persona.name}</p>
                 <p className="text-xs font-semibold text-ink-secondary">
-                  Ready with warm Assam cardamom tea
+                  Ready with warm Assam cardamom tea & sweet village memories
                 </p>
               </div>
             </div>
@@ -336,48 +439,50 @@ export function GrandchildChatGame() {
           </ChunkyButton>
         </div>
       ) : phase === "chat" ? (
-        <div className="flex flex-col gap-3.5 py-1">
-          {/* DOSSIER HEADER STATUS BAR */}
+        <div className="flex flex-col gap-3 py-1">
+          {/* TOP STATUS BAR: COMPANION & TEA SIP BUTTON */}
           <div className="flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
             <div className="flex items-center gap-2">
-              <Paperclip className="h-4 w-4 text-tea" />
-              <div className="flex items-center gap-1.5">
-                <Coffee className="h-4 w-4 text-tea" />
-                <span className="text-xs font-black text-ink">{persona.name}</span>
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-black bg-amber-100 text-sm">
+                👨‍🦱
+              </div>
+              <div>
+                <span className="text-xs font-black text-ink block leading-tight">{persona.name}</span>
+                <span className="text-[10px] font-bold text-tea block">Assam CTC Tea Session</span>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Interactive Sip Tea Button */}
               <button
                 type="button"
-                onClick={() => {
-                  playPress();
-                  speak(
-                    locale === "hi"
-                      ? "गरमा-गरम इलायची चाय की एक घूंट लीजिए।"
-                      : locale === "as"
-                      ? "এঢোক গৰম ইলাচী চাহ খাওক।"
-                      : "Taking a warm sip of cardamom tea together.",
-                    locale,
-                    rate
-                  );
-                }}
-                className="btn-tactile flex items-center gap-1 rounded-lg border border-black bg-amber-100 hover:bg-amber-200 px-2 py-1 text-[11px] font-black text-amber-950 shadow-xs cursor-pointer"
-                title="Sip warm tea"
+                onClick={handleSipTea}
+                className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 hover:bg-amber-300 px-3 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer active:translate-y-0.5"
+                title="Take a warm sip of tea together"
               >
                 <span>☕ Sip Tea</span>
+                <span className="bg-white/80 rounded px-1.5 py-0.2 text-[10px] font-black border border-black/30">
+                  {reminiscenceCount} / {targetInteractions}
+                </span>
               </button>
-
-              <span className="text-[11px] font-bold text-ink-secondary">
-                {reminiscenceCount} / {targetInteractions}
-              </span>
             </div>
           </div>
+
+          {/* FAMILY PHOTO MEMORY POPUP IF AVAILABLE */}
+          {activePhoto && (
+            <div className="flex items-center gap-3 rounded-2xl border-2 border-black bg-amber-50 p-2.5 shadow-sm animate-in fade-in">
+              <span className="text-2xl">🖼️</span>
+              <div className="flex-1">
+                <p className="text-xs font-black text-ink">{activePhoto.title}</p>
+                <p className="text-[11px] font-semibold text-ink-secondary">{activePhoto.note}</p>
+              </div>
+            </div>
+          )}
 
           {/* CHAT STREAM CONTAINER */}
           <div
             ref={chatScrollRef}
-            className="flex flex-col gap-3 h-[280px] sm:h-[300px] overflow-y-auto rounded-2xl border-3 border-black bg-[#FAF5EE] p-3.5 shadow-[4px_4px_0px_#000]"
+            className="flex flex-col gap-3 h-[270px] sm:h-[290px] overflow-y-auto rounded-2xl border-3 border-black bg-[#FAF5EE] p-3.5 shadow-[4px_4px_0px_#000]"
           >
             {messages.map((m) => (
               <div
@@ -388,14 +493,10 @@ export function GrandchildChatGame() {
               >
                 <div
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-black shadow-sm ${
-                    m.sender === "ai" ? "bg-tea text-white" : "bg-ink text-white"
+                    m.sender === "ai" ? "bg-amber-100 text-amber-950 text-base" : "bg-tea text-white"
                   }`}
                 >
-                  {m.sender === "ai" ? (
-                    <Bot className="h-4 w-4" />
-                  ) : (
-                    <User className="h-4 w-4" />
-                  )}
+                  {m.sender === "ai" ? "👨‍🦱" : <User className="h-4 w-4" />}
                 </div>
                 <div
                   className={`rounded-2xl border-2 border-black p-3 text-xs sm:text-sm font-semibold leading-relaxed shadow-sm ${
@@ -405,166 +506,119 @@ export function GrandchildChatGame() {
                   }`}
                 >
                   <p>{m.text}</p>
+                  {m.sender === "ai" && (
+                    <button
+                      type="button"
+                      onClick={() => speak(m.text, locale, rate)}
+                      className="mt-1.5 inline-flex items-center gap-1 text-[10px] font-black text-tea hover:underline cursor-pointer"
+                    >
+                      <Volume2 className="h-3 w-3" /> Replay Voice
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
 
             {isAiThinking && (
-              <div className="self-start flex items-center gap-2 rounded-xl border-2 border-black bg-white px-3.5 py-2 shadow-sm">
-                <Coffee className="h-4 w-4 text-tea animate-bounce" />
+              <div className="self-start flex items-center gap-2 rounded-xl border-2 border-black bg-white px-3.5 py-2 shadow-sm animate-pulse">
+                <Coffee className="h-4 w-4 text-tea animate-spin" />
                 <span className="text-xs font-bold text-ink-secondary">
-                  {persona.name} is listening & responding...
+                  {persona.name} is pouring another warm cup...
                 </span>
               </div>
             )}
           </div>
 
-          {/* ACTIVE MEMORY PHOTO REVEAL */}
-          {activePhoto && (
-            <div className="flex items-center gap-3 rounded-xl border-2 border-black bg-[#FFF9E6] p-2.5 shadow-[2px_2px_0px_#000]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={getMediaUrl(activePhoto.url) ?? ""}
-                alt={activePhoto.title}
-                className="h-12 w-12 rounded-lg border-2 border-black object-cover shrink-0"
-              />
-              <div className="min-w-0">
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 flex items-center gap-1">
-                  <Sparkles className="h-3 w-3" /> Memory Illuminated
-                </span>
-                <p className="text-xs font-black text-ink truncate">{activePhoto.title}</p>
-                <p className="text-[11px] text-ink-secondary truncate">{activePhoto.note}</p>
-              </div>
-            </div>
-          )}
-
-          {/* FLEXIBLE DUAL-INPUT SECTION: TYPE OR SELECT */}
-          <div className="rounded-2xl border-3 border-black bg-surface p-3 shadow-[4px_4px_0px_#000] space-y-2.5">
-            {/* Quick-Reply Options */}
-            <div>
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-ink-secondary flex items-center gap-1">
-                  <MessageSquareText className="h-3 w-3 text-tea" /> Quick Response Options
-                </span>
-                <span className="text-[10px] font-bold text-ink-secondary">Tap or Type</span>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {quickReplies.map((replyText, idx) => (
-                  <button
-                    key={`reply-${idx}`}
-                    type="button"
-                    disabled={isAiThinking}
-                    onClick={() => sendResponse(replyText)}
-                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-[#FAF6F0] px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-tea hover:text-white transition-all active:translate-y-0.5 cursor-pointer disabled:opacity-50"
-                  >
-                    <span>&ldquo;{replyText}&rdquo;</span>
-                    <ArrowRight className="h-3 w-3 shrink-0" />
-                  </button>
-                ))}
-              </div>
+          {/* QUICK RESPONSE CHUNKY TOUCH OPTIONS (ELDERS NEVER HAVE TO TYPE!) */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] font-black uppercase tracking-wider text-tea flex items-center gap-1">
+                <Heart className="h-3 w-3 text-rose-500 fill-rose-500" />
+                Tap to Answer with Love:
+              </span>
+              <span className="text-[10px] font-bold text-ink-secondary">
+                One-touch reply
+              </span>
             </div>
 
-            {/* Custom Typing Area */}
-            <div className="border-t-2 border-black/15 pt-2">
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-ink-secondary">
-                  Type Custom Response
-                </span>
-                <span
-                  className={`text-[10px] font-bold ${
-                    typedMessage.length >= MAX_INPUT_CHARS - 15
-                      ? "text-red-600 font-black"
-                      : "text-ink-secondary"
-                  }`}
-                >
-                  {typedMessage.length}/{MAX_INPUT_CHARS} chars
-                </span>
-              </div>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  sendResponse(typedMessage);
-                }}
-                className="flex items-center gap-2"
-              >
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    maxLength={MAX_INPUT_CHARS}
-                    value={typedMessage}
-                    onChange={(e) => setTypedMessage(e.target.value)}
-                    placeholder="Type your message here..."
-                    disabled={isAiThinking}
-                    className="w-full rounded-xl border-2 border-black bg-white px-3 py-2 text-xs sm:text-sm font-bold text-ink placeholder:text-ink-secondary/60 focus:outline-none focus:ring-2 focus:ring-tea"
-                  />
-                  {typedMessage.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => setTypedMessage("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-secondary hover:text-ink"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {quickReplies.map((reply, idx) => (
                 <button
-                  type="submit"
-                  disabled={!typedMessage.trim() || isAiThinking}
-                  className="btn-tactile flex items-center justify-center gap-1.5 rounded-xl border-2 border-black bg-tea px-4 py-2 text-xs sm:text-sm font-black text-white shadow-[2px_2px_0px_#000] hover:bg-emerald-800 active:translate-y-0.5 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  key={idx}
+                  type="button"
+                  onClick={() => sendResponse(reply)}
+                  disabled={isAiThinking}
+                  className="btn-tactile text-left rounded-xl border-2 border-black bg-white hover:bg-amber-100/70 p-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] active:translate-y-0.5 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <span>Send</span>
-                  <Send className="h-3.5 w-3.5" />
+                  {reply}
                 </button>
-              </form>
+              ))}
             </div>
+          </div>
+
+          {/* VOICE INPUT OR TEXT INPUT FALLBACK */}
+          <div className="flex items-center gap-2 pt-1">
+            {/* Giant Push-to-Talk Microphone */}
+            <button
+              type="button"
+              onClick={toggleMic}
+              className={`btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black px-4 py-2.5 text-xs font-black shadow-[3px_3px_0px_#000] cursor-pointer transition-all ${
+                isListening
+                  ? "bg-rose-500 text-white animate-bounce ring-4 ring-rose-300"
+                  : "bg-tea text-white hover:bg-emerald-800"
+              }`}
+              title="Tap to speak your message aloud"
+            >
+              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              <span>{isListening ? "Listening... Speak Now" : "Tap to Speak"}</span>
+            </button>
+
+            {/* Optional Text Field for Caregivers */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendResponse(typedMessage);
+              }}
+              className="flex-1 flex items-center gap-1.5"
+            >
+              <input
+                type="text"
+                value={typedMessage}
+                onChange={(e) => setTypedMessage(e.target.value)}
+                placeholder="Or type a custom reply..."
+                disabled={isAiThinking}
+                className="w-full rounded-xl border-2 border-black bg-white px-3 py-2 text-xs font-bold text-ink shadow-xs focus:outline-none focus:ring-2 focus:ring-tea disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={!typedMessage.trim() || isAiThinking}
+                className="btn-tactile rounded-xl border-2 border-black bg-surface p-2 text-ink shadow-xs hover:bg-surface-muted disabled:opacity-30 cursor-pointer"
+              >
+                <Send className="h-4 w-4" />
+              </button>
+            </form>
           </div>
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
-        <Celebration title={str.celebrationTitle}>
-          <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left">
-            <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
-              <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-                <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" /> Clinical Record Logged
-                </span>
-                <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
-                  Score: 100%
-                </span>
-              </div>
-
-              <h3 className="font-serif text-xl font-black text-ink">
-                {str.celebrationTitle}
-              </h3>
-              <p className="text-xs font-semibold text-ink-secondary mt-1 leading-relaxed">
-                {str.celebrationSubtitle}
-              </p>
-
-              <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
-                <button
-                  type="button"
-                  onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
-                >
-                  <Music className="h-4 w-4 text-ink" />
-                  <span className="text-xs font-black">Play Folk Melody</span>
-                </button>
-                <span className="text-xs font-bold text-ink-secondary">
-                  Module Complete
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <ChunkyButton variant="tea" size="xl" onClick={startTeatime}>
-                <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
-                </span>
-              </ChunkyButton>
+        <Celebration
+          title={str.celebrationTitle}
+          subtitle={str.celebrationSubtitle}
+          xpEarned={100}
+          accuracy="100%"
+        >
+          <div className="flex flex-col items-center gap-4 max-w-md mx-auto text-center pt-3">
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={startTeatime}
+                className="btn-tactile rounded-xl border-2 border-black bg-tea px-5 py-2.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] cursor-pointer"
+              >
+                {str.playAgainButton}
+              </button>
               <Link
                 href="/patient/games"
-                className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
+                className="btn-tactile rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] cursor-pointer"
               >
                 {str.backToHub}
               </Link>

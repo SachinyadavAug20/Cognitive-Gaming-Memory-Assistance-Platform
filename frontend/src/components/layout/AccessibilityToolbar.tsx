@@ -1,11 +1,8 @@
 "use client";
 
 import { useSyncExternalStore, useCallback, useState } from "react";
-import Link from "next/link";
 import {
   Eye,
-  Paperclip,
-  Activity,
   Hand,
   Volume2,
   Sliders,
@@ -410,53 +407,25 @@ export function AccessibilityToolbar() {
   return (
     <>
       {/* ── TOP GOVERNMENT & ACCESSIBILITY COMMAND BAR ── */}
-      <div className="w-full border-b border-black/15 bg-[#F5EFE6] px-3 sm:px-6 py-1 text-xs text-ink select-none">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+      <div className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-clip">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-2 flex-nowrap">
           {/* Government of India / MDoNER Mandate Badge */}
-          <div className="flex items-center gap-2 font-bold shrink-0">
-            <span className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-tea">
+          <div className="flex items-center gap-1.5 font-bold shrink-0">
+            <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-tea whitespace-nowrap">
               <span className="inline-block h-2 w-2 rounded-full bg-tea animate-pulse" />
-              MoHFW &bull; MDoNER Initiative
+              MoHFW &bull; MDoNER
             </span>
-            <span className="text-black/30 hidden sm:inline">|</span>
-            <span className="text-[11px] text-ink-secondary hidden md:inline">
+            <span className="text-black/30 hidden 2xl:inline">|</span>
+            <span className="text-[11px] text-ink-secondary hidden 2xl:inline whitespace-nowrap">
               Cognitive Digital Therapeutics (CDTx)
             </span>
           </div>
 
-          {/* Quick Action Navigation Links & Accessibility Controls */}
-          <div className="flex items-center gap-2 ml-auto flex-wrap sm:flex-nowrap">
-            {/* Quick Links */}
-            <div className="hidden lg:flex items-center gap-1.5 text-[11px] font-extrabold text-ink-secondary">
-              <Link
-                href="/caregiver"
-                className="hover:text-tea transition-colors px-1.5 py-0.5 rounded hover:bg-surface"
-              >
-                Caregiver
-              </Link>
-              <span>&bull;</span>
-              <Link
-                href="/kiosk/login"
-                className="hover:text-tea transition-colors px-1.5 py-0.5 rounded hover:bg-surface flex items-center gap-1"
-              >
-                <Paperclip className="h-3 w-3" />
-                Card Scan
-              </Link>
-              <span>&bull;</span>
-              <Link
-                href="/command-center"
-                className="hover:text-tea transition-colors px-1.5 py-0.5 rounded hover:bg-surface flex items-center gap-1"
-              >
-                <Activity className="h-3 w-3" />
-                Live Telemetry
-              </Link>
-            </div>
-
-            <span className="text-black/30 hidden sm:inline">|</span>
-
+          {/* Quick Accessibility Controls */}
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             {/* 🖱️ / 🖐️ INPUT MODE SEGMENTED TOGGLE (STRICT MUTUAL EXCLUSION: ONE AT A TIME) */}
             <div
-              className="flex items-center rounded-xl border-2 border-black/50 bg-surface p-0.5 shadow-xs"
+              className="flex items-center rounded-xl border-2 border-black/50 bg-surface p-0.5 shadow-xs shrink-0"
               title="Input Mode: Either Physical Mouse or OpenCV Virtual Air Mouse (One at a time)"
             >
               <button
@@ -466,7 +435,7 @@ export function AccessibilityToolbar() {
                   setInputMode("physical");
                 }}
                 aria-pressed={inputMode === "physical"}
-                className={`flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs font-black transition-all cursor-pointer ${
+                className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black transition-all cursor-pointer ${
                   inputMode === "physical"
                     ? "bg-tea text-white shadow-xs"
                     : "text-ink hover:bg-surface-muted"
@@ -474,7 +443,7 @@ export function AccessibilityToolbar() {
                 title="Physical Mouse & Touch Mode (Standard OS Cursor)"
               >
                 <MousePointer className="h-3 w-3 stroke-[2.5]" />
-                <span className="hidden sm:inline">Mouse</span>
+                <span className="hidden md:inline">Mouse</span>
               </button>
 
               <button
@@ -484,7 +453,7 @@ export function AccessibilityToolbar() {
                   setInputMode("virtual");
                 }}
                 aria-pressed={inputMode === "virtual"}
-                className={`flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs font-black transition-all cursor-pointer ${
+                className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black transition-all cursor-pointer ${
                   inputMode === "virtual"
                     ? "bg-amber-400 text-black shadow-xs ring-2 ring-amber-300 animate-pulse"
                     : "text-ink hover:bg-surface-muted"
@@ -492,10 +461,10 @@ export function AccessibilityToolbar() {
                 title="OpenCV Virtual Air Mouse (In-Air Hand Tracking, Esc to exit)"
               >
                 <Hand className="h-3 w-3 stroke-[2.5]" />
-                <span className="hidden sm:inline">
-                  {inputMode === "virtual" ? "Air Mouse (ON)" : "Air Mouse"}
+                <span className="hidden md:inline">
+                  {inputMode === "virtual" ? "Air (ON)" : "Air Mouse"}
                 </span>
-                <span className="sm:hidden">
+                <span className="md:hidden">
                   {inputMode === "virtual" ? "Air: ON" : "Air"}
                 </span>
               </button>
@@ -509,7 +478,7 @@ export function AccessibilityToolbar() {
                 toggleListenFirst();
               }}
               aria-pressed={listenFirstActive}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-black border-2 transition-all cursor-pointer ${
+              className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
                 listenFirstActive
                   ? "bg-emerald-400 text-black border-black shadow-xs"
                   : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
@@ -517,11 +486,8 @@ export function AccessibilityToolbar() {
               title="Toggle Listen-First Auto-Narration on Hover/Focus"
             >
               <Volume2 className="h-3.5 w-3.5 stroke-[2.5]" />
-              <span className="hidden sm:inline">
+              <span className="hidden lg:inline">
                 {listenFirstActive ? "Listen: ON" : "Listen-First"}
-              </span>
-              <span className="sm:hidden">
-                {listenFirstActive ? "Voice: ON" : "Voice"}
               </span>
             </button>
 
@@ -532,21 +498,19 @@ export function AccessibilityToolbar() {
                 playPress();
                 setIsModalOpen(true);
               }}
-              className="flex items-center gap-1 rounded-lg border-2 border-black/40 bg-surface px-2 py-1 text-xs font-black text-ink hover:border-black shadow-xs cursor-pointer"
+              className="flex items-center gap-1 rounded-lg border-2 border-black/40 bg-surface px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black text-ink hover:border-black shadow-xs cursor-pointer shrink-0"
               title="Open Elder Accessibility Suite (WCAG AAA Settings)"
             >
               <Sliders className="h-3.5 w-3.5 stroke-[2.5]" />
-              <span className="hidden md:inline">Settings</span>
+              <span className="hidden lg:inline">Settings</span>
             </button>
-
-            <span className="text-black/30 hidden sm:inline">|</span>
 
             {/* High Contrast Toggle */}
             <button
               type="button"
               onClick={toggleHighContrast}
               aria-pressed={highContrast}
-              className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-black border-2 transition-all cursor-pointer ${
+              className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
                 highContrast
                   ? "bg-amber-400 text-black border-black shadow-xs"
                   : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
@@ -554,11 +518,11 @@ export function AccessibilityToolbar() {
               title="Toggle High Contrast Mode"
             >
               <Eye className="h-3.5 w-3.5" />
-              <span className="hidden md:inline">{highContrast ? "Contrast: ON" : "Contrast"}</span>
+              <span className="hidden lg:inline">{highContrast ? "Contrast: ON" : "Contrast"}</span>
             </button>
 
             {/* Font Size Scaler */}
-            <div className="flex items-center gap-0.5 rounded border border-black/30 bg-surface p-0.5">
+            <div className="flex items-center gap-0.5 rounded border border-black/30 bg-surface p-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setFontSize("sm")}
@@ -572,7 +536,7 @@ export function AccessibilityToolbar() {
               <button
                 type="button"
                 onClick={() => setFontSize("md")}
-                className={`px-1.5 py-0.5 text-[11px] font-black rounded cursor-pointer ${
+                className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
                   fontSizeLevel === "md" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Standard Text"
@@ -582,10 +546,10 @@ export function AccessibilityToolbar() {
               <button
                 type="button"
                 onClick={() => setFontSize("lg")}
-                className={`px-1.5 py-0.5 text-[12px] font-black rounded cursor-pointer ${
+                className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
                   fontSizeLevel === "lg" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
                 }`}
-                title="Large Text (Elderly Friendly)"
+                title="Large Text (Elder Assist)"
               >
                 A+
               </button>

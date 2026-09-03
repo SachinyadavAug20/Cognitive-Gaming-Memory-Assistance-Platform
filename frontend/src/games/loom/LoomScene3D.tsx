@@ -210,6 +210,19 @@ export function LoomScene3D({
     scene.add(shuttleGroup);
     shuttleMeshRef.current = shuttleGroup;
 
+    // Trailing Weft Silk Thread Line
+    const weftThreadGeo = new THREE.BufferGeometry();
+    weftThreadGeo.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute([0, 0.4, 0.25, 0, 0.4, 0.08], 3)
+    );
+    const weftThreadMat = new THREE.LineBasicMaterial({
+      color: 0xdc2626,
+      linewidth: 3,
+    });
+    const weftThreadLine = new THREE.Line(weftThreadGeo, weftThreadMat);
+    scene.add(weftThreadLine);
+
     // 8. ANIMATION LOOP
     const clock = new THREE.Clock();
     let animId: number;
@@ -223,6 +236,19 @@ export function LoomScene3D({
         const targetX = shuttlePosition * 2.3;
         shuttleMeshRef.current.position.x += (targetX - shuttleMeshRef.current.position.x) * 0.14;
         shuttleMeshRef.current.rotation.x = Math.sin(time * 3) * 0.08;
+
+        // Update trailing thread line from shuttle to weaving edge
+        const sx = shuttleMeshRef.current.position.x;
+        const sy = shuttleMeshRef.current.position.y;
+        const sz = shuttleMeshRef.current.position.z;
+        const pos = weftThreadLine.geometry.attributes.position.array as Float32Array;
+        pos[0] = sx;
+        pos[1] = sy;
+        pos[2] = sz;
+        pos[3] = -sx * 0.5;
+        pos[4] = 0.4;
+        pos[5] = 0.08;
+        weftThreadLine.geometry.attributes.position.needsUpdate = true;
       }
 
       // Gentle camera breath
