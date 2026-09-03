@@ -1,5 +1,3 @@
-"use client";
-
 import { Activity, ShieldCheck, Cpu, Globe2 } from "lucide-react";
 
 export function ClinicalImpactBadges() {

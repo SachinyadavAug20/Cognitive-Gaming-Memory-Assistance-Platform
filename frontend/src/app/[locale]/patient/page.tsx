@@ -394,6 +394,7 @@ export default function PatientHome() {
                   alt={patientName || "Patient Portrait"}
                   width={80}
                   height={80}
+                  sizes="80px"
                   className="h-full w-full object-cover"
                   priority
                 />

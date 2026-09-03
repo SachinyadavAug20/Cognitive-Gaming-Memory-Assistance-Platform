@@ -39,6 +39,7 @@ export function PatientGreetingHero({
                 alt="Patient Avatar"
                 width={64}
                 height={64}
+                sizes="64px"
                 className="h-full w-full object-cover"
                 priority
               />

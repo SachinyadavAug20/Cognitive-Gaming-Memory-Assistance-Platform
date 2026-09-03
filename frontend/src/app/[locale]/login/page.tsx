@@ -1,9 +1,24 @@
+import type { Metadata } from "next";
 import { Link } from "@/i18n/navigation";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { QuickAccessLinks } from "@/components/auth/QuickAccessLinks";
 import { KioskLoginSection } from "@/components/auth/KioskLoginSection";
+import { buildMetadata } from "@/lib/metadata";
 
-export default function LoginPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return buildMetadata({
+    locale,
+    title: "Staff, Caregiver & Clinician Login",
+    description:
+      "Secure sign-in for CogniCare caregivers, ASHA workers, PHC clinicians and administrators managing elderly dementia and MCI digital therapy.",
+    path: "/login",
+  });
+}
+
+export default async function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 paper-texture">
       <div className="w-full max-w-md space-y-5">

@@ -1,5 +1,7 @@
+import { SITE_URL } from "@/lib/site";
+
 export function StructuredData({ locale = "en" }: { locale?: string }) {
-  const baseUrl = "https://cognitive-gaming-memory-assistance.vercel.app";
+  const baseUrl = SITE_URL;
 
   const medicalAppSchema = {
     "@context": "https://schema.org",

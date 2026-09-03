@@ -9,6 +9,7 @@ import { Fraunces, Atkinson_Hyperlegible, JetBrains_Mono } from "next/font/googl
 import { AccessibilityToolbar } from "@/components/layout/AccessibilityToolbar";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { StructuredData } from "@/components/seo/StructuredData";
+import { SITE_URL, SITE_DESCRIPTION } from "@/lib/site";
 import "../globals.css";
 
 const fraunces = Fraunces({
@@ -39,7 +40,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const baseUrl = "https://cognitive-gaming-memory-assistance.vercel.app";
+  const baseUrl = SITE_URL;
 
   const languages: Record<string, string> = {
     "x-default": `${baseUrl}/en`,
@@ -54,8 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       default: "CogniCare CDTx — AI Memory & Cognitive Therapy for Elderly",
       template: "%s | CogniCare CDTx",
     },
-    description:
-      "Clinically calibrated Cognitive Digital Therapeutics (CDTx) and memory assistance platform for elderly dementia and MCI patients in North East India. Proposed for MDoNER • Problem Statement SIH26003.",
+    description: SITE_DESCRIPTION,
     keywords: [
       "dementia cognitive therapy",
       "Alzheimer's memory assistance",
@@ -148,34 +148,14 @@ export default async function LocaleLayout({ children, params }: Props) {
           id="cognicare-init-theme"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){
-              try {
-                var s = localStorage.getItem('cognicare_font_size');
-                if (s === 'sm') document.documentElement.style.fontSize = '16px';
-                else if (s === 'lg') document.documentElement.style.fontSize = '22px';
-                else document.documentElement.style.fontSize = '18px';
-                if (localStorage.getItem('cognicare_high_contrast') === 'true') {
-                  document.documentElement.classList.add('high-contrast-mode');
-                }
-              } catch(e){}
-            })()`,
+            __html: `(function(){try{var s=localStorage.getItem('cognicare_font_size');if(s==='sm'){document.documentElement.style.fontSize='16px'}else if(s==='lg'){document.documentElement.style.fontSize='22px'}else{document.documentElement.style.fontSize='18px'}if(localStorage.getItem('cognicare_high_contrast')==='true'){document.documentElement.classList.add('high-contrast-mode')}}catch(e){}})();`,
           }}
         />
         <Script
           id="cognicare-keyboard-focus"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){
-              try {
-                var html = document.documentElement;
-                var KEYBOARD_KEYS = ['Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' ','Escape'];
-                function mouseDown(){ html.classList.remove('keyboard-user'); }
-                function keyDown(e){ if (KEYBOARD_KEYS.indexOf(e.key) !== -1) html.classList.add('keyboard-user'); }
-                window.addEventListener('mousedown', mouseDown);
-                window.addEventListener('pointerdown', function(e){ if (e.pointerType === 'mouse') mouseDown(); });
-                window.addEventListener('keydown', keyDown);
-              } catch(e){}
-            })()`,
+            __html: `(function(){try{var K=['Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Escape',' '];var h=document.documentElement;var off=function(){h.classList.remove('keyboard-user')};var on=function(e){if(K.indexOf(e.key)!==-1){h.classList.add('keyboard-user')}};window.addEventListener('mousedown',off);window.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse')off()});window.addEventListener('keydown',on)}catch(e){}})();`,
           }}
         />
         <StructuredData locale={locale} />

@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { GAMES } from "@/games/registry";
-
-const GAME_IDS = GAMES.map((g) => g.id);
+import { GAME_IDS } from "@/games/meta";
+import { SITE_URL } from "@/lib/site";
 
 const CORE_PAGES = [
   { path: "", priority: 1.0, changeFrequency: "daily" as const },
@@ -15,7 +14,7 @@ const CORE_PAGES = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://cognitive-gaming-memory-assistance.vercel.app";
+  const baseUrl = SITE_URL;
   const now = new Date();
 
   const entries: MetadataRoute.Sitemap = [];

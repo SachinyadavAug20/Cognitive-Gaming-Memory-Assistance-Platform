@@ -1,0 +1,3 @@
+2026-09-03 22:07:30.165596+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PATIENT_CARDS" not found; SQL statement:
+SELECT COUNT(*) AS patient_cards FROM PATIENT_CARDS [42102-240]

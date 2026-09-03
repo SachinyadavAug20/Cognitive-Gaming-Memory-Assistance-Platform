@@ -57,6 +57,7 @@ export function FamilyNetworkCard({ familyMembers, onOpenLightbox }: FamilyNetwo
                         alt={`Family member ${member.name} (${member.relation})`}
                         width={56}
                         height={56}
+                        sizes="56px"
                         className="w-14 h-14 rounded-xl border-2 border-border object-cover bg-surface-muted"
                         loading="lazy"
                       />

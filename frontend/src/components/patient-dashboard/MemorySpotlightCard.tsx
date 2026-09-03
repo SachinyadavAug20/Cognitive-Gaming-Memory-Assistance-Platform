@@ -58,6 +58,7 @@ export function MemorySpotlightCard({
                   alt="Memory of the day photograph"
                   width={128}
                   height={128}
+                  sizes="128px"
                   className="h-28 w-28 sm:h-32 sm:w-32 object-cover"
                   loading="lazy"
                 />
