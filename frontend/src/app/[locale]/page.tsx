@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "@/i18n/navigation";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
-import { AppHeader } from "@/components/layout/AppHeader";
 import { PortalCard } from "@/components/home/PortalCard";
 import { RegionalStatesHub } from "@/components/home/RegionalStatesHub";
 import { ClinicalImpactBadges } from "@/components/home/ClinicalImpactBadges";
@@ -46,8 +45,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas paper-texture">
-      <AppHeader />
-
       <main className="flex-1 px-4 py-6 md:px-8 md:py-8 overflow-y-auto">
         <div className="max-w-5xl mx-auto space-y-8">
           {/* 1. Warm Greeting & Primary Patient Check-In CTA */}

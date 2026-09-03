@@ -9,6 +9,7 @@ import {
   Hand,
   Volume2,
   Sliders,
+  MousePointer,
 } from "lucide-react";
 import { VirtualAirMouse } from "@/components/accessibility/VirtualAirMouse";
 import { KeyboardSwitchController } from "@/components/accessibility/KeyboardSwitchController";
@@ -45,13 +46,15 @@ function getHighContrastSnapshot(): boolean {
   return false;
 }
 
-function getAirMouseSnapshot(): boolean {
+function getInputModeSnapshot(): "physical" | "virtual" {
   try {
-    return localStorage.getItem("cognicare_air_mouse") === "true";
+    const v = localStorage.getItem("cognicare_input_mode");
+    if (v === "virtual" || v === "physical") return v;
+    if (localStorage.getItem("cognicare_air_mouse") === "true") return "virtual";
   } catch {
     // Ignore
   }
-  return false;
+  return "physical";
 }
 
 function getListenFirstSnapshot(): boolean {
@@ -83,6 +86,66 @@ function getSmoothingSnapshot(): number {
   return 0.35;
 }
 
+function getMotionReachSnapshot(): number {
+  try {
+    const v = localStorage.getItem("cognicare_motion_reach");
+    if (v) return Number(v);
+  } catch {
+    // Ignore
+  }
+  return 1.0;
+}
+
+function getClickMethodSnapshot(): "dwell" | "pinch" | "key" {
+  try {
+    const v = localStorage.getItem("cognicare_click_method");
+    if (v === "dwell" || v === "pinch" || v === "key") return v;
+  } catch {
+    // Ignore
+  }
+  return "pinch"; // Method B: Pinch Gesture Click is the primary default
+}
+
+function getCameraViewModeSnapshot(): "pip" | "minimized" | "hidden" {
+  try {
+    const v = localStorage.getItem("cognicare_camera_view");
+    if (v === "pip" || v === "minimized" || v === "hidden") return v;
+  } catch {
+    // Ignore
+  }
+  return "pip";
+}
+
+function getHandoffPolicySnapshot(): "auto" | "strict" {
+  try {
+    const v = localStorage.getItem("cognicare_handoff_policy");
+    if (v === "auto" || v === "strict") return v;
+  } catch {
+    // Ignore
+  }
+  return "auto";
+}
+
+function getStickyMagnetismSnapshot(): boolean {
+  try {
+    const v = localStorage.getItem("cognicare_sticky_magnetism");
+    if (v !== null) return v === "true";
+  } catch {
+    // Ignore
+  }
+  return true;
+}
+
+function getAudioTicksSnapshot(): boolean {
+  try {
+    const v = localStorage.getItem("cognicare_audio_ticks");
+    if (v !== null) return v === "true";
+  } catch {
+    // Ignore
+  }
+  return true;
+}
+
 function getCursorSizeSnapshot(): "normal" | "large" | "giant" {
   try {
     const v = localStorage.getItem("cognicare_cursor_size");
@@ -91,6 +154,16 @@ function getCursorSizeSnapshot(): "normal" | "large" | "giant" {
     // Ignore
   }
   return "large";
+}
+
+function getCursorPaceSnapshot(): "calm" | "gentle" | "standard" {
+  try {
+    const v = localStorage.getItem("cognicare_cursor_pace");
+    if (v === "calm" || v === "gentle" || v === "standard") return v;
+  } catch {
+    // Ignore
+  }
+  return "calm"; // Default: Slow, calm, steady movement for elders
 }
 
 export function AccessibilityToolbar() {
@@ -108,10 +181,10 @@ export function AccessibilityToolbar() {
     () => false
   );
 
-  const airMouseActive = useSyncExternalStore<boolean>(
+  const inputMode = useSyncExternalStore<"physical" | "virtual">(
     subscribeStorage,
-    getAirMouseSnapshot,
-    () => false
+    getInputModeSnapshot,
+    () => "physical"
   );
 
   const listenFirstActive = useSyncExternalStore<boolean>(
@@ -132,16 +205,83 @@ export function AccessibilityToolbar() {
     () => 0.35
   );
 
+  const motionReach = useSyncExternalStore<number>(
+    subscribeStorage,
+    getMotionReachSnapshot,
+    () => 1.0
+  );
+
+  const clickMethod = useSyncExternalStore<"dwell" | "pinch" | "key">(
+    subscribeStorage,
+    getClickMethodSnapshot,
+    () => "pinch"
+  );
+
+  const cameraViewMode = useSyncExternalStore<"pip" | "minimized" | "hidden">(
+    subscribeStorage,
+    getCameraViewModeSnapshot,
+    () => "pip"
+  );
+
+  const handoffPolicy = useSyncExternalStore<"auto" | "strict">(
+    subscribeStorage,
+    getHandoffPolicySnapshot,
+    () => "auto"
+  );
+
+  const stickyMagnetism = useSyncExternalStore<boolean>(
+    subscribeStorage,
+    getStickyMagnetismSnapshot,
+    () => true
+  );
+
+  const audioTicks = useSyncExternalStore<boolean>(
+    subscribeStorage,
+    getAudioTicksSnapshot,
+    () => true
+  );
+
   const cursorSize = useSyncExternalStore<"normal" | "large" | "giant">(
     subscribeStorage,
     getCursorSizeSnapshot,
     () => "large"
   );
 
+  const cursorPace = useSyncExternalStore<"calm" | "gentle" | "standard">(
+    subscribeStorage,
+    getCursorPaceSnapshot,
+    () => "calm"
+  );
+
   // Mount listen-first narration hook
   const { speakElement } = useListenFirst(listenFirstActive);
 
   // Mutators
+  const setCursorPace = useCallback((pace: "calm" | "gentle" | "standard") => {
+    try {
+      localStorage.setItem("cognicare_cursor_pace", pace);
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
+  const setStickyMagnetism = useCallback((on: boolean) => {
+    try {
+      localStorage.setItem("cognicare_sticky_magnetism", String(on));
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const setAudioTicks = useCallback((on: boolean) => {
+    try {
+      localStorage.setItem("cognicare_audio_ticks", String(on));
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
   const setFontSize = useCallback((level: "sm" | "md" | "lg") => {
     try {
       localStorage.setItem("cognicare_font_size", level);
@@ -170,17 +310,27 @@ export function AccessibilityToolbar() {
     }
   }, []);
 
-  const toggleAirMouse = useCallback((forceVal?: boolean) => {
+  const setInputMode = useCallback((mode: "physical" | "virtual") => {
     try {
       unlockAudio();
-      const current = getAirMouseSnapshot();
-      const next = typeof forceVal === "boolean" ? forceVal : !current;
-      localStorage.setItem("cognicare_air_mouse", String(next));
+      localStorage.setItem("cognicare_input_mode", mode);
+      localStorage.setItem("cognicare_air_mouse", String(mode === "virtual"));
       window.dispatchEvent(new Event("cognicare_accessibility_change"));
     } catch {
       // Ignore
     }
   }, []);
+
+  const toggleAirMouse = useCallback((forceVal?: boolean) => {
+    try {
+      unlockAudio();
+      const current = getInputModeSnapshot() === "virtual";
+      const next = typeof forceVal === "boolean" ? forceVal : !current;
+      setInputMode(next ? "virtual" : "physical");
+    } catch {
+      // Ignore
+    }
+  }, [setInputMode]);
 
   const toggleListenFirst = useCallback((forceVal?: boolean) => {
     try {
@@ -212,6 +362,42 @@ export function AccessibilityToolbar() {
     }
   }, []);
 
+  const setMotionReach = useCallback((val: number) => {
+    try {
+      localStorage.setItem("cognicare_motion_reach", String(val));
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const setClickMethod = useCallback((method: "dwell" | "pinch" | "key") => {
+    try {
+      localStorage.setItem("cognicare_click_method", method);
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const setCameraViewMode = useCallback((mode: "pip" | "minimized" | "hidden") => {
+    try {
+      localStorage.setItem("cognicare_camera_view", mode);
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
+
+  const setHandoffPolicy = useCallback((policy: "auto" | "strict") => {
+    try {
+      localStorage.setItem("cognicare_handoff_policy", policy);
+      window.dispatchEvent(new Event("cognicare_accessibility_change"));
+    } catch {
+      // Ignore
+    }
+  }, []);
+
   const setCursorSize = useCallback((size: "normal" | "large" | "giant") => {
     try {
       localStorage.setItem("cognicare_cursor_size", size);
@@ -223,56 +409,97 @@ export function AccessibilityToolbar() {
 
   return (
     <>
-      <div className="w-full border-b-2 border-black bg-[#EFE9DF] px-3 py-1.5 text-xs text-ink select-none font-bold">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2">
-          {/* Left: Problem Statement Label */}
-          <div className="flex items-center gap-2">
-            <Paperclip className="h-3.5 w-3.5 text-tea shrink-0" />
-            <span className="hidden sm:inline text-[11px] font-black uppercase tracking-wider text-ink">
-              CogniCare CDTx // Proposed Solution for MDoNER Problem Statement
+      {/* ── TOP GOVERNMENT & ACCESSIBILITY COMMAND BAR ── */}
+      <div className="w-full border-b border-black/15 bg-[#F5EFE6] px-3 sm:px-6 py-1 text-xs text-ink select-none">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+          {/* Government of India / MDoNER Mandate Badge */}
+          <div className="flex items-center gap-2 font-bold shrink-0">
+            <span className="flex items-center gap-1 text-[11px] font-black uppercase tracking-wider text-tea">
+              <span className="inline-block h-2 w-2 rounded-full bg-tea animate-pulse" />
+              MoHFW &bull; MDoNER Initiative
             </span>
-            <span className="sm:hidden text-[10px] font-black uppercase tracking-wider text-ink">
-              CogniCare CDTx // MDoNER Track
+            <span className="text-black/30 hidden sm:inline">|</span>
+            <span className="text-[11px] text-ink-secondary hidden md:inline">
+              Cognitive Digital Therapeutics (CDTx)
             </span>
           </div>
 
-          {/* Right: Accessibility Controls & Command Center Link */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            {/* Public Health Command Center Link */}
-            <Link
-              href="/command-center"
-              className="flex items-center gap-1 text-[11px] font-black text-tea hover:underline"
-            >
-              <Activity className="h-3.5 w-3.5" />
-              <span className="hidden md:inline">8-State NE Telemetry</span>
-              <span className="md:hidden">Telemetry</span>
-            </Link>
+          {/* Quick Action Navigation Links & Accessibility Controls */}
+          <div className="flex items-center gap-2 ml-auto flex-wrap sm:flex-nowrap">
+            {/* Quick Links */}
+            <div className="hidden lg:flex items-center gap-1.5 text-[11px] font-extrabold text-ink-secondary">
+              <Link
+                href="/caregiver"
+                className="hover:text-tea transition-colors px-1.5 py-0.5 rounded hover:bg-surface"
+              >
+                Caregiver
+              </Link>
+              <span>&bull;</span>
+              <Link
+                href="/kiosk/login"
+                className="hover:text-tea transition-colors px-1.5 py-0.5 rounded hover:bg-surface flex items-center gap-1"
+              >
+                <Paperclip className="h-3 w-3" />
+                Card Scan
+              </Link>
+              <span>&bull;</span>
+              <Link
+                href="/command-center"
+                className="hover:text-tea transition-colors px-1.5 py-0.5 rounded hover:bg-surface flex items-center gap-1"
+              >
+                <Activity className="h-3 w-3" />
+                Live Telemetry
+              </Link>
+            </div>
 
             <span className="text-black/30 hidden sm:inline">|</span>
 
-            {/* 🖐️ Air Mouse Quick Toggle */}
-            <button
-              type="button"
-              onClick={() => {
-                playPress();
-                toggleAirMouse();
-              }}
-              aria-pressed={airMouseActive}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-black border-2 transition-all cursor-pointer ${
-                airMouseActive
-                  ? "bg-amber-400 text-black border-black ring-2 ring-amber-300 shadow-xs animate-pulse"
-                  : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
-              }`}
-              title="Toggle OpenCV Virtual Air Mouse (Key: M)"
+            {/* 🖱️ / 🖐️ INPUT MODE SEGMENTED TOGGLE (STRICT MUTUAL EXCLUSION: ONE AT A TIME) */}
+            <div
+              className="flex items-center rounded-xl border-2 border-black/50 bg-surface p-0.5 shadow-xs"
+              title="Input Mode: Either Physical Mouse or OpenCV Virtual Air Mouse (One at a time)"
             >
-              <Hand className="h-3.5 w-3.5 stroke-[2.5]" />
-              <span className="hidden sm:inline">
-                {airMouseActive ? "Air Mouse: ON" : "Air Mouse (M)"}
-              </span>
-              <span className="sm:hidden">
-                {airMouseActive ? "Air: ON" : "Air Mouse"}
-              </span>
-            </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playPress();
+                  setInputMode("physical");
+                }}
+                aria-pressed={inputMode === "physical"}
+                className={`flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs font-black transition-all cursor-pointer ${
+                  inputMode === "physical"
+                    ? "bg-tea text-white shadow-xs"
+                    : "text-ink hover:bg-surface-muted"
+                }`}
+                title="Physical Mouse & Touch Mode (Standard OS Cursor)"
+              >
+                <MousePointer className="h-3 w-3 stroke-[2.5]" />
+                <span className="hidden sm:inline">Mouse</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playPress();
+                  setInputMode("virtual");
+                }}
+                aria-pressed={inputMode === "virtual"}
+                className={`flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs font-black transition-all cursor-pointer ${
+                  inputMode === "virtual"
+                    ? "bg-amber-400 text-black shadow-xs ring-2 ring-amber-300 animate-pulse"
+                    : "text-ink hover:bg-surface-muted"
+                }`}
+                title="OpenCV Virtual Air Mouse (In-Air Hand Tracking, Esc to exit)"
+              >
+                <Hand className="h-3 w-3 stroke-[2.5]" />
+                <span className="hidden sm:inline">
+                  {inputMode === "virtual" ? "Air Mouse (ON)" : "Air Mouse"}
+                </span>
+                <span className="sm:hidden">
+                  {inputMode === "virtual" ? "Air: ON" : "Air"}
+                </span>
+              </button>
+            </div>
 
             {/* 🗣️ Listen-First Quick Toggle */}
             <button
@@ -368,13 +595,20 @@ export function AccessibilityToolbar() {
       </div>
 
       {/* ── GLOBAL ACTIVE ACCESSIBILITY RUNTIMES ── */}
-      {/* 1. OpenCV Virtual Air Mouse */}
+      {/* 1. OpenCV Virtual Air Mouse (Strict Mutual Exclusion) */}
       <VirtualAirMouse
-        active={airMouseActive}
-        onClose={() => toggleAirMouse(false)}
+        active={inputMode === "virtual"}
+        onClose={() => setInputMode("physical")}
         dwellTimeMs={dwellTimeMs}
         smoothing={smoothing}
+        motionReach={motionReach}
         cursorSize={cursorSize}
+        cursorPace={cursorPace}
+        clickMethod={clickMethod}
+        cameraViewMode={cameraViewMode}
+        handoffPolicy={handoffPolicy}
+        stickyMagnetism={stickyMagnetism}
+        audioTicks={audioTicks}
         onHoverTarget={(el) => {
           if (listenFirstActive && el) {
             speakElement(el);
@@ -385,7 +619,7 @@ export function AccessibilityToolbar() {
       {/* 2. Keyboard & Switch Access Controller */}
       <KeyboardSwitchController
         active={true}
-        onToggleAirMouse={() => toggleAirMouse()}
+        onToggleAirMouse={() => setInputMode(inputMode === "virtual" ? "physical" : "virtual")}
         onSpeakFocus={() => {
           const el = document.activeElement as HTMLElement | null;
           if (el) speakElement(el);
@@ -396,14 +630,30 @@ export function AccessibilityToolbar() {
       <AccessibilityModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        airMouseActive={airMouseActive}
+        inputMode={inputMode}
+        onInputModeChange={setInputMode}
+        airMouseActive={inputMode === "virtual"}
         onToggleAirMouse={toggleAirMouse}
+        clickMethod={clickMethod}
+        onClickMethodChange={setClickMethod}
         dwellTimeMs={dwellTimeMs}
         onDwellTimeChange={setDwellTime}
         smoothing={smoothing}
         onSmoothingChange={setSmoothing}
+        motionReach={motionReach}
+        onMotionReachChange={setMotionReach}
         cursorSize={cursorSize}
         onCursorSizeChange={setCursorSize}
+        cursorPace={cursorPace}
+        onCursorPaceChange={setCursorPace}
+        cameraViewMode={cameraViewMode}
+        onCameraViewModeChange={setCameraViewMode}
+        handoffPolicy={handoffPolicy}
+        onHandoffPolicyChange={setHandoffPolicy}
+        stickyMagnetism={stickyMagnetism}
+        onStickyMagnetismChange={setStickyMagnetism}
+        audioTicks={audioTicks}
+        onAudioTicksChange={setAudioTicks}
         listenFirstEnabled={listenFirstActive}
         onToggleListenFirst={toggleListenFirst}
         highContrast={highContrast}

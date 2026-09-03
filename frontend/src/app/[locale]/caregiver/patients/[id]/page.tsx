@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { api } from "@/lib/api";
-import { AppHeader } from "@/components/layout/AppHeader";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { patientLangCode } from "@/lib/i18n";
 import { speechRate } from "@/games/config";
@@ -108,8 +107,6 @@ export default function CaregiverPatientDetail() {
 
   return (
     <div className="min-h-screen pb-16 bg-canvas paper-texture">
-      <AppHeader />
-
       {/* Patient Banner & Header */}
       <PatientHeroCard
         patient={patient}

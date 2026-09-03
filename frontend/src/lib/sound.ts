@@ -502,6 +502,14 @@ export function playTapFeedback(): void {
   playNote(350, ensureAudioContext()?.currentTime ?? 0, 0.035, 0.1);
 }
 
+/** Gentle tick sound for virtual mouse dwell progress */
+export function playDwellTick(pct: number): void {
+  const ctx = ensureAudioContext();
+  if (!ctx) return;
+  const freq = 420 + Math.min(100, Math.max(0, pct)) * 3.5;
+  playNote(freq, ctx.currentTime, 0.015, 0.035, "sine");
+}
+
 export function playMechanicalClick(): void {
   playPress();
 }

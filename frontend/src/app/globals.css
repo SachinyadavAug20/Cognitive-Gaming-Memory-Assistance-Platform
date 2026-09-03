@@ -692,3 +692,15 @@ html.high-contrast-mode {
 .dwell-ripple-effect {
   animation: dwell-ripple 0.45s ease-out forwards;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   EXCLUSIVE VIRTUAL MOUSE MODE (ONE AT A TIME)
+   Guarantees zero dual-cursor confusion: hides physical cursor completely
+   ══════════════════════════════════════════════════════════════ */
+html.virtual-mouse-active,
+html.virtual-mouse-active *,
+body.virtual-mouse-active,
+body.virtual-mouse-active * {
+  cursor: none !important;
+}
+

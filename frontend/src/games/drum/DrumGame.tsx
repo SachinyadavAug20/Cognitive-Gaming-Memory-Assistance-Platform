@@ -1,31 +1,33 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   Music,
-  RotateCcw,
   Paperclip,
   ShieldCheck,
-  CheckCircle2,
   Activity,
   Camera,
+  Sliders,
+  UserCheck,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { playPress, playCorrect, playComplete, playLifeSong, playTapFeedback } from "@/lib/sound";
+import { playPress, playCorrect, playComplete, playTapFeedback } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
-import { speechRate, startLevel, calculateBilateralSymmetry } from "@/games/config";
+import { speechRate, startLevel } from "@/games/config";
 import { OpticalMotionTracker, type MotionEvent } from "@/lib/vision";
 import { DrumScene3D } from "./DrumScene3D";
 import { getGameStrings } from "@/lib/gameI18n";
+
+type DrumState = "ARMED" | "COOLDOWN" | "WAITING_LIFT";
 
 function GameShell({
   title,
@@ -66,12 +68,24 @@ export function DrumGame() {
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
-  // Vision Air-Drumming state
+  // Vision Air-Drumming State & Settings
   const [isVisionActive, setIsVisionActive] = useState(false);
   const [leftMotionLevel, setLeftMotionLevel] = useState(0);
   const [rightMotionLevel, setRightMotionLevel] = useState(0);
+  const [leftDrumVisualState, setLeftDrumVisualState] = useState<DrumState>("ARMED");
+  const [rightDrumVisualState, setRightDrumVisualState] = useState<DrumState>("ARMED");
+  const [showVisionSettings, setShowVisionSettings] = useState(false);
+
+  // Calibrated Clinical Settings (Calm tempo for elders, high threshold against face motion)
+  const [strikeThreshold, setStrikeThreshold] = useState(0.60); // 60% optimal calibrated threshold
+  const [strikePaceMs, setStrikePaceMs] = useState(600); // 600ms calm cadence (~90 BPM)
 
   const trackerRef = useRef<OpticalMotionTracker | null>(null);
+  const pipCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // State Machine refs
+  const leftDrumStateRef = useRef<DrumState>("ARMED");
+  const rightDrumStateRef = useRef<DrumState>("ARMED");
   const lastStrikeTimeRef = useRef<{ left: number; right: number }>({ left: 0, right: 0 });
 
   const TARGET_HITS = 12;
@@ -121,41 +135,123 @@ export function DrumGame() {
     [TARGET_HITS, level, patientId, startedAt, taps]
   );
 
-  // Vision motion callback handler
+  // Vision motion callback handler (Percussion State Machine with Arming & Rebound)
   const handleMotionEvent = useCallback(
     (evt: MotionEvent) => {
-      setLeftMotionLevel(evt.leftEnergy);
-      setRightMotionLevel(evt.rightEnergy);
+      // Use head-excluded drum energies (or fallback)
+      const leftVal = evt.drumLeftEnergy !== undefined ? evt.drumLeftEnergy : evt.leftEnergy;
+      const rightVal = evt.drumRightEnergy !== undefined ? evt.drumRightEnergy : evt.rightEnergy;
+
+      setLeftMotionLevel(leftVal);
+      setRightMotionLevel(rightVal);
 
       const now = Date.now();
-      const STRIKE_COOLDOWN = 280; // Debounce threshold in ms for distinct air drum strokes
-      const STRIKE_ENERGY_THRESHOLD = 0.32;
+      const RESET_ENERGY_THRESHOLD = 0.32; // Hand must relax / lift below 32% to re-arm
 
-      // Check for Bilateral Double-Clap
-      if (
-        evt.gesture === "BILATERAL_CLAP" &&
-        now - lastStrikeTimeRef.current.left > STRIKE_COOLDOWN &&
-        now - lastStrikeTimeRef.current.right > STRIKE_COOLDOWN
-      ) {
-        lastStrikeTimeRef.current.left = now;
-        lastStrikeTimeRef.current.right = now;
-        handleDrumHit("left");
-        setTimeout(() => handleDrumHit("right"), 60);
-      } else if (
-        (evt.leftHand !== null || evt.leftEnergy > STRIKE_ENERGY_THRESHOLD) &&
-        now - lastStrikeTimeRef.current.left > STRIKE_COOLDOWN
-      ) {
-        lastStrikeTimeRef.current.left = now;
-        handleDrumHit("left");
-      } else if (
-        (evt.rightHand !== null || evt.rightEnergy > STRIKE_ENERGY_THRESHOLD) &&
-        now - lastStrikeTimeRef.current.right > STRIKE_COOLDOWN
-      ) {
-        lastStrikeTimeRef.current.right = now;
-        handleDrumHit("right");
+      // 1. LEFT DRUM STATE MACHINE
+      const leftElapsed = now - lastStrikeTimeRef.current.left;
+      let nextLeftState = leftDrumStateRef.current;
+
+      if (leftDrumStateRef.current === "COOLDOWN") {
+        if (leftElapsed >= strikePaceMs) {
+          nextLeftState = leftVal < RESET_ENERGY_THRESHOLD ? "ARMED" : "WAITING_LIFT";
+        }
+      } else if (leftDrumStateRef.current === "WAITING_LIFT") {
+        if (leftVal < RESET_ENERGY_THRESHOLD) {
+          nextLeftState = "ARMED";
+        }
+      } else if (leftDrumStateRef.current === "ARMED") {
+        if (leftVal >= strikeThreshold && leftElapsed >= strikePaceMs) {
+          nextLeftState = "COOLDOWN";
+          lastStrikeTimeRef.current.left = now;
+          handleDrumHit("left");
+        }
+      }
+
+      leftDrumStateRef.current = nextLeftState;
+      setLeftDrumVisualState(nextLeftState);
+
+      // 2. RIGHT DRUM STATE MACHINE
+      const rightElapsed = now - lastStrikeTimeRef.current.right;
+      let nextRightState = rightDrumStateRef.current;
+
+      if (rightDrumStateRef.current === "COOLDOWN") {
+        if (rightElapsed >= strikePaceMs) {
+          nextRightState = rightVal < RESET_ENERGY_THRESHOLD ? "ARMED" : "WAITING_LIFT";
+        }
+      } else if (rightDrumStateRef.current === "WAITING_LIFT") {
+        if (rightVal < RESET_ENERGY_THRESHOLD) {
+          nextRightState = "ARMED";
+        }
+      } else if (rightDrumStateRef.current === "ARMED") {
+        if (rightVal >= strikeThreshold && rightElapsed >= strikePaceMs) {
+          nextRightState = "COOLDOWN";
+          lastStrikeTimeRef.current.right = now;
+          handleDrumHit("right");
+        }
+      }
+
+      rightDrumStateRef.current = nextRightState;
+      setRightDrumVisualState(nextRightState);
+
+      // 3. RENDER LIVE CAMERA PREVIEW WITH DRUM TARGET OVERLAYS
+      if (pipCanvasRef.current) {
+        const canvas = pipCanvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          const videoEl = trackerRef.current?.getVideoElement();
+          if (videoEl && videoEl.readyState >= 2) {
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+          } else {
+            ctx.fillStyle = "#1e1b18";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+
+          const w = canvas.width;
+          const h = canvas.height;
+
+          // Dotted Face Exclusion Corridor (Reassurance that head is ignored)
+          ctx.strokeStyle = "rgba(148, 163, 184, 0.45)";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          ctx.strokeRect(w * 0.28, h * 0.04, w * 0.44, h * 0.38);
+
+          ctx.fillStyle = "rgba(148, 163, 184, 0.75)";
+          ctx.font = "bold 9px sans-serif";
+          ctx.fillText("FACE ZONE (IGNORED)", w * 0.33, h * 0.12);
+
+          // Left Drum Zone
+          ctx.setLineDash([]);
+          const isLeftStruck = nextLeftState === "COOLDOWN";
+          ctx.strokeStyle = isLeftStruck ? "#f59e0b" : "rgba(245, 158, 11, 0.6)";
+          ctx.lineWidth = isLeftStruck ? 3 : 2;
+          ctx.fillStyle = isLeftStruck ? "rgba(245, 158, 11, 0.25)" : "rgba(245, 158, 11, 0.08)";
+          ctx.fillRect(w * 0.04, h * 0.42, w * 0.40, h * 0.54);
+          ctx.strokeRect(w * 0.04, h * 0.42, w * 0.40, h * 0.54);
+
+          ctx.fillStyle = isLeftStruck ? "#fef08a" : "#fcd34d";
+          ctx.font = "black 10px sans-serif";
+          ctx.fillText(isLeftStruck ? "💥 DHUM (BASS)!" : "LEFT DRUM (BASS)", w * 0.07, h * 0.50);
+
+          // Right Drum Zone
+          const isRightStruck = nextRightState === "COOLDOWN";
+          ctx.strokeStyle = isRightStruck ? "#ef4444" : "rgba(239, 68, 68, 0.6)";
+          ctx.lineWidth = isRightStruck ? 3 : 2;
+          ctx.fillStyle = isRightStruck ? "rgba(239, 68, 68, 0.25)" : "rgba(239, 68, 68, 0.08)";
+          ctx.fillRect(w * 0.56, h * 0.42, w * 0.40, h * 0.54);
+          ctx.strokeRect(w * 0.56, h * 0.42, w * 0.40, h * 0.54);
+
+          ctx.fillStyle = isRightStruck ? "#fecaca" : "#fca5a5";
+          ctx.font = "black 10px sans-serif";
+          ctx.fillText(isRightStruck ? "💥 TAAK (TREBLE)!" : "RIGHT DRUM (TREBLE)", w * 0.59, h * 0.50);
+        }
       }
     },
-    [handleDrumHit]
+    [handleDrumHit, strikePaceMs, strikeThreshold]
   );
 
   const toggleVisionMode = async () => {
@@ -166,13 +262,21 @@ export function DrumGame() {
         trackerRef.current = null;
       }
       setIsVisionActive(false);
+      leftDrumStateRef.current = "ARMED";
+      rightDrumStateRef.current = "ARMED";
     } else {
       const tracker = new OpticalMotionTracker(handleMotionEvent, 0.4);
       const success = await tracker.start();
       if (success) {
         trackerRef.current = tracker;
         setIsVisionActive(true);
-        speak("Air drumming vision activated. Wave your left or right hand to play the beats.", locale, rate);
+        leftDrumStateRef.current = "ARMED";
+        rightDrumStateRef.current = "ARMED";
+        speak(
+          "Air drumming camera activated. Move your left or right hand down to strike the drum. Face motion is ignored.",
+          locale,
+          rate
+        );
       } else {
         setIsVisionActive(false);
       }
@@ -195,6 +299,8 @@ export function DrumGame() {
     setLeftHits(0);
     setRightHits(0);
     setLastHitSide(null);
+    leftDrumStateRef.current = "ARMED";
+    rightDrumStateRef.current = "ARMED";
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
@@ -269,7 +375,7 @@ export function DrumGame() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-marigold" />
-                <span>Camera Optical Air-Drumming with zero latency & 100% on-device privacy</span>
+                <span>OpenCV kinetic velocity strike detector with face movement filtering</span>
               </div>
             </div>
           </div>
@@ -285,27 +391,115 @@ export function DrumGame() {
           </ChunkyButton>
         </div>
       ) : phase === "play" ? (
-        <div className="flex flex-col items-center gap-3.5 py-1">
+        <div className="flex flex-col items-center gap-3 py-1">
           {/* DRUM STATUS BAR & VISION TOGGLE */}
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
-            <span className="text-xs font-black uppercase tracking-wider text-marigold flex items-center gap-1.5">
-              <Activity className="h-4 w-4" /> {str.hudProgress}: {hitsCount} / {TARGET_HITS}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black uppercase tracking-wider text-marigold flex items-center gap-1.5">
+                <Activity className="h-4 w-4" /> {str.hudProgress}: {hitsCount} / {TARGET_HITS}
+              </span>
+              <span className="hidden sm:inline-block text-[10px] font-bold text-ink-secondary bg-surface-muted px-1.5 py-0.5 rounded border border-black/20">
+                L: {leftHits} &bull; R: {rightHits}
+              </span>
+            </div>
 
-            {/* Air-Drumming Camera Toggle */}
-            <button
-              type="button"
-              onClick={toggleVisionMode}
-              className={`btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer ${
-                isVisionActive
-                  ? "bg-marigold text-white"
-                  : "bg-surface-muted text-ink hover:bg-surface"
-              }`}
-            >
-              <Camera className="h-3.5 w-3.5" />
-              <span>{isVisionActive ? "Air-Drumming Active" : "Enable Air Camera"}</span>
-            </button>
+            <div className="flex items-center gap-1.5">
+              {/* Sensitivity Tuning Gear */}
+              <button
+                type="button"
+                onClick={() => setShowVisionSettings((prev) => !prev)}
+                className={`btn-tactile p-1.5 rounded-lg border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer ${
+                  showVisionSettings ? "bg-amber-200" : "bg-surface hover:bg-surface-muted"
+                }`}
+                title="Air-Drum Strike Sensitivity Settings"
+              >
+                <Sliders className="h-3.5 w-3.5" />
+              </button>
+
+              {/* Air-Drumming Camera Toggle */}
+              <button
+                type="button"
+                onClick={toggleVisionMode}
+                className={`btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer ${
+                  isVisionActive
+                    ? "bg-marigold text-white animate-pulse"
+                    : "bg-surface-muted text-ink hover:bg-surface"
+                }`}
+              >
+                <Camera className="h-3.5 w-3.5" />
+                <span>{isVisionActive ? "Air Camera: ON" : "Enable Air Camera"}</span>
+              </button>
+            </div>
           </div>
+
+          {/* SENSITIVITY & TEMPO TUNING PANEL (DROPDOWN) */}
+          {showVisionSettings && (
+            <div className="w-full max-w-md rounded-2xl border-2 border-black bg-amber-50 p-3.5 shadow-[2px_2px_0px_#000] text-xs space-y-2.5 animate-fade-in">
+              <div className="flex items-center justify-between font-black text-amber-950">
+                <span className="flex items-center gap-1.5">
+                  <Sliders className="h-3.5 w-3.5 text-marigold" />
+                  Air-Drum Strike Calibration
+                </span>
+                <span className="text-[10px] text-amber-800">Face Filter: Active</span>
+              </div>
+
+              {/* Threshold Preset */}
+              <div>
+                <div className="flex justify-between text-[11px] font-bold text-ink-secondary mb-1">
+                  <span>Strike Force Threshold (%):</span>
+                  <span className="font-black text-ink">{Math.round(strikeThreshold * 100)}%</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { label: "Gentle (50%)", val: 0.50 },
+                    { label: "Optimal (60%)", val: 0.60 },
+                    { label: "Firm (72%)", val: 0.72 },
+                  ].map((preset) => (
+                    <button
+                      key={preset.val}
+                      type="button"
+                      onClick={() => setStrikeThreshold(preset.val)}
+                      className={`py-1 rounded-lg border text-[11px] font-black cursor-pointer transition-all ${
+                        strikeThreshold === preset.val
+                          ? "bg-marigold text-white border-black shadow-xs"
+                          : "bg-white text-ink border-black/30 hover:border-black"
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tempo / Pace Preset */}
+              <div>
+                <div className="flex justify-between text-[11px] font-bold text-ink-secondary mb-1">
+                  <span>Strike Cadence / Cooldown:</span>
+                  <span className="font-black text-ink">{strikePaceMs}ms</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { label: "Calm (650ms)", val: 650 },
+                    { label: "Normal (500ms)", val: 500 },
+                    { label: "Fast (350ms)", val: 350 },
+                  ].map((preset) => (
+                    <button
+                      key={preset.val}
+                      type="button"
+                      onClick={() => setStrikePaceMs(preset.val)}
+                      className={`py-1 rounded-lg border text-[11px] font-black cursor-pointer transition-all ${
+                        strikePaceMs === preset.val
+                          ? "bg-tea text-white border-black shadow-xs"
+                          : "bg-white text-ink border-black/30 hover:border-black"
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* THREE.JS 3D DRUM CANVAS */}
           <div className="relative w-full max-w-md aspect-4/3 rounded-2xl border-3 border-black overflow-hidden shadow-[5px_5px_0px_#000] bg-black select-none">
@@ -315,16 +509,141 @@ export function DrumGame() {
               lastHitTime={lastHitTime}
             />
 
-            {/* Vision Active Overlay Indicator */}
-            {isVisionActive && (
-              <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold flex items-center gap-1.5 animate-pulse">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                Air-Drum Optical (L: {Math.round(leftMotionLevel * 100)}% | R: {Math.round(rightMotionLevel * 100)}%)
+            {/* In-Game Status HUD Overlay */}
+            {isVisionActive ? (
+              <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+                <div className="bg-black/75 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Face Motion Filtered &bull; Hands Active</span>
+                </div>
+                <div className="bg-black/75 backdrop-blur-xs px-2 py-1 rounded-lg border border-white/20 text-[10px] font-mono font-bold text-amber-300">
+                  Cutoff: {Math.round(strikeThreshold * 100)}%
+                </div>
               </div>
-            )}
+            ) : null}
           </div>
 
-          {/* DUAL DRUM HEAD HIT PADS */}
+          {/* LIVE PIP CAMERA FEED WITH DRUM TARGETS (Visible when Vision Active) */}
+          {isVisionActive && (
+            <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-3 shadow-[4px_4px_0px_#000] space-y-2 animate-fade-in">
+              <div className="flex items-center justify-between text-xs font-black text-ink">
+                <span className="flex items-center gap-1.5">
+                  <Camera className="h-3.5 w-3.5 text-marigold" />
+                  Live Camera Guide & Kinetic Strike Meters
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] text-tea bg-tea-light px-2 py-0.5 rounded border border-tea/30">
+                  <UserCheck className="h-3 w-3" /> Face Protected
+                </span>
+              </div>
+
+              {/* Camera Video Canvas */}
+              <div className="relative w-full aspect-16/9 rounded-xl border-2 border-black overflow-hidden bg-black shadow-inner">
+                <canvas
+                  ref={pipCanvasRef}
+                  width={320}
+                  height={180}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Real-Time Kinetic Strike Force Meters */}
+              <div className="grid grid-cols-2 gap-2 text-xs font-bold pt-1">
+                {/* Left Drum Meter */}
+                <div className="rounded-xl border-2 border-amber-600/40 bg-amber-50 p-2 space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-black text-amber-950">Left Bass Force:</span>
+                    <span className="font-mono font-black text-amber-800">
+                      {Math.round(leftMotionLevel * 100)}%
+                    </span>
+                  </div>
+                  {/* Gauge Bar */}
+                  <div className="relative h-3 w-full rounded-full border border-black/40 bg-amber-200/50 overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-75 ${
+                        leftMotionLevel >= strikeThreshold ? "bg-emerald-500" : "bg-amber-500"
+                      }`}
+                      style={{ width: `${Math.min(100, Math.round(leftMotionLevel * 100))}%` }}
+                    />
+                    {/* Threshold Line at 60% */}
+                    <div
+                      className="absolute top-0 bottom-0 w-0.5 bg-black z-10"
+                      style={{ left: `${Math.round(strikeThreshold * 100)}%` }}
+                      title={`Strike Line: ${Math.round(strikeThreshold * 100)}%`}
+                    />
+                  </div>
+                  {/* Status Tag */}
+                  <div className="text-[10px] font-black flex items-center justify-between pt-0.5">
+                    <span>State:</span>
+                    <span
+                      className={`px-1.5 py-0.2 rounded text-[9px] uppercase ${
+                        leftDrumVisualState === "ARMED"
+                          ? "bg-emerald-100 text-emerald-900 border border-emerald-500"
+                          : leftDrumVisualState === "COOLDOWN"
+                          ? "bg-amber-300 text-black border border-black font-black"
+                          : "bg-slate-200 text-slate-800"
+                      }`}
+                    >
+                      {leftDrumVisualState === "ARMED"
+                        ? "Ready (Strike)"
+                        : leftDrumVisualState === "COOLDOWN"
+                        ? "Hit! Relaxing"
+                        : "Lift Hand Up"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right Drum Meter */}
+                <div className="rounded-xl border-2 border-red-600/40 bg-red-50 p-2 space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="font-black text-red-950">Right Treble Force:</span>
+                    <span className="font-mono font-black text-red-800">
+                      {Math.round(rightMotionLevel * 100)}%
+                    </span>
+                  </div>
+                  {/* Gauge Bar */}
+                  <div className="relative h-3 w-full rounded-full border border-black/40 bg-red-200/50 overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-75 ${
+                        rightMotionLevel >= strikeThreshold ? "bg-emerald-500" : "bg-red-500"
+                      }`}
+                      style={{ width: `${Math.min(100, Math.round(rightMotionLevel * 100))}%` }}
+                    />
+                    {/* Threshold Line at 60% */}
+                    <div
+                      className="absolute top-0 bottom-0 w-0.5 bg-black z-10"
+                      style={{ left: `${Math.round(strikeThreshold * 100)}%` }}
+                      title={`Strike Line: ${Math.round(strikeThreshold * 100)}%`}
+                    />
+                  </div>
+                  {/* Status Tag */}
+                  <div className="text-[10px] font-black flex items-center justify-between pt-0.5">
+                    <span>State:</span>
+                    <span
+                      className={`px-1.5 py-0.2 rounded text-[9px] uppercase ${
+                        rightDrumVisualState === "ARMED"
+                          ? "bg-emerald-100 text-emerald-900 border border-emerald-500"
+                          : rightDrumVisualState === "COOLDOWN"
+                          ? "bg-red-300 text-black border border-black font-black"
+                          : "bg-slate-200 text-slate-800"
+                      }`}
+                    >
+                      {rightDrumVisualState === "ARMED"
+                        ? "Ready (Strike)"
+                        : rightDrumVisualState === "COOLDOWN"
+                        ? "Hit! Relaxing"
+                        : "Lift Hand Up"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-[11px] font-medium text-ink-secondary text-center pt-0.5">
+                💡 <strong>How to play:</strong> Wave your hand downward into either drum zone. Once you strike, lift your hand back up to play the next beat.
+              </p>
+            </div>
+          )}
+
+          {/* DUAL DRUM HEAD HIT PADS (Touch / Mouse / Air Support) */}
           <div className="w-full max-w-md grid grid-cols-2 gap-3 pt-1">
             <button
               type="button"
@@ -350,51 +669,21 @@ export function DrumGame() {
         <Celebration
           title={str.celebrationTitle}
           subtitle={str.celebrationSubtitle}
-          xpEarned={120}
+          xpEarned={100}
           accuracy="100%"
         >
-          <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
-            <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
-              <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-                <span className="text-xs font-black uppercase tracking-wider text-marigold flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" /> Acoustic Milestone Recorded
-                </span>
-                <span className="text-[10px] font-black uppercase rounded bg-marigold text-white px-2 py-0.5">
-                  {TARGET_HITS} Rhythmic Beats
-                </span>
-              </div>
-
-              <h3 className="font-serif text-xl font-black text-ink">
-                Bilateral Symmetry Index: {calculateBilateralSymmetry(leftHits, rightHits)}%
-              </h3>
-              <p className="text-xs font-semibold text-ink-secondary mt-1">
-                Left strikes ({leftHits}) and Right strikes ({rightHits}) demonstrate active bilateral hemisphere engagement.
-              </p>
-
-              <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
-                <button
-                  type="button"
-                  onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
-                >
-                  <Music className="h-4 w-4 text-ink" />
-                  <span className="text-xs font-black">Play Rongali Bihu Geet</span>
-                </button>
-                <span className="text-xs font-bold text-ink-secondary">
-                  Assessment Complete
-                </span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-                <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
-                </span>
-              </ChunkyButton>
+          <div className="flex flex-col items-center gap-4 max-w-md mx-auto text-center pt-3">
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={startGame}
+                className="btn-tactile rounded-xl border-2 border-black bg-marigold px-5 py-2.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] cursor-pointer"
+              >
+                {str.playAgainButton}
+              </button>
               <Link
                 href="/patient/games"
-                className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
+                className="btn-tactile rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] cursor-pointer"
               >
                 {str.backToHub}
               </Link>

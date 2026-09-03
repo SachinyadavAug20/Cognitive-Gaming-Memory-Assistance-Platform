@@ -20,8 +20,9 @@ public class OllamaReminiscenceService {
 
     private static final Logger log = LoggerFactory.getLogger(OllamaReminiscenceService.class);
     private static final String OLLAMA_URL = "http://localhost:11434/api/generate";
+    private static final String OLLAMA_CHAT_URL = "http://localhost:11434/api/chat";
     private static final String MODEL = "qwen2.5:1.5b";
-    private static final int TIMEOUT_MS = 12_000;
+    private static final int TIMEOUT_MS = 45_000;
 
     private final PatientRepository patientRepository;
     private final FamilyMemberRepository familyMemberRepository;
@@ -116,53 +117,51 @@ public class OllamaReminiscenceService {
 
         String userMsg = request.getUserMessage() != null ? request.getUserMessage().trim() : "Hello my dear.";
 
-        // Format Conversation History
-        StringBuilder historyBuilder = new StringBuilder();
-        if (request.getConversationHistory() != null && !request.getConversationHistory().isEmpty()) {
-            int startIdx = Math.max(0, request.getConversationHistory().size() - 6);
-            for (int i = startIdx; i < request.getConversationHistory().size(); i++) {
-                AiChatRequest.ChatMessage msg = request.getConversationHistory().get(i);
-                String role = "user".equalsIgnoreCase(msg.getRole()) ? patientName : personaName;
-                historyBuilder.append(role).append(": \"").append(msg.getText()).append("\"\n");
-            }
-        }
+        List<AiChatRequest.ChatMessage> rawHistory = request.getConversationHistory() != null
+                ? request.getConversationHistory()
+                : Collections.emptyList();
 
-        String prompt = String.format(
-                "You are roleplaying as %s (%s), sitting together having warm morning tea with your %s, %s.\n\n" +
-                "BACKGROUND & MEMORY CONTEXT:\n" +
-                "- Your Name: %s\n" +
-                "- Your Relation: %s\n" +
-                "- Patient/Elder: %s (%s, Age: %s)\n" +
-                "- Loving Salutation to use: %s\n" +
-                "- Family Members: %s\n" +
-                "- Past Occupation & Hobbies: %s | %s\n" +
-                "- Beloved Places: %s\n" +
-                "- Joy Triggers: %s\n" +
-                "- Culture/Language: %s (%s)\n\n" +
-                "RECENT CONVERSATION:\n%s" +
-                "%s: \"%s\"\n\n" +
-                "STRICT INSTRUCTIONS:\n" +
-                "1. Answer directly, lovingly, and conversationally in 1 to 2 warm sentences.\n" +
-                "2. If they ask who you are, what your name is, or ask for identity (e.g., 'who are you', 'tell me your name', 'your name'), CLEARLY answer: 'I am your %s, %s!' and add a warm memory.\n" +
-                "3. NEVER call them 'Elder' as a generic title. Always address them lovingly as '%s' or '%s'.\n" +
-                "4. Stay in character as %s. Be gentle, cheerful, and emotionally reassuring.\n" +
-                "5. Return strictly valid JSON with keys:\n" +
-                "   \"replyText\": (1-2 sentences of spoken response)\n" +
-                "   \"emotionTone\": (e.g., 'warm', 'loving', 'nostalgic')\n" +
-                "   \"suggestedQuickReplies\": (array of 2 short, natural options for what they might reply next).",
-                personaName, personaRelation, salutation, patientName,
-                personaName, personaRelation, patientName, gender, patient != null && patient.getDob() != null ? patient.getDob().toString() : "72",
-                salutation, familyContext, occupation, hobbies, placesContext, joyTriggers,
-                culture, lang,
-                historyBuilder.toString(),
-                patientName, userMsg,
-                personaRelation, personaName,
-                salutation, patientName,
-                personaName
+        // Omit current userMsg if already appended to the tail of rawHistory by the client
+        int historyEnd = rawHistory.size();
+        if (historyEnd > 0 && userMsg.equalsIgnoreCase(rawHistory.get(historyEnd - 1).getText())) {
+            historyEnd--;
+        }
+        boolean isFirstTurn = historyEnd <= 0;
+
+        // Structured Ollama Chat Messages
+        List<Map<String, String>> chatMessages = new ArrayList<>();
+
+        String systemPrompt = String.format(
+                "You are roleplaying as %s (%s), sitting having morning tea with your %s, %s. Your name is %s. " +
+                "Speak warmly, affectionately, and naturally in 1-2 spoken sentences as a real family member.\n" +
+                "RULES:\n" +
+                "1. Answer %s directly. Never ignore what she says.\n" +
+                "2. %s\n" +
+                "3. If %s asks who you are or your name (even with typos like 'what is your nae', 'who are you', 'son', 'naam'), warmly clarify: 'I am your %s, %s, %s!' and ask how she is feeling.\n" +
+                "4. Understand elder typos and intent (e.g. 'nae' means 'name').\n" +
+                "5. NEVER use repetitive robotic filler phrases like 'your love and care mean everything to me'. Speak like a real devoted %s.\n" +
+                "6. Return strictly valid JSON: {\"replyText\": \"...\", \"emotionTone\": \"loving\", \"suggestedQuickReplies\": [\"...\", \"...\"]}",
+                personaName, personaRelation, salutation, patientName, personaName,
+                salutation,
+                isFirstTurn ? "Start with a warm morning greeting." : "CRITICAL: The conversation is already active. DO NOT say 'Good morning' or repeat greetings! Directly answer her comment.",
+                salutation,
+                personaRelation, personaName, salutation,
+                personaRelation
         );
 
+        chatMessages.add(Map.of("role", "system", "content", systemPrompt));
+
+        int startIdx = Math.max(0, historyEnd - 4);
+        for (int i = startIdx; i < historyEnd; i++) {
+            AiChatRequest.ChatMessage msg = rawHistory.get(i);
+            String role = "user".equalsIgnoreCase(msg.getRole()) ? "user" : "assistant";
+            chatMessages.add(Map.of("role", role, "content", msg.getText()));
+        }
+
+        chatMessages.add(Map.of("role", "user", "content", userMsg));
+
         try {
-            String jsonOutput = callOllama(prompt);
+            String jsonOutput = callOllamaChat(chatMessages);
             JsonNode node = objectMapper.readTree(jsonOutput);
             String reply = node.has("replyText") ? node.get("replyText").asText() : "";
             String tone = node.has("emotionTone") ? node.get("emotionTone").asText() : "loving";
@@ -177,7 +176,7 @@ public class OllamaReminiscenceService {
             }
 
             if (reply.isBlank() || reply.toLowerCase().contains("hello, elder")) {
-                return fallbackChatResponse(patientName, personaName, personaRelation, salutation, userMsg, joyTriggers);
+                return fallbackChatResponse(patientName, personaName, personaRelation, salutation, userMsg, joyTriggers, isFirstTurn);
             }
 
             return AiChatResponse.builder()
@@ -189,7 +188,7 @@ public class OllamaReminiscenceService {
                     .build();
         } catch (Exception e) {
             log.warn("Ollama chat fallback triggered: {}", e.getMessage());
-            return fallbackChatResponse(patientName, personaName, personaRelation, salutation, userMsg, joyTriggers);
+            return fallbackChatResponse(patientName, personaName, personaRelation, salutation, userMsg, joyTriggers, isFirstTurn);
         }
     }
 
@@ -199,27 +198,34 @@ public class OllamaReminiscenceService {
             String personaRelation,
             String salutation,
             String userMsg,
-            String joyTriggers) {
+            String joyTriggers,
+            boolean isFirstTurn) {
 
-        String lower = userMsg.toLowerCase();
+        String lower = userMsg.toLowerCase().trim();
         String reply;
         List<String> quickReplies;
 
-        if (lower.contains("name") || lower.contains("who are you") || lower.contains("who r u") || lower.contains("koun") || lower.contains("naam") || lower.contains("identity")) {
-            reply = String.format("I am your %s, %s! We are sitting together having morning tea, %s.", personaRelation, personaName, salutation);
-            quickReplies = List.of("Yes, my dear " + personaName + "!", "Pour me some warm tea.");
-        } else if (lower.contains("hi") || lower.contains("hello") || lower.contains("namaste") || lower.contains("morning")) {
+        boolean asksIdentity = lower.contains("name") || lower.contains("nae") || lower.contains("naem") ||
+                lower.contains("who are you") || lower.contains("who r u") || lower.contains("who you") ||
+                lower.contains("who u") || lower.contains("koun") || lower.contains("kon") ||
+                lower.contains("naam") || lower.contains("identity") || lower.contains("son") ||
+                lower.contains("daughter") || lower.contains("grandson");
+
+        if (asksIdentity) {
+            reply = String.format("I am your %s, %s, %s! I'm right here having morning tea with you. How are you feeling today?", personaRelation, personaName, salutation);
+            quickReplies = List.of("Yes, my dear " + personaName + "!", "Pour me some more tea.");
+        } else if (isFirstTurn && (lower.contains("hi") || lower.contains("hello") || lower.contains("namaste") || lower.contains("morning"))) {
             reply = String.format("Good morning, %s! It brings me so much happiness to sit with you today.", salutation);
             quickReplies = List.of("Good morning, " + personaName + "!", "How is your day going?");
         } else if (lower.contains("where") || lower.contains("place") || lower.contains("home") || lower.contains("ghar")) {
-            reply = String.format("You are safe at home with your family, %s. Everything is peaceful and calm.", salutation);
+            reply = String.format("You are safe at home with me in Jorhat, %s. Everything is peaceful and calm.", salutation);
             quickReplies = List.of("Thank you, my dear.", "The garden looks so beautiful.");
         } else if (lower.contains("tea") || lower.contains("chai") || lower.contains("cup") || lower.contains("drink")) {
-            reply = String.format("Here is a fresh, warm cup of Assam cardamom tea for you, %s!", salutation);
-            quickReplies = List.of("It smells wonderful!", "Just the way I like it.");
+            reply = String.format("Here is a fresh cup of Assam cardamom tea for you, %s! Just the way you like it.", salutation);
+            quickReplies = List.of("It smells wonderful!", "Tell me about your week.");
         } else {
-            reply = String.format("It is always so comforting being with you, %s! Do you remember our favorite family memories together?", salutation);
-            quickReplies = List.of("Tell me a story from the past!", "Let us drink our tea in peace.");
+            reply = String.format("It is always so comforting being with you, %s! Shall I tell you about our garden in Jorhat?", salutation);
+            quickReplies = List.of("Tell me a story from the garden!", "Let us drink our tea in peace.");
         }
 
         return AiChatResponse.builder()
@@ -511,6 +517,40 @@ public class OllamaReminiscenceService {
         }
     }
 
+    private String callOllamaChat(List<Map<String, String>> messages) throws Exception {
+        Map<String, Object> req = new HashMap<>();
+        req.put("model", MODEL);
+        req.put("messages", messages);
+        req.put("format", "json");
+        req.put("stream", false);
+        req.put("options", Map.of(
+                "temperature", 0.7,
+                "top_p", 0.9,
+                "repeat_penalty", 1.2,
+                "num_predict", 120,
+                "num_ctx", 2048
+        ));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(req, headers);
+
+        ResponseEntity<String> response = createRestTemplate().exchange(
+                OLLAMA_CHAT_URL,
+                HttpMethod.POST,
+                entity,
+                String.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            JsonNode root = objectMapper.readTree(response.getBody());
+            if (root.has("message") && root.get("message").has("content")) {
+                return root.get("message").get("content").asText();
+            }
+        }
+        throw new RuntimeException("Ollama chat status: " + response.getStatusCode());
+    }
+
     private String callOllama(String prompt) throws Exception {
         Map<String, Object> req = new HashMap<>();
         req.put("model", MODEL);
@@ -518,9 +558,11 @@ public class OllamaReminiscenceService {
         req.put("format", "json");
         req.put("stream", false);
         req.put("options", Map.of(
-                "temperature", 0.3,
-                "num_predict", 300,
-                "num_ctx", 1024
+                "temperature", 0.4,
+                "top_p", 0.9,
+                "repeat_penalty", 1.15,
+                "num_predict", 250,
+                "num_ctx", 2048
         ));
 
         HttpHeaders headers = new HttpHeaders();

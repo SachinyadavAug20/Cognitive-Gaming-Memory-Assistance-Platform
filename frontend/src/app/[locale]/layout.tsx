@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Fraunces, Atkinson_Hyperlegible, JetBrains_Mono } from "next/font/google";
 import { AccessibilityToolbar } from "@/components/layout/AccessibilityToolbar";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { StructuredData } from "@/components/seo/StructuredData";
 import "../globals.css";
 
@@ -164,7 +165,10 @@ export default async function LocaleLayout({ children, params }: Props) {
       </head>
       <body className="min-h-screen bg-canvas text-ink paper-texture">
         <NextIntlClientProvider messages={messages} locale={locale}>
-          <AccessibilityToolbar />
+          <div className="sticky top-0 z-50 w-full select-none shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
+            <AccessibilityToolbar />
+            <AppHeader />
+          </div>
           {children}
         </NextIntlClientProvider>
       </body>

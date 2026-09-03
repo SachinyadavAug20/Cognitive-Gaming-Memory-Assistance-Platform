@@ -25,7 +25,7 @@ public class GameSessionService {
     private static final Logger log = LoggerFactory.getLogger(GameSessionService.class);
     private static final String OLLAMA_URL = "http://localhost:11434/api/generate";
     private static final String MODEL = "qwen2.5:1.5b";
-    private static final int TIMEOUT_MS = 10_000;
+    private static final int TIMEOUT_MS = 30_000;
 
     private final GameSessionRepository gameSessionRepository;
     private final PatientRepository patientRepository;
@@ -203,9 +203,10 @@ public class GameSessionService {
             body.put("prompt", prompt);
             body.put("stream", false);
             body.put("options", Map.of(
-                    "temperature", 0.3,
+                    "temperature", 0.4,
+                    "repeat_penalty", 1.15,
                     "num_predict", 250,
-                    "num_ctx", 1024
+                    "num_ctx", 2048
             ));
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);

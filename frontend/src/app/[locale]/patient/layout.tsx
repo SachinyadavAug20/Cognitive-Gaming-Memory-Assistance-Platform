@@ -4,7 +4,6 @@ import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Spinner } from "@/components/ui/Spinner";
-import { AppHeader } from "@/components/layout/AppHeader";
 
 /**
  * Rehydration is synchronous for localStorage, so `hasHydrated()` is already
@@ -43,10 +42,5 @@ export default function PatientLayout({
     );
   }
 
-  return (
-    <>
-      <AppHeader />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

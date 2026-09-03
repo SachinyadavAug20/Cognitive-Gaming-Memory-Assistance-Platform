@@ -14,7 +14,6 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react";
-import { AppHeader } from "@/components/layout/AppHeader";
 
 interface StateTelemetry {
   id: string;
@@ -173,8 +172,6 @@ export default function CommandCenterPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF6F0] pb-16">
-      <AppHeader />
-
       <main className="mx-auto max-w-6xl px-4 pt-6 space-y-6">
         {/* TOP COMMAND CENTER HEADER */}
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border-3 border-black bg-surface p-5 shadow-[4px_4px_0px_#000]">

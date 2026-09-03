@@ -140,6 +140,8 @@ export interface MotionEvent {
   rightEnergy: number; // Right side kinesthetic energy 0..1
   topEnergy: number; // Upper reach energy 0..1
   bottomEnergy: number; // Lower reach energy 0..1
+  drumLeftEnergy?: number; // Lower-left drum strike energy (head-excluded) 0..1
+  drumRightEnergy?: number; // Lower-right drum strike energy (head-excluded) 0..1
   hasMotion: boolean;
 
   // Advanced OpenCV & Kalman Features
@@ -150,6 +152,31 @@ export interface MotionEvent {
   tremorFrequencyHz: number; // Micro-tremor estimate (3-8 Hz Parkinsonian / essential)
   tremorSeverityIndex: number; // 0..1 clinical jitter index
   quadrantEnergies: number[]; // 9-cell spatial grid (3x3)
+  isPinching?: boolean;
+  pinchDistance?: number;
+  thumbTip?: { x: number; y: number };
+  indexTip?: { x: number; y: number };
+  rawCamX?: number;
+  rawCamY?: number;
+  camBounds?: { minX: number; maxX: number; minY: number; maxY: number };
+}
+
+// Active Camera Interaction Box for 100% Full-Screen Reach
+export const ACTIVE_CAM_BOUNDS = {
+  minX: 0.16,
+  maxX: 0.84,
+  minY: 0.15,
+  maxY: 0.82,
+};
+
+export function remapCamToScreen(
+  camX: number,
+  camY: number,
+  bounds = ACTIVE_CAM_BOUNDS
+): { screenX: number; screenY: number } {
+  const normX = Math.max(0, Math.min(1, (camX - bounds.minX) / (bounds.maxX - bounds.minX)));
+  const normY = Math.max(0, Math.min(1, (camY - bounds.minY) / (bounds.maxY - bounds.minY)));
+  return { screenX: normX, screenY: normY };
 }
 
 export class OpticalMotionTracker {
@@ -161,6 +188,8 @@ export class OpticalMotionTracker {
   private isRunning = false;
   private stream: MediaStream | null = null;
   private onMotionCallback: ((evt: MotionEvent) => void) | null = null;
+  private landmarker: { detectForVideo: (video: HTMLVideoElement, timestamp: number) => { landmarks?: Array<Array<{ x: number; y: number; z: number }>> }; close: () => void } | null = null;
+  private lastVideoTime = -1;
 
   // Dedicated 2D Kalman Filters for primary, left, and right hand positions
   private primaryKalman = new KalmanFilter2D(0.001, 0.04, 0.03);
@@ -169,6 +198,10 @@ export class OpticalMotionTracker {
 
   // Tremor analysis buffer (historical positions over last 30 frames)
   private posHistory: { x: number; y: number; time: number }[] = [];
+  private lastHandsTrack: {
+    left: { y: number; time: number } | null;
+    right: { y: number; time: number } | null;
+  } = { left: null, right: null };
   private lastGesture: VisionGesture = "IDLE";
   private gestureCooldown = 0;
 
@@ -208,6 +241,33 @@ export class OpticalMotionTracker {
       this.leftKalman.reset(0.25, 0.5);
       this.rightKalman.reset(0.75, 0.5);
 
+      // Initialize MediaPipe HandLandmarker for 21-point hand tracking & pinch detection
+      try {
+        const { FilesetResolver, HandLandmarker } = await import("@mediapipe/tasks-vision");
+        let vision;
+        try {
+          vision = await FilesetResolver.forVisionTasks("/wasm");
+        } catch {
+          vision = await FilesetResolver.forVisionTasks(
+            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+          );
+        }
+
+        this.landmarker = await HandLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath: "/models/hand_landmarker.task",
+            delegate: "GPU",
+          },
+          runningMode: "VIDEO",
+          numHands: 2,
+          minHandDetectionConfidence: 0.35,
+          minHandPresenceConfidence: 0.35,
+          minTrackingConfidence: 0.35,
+        });
+      } catch (e) {
+        console.warn("MediaPipe HandLandmarker init fallback to optical flow:", e);
+      }
+
       this.isRunning = true;
       this.loop();
       return true;
@@ -222,6 +282,14 @@ export class OpticalMotionTracker {
     if (this.animId) {
       cancelAnimationFrame(this.animId);
       this.animId = null;
+    }
+    if (this.landmarker) {
+      try {
+        this.landmarker.close();
+      } catch {
+        // Ignore
+      }
+      this.landmarker = null;
     }
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop());
@@ -245,6 +313,138 @@ export class OpticalMotionTracker {
     if (!this.isRunning || !this.video || !this.ctx || !this.canvas) return;
 
     if (this.video.readyState >= 2) {
+      // 1. Prioritize MediaPipe 3D Hand Landmarks & Pinch Detection (High Precision)
+      if (this.landmarker) {
+        const now = performance.now();
+        if (now - this.lastVideoTime >= 24) {
+          this.lastVideoTime = now;
+          let results = null;
+          try {
+            results = this.landmarker.detectForVideo(this.video, now);
+          } catch {
+            // Ignore frame error
+          }
+
+          if (results && results.landmarks && results.landmarks.length > 0) {
+            const hand = results.landmarks[0];
+            // 4: Thumb Tip, 8: Index Tip, 0: Wrist, 9: Middle MCP
+            const thumbTip = hand[4];
+            const indexTip = hand[8];
+            const wrist = hand[0];
+            const middleMcp = hand[9];
+
+            const handScale = Math.hypot(wrist.x - middleMcp.x, wrist.y - middleMcp.y);
+            const rawPinchDist = Math.hypot(
+              thumbTip.x - indexTip.x,
+              thumbTip.y - indexTip.y,
+              (thumbTip.z ?? 0) - (indexTip.z ?? 0)
+            );
+
+            const normalizedPinchDist = rawPinchDist / Math.max(0.08, handScale);
+            // Crisp pinch detection threshold
+            const isPinching = normalizedPinchDist < 0.32 || rawPinchDist < 0.075;
+
+            // Mirror X (1 - x) so moving right moves right on screen
+            const aimX = isPinching ? (thumbTip.x + indexTip.x) / 2 : indexTip.x;
+            const aimY = isPinching ? (thumbTip.y + indexTip.y) / 2 : indexTip.y;
+            const mirroredAimX = 1 - aimX;
+
+            // Full-Screen Reach Remapping: maps comfortable active camera zone to 100% full screen
+            const { screenX, screenY } = remapCamToScreen(mirroredAimX, aimY);
+            const kState = this.primaryKalman.update(screenX, screenY);
+
+            // Multi-hand kinetic drum strike evaluation
+            let leftHandBlob: HandBlob | null = null;
+            let rightHandBlob: HandBlob | null = null;
+            let drumLeftEnergy = 0;
+            let drumRightEnergy = 0;
+
+            for (const h of results.landmarks) {
+              const mcpPt = h[9] || h[0];
+              const handMirroredX = 1 - mcpPt.x;
+              const handY = mcpPt.y;
+              const isLeftHem = handMirroredX < 0.5;
+
+              // Track vertical downward velocity
+              const prev = isLeftHem ? this.lastHandsTrack.left : this.lastHandsTrack.right;
+              let vy = 0;
+              if (prev && now > prev.time) {
+                const dt = (now - prev.time) / 1000;
+                vy = (handY - prev.y) / Math.max(0.016, dt);
+              }
+
+              if (isLeftHem) {
+                this.lastHandsTrack.left = { y: handY, time: now };
+              } else {
+                this.lastHandsTrack.right = { y: handY, time: now };
+              }
+
+              // Downward kinetic impulse: only when hand is in lower drum zone (y > 0.40) and moving down
+              const downwardSpeed = Math.max(0, vy);
+              const inDrumZone = handY > 0.38;
+              const strikeForce = inDrumZone ? Math.min(1, downwardSpeed * 1.75) : 0;
+
+              const blob: HandBlob = {
+                x: handMirroredX,
+                y: handY,
+                vx: 0,
+                vy,
+                area: 0.25,
+                confidence: 0.95,
+                isLeftHemisphere: isLeftHem,
+                fingerCount: 5,
+                isPinching: false,
+                isOpenPalm: true,
+              };
+
+              if (isLeftHem) {
+                leftHandBlob = blob;
+                drumLeftEnergy = Math.max(drumLeftEnergy, strikeForce);
+              } else {
+                rightHandBlob = blob;
+                drumRightEnergy = Math.max(drumRightEnergy, strikeForce);
+              }
+            }
+
+            if (this.onMotionCallback) {
+              this.onMotionCallback({
+                x: kState.x,
+                y: kState.y,
+                vx: kState.vx,
+                vy: kState.vy,
+                rawX: screenX,
+                rawY: screenY,
+                rawCamX: mirroredAimX,
+                rawCamY: aimY,
+                energy: isPinching ? 0.9 : Math.max(drumLeftEnergy, drumRightEnergy, 0.15),
+                leftEnergy: drumLeftEnergy,
+                rightEnergy: drumRightEnergy,
+                drumLeftEnergy,
+                drumRightEnergy,
+                topEnergy: 0.1,
+                bottomEnergy: Math.max(drumLeftEnergy, drumRightEnergy),
+                hasMotion: true,
+                leftHand: leftHandBlob,
+                rightHand: rightHandBlob,
+                gesture: isPinching ? "PINCH_GRAB" : "POINTING",
+                bilateralSymmetry: 1.0,
+                tremorFrequencyHz: 0,
+                tremorSeverityIndex: 0,
+                quadrantEnergies: [0, 0, 0, 0, 0, 0, drumLeftEnergy, 0, drumRightEnergy],
+                isPinching,
+                pinchDistance: rawPinchDist,
+                thumbTip: { x: 1 - thumbTip.x, y: thumbTip.y },
+                indexTip: { x: 1 - indexTip.x, y: indexTip.y },
+                camBounds: ACTIVE_CAM_BOUNDS,
+              });
+            }
+
+            this.animId = requestAnimationFrame(this.loop);
+            return;
+          }
+        }
+      }
+
       const w = this.canvas.width;
       const h = this.canvas.height;
       const halfW = w / 2;
@@ -262,6 +462,8 @@ export class OpticalMotionTracker {
         let rightDiff = 0;
         let topDiff = 0;
         let bottomDiff = 0;
+        let drumLeftDiff = 0;
+        let drumRightDiff = 0;
 
         // Bilateral Hand Centroid accumulators
         let leftHandWeightX = 0;
@@ -277,7 +479,7 @@ export class OpticalMotionTracker {
         const colThird = w / 3;
         const rowThird = h / 3;
 
-        const threshold = 20; // Motion difference threshold
+        const threshold = 14; // Sensitive motion difference threshold
 
         for (let y = 0; y < h; y++) {
           const rowIdx = Math.min(2, Math.floor(y / rowThird));
@@ -307,8 +509,11 @@ export class OpticalMotionTracker {
             const colIdx = Math.min(2, Math.floor(mirroredX / colThird));
             const qIdx = rowIdx * 3 + colIdx;
 
-            if (diff > threshold || isSkin) {
-              const weight = diff > threshold ? diff * 1.6 : 12;
+            // ONLY track pixels with real motion!
+            // This prevents a stationary face/head in center from pulling the cursor.
+            if (diff > threshold) {
+              // Moving skin pixels (the moving hand) get a massive 3.5x priority weight
+              const weight = isSkin ? diff * 3.5 : diff * 1.0;
               totalDiff += weight;
               weightedX += mirroredX * weight;
               weightedY += y * weight;
@@ -318,24 +523,33 @@ export class OpticalMotionTracker {
               if (isTopHalf) topDiff += weight;
               else bottomDiff += weight;
 
+              // Specific Lower-Quadrant Drum Strike Energy (Strictly below face, excludes central head corridor)
+              if (y > h * 0.40) {
+                if (mirroredX < halfW * 0.88) {
+                  drumLeftDiff += weight;
+                } else if (mirroredX > halfW * 1.12) {
+                  drumRightDiff += weight;
+                }
+              }
+
               if (mirroredX < halfW) {
                 leftDiff += weight;
-                if (isSkin || diff > threshold) {
-                  leftHandWeightX += mirroredX * weight;
-                  leftHandWeightY += y * weight;
-                  leftHandPixels += weight;
-                }
+                leftHandWeightX += mirroredX * weight;
+                leftHandWeightY += y * weight;
+                leftHandPixels += weight;
               } else {
                 rightDiff += weight;
-                if (isSkin || diff > threshold) {
-                  rightHandWeightX += mirroredX * weight;
-                  rightHandWeightY += y * weight;
-                  rightHandPixels += weight;
-                }
+                rightHandWeightX += mirroredX * weight;
+                rightHandWeightY += y * weight;
+                rightHandPixels += weight;
               }
             }
           }
         }
+
+        const maxDrumDiff = (w * 0.44) * (h * 0.60) * 255 * 0.08;
+        const drumLeftEnergy = Math.min(1, drumLeftDiff / maxDrumDiff);
+        const drumRightEnergy = Math.min(1, drumRightDiff / maxDrumDiff);
 
         const maxSideDiff = (w / 2) * h * 255 * 0.07;
         const leftEnergy = Math.min(1, leftDiff / maxSideDiff);
@@ -428,12 +642,21 @@ export class OpticalMotionTracker {
         // Primary Centroid Kalman Update
         const now = performance.now();
         let kPrimary = { x: 0.5, y: 0.5, vx: 0, vy: 0 };
-        if (totalDiff > 600) {
-          const rawNormX = weightedX / (totalDiff * w);
-          const rawNormY = weightedY / (totalDiff * h);
-          kPrimary = this.primaryKalman.update(rawNormX, rawNormY);
+        const hasActiveMotion = totalDiff > 180;
+        let screenX = 0.5;
+        let screenY = 0.5;
+        let rawCamX = 0.5;
+        let rawCamY = 0.5;
 
-          this.posHistory.push({ x: rawNormX, y: rawNormY, time: now });
+        if (hasActiveMotion) {
+          rawCamX = Math.max(0.02, Math.min(0.98, weightedX / (totalDiff * w)));
+          rawCamY = Math.max(0.02, Math.min(0.98, weightedY / (totalDiff * h)));
+          const remapped = remapCamToScreen(rawCamX, rawCamY);
+          screenX = remapped.screenX;
+          screenY = remapped.screenY;
+          kPrimary = this.primaryKalman.update(screenX, screenY);
+
+          this.posHistory.push({ x: screenX, y: screenY, time: now });
           if (this.posHistory.length > 30) this.posHistory.shift();
         } else {
           kPrimary = { ...this.primaryKalman.getPosition(), vx: 0, vy: 0 };
@@ -470,14 +693,19 @@ export class OpticalMotionTracker {
             y: kPrimary.y,
             vx: kPrimary.vx,
             vy: kPrimary.vy,
-            rawX: kPrimary.x,
-            rawY: kPrimary.y,
+            rawX: screenX,
+            rawY: screenY,
+            rawCamX,
+            rawCamY,
+            camBounds: ACTIVE_CAM_BOUNDS,
             energy: totalEnergy,
-            leftEnergy,
-            rightEnergy,
+            leftEnergy: drumLeftEnergy,
+            rightEnergy: drumRightEnergy,
+            drumLeftEnergy,
+            drumRightEnergy,
             topEnergy,
             bottomEnergy,
-            hasMotion: totalEnergy > 0.04 || (leftHand !== null || rightHand !== null),
+            hasMotion: hasActiveMotion || totalEnergy > 0.03 || (leftHand !== null || rightHand !== null),
             leftHand,
             rightHand,
             gesture: detectedGesture,
