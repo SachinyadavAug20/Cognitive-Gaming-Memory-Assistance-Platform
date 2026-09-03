@@ -8,6 +8,12 @@ import {
   Bot,
   X,
   Globe,
+  Speech,
+  CalendarDays,
+  MapPin,
+  Users,
+  Coffee,
+  Music,
 } from "lucide-react";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { playPress, playTapFeedback, playCalmTone, unlockAudio } from "@/lib/sound";
@@ -18,25 +24,25 @@ export interface SaathiLanguageOption {
   bcp47: string;
 }
 
-export const SAATHI_LANGUAGES: SaathiLanguageOption[] = [
-  { code: "en", name: "English", bcp47: "en-IN" },
+const SAATHI_LANGUAGES = [
+  { code: "en", name: "English (NER)", bcp47: "en-IN" },
   { code: "as", name: "অসমীয়া (Assamese)", bcp47: "as-IN" },
   { code: "hi", name: "हिन्दी (Hindi)", bcp47: "hi-IN" },
   { code: "bn", name: "বাংলা (Bengali)", bcp47: "bn-IN" },
   { code: "mr", name: "मराठी (Marathi)", bcp47: "mr-IN" },
   { code: "ne", name: "नेपाली (Nepali)", bcp47: "ne-NP" },
   { code: "mni", name: "মৈতৈলোন্ (Manipuri)", bcp47: "mni-IN" },
-  { code: "brx", name: "बड़ो (Bodo)", bcp47: "brx-IN" },
+  { code: "brx", name: "बर' (Bodo)", bcp47: "brx-IN" },
   { code: "grt", name: "Garo (A·chik)", bcp47: "grt-IN" },
-  { code: "kha", name: "Khasi", bcp47: "kha-IN" },
-  { code: "lus", name: "Mizo (Duhlian)", bcp47: "lus-IN" },
-];
+  { code: "kha", name: "Khasi (Ka Ktien)", bcp47: "kha-IN" },
+  { code: "lus", name: "Mizo (Mizo ṭawng)", bcp47: "lus-IN" },
+] as const;
 
-const REGIONAL_GREETINGS: Record<string, string> = {
-  en: "Namaskar! I am Saathi, your memory companion. How can I help you feel safe and comfortable today?",
-  as: "নমস্কাৰ! মই আপোনাৰ সাৰথি। মই আপোনাক কেনেকৈ সহায় কৰিব পাৰোঁ?",
-  hi: "नमस्ते! मैं आपका साथी हूँ। मैं आज आपकी क्या सहायता कर सकता हूँ?",
-  bn: "নমস্কার! আমি আপনার সাথী। আমি আপনাকে কীভাবে সাহায্য করতে পারি?",
+const GREETINGS_BY_LANG: Record<string, string> = {
+  en: "Hello! I am Saathi, your memory companion. How are you feeling today?",
+  as: "নমস্কাৰ! মই আপোনাৰ সংগী সাৰ্থী। আজি আপোনাৰ কেনে লাগিছে?",
+  hi: "नमस्ते! मैं आपका साथी हूँ। आज आपका मन कैसा है?",
+  bn: "নমস্কার! আমি আপনার সঙ্গী সাথী। আজ আপনার কেমন লাগছে?",
   mr: "नमस्कार! मी तुमचा साथी आहे. मी तुम्हाला कशी मदत करू शकतो?",
   ne: "नमस्ते! म तपाईंको साथी हुँ। म तपाईंलाई कसरी मद्दत गर्न सक्छु?",
   mni: "খুরুমজরি! ঐহাক নহাক্কী সাথীনি। ঐহাক্না করম্না মতেং পাংগদগে?",
@@ -46,83 +52,91 @@ const REGIONAL_GREETINGS: Record<string, string> = {
   lus: "Chibai! I thian Saathi ka ni. Engtin nge ka puih theih ang che?",
 };
 
+const PROMPT_ICONS: Record<string, typeof CalendarDays> = {
+  what_day: CalendarDays,
+  where_am_i: MapPin,
+  family: Users,
+  tea: Coffee,
+  flute: Music,
+};
+
 const REGIONAL_QUICK_PROMPTS: Record<string, Array<{ text: string; query: string }>> = {
   en: [
-    { text: "🌅 What day is today?", query: "what_day" },
-    { text: "🏡 Where am I right now?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 Tell me about my family", query: "family" },
-    { text: "🫖 Afternoon tea & rest", query: "tea" },
-    { text: "🎵 Play soothing flute", query: "flute" },
+    { text: "What day is today?", query: "what_day" },
+    { text: "Where am I right now?", query: "where_am_i" },
+    { text: "Tell me about my family", query: "family" },
+    { text: "Afternoon tea & rest", query: "tea" },
+    { text: "Play soothing flute", query: "flute" },
   ],
   as: [
-    { text: "🌅 আজি কি বাৰ?", query: "what_day" },
-    { text: "🏡 মই ক'ত আছোঁ?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 পৰিয়ালৰ কথা কওক", query: "family" },
-    { text: "🫖 চাহ আৰু জিৰণি", query: "tea" },
-    { text: "🎵 শান্ত বাঁহীৰ সুৰ", query: "flute" },
+    { text: "আজি কি বাৰ?", query: "what_day" },
+    { text: "মই ক'ত আছোঁ?", query: "where_am_i" },
+    { text: "পৰিয়ালৰ কথা কওক", query: "family" },
+    { text: "চাহ আৰু জিৰণি", query: "tea" },
+    { text: "শান্ত বাঁহীৰ সুৰ", query: "flute" },
   ],
   hi: [
-    { text: "🌅 आज कौन सा दिन है?", query: "what_day" },
-    { text: "🏡 मैं कहाँ हूँ?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 परिवार के बारे में बताएं", query: "family" },
-    { text: "🫖 चाय और आराम", query: "tea" },
-    { text: "🎵 शांत बांसुरी धुन", query: "flute" },
+    { text: "आज कौन सा दिन है?", query: "what_day" },
+    { text: "मैं कहाँ हूँ?", query: "where_am_i" },
+    { text: "परिवार के बारे में बताएं", query: "family" },
+    { text: "चाय और आराम", query: "tea" },
+    { text: "शांत बांसुरी धुन", query: "flute" },
   ],
   bn: [
-    { text: "🌅 আজ কী বার?", query: "what_day" },
-    { text: "🏡 আমি এখন কোথায়?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 পরিবারের কথা বলুন", query: "family" },
-    { text: "🫖 এক কাপ চা ও বিশ্রাম", query: "tea" },
-    { text: "🎵 শান্ত বাঁশির সুর", query: "flute" },
+    { text: "আজ কী বার?", query: "what_day" },
+    { text: "আমি এখন কোথায়?", query: "where_am_i" },
+    { text: "পরিবারের কথা বলুন", query: "family" },
+    { text: "এক কাপ চা ও বিশ্রাম", query: "tea" },
+    { text: "শান্ত বাঁশির সুর", query: "flute" },
   ],
   mr: [
-    { text: "🌅 आज कोणता वार आहे?", query: "what_day" },
-    { text: "🏡 मी सध्या कुठे आहे?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 कुटुंबाबद्दल सांगा", query: "family" },
-    { text: "🫖 चहा आणि विश्रांती", query: "tea" },
-    { text: "🎵 शांत बासरीची धून", query: "flute" },
+    { text: "आज कोणता वार आहे?", query: "what_day" },
+    { text: "मी सध्या कुठे आहे?", query: "where_am_i" },
+    { text: "कुटुंबाबद्दल सांगा", query: "family" },
+    { text: "चहा आणि विश्रांती", query: "tea" },
+    { text: "शांत बासरीची धून", query: "flute" },
   ],
   ne: [
-    { text: "🌅 आज कुन दिन हो?", query: "what_day" },
-    { text: "🏡 म अहिले कहाँ छु?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 परिवारको बारेमा भन्नुहोस्", query: "family" },
-    { text: "🫖 चिया र आराम", query: "tea" },
-    { text: "🎵 शान्त बाँसुरीको धुन", query: "flute" },
+    { text: "आज कुन दिन हो?", query: "what_day" },
+    { text: "म अहिले कहाँ छु?", query: "where_am_i" },
+    { text: "परिवारको बारेमा भन्नुहोस्", query: "family" },
+    { text: "चिया र आराम", query: "tea" },
+    { text: "शान्त बाँसुरीको धुन", query: "flute" },
   ],
   mni: [
-    { text: "🌅 ঙসি করি নুমিৎনো?", query: "what_day" },
-    { text: "🏡 ঐহাক কদায়দা লৈবগে?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 ইমুংগী মরমদা হায়বীয়ু", query: "family" },
-    { text: "🫖 চা অমসুং পোথারবা", query: "tea" },
-    { text: "🎵 নুংশিবা ৱাকুল শক্লোন", query: "flute" },
+    { text: "ঙসি করি নুমিৎনো?", query: "what_day" },
+    { text: "ঐহাক কদায়দা লৈবগে?", query: "where_am_i" },
+    { text: "ইমুংগী মরমদা হায়বীয়ু", query: "family" },
+    { text: "চা অমসুং পোথারবা", query: "tea" },
+    { text: "নুংশিবা ৱাকুল শক্লোন", query: "flute" },
   ],
   brx: [
-    { text: "🌅 दिनै मा सान?", query: "what_day" },
-    { text: "🏡 आं बबेयाव दं?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 नखरनि बाथ्रा बुं", query: "family" },
-    { text: "🫖 साहा आरो सुफुंथि", query: "tea" },
-    { text: "🎵 गोसो गोजोन सिफुं", query: "flute" },
+    { text: "दिनै मा सान?", query: "what_day" },
+    { text: "आं बबेयाव दं?", query: "where_am_i" },
+    { text: "नखरनि बाथ्रा बुं", query: "family" },
+    { text: "साहा आरो सुफुंथि", query: "tea" },
+    { text: "गोसो गोजोन सिफुं", query: "flute" },
   ],
   grt: [
-    { text: "🌅 Da·alo ma·ganda sal?", query: "what_day" },
-    { text: "🏡 Anga bano donga?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 Nokdangni gimin agangrikbo", query: "family" },
-    { text: "🫖 Cha aro neng·takaniko", query: "tea" },
-    { text: "🎵 Bangsi sikaniko", query: "flute" },
+    { text: "Da·alo ma·ganda sal?", query: "what_day" },
+    { text: "Anga bano donga?", query: "where_am_i" },
+    { text: "Nokdangni gimin agangrikbo", query: "family" },
+    { text: "Cha aro neng·takaniko", query: "tea" },
+    { text: "Bangsi sikaniko", query: "flute" },
   ],
   kha: [
-    { text: "🌅 Ka sngi aiu kine?", query: "what_day" },
-    { text: "🏡 Nga don hangno?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 Iathuh shaphang ka iing", query: "family" },
-    { text: "🫖 Sha bad ka shongthait", query: "tea" },
-    { text: "🎵 Ka sur besli kaba jai jai", query: "flute" },
+    { text: "Ka sngi aiu kine?", query: "what_day" },
+    { text: "Nga don hangno?", query: "where_am_i" },
+    { text: "Iathuh shaphang ka iing", query: "family" },
+    { text: "Sha bad ka shongthait", query: "tea" },
+    { text: "Ka sur besli kaba jai jai", query: "flute" },
   ],
   lus: [
-    { text: "🌅 Vawiin eng ni nge?", query: "what_day" },
-    { text: "🏡 Khawiah nge ka awm?", query: "where_am_i" },
-    { text: "👨‍👩‍👧 Ka chhungte chanchin", query: "family" },
-    { text: "🫖 Thingpui leh hahchawlhna", query: "tea" },
-    { text: "🎵 Hla mawi tak", query: "flute" },
+    { text: "Vawiin eng ni nge?", query: "what_day" },
+    { text: "Khawiah nge ka awm?", query: "where_am_i" },
+    { text: "Ka chhungte chanchin", query: "family" },
+    { text: "Thingpui leh hahchawlhna", query: "tea" },
+    { text: "Hla mawi tak", query: "flute" },
   ],
 };
 
@@ -200,7 +214,7 @@ export function SaathiVoiceCompanion({
     {
       id: "m-0",
       sender: "saathi",
-      text: REGIONAL_GREETINGS[initialLangCode] || REGIONAL_GREETINGS.en,
+      text: GREETINGS_BY_LANG[initialLangCode] || GREETINGS_BY_LANG.en,
       time: "Now",
     },
   ]);
@@ -225,7 +239,7 @@ export function SaathiVoiceCompanion({
     playTapFeedback();
     setSelectedLang(newLang);
     const langData = SAATHI_LANGUAGES.find((l) => l.code === newLang) || SAATHI_LANGUAGES[0];
-    const newGreeting = REGIONAL_GREETINGS[newLang] || REGIONAL_GREETINGS.en;
+    const newGreeting = GREETINGS_BY_LANG[newLang] || GREETINGS_BY_LANG.en;
     
     const switchMsg: Message = {
       id: `s-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -434,12 +448,12 @@ export function SaathiVoiceCompanion({
             <span className="block text-[10px] font-black uppercase tracking-wider text-amber-950">
               AI Companion ({activeLangConfig.name.split(" ")[0]})
             </span>
-            <span className="font-serif text-sm font-black text-ink">
-              Talk to Saathi 🗣️
+            <span className="flex items-center gap-1.5 font-serif text-sm font-black text-ink">
+              Talk to Saathi <Speech className="h-4 w-4 text-tea inline" />
             </span>
           </div>
-          <span className="sm:hidden font-serif text-xs font-black text-ink">
-            Saathi 🗣️
+          <span className="sm:hidden flex items-center gap-1 font-serif text-xs font-black text-ink">
+            Saathi <Speech className="h-3.5 w-3.5 text-tea inline" />
           </span>
         </button>
       </div>
@@ -483,7 +497,7 @@ export function SaathiVoiceCompanion({
               </button>
             </div>
 
-            {/* 🌐 Interactive Language Switcher Bar */}
+            {/* Interactive Language Switcher Bar */}
             <div className="my-2.5 flex items-center justify-between gap-2 rounded-2xl border-2 border-black bg-surface p-2 shadow-xs">
               <div className="flex items-center gap-1.5 pl-1 text-xs font-black text-ink">
                 <Globe className="h-4 w-4 text-tea" />
@@ -509,11 +523,19 @@ export function SaathiVoiceCompanion({
               <span className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-tea" />
                 <span>
-                  {isSpeaking
-                    ? `🗣️ Saathi is speaking (${activeLangConfig.name.split(" ")[0]})...`
-                    : isListening
-                    ? "🎙️ Listening... Speak slowly and gently"
-                    : "Tap the mic or touch a query below"}
+                  {isSpeaking ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Speech className="h-3.5 w-3.5 text-tea" />
+                      <span>Saathi is speaking ({activeLangConfig.name.split(" ")[0]})...</span>
+                    </span>
+                  ) : isListening ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <Mic className="h-3.5 w-3.5 text-rose-600 animate-pulse" />
+                      <span>Listening... Speak slowly and gently</span>
+                    </span>
+                  ) : (
+                    "Tap the mic or touch a query below"
+                  )}
                 </span>
               </span>
 
@@ -550,7 +572,7 @@ export function SaathiVoiceCompanion({
                     <p className="text-xs sm:text-sm font-black leading-relaxed">
                       {msg.text}
                     </p>
-                    <span className="mt-1 block text-[10px] font-bold opacity-60 text-right">
+                    <span className="mt-1 block text-[10px] font-bold text-ink-secondary text-right">
                       {msg.time}
                     </span>
                   </div>
@@ -564,16 +586,20 @@ export function SaathiVoiceCompanion({
                 Quick Prompts ({activeLangConfig.name.split(" ")[0]}):
               </span>
               <div className="flex flex-wrap gap-1.5">
-                {promptList.map((p, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleQuickPrompt(p)}
-                    className="btn-tactile rounded-xl border-2 border-black bg-surface px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-100 transition-transform active:translate-y-0.5 cursor-pointer"
-                  >
-                    {p.text}
-                  </button>
-                ))}
+                {promptList.map((p, idx) => {
+                  const IconComp = PROMPT_ICONS[p.query] || Sparkles;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleQuickPrompt(p)}
+                      className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-100 transition-transform active:translate-y-0.5 cursor-pointer"
+                    >
+                      <IconComp className="h-3.5 w-3.5 text-tea shrink-0" />
+                      <span>{p.text}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

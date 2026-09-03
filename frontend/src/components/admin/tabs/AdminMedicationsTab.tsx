@@ -32,10 +32,10 @@ export function AdminMedicationsTab({
           <thead>
             <tr className="border-b-2 border-black bg-[#FAF3E0] text-ink">
               <th className="py-3 px-3 font-black uppercase text-[10px]">Patient</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">District</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">District</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Active Prescriptions</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Adherence Rate</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Hydration</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">Hydration</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Risk State</th>
               <th className="py-3 px-3 font-black uppercase text-[10px] text-right">Actions</th>
             </tr>
@@ -47,7 +47,7 @@ export function AdminMedicationsTab({
                   <span className="font-serif text-sm font-black text-ink">{med.patientName}</span>
                   <span className="text-[10px] font-normal text-ink-secondary block">#{med.patientId}</span>
                 </td>
-                <td className="py-3 px-3 text-ink-secondary">{med.district}</td>
+                <td className="py-3 px-3 text-ink-secondary hidden md:table-cell">{med.district}</td>
                 <td className="py-3 px-3">
                   <div className="flex flex-wrap gap-1">
                     {med.activePrescriptions.map((p) => (
@@ -64,7 +64,7 @@ export function AdminMedicationsTab({
                   <span className="font-serif font-black text-emerald-700">{med.adherenceRate}%</span>
                   <span className="text-[10px] text-ink-secondary block">{med.missedDosesThisWeek} missed this week</span>
                 </td>
-                <td className="py-3 px-3">
+                <td className="py-3 px-3 hidden md:table-cell">
                   <span className="text-blue-900 font-black">💧 {med.hydrationAvgGlasses} / 6 glasses</span>
                 </td>
                 <td className="py-3 px-3">
@@ -80,7 +80,7 @@ export function AdminMedicationsTab({
                     {med.riskStatus}
                   </span>
                 </td>
-                <td className="py-3 px-3 text-right">
+                <td className="py-3 px-3">
                   <button
                     type="button"
                     onClick={() => onRemindMedication(med.patientId, med.patientName)}

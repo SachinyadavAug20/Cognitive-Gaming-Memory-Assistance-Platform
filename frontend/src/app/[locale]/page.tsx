@@ -11,6 +11,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { playScanSuccess, playTapFeedback } from "@/lib/sound";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { api } from "@/lib/api";
+import type { KioskScanResponse } from "@/types/auth";
 
 const Hero3DLandscape = dynamic(
   () => import("@/components/home/Hero3DLandscape").then((mod) => mod.Hero3DLandscape),
@@ -30,14 +32,20 @@ export default function Home() {
   const router = useRouter();
   const login = useAuthStore((s) => s.login);
 
-  const handleLaunchDemo = () => {
+  const handleLaunchDemo = async () => {
     playTapFeedback();
     playScanSuccess();
-    login("DEMO_JWT_SESSION_TOKEN_2026", {
-      id: 101,
-      name: "Biren Borah",
-      languagePreference: "as",
-    });
+    try {
+      const res = await api.post<KioskScanResponse>("/auth/kiosk/demo", {});
+      login(res.token, res.patient);
+    } catch {
+      // Backend offline fallback: enter the demo patient session with mock data
+      login("demo-offline-session", {
+        id: 2,
+        name: "Biren Borah",
+        languagePreference: "as",
+      });
+    }
     setTimeout(() => {
       router.push("/patient");
     }, 300);

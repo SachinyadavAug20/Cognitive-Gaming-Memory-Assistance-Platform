@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 interface CelebrationProps {
-  icon?: LucideIcon;
+  icon?: LucideIcon | React.ComponentType<{ className?: string; size?: number | string }>;
   emoji?: string;
   title: string;
   subtitle?: string;

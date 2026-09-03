@@ -72,7 +72,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
                 CDTx
               </span>
             </div>
-            <p className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-ink-secondary whitespace-nowrap">
+            <p className="hidden sm:block text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-ink-secondary whitespace-nowrap">
               Memory Care // MDoNER Track
             </p>
           </div>
@@ -135,7 +135,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
           <Link href="tel:108" className="shrink-0">
             <button
               type="button"
-              className="flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick hover:bg-red-700 px-2 sm:px-3 text-xs font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] animate-pulse"
+              className="pulse-gentle flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick hover:bg-red-700 px-2 sm:px-3 text-xs font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px]"
               title="Emergency Tele-MANAS / Ambulance SOS Call (108)"
             >
               <PhoneCall className="h-3.5 w-3.5" />

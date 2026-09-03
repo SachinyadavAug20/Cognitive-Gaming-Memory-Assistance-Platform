@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
-import { GameHeader } from "@/components/layout/GameHeader";
+import { Link } from "@/i18n/navigation";
+import { GameShell } from "@/components/games/GameShell";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
@@ -81,6 +81,17 @@ export function MemoryMatchGame() {
 
   useEffect(() => stopSpeaking, []);
 
+  function resetGame() {
+    setPhase("preview");
+    setCount(previewSeconds);
+    setFlipped([]);
+    setLocked(false);
+    setMatched(new Set());
+    setTaps(0);
+    setHintOn(false);
+    startedAt.current = null;
+  }
+
   useEffect(() => {
     if (phase !== "preview" || previewSeconds <= 0) return;
     const id = window.setInterval(() => {
@@ -119,12 +130,6 @@ export function MemoryMatchGame() {
     }
   }, [patientId, level, playingMembers.length, taps]);
 
-  useEffect(() => {
-    if (phase === "play" && matched.size === playingMembers.length && playingMembers.length > 0) {
-      finish();
-    }
-  }, [phase, matched, playingMembers.length, finish]);
-
   function onFlip(index: number) {
     if (locked || phase !== "play") return;
     if (matched.has(cards[index].member.id)) return;
@@ -149,7 +154,13 @@ export function MemoryMatchGame() {
             locale,
             rate
           );
-          setMatched((prev) => new Set(prev).add(member.id));
+          setMatched((prev) => {
+            const nextSet = new Set(prev).add(member.id);
+            if (nextSet.size === playingMembers.length && playingMembers.length > 0) {
+              window.setTimeout(() => finish(), 600);
+            }
+            return nextSet;
+          });
           setFlipped([]);
           setLocked(false);
         }, 300);
@@ -162,17 +173,17 @@ export function MemoryMatchGame() {
     }
   }
 
-  if (loading) return <GameLoading />;
+  if (loading) return <GameShell title={t("memory.title")} score={0}><GameLoading /></GameShell>;
   if (error)
     return (
-      <GameShell>
+      <GameShell title={t("memory.title")} score={0}>
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   if (!members.length) {
     return (
-      <GameShell>
+      <GameShell title={t("memory.title")} score={0}>
         <div className="flex flex-col items-center gap-6 py-16 text-center">
           <div className="text-6xl">👨‍👩‍👧</div>
           <p className="max-w-xs text-lg font-semibold text-ink-secondary">
@@ -190,7 +201,7 @@ export function MemoryMatchGame() {
   }
 
   return (
-    <GameShell>
+    <GameShell title={t("memory.title")} score={matched.size}>
       {phase === "preview" ? (
         <div className="flex flex-col items-center gap-6 py-8">
           <p className="text-2xl font-bold text-ink">{t("memory.preview")}</p>
@@ -239,7 +250,7 @@ export function MemoryMatchGame() {
             {t("score", { score: `${matched.size}/${playingMembers.length}` })}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
-            <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
+            <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
               <span>{locale === "hi" ? "फिर से खेलें 🔄" : locale === "as" ? "পুনৰ খেলক 🔄" : "Play Again 🔄"}</span>
             </ChunkyButton>
             <Link
@@ -318,20 +329,6 @@ export function MemoryMatchGame() {
           </div>
         )}
       </div>
-    );
-  }
-
-  function GameShell({ children }: { children: React.ReactNode }) {
-    return (
-      <section className="pb-10">
-        <GameHeader
-          title={t("memory.title")}
-          score={matched.size}
-          backHref="/patient/games"
-          bgColor="bg-tea"
-        />
-        <div className="mx-auto max-w-3xl px-4">{children}</div>
-      </section>
     );
   }
 }

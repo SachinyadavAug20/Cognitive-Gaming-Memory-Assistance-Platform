@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import {
   Users,
   Search,
@@ -97,8 +97,8 @@ export function AdminPatientsTab({
             <tr className="border-b-2 border-black bg-[#FAF3E0] text-ink">
               <th className="py-3 px-3 font-black uppercase text-[10px]">ID</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Patient Name</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Gender / Lang</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Phone</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">Gender / Lang</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden sm:table-cell">Phone</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">QR Health Card</th>
               <th className="py-3 px-3 font-black uppercase text-[10px] text-right">Actions</th>
             </tr>
@@ -117,10 +117,10 @@ export function AdminPatientsTab({
                   <td className="py-3 px-3">
                     <span className="font-serif text-sm font-black text-ink">{p.name}</span>
                   </td>
-                  <td className="py-3 px-3 text-ink-secondary">
+                  <td className="py-3 px-3 text-ink-secondary hidden md:table-cell">
                     <span>{p.gender}</span> • <span className="font-black text-ink">{p.preferredLanguage}</span>
                   </td>
-                  <td className="py-3 px-3 font-mono text-ink-secondary">{p.phone}</td>
+                  <td className="py-3 px-3 font-mono text-ink-secondary hidden sm:table-cell">{p.phone}</td>
                   <td className="py-3 px-3">
                     {p.hasActiveCard ? (
                       <div className="flex items-center gap-1.5">
@@ -136,8 +136,8 @@ export function AdminPatientsTab({
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-3 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
+                  <td className="py-3 px-3">
+                    <div className="flex items-start sm:items-center justify-start sm:justify-end gap-1.5 flex-wrap">
                       <Link
                         href={`/caregiver/patients/${p.id}`}
                         target="_blank"

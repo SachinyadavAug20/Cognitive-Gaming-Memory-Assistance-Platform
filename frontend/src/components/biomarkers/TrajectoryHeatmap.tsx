@@ -3,69 +3,85 @@
 import { useEffect, useRef, useState } from "react";
 import { Activity, ShieldCheck, RotateCcw } from "lucide-react";
 
+const DESIGN_W = 440;
+const DESIGN_H = 200;
+
 export function TrajectoryHeatmap() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const animFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const wrap = wrapRef.current;
+    if (!canvas || !wrap) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const width = (canvas.width = 440);
-    const height = (canvas.height = 200);
-
-    const startX = 40;
-    const startY = 160;
-    const endX = 400;
-    const endY = 40;
-
+    let width = DESIGN_W;
+    let height = DESIGN_H;
     let progress = 0;
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
+      const sx = width / DESIGN_W;
+      const sy = height / DESIGN_H;
+      const scale = () => {
+        ctx.save();
+        ctx.scale(sx, sy);
+      };
+      const restore = () => ctx.restore();
+
       // 1. Grid lines
       ctx.strokeStyle = "#E5E7EB";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < width; x += 40) {
+      ctx.lineWidth = 1 / Math.max(sx, sy);
+      scale();
+      for (let x = 0; x <= 440; x += 40) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
+        ctx.lineTo(x, 200);
         ctx.stroke();
       }
-      for (let y = 0; y < height; y += 40) {
+      for (let y = 0; y <= 200; y += 40) {
         ctx.beginPath();
         ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
+        ctx.lineTo(440, y);
         ctx.stroke();
       }
+      restore();
 
       // 2. Geodesic Optimal Path (Dashed Grey Line)
+      ctx.save();
+      ctx.scale(sx, sy);
       ctx.setLineDash([4, 4]);
       ctx.strokeStyle = "#9CA3AF";
       ctx.lineWidth = 2;
+      ctx.lineJoin = "round";
       ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
+      ctx.moveTo(40, 160);
+      ctx.lineTo(400, 40);
       ctx.stroke();
       ctx.setLineDash([]);
+      ctx.restore();
 
       // 3. Patient Actual Trajectory with Micro-Jitter (Teal Line)
+      ctx.save();
+      ctx.scale(sx, sy);
       ctx.strokeStyle = "#1B4D3E";
       ctx.lineWidth = 3.5;
+      ctx.lineJoin = "round";
       ctx.beginPath();
-      ctx.moveTo(startX, startY);
+      ctx.moveTo(40, 160);
 
       const maxSteps = 100;
       const currentSteps = Math.floor((progress / 100) * maxSteps);
 
       for (let i = 1; i <= currentSteps; i++) {
         const t = i / maxSteps;
-        const idealX = startX + (endX - startX) * t;
-        const idealY = startY + (endY - startY) * t;
+        const idealX = 40 + (400 - 40) * t;
+        const idealY = 160 + (40 - 160) * t;
 
         // Realistic clinical motor tremor & hesitation wave
         const jitterY = Math.sin(t * 18) * 14 * Math.sin(t * Math.PI) + Math.cos(t * 32) * 4;
@@ -74,11 +90,14 @@ export function TrajectoryHeatmap() {
         ctx.lineTo(idealX + jitterX, idealY + jitterY);
       }
       ctx.stroke();
+      ctx.restore();
 
-      // 4. Start & End Target Anchors
+      // 4. Start & End Target Anchors (drawn in design space so radii stay proportional)
+      ctx.save();
+      ctx.scale(sx, sy);
       ctx.fillStyle = "#1B4D3E";
       ctx.beginPath();
-      ctx.arc(startX, startY, 7, 0, Math.PI * 2);
+      ctx.arc(40, 160, 7, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = "#000000";
       ctx.lineWidth = 2;
@@ -86,11 +105,14 @@ export function TrajectoryHeatmap() {
 
       ctx.fillStyle = "#DC2626";
       ctx.beginPath();
-      ctx.arc(endX, endY, 8, 0, Math.PI * 2);
+      ctx.arc(400, 40, 8, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
+      ctx.restore();
 
       // 5. Hesitation Micro-Events (Yellow Warning Rings)
+      ctx.save();
+      ctx.scale(sx, sy);
       if (currentSteps > 35) {
         ctx.fillStyle = "#F59E0B";
         ctx.beginPath();
@@ -105,6 +127,7 @@ export function TrajectoryHeatmap() {
         ctx.fill();
         ctx.stroke();
       }
+      ctx.restore();
 
       if (isPlaying) {
         progress += 1.2;
@@ -114,10 +137,28 @@ export function TrajectoryHeatmap() {
       animFrameRef.current = requestAnimationFrame(render);
     };
 
+    const resize = () => {
+      const w = wrap.clientWidth;
+      if (w <= 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      width = Math.max(160, w);
+      height = Math.round(width * (DESIGN_H / DESIGN_W));
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(wrap);
+
     animFrameRef.current = requestAnimationFrame(render);
 
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      ro.disconnect();
     };
   }, [isPlaying]);
 
@@ -132,8 +173,11 @@ export function TrajectoryHeatmap() {
         </span>
       </div>
 
-      <div className="relative overflow-hidden rounded-xl border-2 border-black bg-[#FAF6F0]">
-        <canvas ref={canvasRef} className="w-full h-auto block" />
+      <div
+        ref={wrapRef}
+        className="relative w-full overflow-hidden rounded-xl border-2 border-black bg-[#FAF6F0]"
+      >
+        <canvas ref={canvasRef} className="block max-w-full" />
       </div>
 
       {/* Quantitative Clinical Biomarkers */}

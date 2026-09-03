@@ -29,7 +29,7 @@ export function SessionHistoryTable({ sessions }: SessionHistoryTableProps) {
               <th className="py-3 text-sm font-bold text-ink-secondary uppercase tracking-wider">
                 Score
               </th>
-              <th className="py-3 text-sm font-bold text-ink-secondary uppercase tracking-wider">
+              <th className="py-3 text-sm font-bold text-ink-secondary uppercase tracking-wider hidden sm:table-cell">
                 Duration
               </th>
             </tr>
@@ -59,7 +59,7 @@ export function SessionHistoryTable({ sessions }: SessionHistoryTableProps) {
                     {s.score}
                   </span>
                 </td>
-                <td className="py-3 text-base text-ink-secondary font-[family-name:var(--font-mono)]">
+                <td className="py-3 text-base text-ink-secondary font-[family-name:var(--font-mono)] hidden sm:table-cell">
                   {s.duration}
                 </td>
               </tr>

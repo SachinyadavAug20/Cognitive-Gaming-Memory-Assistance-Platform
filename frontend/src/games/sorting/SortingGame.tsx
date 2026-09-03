@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { Music, CheckCircle2, RotateCcw } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -14,7 +14,8 @@ import { speak, stopSpeaking } from "@/lib/speech";
 import { recordGameSession } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
-import { speechRate } from "@/games/config";
+import { speechRate, startLevel } from "@/games/config";
+import { resolveAdaptiveLevel } from "@/lib/telemetry";
 import { getGameStrings } from "@/lib/gameI18n";
 
 function GameShell({
@@ -72,9 +73,10 @@ export function SortingGame() {
   const locale = useLocale();
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
+  const level = resolveAdaptiveLevel(patientId, "sorting", startLevel(detail));
   const rate = speechRate(detail);
 
-  const [queue] = useState<SortItem[]>(() => shuffle(ITEMS));
+  const [queue, setQueue] = useState<SortItem[]>(() => shuffle(ITEMS));
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState(false);
   const [placed, setPlaced] = useState<SortItem[]>([]);
@@ -82,14 +84,26 @@ export function SortingGame() {
   const [done, setDone] = useState(false);
   const [taps, setTaps] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
-  const [startedAt] = useState(() => new Date().toISOString());
+  const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
+
+  function resetGame() {
+    setQueue(shuffle(ITEMS));
+    setIndex(0);
+    setPicked(false);
+    setPlaced([]);
+    setShakeCat(null);
+    setDone(false);
+    setTaps(0);
+    setErrorCount(0);
+    setStartedAt(new Date().toISOString());
+  }
 
   const current = useMemo(() => queue[Math.min(index, queue.length - 1)], [queue, index]);
 
   const guard = useSessionGuard({
     patientId,
     gameId: "sorting",
-    level: 1,
+    level,
     startedAt,
     taps,
     errorCount,
@@ -150,7 +164,7 @@ export function SortingGame() {
     guard.markCompleted();
     recordGameSession(patientId, {
       gameId: "sorting",
-      level: 1,
+      level,
       outcome: "completed",
       score: items.length,
       startedAt,
@@ -208,7 +222,7 @@ export function SortingGame() {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
+              <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
                 <span className="flex items-center gap-2">
                   <RotateCcw className="h-4 w-4" /> {str.playAgainButton}
                 </span>

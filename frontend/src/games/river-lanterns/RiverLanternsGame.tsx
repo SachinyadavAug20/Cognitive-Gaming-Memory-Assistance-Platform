@@ -298,7 +298,7 @@ export function RiverLanternsGame() {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {targets.map((tgt, idx) => {
                 const isCompleted = unlockedLanterns.some((l) => l.id === tgt.id);
                 const isCurrent = idx === currentTargetIndex;

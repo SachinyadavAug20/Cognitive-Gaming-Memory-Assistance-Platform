@@ -309,6 +309,10 @@ let tileUidCounter = 0;
 function nextTileUid(): string {
   return `tile-${++tileUidCounter}`;
 }
+// Reset counter on module reload to avoid stale IDs
+if (typeof window !== "undefined") {
+  tileUidCounter = 0;
+}
 
 function buildBoard(levelConfig: (typeof LEVELS)[number]): Tile[] {
   const targetObj = OBJECTS.find((o) => o.id === levelConfig.targetId)!;

@@ -299,7 +299,7 @@ export function VirtualAirMouse({
         centerOffsetRef.current = { x: 0, y: 0 };
         currentPosRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         setPointerPos({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-        setToastMessage("Cursor Recentered to Screen Center 🎯");
+        setToastMessage("Cursor Recentered to Screen Center");
         setTimeout(() => setToastMessage(null), 1800);
       }
     };
@@ -818,11 +818,11 @@ export function VirtualAirMouse({
         {/* Live Action Hint / Percentage Badge */}
         {isPaused ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-800 shadow-[2px_2px_0px_#000]">
-            ⏸️ REST MODE (P to resume)
+            REST MODE (P to resume)
           </div>
         ) : isPinchingActive ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-emerald-300 px-2 py-0.5 text-[10px] font-black text-emerald-950 shadow-[2px_2px_0px_#000] animate-bounce">
-            🤏 PINCH!
+            PINCH!
           </div>
         ) : isDwellActive ? (
           <div
@@ -835,18 +835,18 @@ export function VirtualAirMouse({
             }`}
           >
             {clickMethod === "dwell"
-              ? isSnapped ? `🧲 SNAPPED ${dwellProgress}%` : `${dwellProgress}%`
+              ? isSnapped ? `SNAPPED ${dwellProgress}%` : `${dwellProgress}%`
               : clickMethod === "pinch"
-              ? "Pinch to click 🤏"
+              ? "Pinch to click"
               : "Press Space/Enter"}
           </div>
         ) : isSnapped ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-sky-100 px-2 py-0.5 text-[10px] font-black text-sky-950 shadow-[2px_2px_0px_#000]">
-            🧲 Snapped to button
+            Snapped to button
           </div>
         ) : !hasHandInView ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-950 shadow-[2px_2px_0px_#000] animate-bounce">
-            Raise hand in view of camera 🖐️
+            Raise hand in view of camera
           </div>
         ) : null}
       </div>
@@ -888,7 +888,7 @@ export function VirtualAirMouse({
             centerOffsetRef.current = { x: 0, y: 0 };
             currentPosRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
             setPointerPos({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-            setToastMessage("Cursor Recentered 🎯");
+            setToastMessage("Cursor Recentered");
             setTimeout(() => setToastMessage(null), 1500);
           }}
           className="flex items-center gap-1 rounded-xl border border-black/40 bg-surface px-2 py-1 text-[11px] font-bold text-ink hover:bg-surface-muted cursor-pointer"
@@ -924,7 +924,7 @@ export function VirtualAirMouse({
       {pipViewMode !== "hidden" && (
         <div
           id="air-mouse-pip-card"
-          className="pointer-events-auto fixed bottom-6 left-6 z-10000 flex flex-col rounded-2xl border-4 border-black bg-[#FAF6F0] p-3 shadow-[6px_6px_0px_#000] transition-all"
+          className="pointer-events-auto fixed bottom-6 left-6 z-10000 flex max-w-[calc(100vw-1.5rem)] flex-col rounded-2xl border-4 border-black bg-[#FAF6F0] p-3 shadow-[6px_6px_0px_#000] transition-all"
           style={{ width: pipViewMode === "minimized" ? "190px" : "250px" }}
         >
           {/* PIP Header */}
@@ -939,8 +939,9 @@ export function VirtualAirMouse({
                     : "bg-amber-500 animate-pulse"
                 }`}
               />
-              <span className="text-xs font-black uppercase text-ink">
-                🖐️ {isPaused ? "Air Mouse (Paused)" : "Air Mouse (Active)"}
+              <span className="text-xs font-black uppercase text-ink flex items-center gap-1">
+                <Hand className="h-3.5 w-3.5 text-tea" />
+                <span>{isPaused ? "Air Mouse (Paused)" : "Air Mouse (Active)"}</span>
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -1000,9 +1001,9 @@ export function VirtualAirMouse({
                     : !hasHandInView
                     ? "NO HAND IN VIEW"
                     : isSnapped
-                    ? "🧲 SNAPPED"
+                    ? "SNAPPED"
                     : isPinchingActive
-                    ? "🤏 PINCH"
+                    ? "PINCH"
                     : isDwellActive
                     ? clickMethod === "dwell"
                       ? `DWELLING (${dwellProgress}%)`

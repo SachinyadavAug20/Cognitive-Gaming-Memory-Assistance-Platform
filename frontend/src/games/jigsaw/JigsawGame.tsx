@@ -186,6 +186,18 @@ export function JigsawGame() {
     }
   }
 
+  function resetGame() {
+    setPhase("intro");
+    setIndex(0);
+    setOrder([]);
+    setSelectedPos(null);
+    setSnapping([]);
+    setPeeking(false);
+    setTaps(0);
+    setLightboxOpen(false);
+    setStartedAt(null);
+  }
+
   function onCellTap(pos: number) {
     if (phase !== "play") return;
     if (peeking) {
@@ -562,7 +574,7 @@ export function JigsawGame() {
               </ChunkyButton>
             ) : (
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
+                <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
                   <span>{locale === "hi" ? "फिर से खेलें 🔄" : locale === "as" ? "পুনৰ খেলক 🔄" : "Play Again 🔄"}</span>
                 </ChunkyButton>
                 <Link

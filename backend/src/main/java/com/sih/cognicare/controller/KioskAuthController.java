@@ -19,4 +19,9 @@ public class KioskAuthController {
     public ResponseEntity<KioskScanResponse> scan(@Valid @RequestBody KioskScanRequest request) {
         return ResponseEntity.ok(patientCardService.scan(request.qrData()));
     }
+
+    @PostMapping("/demo")
+    public ResponseEntity<KioskScanResponse> demo() {
+        return ResponseEntity.ok(patientCardService.demoLogin());
+    }
 }

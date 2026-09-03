@@ -1,35 +1,35 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { GameHeader } from "@/components/layout/GameHeader";
+import { GameShell } from "@/components/games/GameShell";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
-import { playEncourage, playComplete } from "@/lib/sound";
+import { Droplets, Milk, Sparkles, ArrowRight, RotateCcw, Flame } from "lucide-react";
+import { AssamTeaLeafIcon, ClayKulharIcon } from "@/components/ui/CulturalIcons";
+import {
+  playEncourage,
+  playComplete,
+  playWaterRipple,
+  playLeafPluck,
+  playSizzle,
+  playTapFeedback,
+} from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
-import { recordGameSession } from "@/lib/telemetry";
+import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 
-function GameShell({ title, score, children }: { title: string; score: number; children: React.ReactNode }) {
-  return (
-    <section className="pb-10">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-terracotta" />
-      <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
-    </section>
-  );
-}
-
 const ALL_STEPS = [
-  { key: "water", emoji: "💧" },
-  { key: "leaves", emoji: "🌿" },
-  { key: "milk", emoji: "🥛" },
-  { key: "sugar", emoji: "🍬" },
-  { key: "cup", emoji: "🍵" },
+  { key: "water", icon: Droplets, color: "text-sky-600" },
+  { key: "leaves", icon: AssamTeaLeafIcon, color: "text-emerald-700" },
+  { key: "milk", icon: Milk, color: "text-amber-800" },
+  { key: "sugar", icon: Sparkles, color: "text-amber-500" },
+  { key: "cup", icon: ClayKulharIcon, color: "text-terracotta" },
 ] as const;
 
 function stepsFor(level: number) {
@@ -43,7 +43,7 @@ export function MakeMyTeaGame() {
   const locale = useLocale();
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
-  const level = startLevel(detail);
+  const level = resolveAdaptiveLevel(patientId, "daily-tasks", startLevel(detail));
   const rate = speechRate(detail);
   const steps = useMemo(() => stepsFor(level), [level]);
 
@@ -56,7 +56,7 @@ export function MakeMyTeaGame() {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [taps, setTaps] = useState(0);
-  const [startedAt] = useState(() => new Date().toISOString());
+  const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
 
   const guard = useSessionGuard({
     patientId,
@@ -71,8 +71,29 @@ export function MakeMyTeaGame() {
 
   useEffect(() => () => stopSpeaking(), []);
 
+  function resetGame() {
+    setStartedAt(new Date().toISOString());
+    setProgress(0);
+    setDone(false);
+    setTaps(0);
+  }
+
   function addStep() {
-    playEncourage();
+    const currentKey = current.key;
+    if (currentKey === "water") {
+      playWaterRipple();
+    } else if (currentKey === "leaves") {
+      playLeafPluck();
+      playEncourage();
+    } else if (currentKey === "milk") {
+      playSizzle();
+      playEncourage();
+    } else if (currentKey === "sugar") {
+      playTapFeedback();
+      playEncourage();
+    } else {
+      playWaterRipple();
+    }
     setTaps((v) => v + 1);
     if (progress + 1 >= steps.length) {
       stopSpeaking();
@@ -108,12 +129,13 @@ export function MakeMyTeaGame() {
   return (
     <GameShell title={t("dailyTasks.title")} score={progress}>
       {done ? (
-        <Celebration emoji="🍵" title={t("dailyTasks.complete")}>
+        <Celebration icon={ClayKulharIcon} title={t("dailyTasks.complete")}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
                 <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                  ☕ Lal Saah Tea Freshly Brewed
+                  <ClayKulharIcon className="h-4 w-4 text-tea shrink-0" />
+                  <span>Lal Saah Tea Freshly Brewed</span>
                 </span>
                 <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
                   5/5 Steps Complete
@@ -129,8 +151,8 @@ export function MakeMyTeaGame() {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
-                <span>{locale === "hi" ? "फिर से चाय बनाएं ☕" : locale === "as" ? "পুনৰ চাহ বনাওক ☕" : "Brew Another Cup ☕"}</span>
+              <ChunkyButton variant="tea" size="xl" onClick={resetGame} icon={<RotateCcw className="h-5 w-5" />}>
+                <span>{locale === "hi" ? "फिर से चाय बनाएं" : locale === "as" ? "পুনৰ চাহ বনাওক" : "Brew Another Cup"}</span>
               </ChunkyButton>
               <Link
                 href="/patient/games"
@@ -151,20 +173,23 @@ export function MakeMyTeaGame() {
 
           {/* STEP PROGRESS ICONS */}
           <div className="flex items-center gap-2.5">
-            {steps.map((step, i) => (
-              <div
-                key={step.key}
-                className={`flex h-12 w-12 items-center justify-center rounded-2xl border-3 text-2xl transition-all shadow-[2px_2px_0px_#000] ${
-                  i < progress
-                    ? "border-tea bg-tea-light text-tea"
-                    : i === progress
-                    ? "scale-110 border-terracotta bg-terracotta-light ring-4 ring-amber-400"
-                    : "border-black/20 bg-surface-muted opacity-50"
-                }`}
-              >
-                {step.emoji}
-              </div>
-            ))}
+            {steps.map((step, i) => {
+              const StepIcon = step.icon;
+              return (
+                <div
+                  key={step.key}
+                  className={`flex h-12 w-12 items-center justify-center rounded-2xl border-3 transition-all shadow-[2px_2px_0px_#000] ${
+                    i < progress
+                      ? "border-tea bg-tea-light text-tea"
+                      : i === progress
+                      ? "scale-110 border-terracotta bg-terracotta-light ring-4 ring-amber-400"
+                      : "border-black/20 bg-surface-muted opacity-50"
+                  }`}
+                >
+                  <StepIcon className={`h-6 w-6 stroke-[2.2] ${step.color}`} />
+                </div>
+              );
+            })}
           </div>
 
           <p className="text-xs font-black uppercase tracking-wider text-ink-secondary">
@@ -176,8 +201,13 @@ export function MakeMyTeaGame() {
 
           {/* INTERACTIVE BRASS TEA POT CONTAINER */}
           <div className="relative flex min-h-[220px] w-full max-w-md flex-col items-center justify-center gap-3 rounded-3xl border-3 border-black bg-gradient-to-b from-[#FAF3E0] to-[#EFE3C3] p-6 shadow-[5px_5px_0px_#000] overflow-hidden">
-            <div className="text-8xl animate-bounce" style={{ animationDuration: "2s" }}>
-              {current.emoji}
+            {/* Gentle tea aroma steam curls */}
+            <div className="absolute top-3 flex gap-4 text-xl opacity-60 pointer-events-none">
+              <Flame className="h-5 w-5 text-amber-600 animate-pulse" />
+              <Flame className="h-5 w-5 text-amber-600 animate-pulse" />
+            </div>
+            <div className="h-28 flex items-center justify-center animate-bounce" style={{ animationDuration: "2s" }}>
+              <current.icon className={`h-24 w-24 stroke-[2] ${current.color}`} />
             </div>
 
             <p className="font-serif text-lg font-black text-ink">
@@ -188,7 +218,7 @@ export function MakeMyTeaGame() {
           <ChunkyButton
             variant="terracotta"
             size="2xl"
-            icon={<span className="text-3xl">👉</span>}
+            icon={<ArrowRight className="h-6 w-6 stroke-[3]" />}
             onClick={addStep}
           >
             {t(`dailyTasks.actions.${current.key}`)}

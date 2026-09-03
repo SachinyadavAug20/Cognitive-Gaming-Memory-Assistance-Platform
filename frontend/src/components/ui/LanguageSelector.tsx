@@ -86,7 +86,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
 
       {/* DROPDOWN MENU */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 rounded-2xl border-3 border-black bg-surface p-2.5 shadow-[5px_5px_0px_#000] z-50 max-h-[80vh] overflow-y-auto">
+        <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 max-w-[calc(100vw-1rem)] rounded-2xl border-3 border-black bg-surface p-2.5 shadow-[5px_5px_0px_#000] z-50 max-h-[80vh] overflow-y-auto">
           {/* Header */}
           <div className="px-2.5 py-1.5 border-b-2 border-black/15 mb-2 flex items-center justify-between">
             <span className="text-[11px] font-black uppercase tracking-wider text-tea flex items-center gap-1">

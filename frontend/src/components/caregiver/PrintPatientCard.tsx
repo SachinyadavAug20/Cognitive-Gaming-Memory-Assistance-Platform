@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { QRCodeCanvas } from "qrcode.react";
+import { useRef, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { useTranslations } from "next-intl";
 
 interface PrintPatientCardProps {
@@ -9,86 +9,242 @@ interface PrintPatientCardProps {
   secureToken: string;
 }
 
+const W = 300;
+const H = 200;
+const SCALE = 3;
+const CARD_W = W * SCALE;
+const CARD_H = H * SCALE;
+
 export function PrintPatientCard({
   patientName,
   secureToken,
 }: PrintPatientCardProps) {
   const t = useTranslations("idcard");
-  const badgeRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const handleDownload = () => {
-    const badge = badgeRef.current;
-    if (!badge) return;
-    const canvas = badge.querySelector<HTMLCanvasElement>("canvas");
-    if (!canvas) return;
-    const dataUrl = canvas.toDataURL("image/png");
-    const link = document.createElement("a");
-    link.download = `cognicare-${patientName
-      .trim()
-      .replace(/\s+/g, "-")
-      .toLowerCase()}-card.png`;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const rasterizeCard = async (): Promise<string | null> => {
+    const svg = svgRef.current;
+    if (!svg) return null;
+    const source = new XMLSerializer().serializeToString(svg);
+    const encoded = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(source)}`;
+
+    const img = new Image();
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error("failed to load svg"));
+      img.src = encoded;
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = CARD_W;
+    canvas.height = CARD_H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, CARD_W, CARD_H);
+    ctx.drawImage(img, 0, 0, CARD_W, CARD_H);
+    return canvas.toDataURL("image/png");
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownload = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const dataUrl = await rasterizeCard();
+      if (!dataUrl) return;
+      const link = document.createElement("a");
+      link.download = `cognicare-${patientName
+        .trim()
+        .replace(/\s+/g, "-")
+        .toLowerCase()}-card.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch {
+      /* ignore */
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handlePrint = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const dataUrl = await rasterizeCard();
+      if (!dataUrl) return;
+
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "fixed";
+      iframe.style.right = "0";
+      iframe.style.bottom = "0";
+      iframe.style.width = "0";
+      iframe.style.height = "0";
+      iframe.style.border = "0";
+      iframe.style.visibility = "hidden";
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentDocument;
+      if (!doc) {
+        document.body.removeChild(iframe);
+        return;
+      }
+      doc.write(`<!doctype html><html><head><title></title><style>
+        @page { margin: 8mm; }
+        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #ffffff; }
+        img { width: 300px; image-rendering: crisp-edges; }
+      </style></head><body></body></html>`);
+      doc.close();
+
+      const img = new Image();
+      img.style.display = "block";
+      img.src = dataUrl;
+      doc.body.appendChild(img);
+
+      const win = iframe.contentWindow;
+      if (!win) {
+        document.body.removeChild(iframe);
+        return;
+      }
+      const afterPrint = () => document.body.removeChild(iframe);
+      win.onafterprint = afterPrint;
+      setTimeout(() => {
+        win.focus();
+        win.print();
+      }, 300);
+    } catch {
+      /* ignore */
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
     <div>
-      {/* ID Badge — approximately 3×2 inches at 96dpi */}
-      <div
-        ref={badgeRef}
-        className="mx-auto w-[300px] h-[200px] rounded-xl border-4 border-tea bg-white p-2 flex flex-col gap-1 print:border-2 print:shadow-none print:w-[288px] print:h-[192px]"
+      {/* ID Badge — 300×200 design at 3x export resolution */}
+      <svg
+        ref={svgRef}
+        xmlns="http://www.w3.org/2000/svg"
+        width="300"
+        height="200"
+        viewBox="0 0 300 200"
+        className="mx-auto block w-full max-w-[300px] rounded-xl"
+        role="img"
+        aria-label="CogniCare Patient ID Card"
       >
-        <div className="flex items-center justify-between px-1">
-          <span className="font-[family-name:var(--font-serif)] font-bold text-sm text-tea tracking-wide">
-            CogniCare
-          </span>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-ink-secondary">
-            {t("badge.label").toUpperCase()}
-          </span>
-        </div>
+        {/* Card surface */}
+        <rect x="0" y="0" width="300" height="200" rx="16" ry="16" fill="#fff" />
+        {/* Tea border */}
+        <rect
+          x="3"
+          y="3"
+          width="294"
+          height="194"
+          rx="13"
+          ry="13"
+          fill="none"
+          stroke="#1b4d3e"
+          strokeWidth="5"
+        />
 
-        <div className="flex-1 flex items-center gap-3 px-1 min-h-0">
-          <div className="flex-1 min-w-0">
-            <p className="font-[family-name:var(--font-serif)] font-bold text-ink text-lg leading-tight break-words">
-              {patientName}
-            </p>
-            <p className="text-[10px] font-bold text-ink-secondary mt-1.5">
-              {t("badge.hint")}
-            </p>
-          </div>
-          <div className="bg-surface-muted border-2 border-border rounded-md p-1 shrink-0">
-            <QRCodeCanvas
-              value={secureToken}
-              size={92}
-              level="M"
-              marginSize={1}
-            />
-          </div>
-        </div>
+        {/* Header row */}
+        <text
+          x="16"
+          y="26"
+          fontFamily="Georgia, 'Times New Roman', serif"
+          fontWeight="700"
+          fontSize="13"
+          fill="#1b4d3e"
+        >
+          CogniCare
+        </text>
+        <text
+          x="284"
+          y="26"
+          textAnchor="end"
+          fontFamily="Arial, sans-serif"
+          fontWeight="700"
+          fontSize="10"
+          letterSpacing="2"
+          fill="#4a4131"
+        >
+          {t("badge.label").toUpperCase()}
+        </text>
 
-        <div className="flex items-center justify-between px-1 border-t-2 border-border-soft pt-1 text-[9px] font-bold text-ink-secondary">
-          <span>✦ {t("badge.footer")}</span>
-          <span className="font-mono uppercase">
-            {secureToken.slice(0, 10)}…
-          </span>
-        </div>
-      </div>
+        {/* Middle: name + hint (left) and QR (right) */}
+        <text
+          x="16"
+          y="96"
+          fontFamily="Georgia, 'Times New Roman', serif"
+          fontWeight="700"
+          fontSize="19"
+          fill="#1a1611"
+        >
+          {patientName}
+        </text>
+        <text
+          x="16"
+          y="116"
+          fontFamily="Arial, sans-serif"
+          fontWeight="700"
+          fontSize="10"
+          fill="#6a5c40"
+        >
+          {t("badge.hint")}
+        </text>
+
+        {/* QR code */}
+        <g transform="translate(186, 40)">
+          <QRCodeSVG
+            value={secureToken}
+            size={100}
+            level="M"
+            marginSize={1}
+          />
+        </g>
+
+        {/* Footer */}
+        <line x1="12" y1="166" x2="288" y2="166" stroke="#4a4131" strokeWidth="2" />
+        <text
+          x="16"
+          y="184"
+          fontFamily="Arial, sans-serif"
+          fontWeight="700"
+          fontSize="9"
+          fill="#6a5c40"
+        >
+          ✦ {t("badge.footer")}
+        </text>
+        <text
+          x="284"
+          y="184"
+          textAnchor="end"
+          fontFamily="monospace"
+          fontWeight="700"
+          fontSize="9"
+          letterSpacing="1"
+          fill="#6a5c40"
+        >
+          {secureToken.slice(0, 10).toUpperCase()}…
+        </text>
+      </svg>
 
       <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center print:hidden">
         <button
           onClick={handleDownload}
+          disabled={busy}
           className="btn-chunky btn-chunky-tea btn-chunky-xl"
         >
-          ⬇ {t("download")}
+          {busy ? "⏳" : "⬇"} {t("download")}
         </button>
-        <button onClick={handlePrint} className="btn-chunky btn-chunky-xl">
-          🖨 {t("print")}
+        <button
+          onClick={handlePrint}
+          disabled={busy}
+          className="btn-chunky btn-chunky-xl"
+        >
+          {busy ? "⏳" : "🖨"} {t("print")}
         </button>
       </div>
     </div>

@@ -10,6 +10,10 @@ import {
   Volume2,
   Calendar,
   Sparkles,
+  TreeDeciduous,
+  Flower2,
+  Leaf,
+  Sprout,
 } from "lucide-react";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -434,8 +438,16 @@ export default function PatientHome() {
           return (
             <div className="w-full rounded-2xl border-3 border-black bg-gradient-to-r from-amber-100 via-amber-50 to-emerald-50 p-4 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-black bg-emerald-100 text-2xl shadow-xs">
-                  {bonsai.emoji}
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-black bg-emerald-100 shadow-xs">
+                  {bonsai.iconType === "cedar" ? (
+                    <TreeDeciduous className="h-6 w-6 text-emerald-800" />
+                  ) : bonsai.iconType === "orchid" ? (
+                    <Flower2 className="h-6 w-6 text-pink-700" />
+                  ) : bonsai.iconType === "sapling" ? (
+                    <Leaf className="h-6 w-6 text-emerald-600" />
+                  ) : (
+                    <Sprout className="h-6 w-6 text-lime-600" />
+                  )}
                 </div>
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-wider text-emerald-900 flex items-center gap-1">

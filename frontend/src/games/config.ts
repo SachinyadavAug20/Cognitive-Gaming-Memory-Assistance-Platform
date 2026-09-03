@@ -198,7 +198,7 @@ export interface HerbRecord {
   name: string;
   localName: string;
   stateOrigin: string;
-  emoji: string;
+  iconName: "leaf" | "root" | "citrus" | "vine";
   remedyMemory: string;
   sensoryAroma: string;
 }
@@ -209,7 +209,7 @@ export const HERBAL_MEMORY_BANK: HerbRecord[] = [
     name: "Indian Pennywort / Centella",
     localName: "Manimuni (Assam / Meghalaya)",
     stateOrigin: "Assam & Meghalaya",
-    emoji: "🌱",
+    iconName: "leaf",
     remedyMemory: "Grandmother's fresh morning green broth for digestion, sharpness of mind, and calm memory.",
     sensoryAroma: "Earthy, fresh herbal fragrance with light morning dew aroma.",
   },
@@ -218,7 +218,7 @@ export const HERBAL_MEMORY_BANK: HerbRecord[] = [
     name: "High-Curcumin Golden Turmeric",
     localName: "Lakadong Turmeric (Jaintia Hills)",
     stateOrigin: "Meghalaya",
-    emoji: "🫚",
+    iconName: "root",
     remedyMemory: "Golden hill root harvested in warm autumn sun, boiled in sweet buffalo milk for joint warmth.",
     sensoryAroma: "Warm, earthy, spicy golden scent carrying highland soil freshness.",
   },
@@ -227,7 +227,7 @@ export const HERBAL_MEMORY_BANK: HerbRecord[] = [
     name: "Assam Oblong King Lemon",
     localName: "Kaji Nemu",
     stateOrigin: "Assam",
-    emoji: "🍋",
+    iconName: "citrus",
     remedyMemory: "Squeezing fresh royal lemon slices over steamed fish curry (Masor Tenga) on Sunday afternoons.",
     sensoryAroma: "Vibrant, uplifting citrus burst that awakens cognitive alertness.",
   },
@@ -236,7 +236,7 @@ export const HERBAL_MEMORY_BANK: HerbRecord[] = [
     name: "Skunk Vine / Paederia",
     localName: "Bhedailata (Assam / Manipur)",
     stateOrigin: "Assam & Manipur",
-    emoji: "🌿",
+    iconName: "vine",
     remedyMemory: "Traditional medicinal climbing vine prepared as a comforting evening soup after monsoon rain.",
     sensoryAroma: "Distinct aromatic green vine fragrance rich in soothing antioxidants.",
   },
@@ -306,7 +306,7 @@ export function calculateGazeSearchEfficiency(
 export interface BonsaiState {
   stage: "sprout" | "growing" | "blooming" | "master";
   title: string;
-  emoji: string;
+  iconType: "sprout" | "sapling" | "orchid" | "cedar";
   leavesCount: number;
   blossomColor: string;
   description: string;
@@ -317,7 +317,7 @@ export function getDigitalBonsaiGrowthStage(completedSessionsCount: number): Bon
     return {
       stage: "master",
       title: "Majestic Himalayan Cedar in Full Orchid Bloom",
-      emoji: "🌸🌳",
+      iconType: "cedar",
       leavesCount: 48,
       blossomColor: "#F59E0B",
       description: "Radiant neuroplastic vitality. Your ancestral memory tree is thriving with golden blossoms.",
@@ -327,7 +327,7 @@ export function getDigitalBonsaiGrowthStage(completedSessionsCount: number): Bon
     return {
       stage: "blooming",
       title: "Assam Kopou Orchid Blossoms",
-      emoji: "🌺🌿",
+      iconType: "orchid",
       leavesCount: 28,
       blossomColor: "#EC4899",
       description: "Fragrant purple orchids are budding across your daily therapy branches.",
@@ -337,7 +337,7 @@ export function getDigitalBonsaiGrowthStage(completedSessionsCount: number): Bon
     return {
       stage: "growing",
       title: "Lush Tea Sapling with Tender Leaves",
-      emoji: "🌿🌱",
+      iconType: "sapling",
       leavesCount: 14,
       blossomColor: "#10B981",
       description: "Healthy green shoots are flourishing with every day of cognitive exercises.",
@@ -346,7 +346,7 @@ export function getDigitalBonsaiGrowthStage(completedSessionsCount: number): Bon
   return {
     stage: "sprout",
     title: "Golden Morning Sprout",
-    emoji: "🌱",
+    iconType: "sprout",
     leavesCount: 4,
     blossomColor: "#84CC16",
     description: "A new seed of memory has sprouted in the fertile Brahmaputra soil.",

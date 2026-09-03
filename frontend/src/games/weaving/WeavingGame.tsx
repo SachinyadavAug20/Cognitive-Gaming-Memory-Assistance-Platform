@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Sparkles, Music } from "lucide-react";
+import { Sparkles, Music, Check, Crown, Leaf, Lightbulb } from "lucide-react";
+import { MugaLoomShuttleIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -29,14 +30,13 @@ export interface YarnColor {
   hex: string;
   borderHex: string;
   accentClass: string;
-  emoji: string;
 }
 
 export const YARNS: YarnColor[] = [
-  { id: "gold", name: "Muga Gold", hex: "#F59E0B", borderHex: "#B45309", accentClass: "bg-amber-500", emoji: "🟡" },
-  { id: "red", name: "Crimson Red", hex: "#EF4444", borderHex: "#B91C1C", accentClass: "bg-red-500", emoji: "🔴" },
-  { id: "green", name: "Forest Green", hex: "#10B981", borderHex: "#047857", accentClass: "bg-emerald-500", emoji: "🟢" },
-  { id: "white", name: "Eri Silk White", hex: "#F8FAFC", borderHex: "#94A3B8", accentClass: "bg-slate-100", emoji: "⚪" },
+  { id: "gold", name: "Muga Gold", hex: "#F59E0B", borderHex: "#B45309", accentClass: "bg-amber-500" },
+  { id: "red", name: "Crimson Red", hex: "#EF4444", borderHex: "#B91C1C", accentClass: "bg-red-500" },
+  { id: "green", name: "Forest Green", hex: "#10B981", borderHex: "#047857", accentClass: "bg-emerald-500" },
+  { id: "white", name: "Eri Silk White", hex: "#F8FAFC", borderHex: "#94A3B8", accentClass: "bg-slate-100" },
 ];
 
 export interface WeavingPattern {
@@ -262,10 +262,12 @@ export function WeavingGame() {
     );
 
   return (
-    <GameShell title="The Loom of Memories 🧵" score={score}>
+    <GameShell title="The Loom of Memories" score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
-          <div className="text-6xl animate-pulse">🧵</div>
+          <div className="flex h-24 w-24 items-center justify-center rounded-3xl border-3 border-black bg-amber-100 text-amber-900 shadow-[4px_4px_0px_#000]">
+            <MugaLoomShuttleIcon className="h-14 w-14" />
+          </div>
           <p className="font-serif text-3xl font-black text-ink">
             The Loom of Memories
           </p>
@@ -287,9 +289,15 @@ export function WeavingGame() {
                   className="btn-tactile group flex items-center justify-between rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-102"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">
-                      {idx === 0 ? "🧣" : idx === 1 ? "🌿" : "👑"}
-                    </span>
+                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-50 border border-black/20">
+                      {idx === 0 ? (
+                        <MugaLoomShuttleIcon className="h-6 w-6 text-red-600" />
+                      ) : idx === 1 ? (
+                        <Leaf className="h-6 w-6 text-emerald-600" />
+                      ) : (
+                        <Crown className="h-6 w-6 text-amber-500" />
+                      )}
+                    </div>
                     <div>
                       <p className="text-base font-black text-ink">{p.title}</p>
                       <p className="text-xs font-semibold text-ink-secondary">{p.subtitle}</p>
@@ -307,8 +315,8 @@ export function WeavingGame() {
             size="md"
           />
 
-          <ChunkyButton variant="tea" size="2xl" onClick={() => startWeaving(0)}>
-            Begin Weaving 🧵
+          <ChunkyButton variant="tea" size="2xl" onClick={() => startWeaving(0)} icon={<MugaLoomShuttleIcon className="h-6 w-6" />}>
+            Begin Weaving
           </ChunkyButton>
         </div>
       ) : phase === "weave" ? (
@@ -363,7 +371,7 @@ export function WeavingGame() {
                         borderColor: isCurrentTarget ? "#FFF" : yarn?.borderHex ?? "#000",
                       }}
                     >
-                      {isWoven && <span className="text-[10px] font-black text-black">✓</span>}
+                      {isWoven && <Check className="h-3.5 w-3.5 text-black stroke-[3]" />}
                       {isCurrentTarget && (
                         <span className="h-2 w-2 rounded-full bg-white animate-ping" />
                       )}
@@ -414,8 +422,9 @@ export function WeavingGame() {
 
           {/* HINT BANNER IF ACTIVE */}
           {hintActive && targetYarnId && (
-            <div className="rounded-xl border-2 border-marigold bg-marigold-light p-3 text-center text-sm font-bold text-ink shadow-sm animate-pulse max-w-md w-full">
-              💡 Choose the {YARNS.find((y) => y.id === targetYarnId)?.name} shuttle below!
+            <div className="rounded-xl border-2 border-marigold bg-marigold-light p-3 text-center text-sm font-bold text-ink shadow-sm animate-pulse max-w-md w-full flex items-center justify-center gap-1.5">
+              <Lightbulb className="h-4 w-4 text-amber-600 shrink-0" />
+              <span>Choose the {YARNS.find((y) => y.id === targetYarnId)?.name} shuttle below!</span>
             </div>
           )}
 

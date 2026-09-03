@@ -52,18 +52,18 @@ export function AdminAuditTab({
         <table className="w-full text-left text-xs">
           <thead>
             <tr className="border-b-2 border-black bg-[#FAF3E0] text-ink">
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Log ID</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden sm:table-cell">Log ID</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Actor / Role</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Action Type</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Audit Details</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">IP Address</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">IP Address</th>
               <th className="py-3 px-3 font-black uppercase text-[10px] text-right">Timestamp</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/10 font-bold">
             {auditLogs.map((logItem) => (
               <tr key={logItem.id} className="hover:bg-amber-50/50 transition-colors">
-                <td className="py-3 px-3 font-mono font-black text-ink-secondary">{logItem.id}</td>
+                <td className="py-3 px-3 font-mono font-black text-ink-secondary hidden sm:table-cell">{logItem.id}</td>
                 <td className="py-3 px-3">
                   <span className="font-serif font-black text-ink">{logItem.actorName}</span>
                   <span className="text-[10px] font-normal text-purple-900 block">{logItem.actorRole}</span>
@@ -73,8 +73,8 @@ export function AdminAuditTab({
                     {logItem.actionType}
                   </span>
                 </td>
-                <td className="py-3 px-3 text-ink-secondary max-w-xs">{logItem.details}</td>
-                <td className="py-3 px-3 font-mono text-ink-secondary">{logItem.ipAddress}</td>
+                <td className="py-3 px-3 text-ink-secondary max-w-xs break-words">{logItem.details}</td>
+                <td className="py-3 px-3 font-mono text-ink-secondary hidden md:table-cell">{logItem.ipAddress}</td>
                 <td className="py-3 px-3 text-right font-mono text-ink-secondary">
                   {new Date(logItem.timestamp).toLocaleString()}
                 </td>

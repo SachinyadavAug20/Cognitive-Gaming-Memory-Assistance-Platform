@@ -161,6 +161,23 @@ export default async function LocaleLayout({ children, params }: Props) {
             })()`,
           }}
         />
+        <Script
+          id="cognicare-keyboard-focus"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+              try {
+                var html = document.documentElement;
+                var KEYBOARD_KEYS = ['Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter',' ','Escape'];
+                function mouseDown(){ html.classList.remove('keyboard-user'); }
+                function keyDown(e){ if (KEYBOARD_KEYS.indexOf(e.key) !== -1) html.classList.add('keyboard-user'); }
+                window.addEventListener('mousedown', mouseDown);
+                window.addEventListener('pointerdown', function(e){ if (e.pointerType === 'mouse') mouseDown(); });
+                window.addEventListener('keydown', keyDown);
+              } catch(e){}
+            })()`,
+          }}
+        />
         <StructuredData locale={locale} />
       </head>
       <body className="min-h-screen bg-canvas text-ink paper-texture overflow-x-hidden">

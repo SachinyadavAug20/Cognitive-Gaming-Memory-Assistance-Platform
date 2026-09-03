@@ -591,7 +591,7 @@ export default function AdminDashboardPage() {
                 <Lock className="h-3 w-3 text-rose-700" />
                 Confidential Central Administration
               </span>
-              <span className="text-[11px] font-bold text-ink-secondary">
+              <span suppressHydrationWarning className="text-[11px] font-bold text-ink-secondary">
                 Updated: {lastRefreshedAt.toLocaleTimeString()}
               </span>
             </div>

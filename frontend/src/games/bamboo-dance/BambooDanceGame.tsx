@@ -218,7 +218,17 @@ export function BambooDanceGame() {
                   : "bg-amber-100 text-amber-900 border-amber-400"
               }`}
             >
-              {bambooOpen ? "🟢 BAMBOO OPEN • STEP NOW!" : "🔴 BAMBOO CLOSED"}
+              {bambooOpen ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-600 animate-ping" />
+                  <span>BAMBOO OPEN • STEP NOW!</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-red-600" />
+                  <span>BAMBOO CLOSED</span>
+                </span>
+              )}
             </span>
           </div>
 
@@ -259,7 +269,7 @@ export function BambooDanceGame() {
           </div>
 
           {/* 3 TACTILE STEPPING BUTTONS */}
-          <div className="w-full max-w-md grid grid-cols-3 gap-2 pt-2">
+          <div className="w-full max-w-md grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
             <button
               type="button"
               onClick={() => handleStep(0)}

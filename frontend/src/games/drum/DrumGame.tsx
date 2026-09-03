@@ -11,6 +11,9 @@ import {
   Camera,
   Sliders,
   UserCheck,
+  ArrowLeft,
+  ArrowRight,
+  Lightbulb,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -252,7 +255,7 @@ export function DrumGame() {
 
           ctx.fillStyle = isLeftStruck ? "#fef08a" : "#fcd34d";
           ctx.font = "black 10px sans-serif";
-          ctx.fillText(isLeftStruck ? "💥 DHUM (BASS)!" : "LEFT DRUM (BASS)", w * 0.07, h * 0.50);
+          ctx.fillText(isLeftStruck ? "DHUM (BASS)!" : "LEFT DRUM (BASS)", w * 0.07, h * 0.50);
 
           // Right Drum Zone
           const isRightStruck = nextRightState === "COOLDOWN";
@@ -264,7 +267,7 @@ export function DrumGame() {
 
           ctx.fillStyle = isRightStruck ? "#fecaca" : "#fca5a5";
           ctx.font = "black 10px sans-serif";
-          ctx.fillText(isRightStruck ? "💥 TAAK (TREBLE)!" : "RIGHT DRUM (TREBLE)", w * 0.59, h * 0.50);
+          ctx.fillText(isRightStruck ? "TAAK (TREBLE)!" : "RIGHT DRUM (TREBLE)", w * 0.59, h * 0.50);
         }
       }
     },
@@ -466,7 +469,7 @@ export function DrumGame() {
                   <span>Strike Force Threshold (%):</span>
                   <span className="font-black text-ink">{Math.round(strikeThreshold * 100)}%</span>
                 </div>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {[
                     { label: "Gentle (50%)", val: 0.50 },
                     { label: "Optimal (60%)", val: 0.60 },
@@ -494,7 +497,7 @@ export function DrumGame() {
                   <span>Strike Cadence / Cooldown:</span>
                   <span className="font-black text-ink">{strikePaceMs}ms</span>
                 </div>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                   {[
                     { label: "Calm (650ms)", val: 650 },
                     { label: "Normal (500ms)", val: 500 },
@@ -531,13 +534,13 @@ export function DrumGame() {
             <div className="flex items-center justify-center py-0.5">
               {currentTargetSide === "left" ? (
                 <div className="flex items-center gap-2 rounded-xl border-2 border-amber-600 bg-amber-100 px-4 py-1.5 text-amber-950 font-black text-xs sm:text-sm animate-pulse shadow-xs">
-                  <span className="text-lg">👈</span>
+                  <ArrowLeft className="h-4 w-4 stroke-[3]" />
                   <span>HIT LEFT HEAD! (Bass Dhum)</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 rounded-xl border-2 border-red-600 bg-red-100 px-4 py-1.5 text-red-950 font-black text-xs sm:text-sm animate-pulse shadow-xs">
                   <span>HIT RIGHT HEAD! (Treble Taak)</span>
-                  <span className="text-lg">👉</span>
+                  <ArrowRight className="h-4 w-4 stroke-[3]" />
                 </div>
               )}
             </div>
@@ -691,8 +694,9 @@ export function DrumGame() {
                 </div>
               </div>
 
-              <p className="text-[11px] font-medium text-ink-secondary text-center pt-0.5">
-                💡 <strong>How to play:</strong> Wave your hand downward into either drum zone. Once you strike, lift your hand back up to play the next beat.
+              <p className="text-[11px] font-medium text-ink-secondary text-center pt-0.5 flex items-center justify-center gap-1.5">
+                <Lightbulb className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                <span><strong>How to play:</strong> Wave your hand downward into either drum zone. Once you strike, lift your hand back up to play the next beat.</span>
               </p>
             </div>
           )}

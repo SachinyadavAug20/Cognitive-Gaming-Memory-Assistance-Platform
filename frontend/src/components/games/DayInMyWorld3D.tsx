@@ -14,6 +14,21 @@ import {
   Image as ImageIcon,
   Compass,
   Award,
+  Key,
+  Check,
+  CheckCircle2,
+  Search,
+  BookOpen,
+  Lightbulb,
+  Droplets,
+  Sunrise,
+  Speech,
+  Train,
+  Home,
+  Building2,
+  Sailboat,
+  Car,
+  Trees,
 } from "lucide-react";
 import { useGameVoice } from "@/hooks/useGameVoice";
 import { api } from "@/lib/api";
@@ -25,10 +40,15 @@ export type DayChapter = 1 | 2 | 3 | 4 | 5 | 6;
 interface CollectibleItem {
   id: "key" | "cap" | "bag";
   name: string;
-  emoji: string;
   pos: [number, number, number];
   collected: boolean;
   mesh?: THREE.Group;
+}
+
+function ItemIcon({ id, className = "h-7 w-7" }: { id: string; className?: string }) {
+  if (id === "key") return <Key className={`${className} text-amber-600`} />;
+  if (id === "bag") return <ShoppingBag className={`${className} text-teal-700`} />;
+  return <Compass className={`${className} text-indigo-600`} />;
 }
 
 export function DayInMyWorld3D() {
@@ -69,9 +89,9 @@ export function DayInMyWorld3D() {
   // Chapter 1: Morning Memorize & Collect
   const [ch1Memorized, setCh1Memorized] = useState(false);
   const [ch1Items, setCh1Items] = useState<CollectibleItem[]>([
-    { id: "key", name: "House Key", emoji: "🔑", pos: [-2, 1.3, 0], collected: false },
-    { id: "cap", name: "Sun Cap", emoji: "🧢", pos: [0, 1.3, 0], collected: false },
-    { id: "bag", name: "Cloth Bag", emoji: "👜", pos: [2, 1.3, 0], collected: false },
+    { id: "key", name: "House Key", pos: [-2, 1.3, 0], collected: false },
+    { id: "cap", name: "Sun Cap", pos: [0, 1.3, 0], collected: false },
+    { id: "bag", name: "Cloth Bag", pos: [2, 1.3, 0], collected: false },
   ]);
 
   // Chapter 2: Missing Photograph
@@ -387,7 +407,7 @@ export function DayInMyWorld3D() {
     if (index === 1) {
       playSound("fanfare");
       setScore((s) => s + 20);
-      setCh2Feedback("✓ Correct! The beautiful Majuli family reunion photo!");
+      setCh2Feedback("Correct! The beautiful Majuli family reunion photo!");
       speakVoice(getT("ch2Success", "Wonderful! The family album is whole again."));
       setTimeout(() => {
         setCurrentChapter(3);
@@ -406,7 +426,7 @@ export function DayInMyWorld3D() {
     if (choiceIndex === 0) {
       playSound("fanfare");
       setScore((s) => s + 20);
-      setCh3Feedback("✓ Correct! The peaceful riverbank road leading straight to the bazaar!");
+      setCh3Feedback("Correct! The peaceful riverbank road leading straight to the bazaar!");
       speakVoice(getT("ch3Success", "Excellent navigation! We have reached the market stalls safely."));
       setTimeout(() => {
         setCurrentChapter(4);
@@ -426,11 +446,11 @@ export function DayInMyWorld3D() {
     if (ans === 60) {
       playSound("fanfare");
       setScore((s) => s + 20);
-      setCh4Feedback("✓ Correct! ₹200 - ₹140 = ₹60 returned perfectly!");
+      setCh4Feedback("Correct! ₹200 - ₹140 = ₹60 returned perfectly!");
       speakVoice(getT("ch4Success", "Exact calculation! Your basket is packed with fresh groceries."));
       setTimeout(() => {
         setCurrentChapter(5);
-        setCh4Feedback(null);
+        setCh3Feedback(null);
         speakVoice(getT("ch5Intro", "Back at home, let us complete our afternoon relaxation routine."));
       }, 2200);
     } else {
@@ -445,7 +465,7 @@ export function DayInMyWorld3D() {
     if (index === 0) {
       playSound("fanfare");
       setScore((s) => s + 20);
-      setCh5Feedback("✓ Perfect! Hydrating with clean water and relaxing on the verandah!");
+      setCh5Feedback("Perfect! Hydrating with clean water and relaxing on the verandah!");
       speakVoice(getT("ch5Success", "Very well done! You are refreshed and well-rested."));
       setTimeout(() => {
         setCurrentChapter(6);
@@ -454,26 +474,26 @@ export function DayInMyWorld3D() {
       }, 2200);
     } else {
       playSound("click");
-      setCh5Feedback("After a long walk, remember to drink fresh water and rest first.");
+      setCh5Feedback("After a warm morning walk, resting and drinking water is recommended.");
     }
   };
 
-  // Chapter 6: Chronological Ordering
-  const handleCh6Reconstruct = (stepName: string) => {
+  // Chapter 6: Chronological Memory Slots
+  const handleCh6Reconstruct = (step: string) => {
+    if (ch6Slots.includes(step)) return;
     playSound("click");
-    if (ch6Slots.includes(stepName)) {
-      setCh6Slots((prev) => prev.filter((s) => s !== stepName));
-    } else {
-      const next = [...ch6Slots, stepName];
-      setCh6Slots(next);
-      if (next.length === 4) {
-        // Complete day
-        playSound("fanfare");
-        setScore(100);
+    const nextSlots = [...ch6Slots, step];
+    setCh6Slots(nextSlots);
+
+    if (nextSlots.length === 4) {
+      playSound("bell");
+      setScore((s) => s + 20);
+      setTimeout(() => {
         setIsCompleted(true);
+        playSound("fanfare");
         sendSessionTelemetry(100);
-        speakVoice(getT("finalDayComplete", "A peaceful day fulfilled! You walked through every memory with clarity and joy."));
-      }
+        speakVoice(getT("completionVoice", "Wonderful journey! You have reconstructed your entire day with clarity and peace."));
+      }, 1000);
     }
   };
 
@@ -484,9 +504,9 @@ export function DayInMyWorld3D() {
     setScore(0);
     setCh1Memorized(false);
     setCh1Items([
-      { id: "key", name: "House Key", emoji: "🔑", pos: [-2, 1.3, 0], collected: false },
-      { id: "cap", name: "Sun Cap", emoji: "🧢", pos: [0, 1.3, 0], collected: false },
-      { id: "bag", name: "Cloth Bag", emoji: "👜", pos: [2, 1.3, 0], collected: false },
+      { id: "key", name: "House Key", pos: [-2, 1.3, 0], collected: false },
+      { id: "cap", name: "Sun Cap", pos: [0, 1.3, 0], collected: false },
+      { id: "bag", name: "Cloth Bag", pos: [2, 1.3, 0], collected: false },
     ]);
     setCh6Slots([]);
   };
@@ -497,7 +517,7 @@ export function DayInMyWorld3D() {
       {currentSubtitle && (
         <div className="fixed top-20 left-1/2 z-50 -translate-x-1/2 rounded-full border-3 border-black bg-amber-200 px-6 py-2 shadow-[4px_4px_0px_#000] animate-fade-in max-w-lg text-center pointer-events-none">
           <p className="font-serif text-sm sm:text-base font-black text-amber-950 flex items-center justify-center gap-2">
-            <span>🗣️</span>
+            <Speech className="h-4 w-4 text-tea shrink-0" />
             <span>Saathi: &ldquo;{currentSubtitle}&rdquo;</span>
           </p>
         </div>
@@ -561,9 +581,10 @@ export function DayInMyWorld3D() {
           <button
             type="button"
             onClick={handleStartGame}
-            className="btn-tactile rounded-full border-3 border-black bg-amber-400 px-8 py-3 text-base sm:text-lg font-black text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer transition-transform active:translate-y-0.5"
+            className="btn-tactile flex items-center justify-center gap-2 rounded-full border-3 border-black bg-amber-400 px-8 py-3 text-base sm:text-lg font-black text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer transition-transform active:translate-y-0.5"
           >
-            {getT("beginDayButton", "Begin Morning Journey")} 🌅
+            <span>{getT("beginDayButton", "Begin Morning Journey")}</span>
+            <Sunrise className="h-5 w-5" />
           </button>
         </div>
       ) : isCompleted ? (
@@ -601,8 +622,9 @@ export function DayInMyWorld3D() {
         <div className="w-full space-y-3">
           {/* Chapter Stepper Ribbon */}
           <div className="flex items-center justify-between rounded-xl border-2 border-black bg-amber-100/90 px-3 py-1.5 text-xs font-bold">
-            <span>
-              📖 Chapter {currentChapter} of 6:{" "}
+            <span className="flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4 text-tea shrink-0" />
+              <span>Chapter {currentChapter} of 6:{" "}</span>
               <strong className="font-serif text-sm font-black text-ink">
                 {currentChapter === 1
                   ? getT("ch1Title", "Morning Memory")
@@ -627,8 +649,9 @@ export function DayInMyWorld3D() {
             <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
               {!ch1Memorized ? (
                 <>
-                  <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
-                    🔑 {getT("ch1MemorizeTitle", "Remember These Three Essentials")}
+                  <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                    <Key className="h-5 w-5 text-amber-600 shrink-0" />
+                    <span>{getT("ch1MemorizeTitle", "Remember These Three Essentials")}</span>
                   </h3>
                   <p className="text-xs sm:text-sm font-bold text-ink-secondary">
                     {getT("ch1MemorizeDesc", "Take a moment to look at your Key, Cap, and Cloth Bag before leaving the room.")}
@@ -640,7 +663,9 @@ export function DayInMyWorld3D() {
                         key={item.id}
                         className="flex flex-col items-center rounded-xl border-2 border-black bg-surface p-3 shadow-[2px_2px_0px_#000]"
                       >
-                        <span className="text-3xl">{item.emoji}</span>
+                        <div className="h-10 flex items-center justify-center">
+                          <ItemIcon id={item.id} />
+                        </div>
                         <span className="font-serif text-xs font-black text-ink mt-1">
                           {item.name}
                         </span>
@@ -655,15 +680,17 @@ export function DayInMyWorld3D() {
                       playSound("click");
                       speakVoice(getT("ch1FindPrompt", "Now find your key, cap, and bag around the house to get ready for the day."));
                     }}
-                    className="btn-tactile rounded-full border-3 border-black bg-amber-400 px-6 py-2.5 text-sm sm:text-base font-black text-black shadow-[3px_3px_0px_#000] hover:bg-amber-300 cursor-pointer"
+                    className="btn-tactile inline-flex items-center gap-2 rounded-full border-3 border-black bg-amber-400 px-6 py-2.5 text-sm sm:text-base font-black text-black shadow-[3px_3px_0px_#000] hover:bg-amber-300 cursor-pointer"
                   >
-                    {getT("ch1ReadyButton", "I've Memorized Them")} ✓
+                    <span>{getT("ch1ReadyButton", "I've Memorized Them")}</span>
+                    <CheckCircle2 className="h-4 w-4" />
                   </button>
                 </>
               ) : (
                 <>
-                  <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
-                    🔍 {getT("ch1FindTitle", "Find & Pick Up the 3 Items")}
+                  <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                    <Search className="h-5 w-5 text-tea shrink-0" />
+                    <span>{getT("ch1FindTitle", "Find & Pick Up the 3 Items")}</span>
                   </h3>
                   <p className="text-xs font-bold text-ink-secondary">
                     Tap each item to collect it into your bag:
@@ -682,9 +709,18 @@ export function DayInMyWorld3D() {
                             : "bg-surface hover:bg-amber-200"
                         }`}
                       >
-                        <span className="text-3xl">{item.emoji}</span>
-                        <span className="font-serif text-xs font-black text-ink mt-1">
-                          {item.collected ? "Collected ✓" : `Take ${item.name}`}
+                        <div className="h-10 flex items-center justify-center">
+                          <ItemIcon id={item.id} />
+                        </div>
+                        <span className="font-serif text-xs font-black text-ink mt-1 flex items-center gap-1">
+                          {item.collected ? (
+                            <>
+                              <span>Collected</span>
+                              <Check className="h-3 w-3 text-emerald-700" />
+                            </>
+                          ) : (
+                            `Take ${item.name}`
+                          )}
                         </span>
                       </button>
                     ))}
@@ -707,23 +743,27 @@ export function DayInMyWorld3D() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                 {[
-                  { id: 0, label: "Busy Train Station 🚉" },
-                  { id: 1, label: "Majuli Family Courtyard 🏡" },
-                  { id: 2, label: "Office Meeting Room 🏢" },
-                ].map((ph) => (
-                  <button
-                    key={ph.id}
-                    type="button"
-                    onClick={() => handleChoosePhoto(ph.id)}
-                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
-                      ch2SelectedPhoto === ph.id && ph.id === 1
-                        ? "bg-emerald-200 text-emerald-950"
-                        : "bg-surface hover:bg-amber-100 text-ink"
-                    }`}
-                  >
-                    {ph.label}
-                  </button>
-                ))}
+                  { id: 0, label: "Busy Train Station", icon: Train },
+                  { id: 1, label: "Majuli Family Courtyard", icon: Home },
+                  { id: 2, label: "Office Meeting Room", icon: Building2 },
+                ].map((ph) => {
+                  const IconComp = ph.icon;
+                  return (
+                    <button
+                      key={ph.id}
+                      type="button"
+                      onClick={() => handleChoosePhoto(ph.id)}
+                      className={`btn-tactile flex items-center justify-center gap-2 rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                        ch2SelectedPhoto === ph.id && ph.id === 1
+                          ? "bg-emerald-200 text-emerald-950"
+                          : "bg-surface hover:bg-amber-100 text-ink"
+                      }`}
+                    >
+                      <IconComp className="h-4 w-4 shrink-0 text-tea" />
+                      <span>{ph.label}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {ch2Feedback && (
@@ -737,7 +777,7 @@ export function DayInMyWorld3D() {
             <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
               <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
                 <Compass className="h-5 w-5 text-tea" />
-                {getT("ch3Question", "Choose the Riverbank Path")}
+                <span>{getT("ch3Question", "Choose the Riverbank Path")}</span>
               </h3>
               <p className="text-xs sm:text-sm font-bold text-ink-secondary">
                 You pass by the red Namghar temple. Which path leads to the river marketplace?
@@ -745,23 +785,27 @@ export function DayInMyWorld3D() {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                 {[
-                  { id: 0, label: "Riverbank Path (Along Brahmaputra) ⛵" },
-                  { id: 1, label: "Highway Overpass 🚗" },
-                  { id: 2, label: "Dark Forest Trail 🌲" },
-                ].map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => handlePathChoice(p.id)}
-                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
-                      ch3Choice === p.id && p.id === 0
-                        ? "bg-emerald-200 text-emerald-950"
-                        : "bg-surface hover:bg-amber-100 text-ink"
-                    }`}
-                  >
-                    {p.label}
-                  </button>
-                ))}
+                  { id: 0, label: "Riverbank Path (Along Brahmaputra)", icon: Sailboat },
+                  { id: 1, label: "Highway Overpass", icon: Car },
+                  { id: 2, label: "Dark Forest Trail", icon: Trees },
+                ].map((p) => {
+                  const IconComp = p.icon;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => handlePathChoice(p.id)}
+                      className={`btn-tactile flex items-center justify-center gap-2 rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                        ch3Choice === p.id && p.id === 0
+                          ? "bg-emerald-200 text-emerald-950"
+                          : "bg-surface hover:bg-amber-100 text-ink"
+                      }`}
+                    >
+                      <IconComp className="h-4 w-4 shrink-0 text-tea" />
+                      <span>{p.label}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {ch3Feedback && (
@@ -775,10 +819,10 @@ export function DayInMyWorld3D() {
             <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
               <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
                 <ShoppingBag className="h-5 w-5 text-tea" />
-                {getT("ch4Prompt", "Calculate the Correct Change")}
+                <span>{getT("ch4Prompt", "Calculate the Correct Change")}</span>
               </h3>
               <p className="text-xs font-bold text-ink-secondary">
-                Items bought: ☕ Assam Tea (₹60) + 🍚 Joha Rice (₹80) = <strong>₹140 Total</strong>.
+                Items bought: Assam Tea (₹60) + Joha Rice (₹80) = <strong>₹140 Total</strong>.
                 <br />You give the shopkeeper a <strong>₹200 note</strong>. What change should you receive?
               </p>
 
@@ -808,8 +852,9 @@ export function DayInMyWorld3D() {
           {/* CHAPTER 5: Routine Decision */}
           {currentChapter === 5 && (
             <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
-              <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
-                💡 {getT("ch5Prompt", "Afternoon Rest & Hydration")}
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                <Lightbulb className="h-5 w-5 text-amber-500" />
+                <span>{getT("ch5Prompt", "Afternoon Rest & Hydration")}</span>
               </h3>
               <p className="text-xs sm:text-sm font-bold text-ink-secondary">
                 You have walked home with your fresh tea. What is the best step right now?
@@ -817,22 +862,26 @@ export function DayInMyWorld3D() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 max-w-md mx-auto">
                 {[
-                  { id: 0, label: "💧 Drink a glass of water & rest on verandah" },
-                  { id: 1, label: "🏃 Go outside and run immediately" },
-                ].map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => handleCh5Choice(c.id)}
-                    className={`btn-tactile rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
-                      ch5Selected === c.id && c.id === 0
-                        ? "bg-emerald-200 text-emerald-950"
-                        : "bg-surface hover:bg-amber-100 text-ink"
-                    }`}
-                  >
-                    {c.label}
-                  </button>
-                ))}
+                  { id: 0, label: "Drink a glass of water & rest on verandah", icon: Droplets },
+                  { id: 1, label: "Go outside and run immediately", icon: Sun },
+                ].map((c) => {
+                  const IconComp = c.icon;
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => handleCh5Choice(c.id)}
+                      className={`btn-tactile flex items-center justify-center gap-2 rounded-xl border-2 border-black p-3 text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                        ch5Selected === c.id && c.id === 0
+                          ? "bg-emerald-200 text-emerald-950"
+                          : "bg-surface hover:bg-amber-100 text-ink"
+                      }`}
+                    >
+                      <IconComp className="h-4 w-4 shrink-0 text-tea" />
+                      <span>{c.label}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {ch5Feedback && (
@@ -844,8 +893,9 @@ export function DayInMyWorld3D() {
           {/* CHAPTER 6: Chronological Ordering */}
           {currentChapter === 6 && (
             <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 text-center space-y-3 shadow-[3px_3px_0px_#000]">
-              <h3 className="font-serif text-lg sm:text-xl font-black text-ink">
-                🌅 {getT("ch6Prompt", "Reconstruct Your Day Chronologically")}
+              <h3 className="font-serif text-lg sm:text-xl font-black text-ink flex items-center justify-center gap-1.5">
+                <Sunrise className="h-5 w-5 text-amber-600" />
+                <span>{getT("ch6Prompt", "Reconstruct Your Day Chronologically")}</span>
               </h3>
               <p className="text-xs font-bold text-ink-secondary">
                 Tap each memory in order from morning to evening:
@@ -853,10 +903,10 @@ export function DayInMyWorld3D() {
 
               <div className="grid grid-cols-2 gap-2 max-w-md mx-auto pt-1">
                 {[
-                  "1. Morning Keys & Bag 🔑",
-                  "2. Majuli Family Photo 🏡",
-                  "3. River Market Walk ☕",
-                  "4. Sunset Verandah Rest 🌅",
+                  "1. Morning Keys & Bag",
+                  "2. Majuli Family Photo",
+                  "3. River Market Walk",
+                  "4. Sunset Verandah Rest",
                 ].map((step) => {
                   const isSelected = ch6Slots.includes(step);
                   return (
@@ -864,13 +914,14 @@ export function DayInMyWorld3D() {
                       key={step}
                       type="button"
                       onClick={() => handleCh6Reconstruct(step)}
-                      className={`btn-tactile rounded-xl border-2 border-black p-2.5 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+                      className={`btn-tactile flex items-center justify-center gap-1.5 rounded-xl border-2 border-black p-2.5 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
                         isSelected
                           ? "bg-emerald-200 text-emerald-950 border-emerald-700"
                           : "bg-surface hover:bg-amber-100 text-ink"
                       }`}
                     >
-                      {step} {isSelected && "✓"}
+                      <span>{step}</span>
+                      {isSelected && <Check className="h-3 w-3 text-emerald-800" />}
                     </button>
                   );
                 })}

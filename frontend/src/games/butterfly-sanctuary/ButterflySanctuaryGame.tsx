@@ -11,7 +11,9 @@ import {
   CheckCircle2,
   Volume2,
   Flower2,
+  Hand,
 } from "lucide-react";
+import { KazirangaButterflyIcon } from "@/components/ui/CulturalIcons";
 import { GameShell } from "@/components/games/GameShell";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -30,7 +32,19 @@ import {
 } from "@/lib/vision";
 import { getGameStrings, getHubStrings } from "@/lib/gameI18n";
 
-const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string; f3: string; hudPerched: string; hudResting: string; hudStability: string; full: string }> = {
+const BUTTERFLY_FEATURES: Record<
+  string,
+  {
+    badge: string;
+    f1: string;
+    f2: string;
+    f3: string;
+    hudPerched: string;
+    hudResting: string;
+    hudStability: string;
+    full: string;
+  }
+> = {
   en: {
     badge: "Neuro-Motor & Calming Features:",
     f1: "Promotes static hand steadiness and anti-tremor motor control",
@@ -39,7 +53,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "Butterflies Perched",
     hudResting: "{count} butterflies resting",
     hudStability: "Motor Steadiness",
-    full: "Sanctuary Full! 🎉"
+    full: "Sanctuary Full!"
   },
   hi: {
     badge: "न्यूरो-मोटर एवं मानसिक शांति विशेषताएँ:",
@@ -49,7 +63,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "बैठी तितलियाँ",
     hudResting: "{count} तितलियाँ आराम कर रही हैं",
     hudStability: "हाथ की स्थिरता",
-    full: "अभयारण्य प्रफुल्लित! 🎉"
+    full: "अभयारण्य प्रफुल्लित!"
   },
   as: {
     badge: "স্নায়ু আৰু মানসিক প্ৰশান্তিৰ দিশসমূহ:",
@@ -59,7 +73,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "বহি থকা পখিলা",
     hudResting: "{count}টা পখিলা জিৰণি লৈছে",
     hudStability: "হাতৰ সুস্থিৰতা",
-    full: "অভয়াৰণ্য ভৰি পৰিল! 🎉"
+    full: "অভয়াৰণ্য ভৰি পৰিল!"
   },
   bn: {
     badge: "স্নায়ু ও মানসিক প্রশান্তির বৈশিষ্ট্য:",
@@ -69,7 +83,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "বসা প্রজাপতি",
     hudResting: "{count}টি প্রজাপতি বিশ্রাম নিচ্ছে",
     hudStability: "হাতের স্থিরতা",
-    full: "অভয়ারণ্য পূর্ণ! 🎉"
+    full: "অভয়ারণ্য পূর্ণ!"
   },
   mr: {
     badge: "न्यूरो-मोटर व मानसिक शांतता वैशिष्ट्ये:",
@@ -79,7 +93,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "बसलेली फुलपाखरे",
     hudResting: "{count} फुलपाखरे विसावली आहेत",
     hudStability: "हाताची स्थिरता",
-    full: "अभयारण्य बहरले! 🎉"
+    full: "अभयारण्य बहरले!"
   },
   ne: {
     badge: "स्नायु तथा मानसिक शान्ति विशेषताहरू:",
@@ -89,7 +103,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "बसेका पुतलीहरू",
     hudResting: "{count} पुतलीहरू विश्राम गर्दैछन्",
     hudStability: "हातको स्थिरता",
-    full: "अभयारण्य भरियो! 🎉"
+    full: "अभयारण्य भरियो!"
   },
   mni: {
     badge: "মস্তিষ্ক অমসুং ৱাখলগী শান্তি:",
@@ -99,7 +113,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "তুংলিবা কুরোকপাকপেই",
     hudResting: "কুরোকপাকপেই {count} পোথারি",
     hudStability: "খুৎকী স্থিতি",
-    full: "অভয়ারণ্য লোইরে! 🎉"
+    full: "অভয়ারণ্য লোইরে!"
   },
   brx: {
     badge: "गोसो आरामनि आखुथाय:",
@@ -109,7 +123,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "जोबनाय बिखा",
     hudResting: "{count} बिखा आराम लादों",
     hudStability: "आखाय गोजोनथि",
-    full: "अभयारण्य जोबबाय! 🎉"
+    full: "अभयारण्य जोबबाय!"
   },
   grt: {
     badge: "Gisik tom·tomani bewalrang:",
@@ -119,7 +133,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "Gisik Pakma",
     hudResting: "{count} do·bikrang neng·taktenga",
     hudStability: "Jak Tom·tomaniko",
-    full: "Sanctuary Gapatjok! 🎉"
+    full: "Sanctuary Gapatjok!"
   },
   kha: {
     badge: "Ki jingiarap ia ka met bad ka jingmut:",
@@ -129,7 +143,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "Ki Thapbalieh Kiba Shong",
     hudResting: "{count} tylli ki thapbalieh ki shong thait",
     hudStability: "Jingneh ka Kti",
-    full: "Sanctuary La Dap! 🎉"
+    full: "Sanctuary La Dap!"
   },
   lus: {
     badge: "Thluak leh kut chezia tihchakna:",
@@ -139,7 +153,7 @@ const BUTTERFLY_FEATURES: Record<string, { badge: string; f1: string; f2: string
     hudPerched: "Phengphehlep Fu Ta",
     hudResting: "Phengphehlep {count} an chawl hahdam mek",
     hudStability: "Kut Nghin Dan",
-    full: "Sanctuary a khat ta! 🎉"
+    full: "Sanctuary a khat ta!"
   }
 };
 
@@ -159,9 +173,9 @@ interface Butterfly {
 }
 
 const FLOWERS = [
-  { name: "Kopou Orchid", color: "#EC4899", emoji: "🌸", x: 0.2, y: 0.75 },
-  { name: "Kaziranga Lotus", color: "#F43F5E", emoji: "🪷", x: 0.5, y: 0.8 },
-  { name: "Foxtail Lily", color: "#8B5CF6", emoji: "🌺", x: 0.8, y: 0.75 },
+  { name: "Kopou Orchid", color: "#EC4899", x: 0.2, y: 0.75 },
+  { name: "Kaziranga Lotus", color: "#F43F5E", x: 0.5, y: 0.8 },
+  { name: "Foxtail Lily", color: "#8B5CF6", x: 0.8, y: 0.75 },
 ];
 
 export function ButterflySanctuaryGame() {
@@ -320,10 +334,10 @@ export function ButterflySanctuaryGame() {
 
         const id = nextButterflyIdRef.current++;
         const speciesList = [
-          { name: "Golden Birdwing", species: "Troides aeacus", wingEmoji: "🦋", color: "#F59E0B" },
-          { name: "Peacock Royal", species: "Tajuria cippus", wingEmoji: "🦋", color: "#3B82F6" },
-          { name: "Emerald Swallowtail", species: "Papilio palinurus", wingEmoji: "🦋", color: "#10B981" },
-          { name: "Assam Purple Emperor", species: "Apatura ilia", wingEmoji: "🦋", color: "#8B5CF6" },
+          { name: "Golden Birdwing", species: "Troides aeacus", color: "#F59E0B" },
+          { name: "Peacock Royal", species: "Tajuria cippus", color: "#3B82F6" },
+          { name: "Emerald Swallowtail", species: "Papilio palinurus", color: "#10B981" },
+          { name: "Assam Purple Emperor", species: "Apatura ilia", color: "#8B5CF6" },
         ];
         const sp = speciesList[Math.floor(Math.random() * speciesList.length)];
         const flower = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
@@ -335,11 +349,11 @@ export function ButterflySanctuaryGame() {
             name: sp.name,
             species: sp.species,
             color: sp.color,
-            wingEmoji: sp.wingEmoji,
-            x: 0.1 + Math.random() * 0.8,
-            y: 0.15 + Math.random() * 0.4,
+            wingEmoji: "🦋",
+            x: Math.random() * 0.7 + 0.15,
+            y: Math.random() * 0.4 + 0.1,
             targetX: flower.x,
-            targetY: flower.y - 0.1,
+            targetY: flower.y - 0.05,
             perched: false,
             perchedProgress: 0,
             flowerName: flower.name,
@@ -548,7 +562,7 @@ export function ButterflySanctuaryGame() {
             <div className="absolute bottom-4 inset-x-4 flex justify-between z-0 pointer-events-none">
               {FLOWERS.map((f, i) => (
                 <div key={i} className="flex flex-col items-center opacity-85">
-                  <span className="text-4xl filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">{f.emoji}</span>
+                  <Flower2 className="h-8 w-8 text-pink-400 filter drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]" />
                   <span className="rounded-full border border-black bg-white/85 px-2 py-0.2 text-[9px] font-black text-ink shadow-xs mt-1">
                     {f.name}
                   </span>
@@ -582,9 +596,10 @@ export function ButterflySanctuaryGame() {
                 }`}
               >
                 <div className="relative flex flex-col items-center">
-                  <span className="text-4xl sm:text-5xl filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)]">
-                    {bf.wingEmoji}
-                  </span>
+                  <KazirangaButterflyIcon
+                    className="h-10 w-10 sm:h-12 sm:w-12 filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)]"
+                    style={{ color: bf.color }}
+                  />
                   <span className="rounded-full border border-black bg-purple-100 px-2 py-0.2 text-[9px] font-black text-purple-950 shadow-xs mt-0.5">
                     {bf.name}
                   </span>
@@ -605,7 +620,17 @@ export function ButterflySanctuaryGame() {
             {/* Bottom Status / Gesture Feedback */}
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-none">
               <span className="rounded-xl border-2 border-black bg-white/90 px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
-                {motionEvent?.hasMotion ? `✋ Hand Perch Active` : "Hold Open Palm Steady 🌸"}
+                {motionEvent?.hasMotion ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Hand className="h-3.5 w-3.5 text-purple-900" />
+                    <span>Hand Perch Active</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Flower2 className="h-3.5 w-3.5 text-pink-600" />
+                    <span>Hold Open Palm Steady</span>
+                  </span>
+                )}
               </span>
 
               <span className="rounded-full border border-purple-400 bg-purple-950/80 px-2.5 py-0.5 text-[10px] font-black text-purple-300">
@@ -630,7 +655,7 @@ export function ButterflySanctuaryGame() {
                     onClick={() => handleManualPerch(bf)}
                     className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black bg-purple-100 p-3 text-ink shadow-[3px_3px_0px_#000] hover:bg-purple-200 active:translate-y-0.5 cursor-pointer text-left"
                   >
-                    <span className="text-2xl">{bf.wingEmoji}</span>
+                    <KazirangaButterflyIcon className="h-7 w-7 shrink-0" style={{ color: bf.color }} />
                     <div className="truncate">
                       <span className="text-[10px] font-bold text-purple-900 uppercase block">
                         Touch to Perch
@@ -673,7 +698,7 @@ export function ButterflySanctuaryGame() {
       ) : (
         /* PHASE: CELEBRATION */
         <Celebration
-          title="Butterfly Sanctuary Sanctuary Completed!"
+          title="Butterfly Sanctuary Completed!"
           subtitle="You provided a serene resting sanctuary for Kaziranga butterflies with steady hand poise and peaceful focus."
           xpEarned={150}
           accuracy="100%"

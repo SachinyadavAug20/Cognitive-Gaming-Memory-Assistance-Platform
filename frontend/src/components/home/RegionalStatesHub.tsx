@@ -1,7 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, MapPin, Globe, PlayCircle } from "lucide-react";
+import {
+  Sparkles,
+  MapPin,
+  Globe,
+  PlayCircle,
+  CloudRain,
+  Feather,
+  Landmark,
+  Mountain,
+  Flower2,
+  Gamepad2,
+} from "lucide-react";
+import { AssamTeaLeafIcon, BambooShootIcon } from "@/components/ui/CulturalIcons";
 import { Link } from "@/i18n/navigation";
 import { playTapFeedback } from "@/lib/sound";
 
@@ -11,7 +23,7 @@ interface StateData {
   nativeName: string;
   tagline: string;
   languages: string[];
-  emoji: string;
+  icon: React.ComponentType<{ className?: string; size?: number | string }>;
   bgGrad: string;
   games: { title: string; domain: string; path: string }[];
   memoryHeritage: string;
@@ -24,7 +36,7 @@ const NER_STATES: StateData[] = [
     nativeName: "অসম",
     tagline: "Heartland of the Brahmaputra & Tea Valleys",
     languages: ["Assamese", "Bodo", "Bengali"],
-    emoji: "🦏",
+    icon: AssamTeaLeafIcon,
     bgGrad: "from-emerald-500 to-teal-700",
     games: [
       { title: "Assam Tea Leaf Harvest", domain: "Visual Attention", path: "/patient/games" },
@@ -40,7 +52,7 @@ const NER_STATES: StateData[] = [
     nativeName: "Abode of Clouds",
     tagline: "Sacred Groves & Bio-Engineering Wonders",
     languages: ["Khasi", "Garo", "English"],
-    emoji: "🌧️",
+    icon: CloudRain,
     bgGrad: "from-sky-500 to-blue-700",
     games: [
       { title: "Cherrapunji Living Root Bridges", domain: "Sequential Logic", path: "/patient/games" },
@@ -54,7 +66,7 @@ const NER_STATES: StateData[] = [
     nativeName: "মৈতৈলোন্ / Sanaleibak",
     tagline: "Jeweled Land of Floating Phumdis",
     languages: ["Manipuri (Meeteilon)", "Hindi"],
-    emoji: "🦌",
+    icon: Sparkles,
     bgGrad: "from-purple-500 to-indigo-700",
     games: [
       { title: "Loktak Lake Floating Phumdis", domain: "Balance & Navigation", path: "/patient/games" },
@@ -68,7 +80,7 @@ const NER_STATES: StateData[] = [
     nativeName: "Mizo ṭawng",
     tagline: "Land of Rolling Hills & Bamboo Rhythms",
     languages: ["Mizo", "English"],
-    emoji: "🎋",
+    icon: BambooShootIcon,
     bgGrad: "from-amber-500 to-orange-700",
     games: [
       { title: "Cheraw Bamboo Rhythm", domain: "Timing & Motor Sync", path: "/patient/games" },
@@ -82,7 +94,7 @@ const NER_STATES: StateData[] = [
     nativeName: "Land of Festivals",
     tagline: "Warrior Heritage & Rich Tapestries",
     languages: ["Nagamese", "English", "Ao", "Angami"],
-    emoji: "🪶",
+    icon: Feather,
     bgGrad: "from-rose-500 to-red-700",
     games: [
       { title: "Hornbill Festival Headdress", domain: "Pattern Recognition", path: "/patient/games" },
@@ -96,7 +108,7 @@ const NER_STATES: StateData[] = [
     nativeName: "ত্রিপুরা",
     tagline: "Royal Palaces & Sacred Rock Sculptures",
     languages: ["Bengali", "Kokborok"],
-    emoji: "🏰",
+    icon: Landmark,
     bgGrad: "from-cyan-500 to-teal-700",
     games: [
       { title: "Neermahal Palace Reflection", domain: "Visual Symmetry", path: "/patient/games" },
@@ -110,7 +122,7 @@ const NER_STATES: StateData[] = [
     nativeName: "Dawn-Lit Mountains",
     tagline: "Sacred Monasteries & Orchid Sanctuaries",
     languages: ["Monpa", "Nyishi", "Hindi", "English"],
-    emoji: "🏔️",
+    icon: Mountain,
     bgGrad: "from-emerald-600 to-green-900",
     games: [
       { title: "Monastery Prayer Wheel", domain: "Sensory Rhythm", path: "/patient/games" },
@@ -124,7 +136,7 @@ const NER_STATES: StateData[] = [
     nativeName: "নেপালী / Denzong",
     tagline: "Valley of Rice & Sacred Kanchenjunga",
     languages: ["Nepali", "Bhutia", "Lepcha"],
-    emoji: "🌸",
+    icon: Flower2,
     bgGrad: "from-teal-500 to-emerald-800",
     games: [
       { title: "Kanchenjunga Trail Wayfinding", domain: "Spatial Orientation", path: "/patient/games" },
@@ -167,6 +179,7 @@ export function RegionalStatesHub() {
       <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5">
         {NER_STATES.map((st) => {
           const isSelected = st.id === selectedStateId;
+          const StateIcon = st.icon;
           return (
             <button
               key={st.id}
@@ -180,7 +193,9 @@ export function RegionalStatesHub() {
                   : "bg-surface-muted hover:bg-tea-light/50 text-ink"
               }`}
             >
-              <span className="text-xl mb-0.5">{st.emoji}</span>
+              <div className="h-6 w-6 flex items-center justify-center mb-0.5">
+                <StateIcon className="h-5 w-5 stroke-[2.2]" />
+              </div>
               <span className="text-xs font-black leading-tight text-center truncate w-full">
                 {st.name}
               </span>
@@ -194,7 +209,9 @@ export function RegionalStatesHub() {
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{currentState.emoji}</span>
+              <div className="h-9 w-9 rounded-xl border-2 border-black bg-tea/10 flex items-center justify-center text-tea shrink-0">
+                <currentState.icon className="h-5 w-5 stroke-[2.5]" />
+              </div>
               <h3 className="font-serif font-black text-xl md:text-2xl text-ink">
                 {currentState.name} <span className="text-tea text-base font-bold font-sans">({currentState.nativeName})</span>
               </h3>
@@ -225,8 +242,9 @@ export function RegionalStatesHub() {
 
           {/* Regional Game Module Pairing */}
           <div className="w-full md:w-72 bg-surface rounded-xl border-2 border-black p-3.5 shadow-[3px_3px_0px_#000] shrink-0">
-            <span className="text-[10px] font-black uppercase tracking-wider text-tea block mb-2">
-              🎮 Regional Serious Games
+            <span className="text-[10px] font-black uppercase tracking-wider text-tea flex items-center gap-1.5 mb-2">
+              <Gamepad2 className="h-3.5 w-3.5" />
+              <span>Regional Serious Games</span>
             </span>
             <div className="space-y-2">
               {currentState.games.map((g) => (

@@ -234,3 +234,88 @@ export interface AdminEpidemiologicalSurveillance {
   highRiskWanderingFlagged: number;
   sundowningAgitationHotspots: string[];
 }
+
+export interface PatientSurveillance {
+  patientId: number;
+  patientName: string;
+  gender: string;
+  preferredLanguage: string;
+  district: string;
+  riskLevel: string;
+  riskScore: number;
+  heartRateBpm?: number | null;
+  spo2Pct?: number | null;
+  bodyTempC?: number | null;
+  activityLevel?: string | null;
+  steps?: number | null;
+  hydrationGlasses?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  geofenceStatus?: string | null;
+  locationLabel?: string | null;
+  syncStatus: string;
+  networkType: string;
+  queuedPackets: number;
+  batteryPct: number;
+  openAlertCount: number;
+  lastSeen: string;
+}
+
+export interface SurveillanceReading {
+  id: number;
+  patientId: number;
+  recordedAt: string;
+  readingType: string;
+  heartRateBpm?: number | null;
+  spo2Pct?: number | null;
+  bodyTempC?: number | null;
+  activityLevel?: string | null;
+  steps?: number | null;
+  sleepHours?: number | null;
+  hydrationGlasses?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  geofenceStatus?: string | null;
+  locationLabel?: string | null;
+  deviceId?: string | null;
+  networkType?: string | null;
+  syncStatus?: string | null;
+  queuedPackets?: number | null;
+  batteryPct?: number | null;
+  riskScore?: number | null;
+}
+
+export interface SurveillanceAlert {
+  id: number;
+  patientId: number;
+  patientName: string;
+  alertType: string;
+  severity: "CRITICAL" | "HIGH" | "MODERATE" | string;
+  message: string;
+  source?: string | null;
+  resolved: boolean;
+  resolvedAt?: string | null;
+  assignedAsha?: string | null;
+  triggeredAt: string;
+}
+
+export interface CaregiverSosRequest {
+  id: number;
+  patientId: number;
+  patientName: string;
+  patientLat?: number | null;
+  patientLng?: number | null;
+  locationLabel?: string | null;
+  status: "PENDING" | "ACKNOWLEDGED" | "RESOLVED" | string;
+  requestedAt: string;
+  acknowledgedAt?: string | null;
+  acknowledgedBy?: string | null;
+}
+
+export interface SurveillanceDemoResult {
+  readingsCreated: number;
+  patients: number;
+  alertsCreated: number;
+  sosCreated: number;
+  status: string;
+}

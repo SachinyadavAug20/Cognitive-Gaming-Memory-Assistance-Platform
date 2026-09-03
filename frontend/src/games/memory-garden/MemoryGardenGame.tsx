@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
+import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import {
@@ -754,7 +755,7 @@ export function MemoryGardenGame() {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-3 gap-3 w-full max-w-md">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-md">
             {sequenceOptions.map((item, i) => (
               <button
                 key={item.id}
@@ -787,28 +788,28 @@ export function MemoryGardenGame() {
 
       {/* ─── BRIEF RESULT / RETURN ─── */}
       {phase === "play2" && (
-        <div className="flex flex-col items-center gap-6 py-16 text-center">
-          <div className="text-6xl">🌿</div>
-          <h3 className="font-serif text-2xl font-black text-ink">
-            {score >= 40
-              ? t("result.excellent")
-              : score >= 15
-              ? t("result.good")
-              : t("result.tryAgain")}
-          </h3>
+        <Celebration emoji="🌿" title={
+          score >= 40
+            ? t("result.excellent")
+            : score >= 15
+            ? t("result.good")
+            : t("result.tryAgain")
+        }>
           <p className="text-lg font-semibold text-ink-secondary">
             {t("stats.score")}: {score}
           </p>
-          <ChunkyButton variant="tea" size="xl" onClick={showIntro}>
-            {t("playAgain")}
-          </ChunkyButton>
-          <Link
-            href="/patient/games"
-            className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-base font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
-          >
-            {t("backToHub")}
-          </Link>
-        </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+            <ChunkyButton variant="tea" size="xl" onClick={showIntro}>
+              {t("playAgain")}
+            </ChunkyButton>
+            <Link
+              href="/patient/games"
+              className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-base font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
+            >
+              {t("backToHub")}
+            </Link>
+          </div>
+        </Celebration>
       )}
     </GameShell>
   );

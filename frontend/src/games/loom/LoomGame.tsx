@@ -14,6 +14,7 @@ import {
   Palette,
   Volume2,
 } from "lucide-react";
+import { MugaLoomShuttleIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -235,10 +236,10 @@ export function LoomGame() {
               onShuttlePass={handleShuttlePass}
             />
 
-            {/* Thread Line Metrics Badge */}
             <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-white/20 text-white text-[11px] font-bold flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
-              <span>🧵 Weft Lines: {rowsWoven} / {TARGET_ROWS} &bull; Warp Lines: 42 Strands</span>
+              <MugaLoomShuttleIcon className="h-3.5 w-3.5 text-amber-300" />
+              <span>Weft Lines: {rowsWoven} / {TARGET_ROWS} &bull; Warp Lines: 42 Strands</span>
             </div>
           </div>
 

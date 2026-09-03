@@ -9,7 +9,6 @@ import {
   MousePointer,
 } from "lucide-react";
 import { VirtualAirMouse } from "@/components/accessibility/VirtualAirMouse";
-import { KeyboardSwitchController } from "@/components/accessibility/KeyboardSwitchController";
 import { AccessibilityModal } from "@/components/accessibility/AccessibilityModal";
 import { useListenFirst } from "@/components/accessibility/useListenFirst";
 import { playPress, unlockAudio } from "@/lib/sound";
@@ -407,7 +406,7 @@ export function AccessibilityToolbar() {
   return (
     <>
       {/* ── TOP GOVERNMENT & ACCESSIBILITY COMMAND BAR ── */}
-      <div className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-clip">
+      <div className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-2 flex-nowrap">
           {/* Government of India / MDoNER Mandate Badge */}
           <div className="flex items-center gap-1.5 font-bold shrink-0">
@@ -580,15 +579,9 @@ export function AccessibilityToolbar() {
         }}
       />
 
-      {/* 2. Keyboard & Switch Access Controller */}
-      <KeyboardSwitchController
-        active={true}
-        onToggleAirMouse={() => setInputMode(inputMode === "virtual" ? "physical" : "virtual")}
-        onSpeakFocus={() => {
-          const el = document.activeElement as HTMLElement | null;
-          if (el) speakElement(el);
-        }}
-      />
+      {/* 2. Keyboard & Switch Access Controller — removed: elder patients do not
+          use keyboard shortcuts, and the global handler hijacked paste/arrow/typing
+          (e.g. Ctrl+V in forms). Elders interact via physical mouse or the Air Mouse. */}
 
       {/* 3. Elder Accessibility Settings Modal */}
       <AccessibilityModal

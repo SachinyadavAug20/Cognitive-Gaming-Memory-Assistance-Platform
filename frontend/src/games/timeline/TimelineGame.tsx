@@ -11,7 +11,7 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { playCorrect, playLifeSong, playPress, playTapFeedback } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { getMediaUrl } from "@/lib/api";
-import { recordGameSession } from "@/lib/telemetry";
+import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
@@ -75,7 +75,7 @@ export function TimelineGame() {
   const locale = useLocale();
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
-  const level = startLevel(detail);
+  const level = resolveAdaptiveLevel(patientId, "timeline", startLevel(detail));
   const rate = speechRate(detail);
 
   const journey = useMemo<LifeEventItem[]>(() => {
@@ -208,6 +208,17 @@ export function TimelineGame() {
       });
     }
     speak(t("timeline.completeSpeech"), locale, rate);
+  }
+
+  function resetGame() {
+    setPhase("intro");
+    setStep(0);
+    setChoices([]);
+    setHiddenKeys([]);
+    setRevealed(false);
+    setTaps(0);
+    setFades(0);
+    setStartedAt(null);
   }
 
   function nextMemory() {
@@ -379,7 +390,7 @@ export function TimelineGame() {
             {journey.length} {t("timeline.memoriesShared")}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
-            <ChunkyButton variant="tea" size="xl" onClick={() => window.location.reload()}>
+            <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
               <span>{locale === "hi" ? "जीवन यात्रा फिर से देखें 🔄" : locale === "as" ? "জীৱন যাত্ৰা পুনৰ চাওক 🔄" : "Walk Timeline Again 🔄"}</span>
             </ChunkyButton>
             <Link

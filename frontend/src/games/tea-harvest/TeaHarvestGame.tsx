@@ -290,7 +290,7 @@ export function TeaHarvestGame() {
             </div>
 
             {/* Interactive Leaves on the Tea Bush */}
-            <div className="relative z-10 grid grid-cols-3 gap-3 my-4">
+            <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 gap-3 my-4">
               {activeItems.map((item) => {
                 const isPlucked = pluckedIds.includes(item.id);
                 const isTarget = item.isTenderShoot;

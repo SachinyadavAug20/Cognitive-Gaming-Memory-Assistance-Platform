@@ -12,6 +12,16 @@ import {
   Sparkles,
   Camera,
   ShieldAlert,
+  Crosshair,
+  MousePointerClick,
+  Timer,
+  Check,
+  Zap,
+  ShieldCheck,
+  Magnet,
+  Bell,
+  Speech,
+  MoveHorizontal,
 } from "lucide-react";
 import { playPress, playTapFeedback } from "@/lib/sound";
 
@@ -128,8 +138,9 @@ export function AccessibilityModal({
           <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] space-y-3">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-tea">
-                  🎯 Primary Input Mode (One at a Time)
+                <span className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-tea">
+                  <Crosshair className="h-4 w-4 shrink-0" />
+                  <span>Primary Input Mode (One at a Time)</span>
                 </span>
                 <span className="text-[10px] font-black rounded bg-amber-100 px-2 py-0.5 text-amber-900 border border-amber-300">
                   Zero Dual-Cursor Conflict
@@ -163,8 +174,9 @@ export function AccessibilityModal({
                   Standard OS mouse, trackpad, or touchscreen. Zero camera overhead.
                 </p>
                 {inputMode === "physical" && (
-                  <span className="mt-2 text-[10px] font-black rounded bg-white text-tea px-2 py-0.5">
-                    Active Driver ✓
+                  <span className="mt-2 text-[10px] font-black rounded bg-white text-tea px-2 py-0.5 inline-flex items-center gap-1">
+                    <span>Active Driver</span>
+                    <Check className="h-3 w-3" />
                   </span>
                 )}
               </button>
@@ -191,8 +203,10 @@ export function AccessibilityModal({
                   OpenCV hand tracking. Physical pointer is hidden; single in-air pointer.
                 </p>
                 {inputMode === "virtual" && (
-                  <span className="mt-2 text-[10px] font-black rounded bg-black text-amber-300 px-2 py-0.5">
-                    Active Driver ✓ (Esc to exit)
+                  <span className="mt-2 text-[10px] font-black rounded bg-black text-amber-300 px-2 py-0.5 inline-flex items-center gap-1">
+                    <span>Active Driver</span>
+                    <Check className="h-3 w-3" />
+                    <span>(Esc to exit)</span>
                   </span>
                 )}
               </button>
@@ -216,34 +230,41 @@ export function AccessibilityModal({
 
               {/* Option A: Click Action Method */}
               <div>
-                <span className="block text-xs font-black mb-1.5">
-                  👆 Click Trigger Method:
+                <span className="flex items-center gap-1.5 text-xs font-black mb-1.5">
+                  <MousePointerClick className="h-4 w-4 text-tea" />
+                  <span>Click Trigger Method:</span>
                 </span>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: "dwell", label: "⏱️ Dwell Click", desc: "Hold steady to click" },
-                    { id: "pinch", label: "🤏 Pinch Click", desc: "Thumb & finger pinch" },
-                    { id: "key", label: "⌨️ Tap Key", desc: "Space / Enter to click" },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => {
-                        playTapFeedback();
-                        onClickMethodChange?.(item.id as "dwell" | "pinch" | "key");
-                      }}
-                      className={`flex flex-col items-start p-2 rounded-xl border-2 border-black text-left transition-colors cursor-pointer ${
-                        clickMethod === item.id
-                          ? "bg-tea text-white shadow-[2px_2px_0px_#000]"
-                          : "bg-white text-ink hover:bg-amber-100"
-                      }`}
-                    >
-                      <span className="text-xs font-black">{item.label}</span>
-                      <span className={`text-[9px] font-semibold ${clickMethod === item.id ? "text-white/80" : "text-ink-secondary"}`}>
-                        {item.desc}
-                      </span>
-                    </button>
-                  ))}
+                    { id: "dwell", label: "Dwell Click", desc: "Hold steady to click", icon: Timer },
+                    { id: "pinch", label: "Pinch Click", desc: "Thumb & finger pinch", icon: Hand },
+                    { id: "key", label: "Tap Key", desc: "Space / Enter to click", icon: Keyboard },
+                  ].map((item) => {
+                    const IconComp = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          playTapFeedback();
+                          onClickMethodChange?.(item.id as "dwell" | "pinch" | "key");
+                        }}
+                        className={`flex flex-col items-start p-2 rounded-xl border-2 border-black text-left transition-colors cursor-pointer ${
+                          clickMethod === item.id
+                            ? "bg-tea text-white shadow-[2px_2px_0px_#000]"
+                            : "bg-white text-ink hover:bg-amber-100"
+                        }`}
+                      >
+                        <div className="flex items-center gap-1 mb-0.5">
+                          <IconComp className="h-3.5 w-3.5 shrink-0" />
+                          <span className="text-xs font-black">{item.label}</span>
+                        </div>
+                        <span className={`text-[9px] font-semibold ${clickMethod === item.id ? "text-white/80" : "text-ink-secondary"}`}>
+                          {item.desc}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -275,7 +296,10 @@ export function AccessibilityModal({
               {/* Option C: Tremor Damping / Parkinson's Filter */}
               <div className="rounded-xl border-2 border-black/20 bg-white p-2.5">
                 <div className="flex items-center justify-between text-xs font-bold mb-1">
-                  <span>🐢 Anti-Tremor Damping (Parkinson&apos;s Filter):</span>
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="h-3.5 w-3.5 text-tea" />
+                    <span>Anti-Tremor Damping (Parkinson&apos;s Filter):</span>
+                  </span>
                   <span className="font-black text-tea">{Math.round(smoothing * 100)}%</span>
                 </div>
                 <input
@@ -297,8 +321,9 @@ export function AccessibilityModal({
 
               {/* Option D: Motion Reach Sensitivity */}
               <div className="rounded-xl border-2 border-black/20 bg-white p-2.5">
-                <span className="block text-xs font-bold mb-1.5">
-                  ↔️ Motion Reach (Range of Arm Movement):
+                <span className="flex items-center gap-1.5 text-xs font-bold mb-1.5">
+                  <MoveHorizontal className="h-3.5 w-3.5 text-tea" />
+                  <span>Motion Reach (Range of Arm Movement):</span>
                 </span>
                 <div className="flex gap-2">
                   <button
@@ -334,33 +359,37 @@ export function AccessibilityModal({
 
               {/* Option: Movement Pace (Speed Limiter & Smoothing) */}
               <div className="rounded-xl border-2 border-black/20 bg-white p-2.5">
-                <span className="block text-xs font-bold mb-1.5">
-                  🐢 Cursor Movement Pace (Speed &amp; Smoothness):
+                <span className="flex items-center gap-1.5 text-xs font-bold mb-1.5">
+                  <Sliders className="h-3.5 w-3.5 text-tea" />
+                  <span>Cursor Movement Pace (Speed &amp; Smoothness):</span>
                 </span>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: "calm", label: "Calm & Slow", sub: "Elder Friendly (Max Steady)", icon: "🐢" },
-                    { id: "gentle", label: "Gentle", sub: "Standard Fluid Glide", icon: "🚶" },
-                    { id: "standard", label: "Responsive", sub: "Fast Response", icon: "🏃" },
-                  ].map((pace) => (
-                    <button
-                      key={pace.id}
-                      type="button"
-                      onClick={() => {
-                        playTapFeedback();
-                        onCursorPaceChange?.(pace.id as "calm" | "gentle" | "standard");
-                      }}
-                      className={`flex flex-col items-center justify-center rounded-xl border-2 border-black py-2 px-1 text-center transition-colors cursor-pointer ${
-                        cursorPace === pace.id
-                          ? "bg-tea text-white shadow-[2px_2px_0px_#000]"
-                          : "bg-white text-ink hover:bg-amber-100"
-                      }`}
-                    >
-                      <span className="text-base">{pace.icon}</span>
-                      <span className="text-xs font-black leading-tight mt-0.5">{pace.label}</span>
-                      <span className="text-[9px] opacity-80">{pace.sub}</span>
-                    </button>
-                  ))}
+                    { id: "calm", label: "Calm & Slow", sub: "Elder Friendly (Max Steady)", icon: ShieldCheck },
+                    { id: "gentle", label: "Gentle", sub: "Standard Fluid Glide", icon: Sliders },
+                    { id: "standard", label: "Responsive", sub: "Fast Response", icon: Zap },
+                  ].map((pace) => {
+                    const IconComp = pace.icon;
+                    return (
+                      <button
+                        key={pace.id}
+                        type="button"
+                        onClick={() => {
+                          playTapFeedback();
+                          onCursorPaceChange?.(pace.id as "calm" | "gentle" | "standard");
+                        }}
+                        className={`flex flex-col items-center justify-center rounded-xl border-2 border-black py-2 px-1 text-center transition-colors cursor-pointer ${
+                          cursorPace === pace.id
+                            ? "bg-tea text-white shadow-[2px_2px_0px_#000]"
+                            : "bg-white text-ink hover:bg-amber-100"
+                        }`}
+                      >
+                        <IconComp className="h-4 w-4" />
+                        <span className="text-xs font-black leading-tight mt-0.5">{pace.label}</span>
+                        <span className="text-[9px] opacity-80">{pace.sub}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -442,7 +471,8 @@ export function AccessibilityModal({
               <div className="rounded-xl border-2 border-black/20 bg-white p-2.5 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-1.5 text-xs font-bold">
-                    <span>🧲 Sticky Target Magnetism (Tremor Lock)</span>
+                    <Magnet className="h-4 w-4 text-tea shrink-0" />
+                    <span>Sticky Target Magnetism (Tremor Lock)</span>
                     <span className="text-[9px] font-black uppercase rounded bg-tea-light px-1 text-tea border border-tea/30">
                       WCAG AAA
                     </span>
@@ -461,7 +491,14 @@ export function AccessibilityModal({
                     stickyMagnetism ? "bg-emerald-400 text-black" : "bg-surface text-ink hover:bg-surface-muted"
                   }`}
                 >
-                  {stickyMagnetism ? "Enabled ✓" : "Turn On"}
+                  {stickyMagnetism ? (
+                    <span className="inline-flex items-center gap-1">
+                      <span>Enabled</span>
+                      <Check className="h-3 w-3" />
+                    </span>
+                  ) : (
+                    "Turn On"
+                  )}
                 </button>
               </div>
 
@@ -469,7 +506,8 @@ export function AccessibilityModal({
               <div className="rounded-xl border-2 border-black/20 bg-white p-2.5 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-1.5 text-xs font-bold">
-                    <span>🔔 Auditory Dwell Ticks</span>
+                    <Bell className="h-4 w-4 text-tea shrink-0" />
+                    <span>Auditory Dwell Ticks</span>
                   </div>
                   <p className="text-[10px] text-ink-secondary mt-0.5">
                     Subtle rising audio ticks at 25%, 50%, 75% as the dwell ring fills
@@ -485,13 +523,23 @@ export function AccessibilityModal({
                     audioTicks ? "bg-emerald-400 text-black" : "bg-surface text-ink hover:bg-surface-muted"
                   }`}
                 >
-                  {audioTicks ? "Enabled ✓" : "Turn On"}
+                  {audioTicks ? (
+                    <span className="inline-flex items-center gap-1">
+                      <span>Enabled</span>
+                      <Check className="h-3 w-3" />
+                    </span>
+                  ) : (
+                    "Turn On"
+                  )}
                 </button>
               </div>
 
               {/* Option I: Pointer Size Selector */}
               <div>
-                <span className="block text-xs font-bold mb-1.5">🎯 Pointer Size:</span>
+                <span className="flex items-center gap-1.5 text-xs font-bold mb-1.5">
+                  <Crosshair className="h-3.5 w-3.5 text-tea" />
+                  <span>Pointer Size:</span>
+                </span>
                 <div className="flex gap-2">
                   {(["normal", "large", "giant"] as const).map((size) => (
                     <button
@@ -522,7 +570,10 @@ export function AccessibilityModal({
                 <Volume2 className="h-5 w-5 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-sm font-black">🗣️ Listen-First Audio Narration</h3>
+                <h3 className="text-sm font-black flex items-center gap-1.5">
+                  <Speech className="h-4 w-4 text-tea" />
+                  <span>Listen-First Audio Narration</span>
+                </h3>
                 <p className="text-xs font-bold text-ink-secondary">
                   Automatically speaks hovered cards & focused elements in active regional language
                 </p>
@@ -539,7 +590,14 @@ export function AccessibilityModal({
                 listenFirstEnabled ? "bg-emerald-400 text-black" : "bg-white text-ink hover:bg-amber-100"
               }`}
             >
-              {listenFirstEnabled ? "Enabled ✓" : "Turn On"}
+              {listenFirstEnabled ? (
+                <span className="inline-flex items-center gap-1">
+                  <span>Enabled</span>
+                  <Check className="h-3 w-3" />
+                </span>
+              ) : (
+                "Turn On"
+              )}
             </button>
           </div>
 
@@ -550,7 +608,10 @@ export function AccessibilityModal({
                 <Keyboard className="h-5 w-5 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-sm font-black">⌨️ Keyboard Switch Shortcuts</h3>
+                <h3 className="text-sm font-black flex items-center gap-1.5">
+                  <Keyboard className="h-4 w-4 text-tea" />
+                  <span>Keyboard Switch Shortcuts</span>
+                </h3>
                 <p className="text-xs font-bold text-ink-secondary">
                   Direct physical keyboard and assistive switch controller mapping
                 </p>
@@ -584,7 +645,10 @@ export function AccessibilityModal({
                 <Eye className="h-5 w-5 stroke-[2.5]" />
               </div>
               <div>
-                <h3 className="text-sm font-black">👓 Visual Ergonomics</h3>
+                <h3 className="text-sm font-black flex items-center gap-1.5">
+                  <Eye className="h-4 w-4 text-tea" />
+                  <span>Visual Ergonomics</span>
+                </h3>
                 <p className="text-xs font-bold text-ink-secondary">
                   High contrast WCAG 7:1 ratio and text magnification
                 </p>
@@ -603,7 +667,14 @@ export function AccessibilityModal({
                   highContrast ? "bg-amber-400 text-black" : "bg-white text-ink hover:bg-amber-100"
                 }`}
               >
-                {highContrast ? "Enabled ✓" : "Turn On"}
+                {highContrast ? (
+                  <span className="inline-flex items-center gap-1">
+                    <span>Enabled</span>
+                    <Check className="h-3 w-3" />
+                  </span>
+                ) : (
+                  "Turn On"
+                )}
               </button>
             </div>
 

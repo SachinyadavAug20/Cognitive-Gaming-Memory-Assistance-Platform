@@ -19,7 +19,7 @@ const DEFAULT_AXES: BiomarkerAxis[] = [
 ];
 
 export function BiomarkerRadarChart({ axes = DEFAULT_AXES }: BiomarkerRadarChartProps) {
-  const size = 300;
+  const size = 380;
   const center = size / 2;
   const radius = 100;
   const numAxes = axes.length;
@@ -44,7 +44,11 @@ export function BiomarkerRadarChart({ axes = DEFAULT_AXES }: BiomarkerRadarChart
 
   return (
     <div className="flex flex-col items-center justify-center p-2">
-      <svg width={size} height={size} className="overflow-visible">
+      <svg
+        viewBox={`0 0 ${size} ${size}`}
+        preserveAspectRatio="xMidYMid meet"
+        className="w-full max-w-[360px] h-auto"
+      >
         {/* Background Concentric Polygon Web */}
         {rings.map((ring, ringIdx) => {
           const ringPoints = axes

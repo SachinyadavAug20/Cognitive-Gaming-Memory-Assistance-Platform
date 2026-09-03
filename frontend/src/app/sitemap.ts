@@ -46,7 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  // 2. All 38 CDTx Serious Games across all 11 locales
+  // 2. All CDTx Serious Games across all 11 locales
   for (const gameId of GAME_IDS) {
     const gameSubpath = `/patient/games/${gameId}`;
     for (const locale of routing.locales) {

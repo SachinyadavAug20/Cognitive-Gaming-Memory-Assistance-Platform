@@ -31,31 +31,31 @@ export function AdminIncentivesTab({
         <table className="w-full text-left text-xs">
           <thead>
             <tr className="border-b-2 border-black bg-[#FAF3E0] text-ink">
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Worker ID</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">Worker ID</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">ASHA Worker</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">PHC District</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Screenings</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Sessions Assisted</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden sm:table-cell">Screenings</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">Sessions Assisted</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Earned DBT</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Bank / ABHA</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden lg:table-cell">Bank / ABHA</th>
               <th className="py-3 px-3 font-black uppercase text-[10px] text-right">Disbursement</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/10 font-bold">
             {ashaIncentives.map((inc) => (
               <tr key={inc.workerId} className="hover:bg-amber-50/50 transition-colors">
-                <td className="py-3 px-3 font-mono font-black text-ink-secondary">{inc.workerId}</td>
+                <td className="py-3 px-3 font-mono font-black text-ink-secondary hidden md:table-cell">{inc.workerId}</td>
                 <td className="py-3 px-3">
                   <span className="font-serif text-sm font-black text-ink">{inc.workerName}</span>
                 </td>
                 <td className="py-3 px-3 text-ink-secondary">{inc.district}</td>
-                <td className="py-3 px-3">{inc.screeningsCompleted} Screenings</td>
-                <td className="py-3 px-3">{inc.assistedGameSessions} Sessions</td>
+                <td className="py-3 px-3 hidden sm:table-cell">{inc.screeningsCompleted} Screenings</td>
+                <td className="py-3 px-3 hidden md:table-cell">{inc.assistedGameSessions} Sessions</td>
                 <td className="py-3 px-3 font-serif font-black text-emerald-700 text-sm">
                   ₹{inc.totalIncentiveInr.toLocaleString()}
                 </td>
-                <td className="py-3 px-3 font-mono text-ink-secondary">{inc.abhaLinkedBankMasked}</td>
-                <td className="py-3 px-3 text-right">
+                <td className="py-3 px-3 font-mono text-ink-secondary hidden lg:table-cell">{inc.abhaLinkedBankMasked}</td>
+                <td className="py-3 px-3">
                   {inc.disbursementStatus === "APPROVED" ? (
                     <span className="inline-flex items-center gap-1 rounded-full border border-emerald-600/40 bg-emerald-100 px-3 py-0.5 text-[10px] font-black text-emerald-950">
                       <ShieldCheck className="h-3 w-3 text-emerald-600" />

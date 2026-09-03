@@ -392,7 +392,7 @@ export function ProverbGame() {
               <span className="text-[11px] font-black uppercase tracking-wider text-ink-secondary flex items-center gap-1">
                 <Sparkles className="h-3 w-3 text-tea" /> Select Word:
               </span>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {currentChallenge?.candidateOptions.map((word, idx) => (
                   <button
                     key={idx}

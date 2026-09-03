@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Music } from "lucide-react";
+import { Music, Bell, Sparkles } from "lucide-react";
+import { BihuDholIcon, KhasiKsingIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -25,16 +26,16 @@ import { speechRate, startLevel } from "@/games/config";
 export interface DrumPad {
   id: string;
   name: string;
-  emoji: string;
+  icon: React.ComponentType<{ className?: string; size?: number | string }>;
   color: string;
   borderColor: string;
   soundType: "dhol-low" | "dhol-high" | "chime";
 }
 
 const DRUMS: DrumPad[] = [
-  { id: "dhol-low", name: "Bihu Dhol (Bass)", emoji: "🥁", color: "#B45309", borderColor: "#78350F", soundType: "dhol-low" },
-  { id: "ksing", name: "Khasi Ksing (Snare)", emoji: "🪘", color: "#DC2626", borderColor: "#991B1B", soundType: "dhol-high" },
-  { id: "chime", name: "Sacred Bell Chime", emoji: "🔔", color: "#16A34A", borderColor: "#166534", soundType: "chime" },
+  { id: "dhol-low", name: "Bihu Dhol (Bass)", icon: BihuDholIcon, color: "#B45309", borderColor: "#78350F", soundType: "dhol-low" },
+  { id: "ksing", name: "Khasi Ksing (Snare)", icon: KhasiKsingIcon, color: "#DC2626", borderColor: "#991B1B", soundType: "dhol-high" },
+  { id: "chime", name: "Sacred Bell Chime", icon: Bell, color: "#16A34A", borderColor: "#166534", soundType: "chime" },
 ];
 
 export function RhythmHillsGame() {
@@ -149,11 +150,13 @@ export function RhythmHillsGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title="Rhythm of the Hills 🪕" score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader title="Rhythm of the Hills" score={score} backHref="/patient/games" bgColor="bg-tea" />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
-            <div className="text-6xl animate-bounce">🪕</div>
+            <div className="flex h-24 w-24 items-center justify-center rounded-3xl border-3 border-black bg-amber-200 text-amber-950 shadow-[4px_4px_0px_#000] animate-bounce">
+              <BihuDholIcon className="h-14 w-14" />
+            </div>
             <p className="font-serif text-3xl font-black text-ink">
               Rhythm of the Hills
             </p>
@@ -167,15 +170,18 @@ export function RhythmHillsGame() {
               size="md"
             />
 
-            <ChunkyButton variant="tea" size="2xl" onClick={startRhythm}>
-              Play Folk Rhythms 🥁
+            <ChunkyButton variant="tea" size="2xl" onClick={startRhythm} icon={<BihuDholIcon className="h-6 w-6" />}>
+              Play Folk Rhythms
             </ChunkyButton>
           </div>
         ) : phase === "play" ? (
           <div className="flex flex-col items-center gap-5 py-4">
             {/* RHYTHM PROGRESS HEADER */}
             <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-2 border-black bg-surface px-4 py-2 shadow-sm">
-              <span className="text-sm font-black text-tea">🎵 Folk Rhythm Stage</span>
+              <span className="text-sm font-black text-tea flex items-center gap-1.5">
+                <Music className="h-4 w-4" />
+                <span>Folk Rhythm Stage</span>
+              </span>
               <span className="text-xs font-bold text-ink-secondary">
                 {rhythmHits} / {targetHits} Beats Played
               </span>
@@ -183,15 +189,17 @@ export function RhythmHillsGame() {
 
             {/* DRUMMING STAGE */}
             <div className="relative w-full max-w-sm sm:max-w-md rounded-3xl border-4 border-[#3B2212] bg-[#1E0F07] p-5 shadow-[8px_8px_0px_rgba(0,0,0,0.9)] overflow-hidden select-none flex flex-col items-center justify-center min-h-[280px]">
-              <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-amber-300/80">
-                🪘 Bihu & Khasi Rhythms
+              <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-amber-300/80 flex items-center gap-1.5">
+                <BihuDholIcon className="h-3.5 w-3.5" />
+                <span>Bihu & Khasi Rhythms</span>
               </div>
 
               {/* 3 Large Tactile Ethnic Drum Pads */}
-              <div className="grid grid-cols-3 gap-3 w-full my-4 z-10">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full my-4 z-10">
                 {DRUMS.map((drum, idx) => {
                   const isPulsing = pulseIndex === idx;
                   const isTapped = activePadId === drum.id;
+                  const DrumIcon = drum.icon;
 
                   return (
                     <button
@@ -200,18 +208,20 @@ export function RhythmHillsGame() {
                       onClick={() => handleDrumTap(drum)}
                       className={`btn-tactile group relative flex flex-col items-center justify-center gap-2 rounded-3xl border-4 p-4 transition-all duration-150 cursor-pointer aspect-square ${
                         isTapped
-                          ? "scale-95 bg-white border-black"
+                          ? "scale-95 bg-white border-black text-black"
                           : isPulsing
-                          ? "scale-105 ring-4 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,1)]"
-                          : "shadow-[4px_4px_0px_rgba(0,0,0,1)] active:scale-95"
+                          ? "scale-105 ring-4 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,1)] text-white"
+                          : "shadow-[4px_4px_0px_rgba(0,0,0,1)] active:scale-95 text-white"
                       }`}
                       style={{
                         backgroundColor: isTapped ? "#FFFFFF" : drum.color,
                         borderColor: drum.borderColor,
                       }}
                     >
-                      <span className="text-4xl sm:text-5xl">{drum.emoji}</span>
-                      <span className="text-[10px] font-black text-white text-center leading-tight">
+                      <div className="h-12 w-12 flex items-center justify-center">
+                        <DrumIcon className="h-10 w-10 stroke-[2.2]" />
+                      </div>
+                      <span className={`text-[10px] font-black text-center leading-tight ${isTapped ? "text-black" : "text-white"}`}>
                         {drum.name}
                       </span>
                     </button>
@@ -220,8 +230,9 @@ export function RhythmHillsGame() {
               </div>
 
               <div className="relative z-10 text-center">
-                <span className="rounded-full bg-black/60 border border-white/20 px-3 py-1 text-xs font-black text-amber-200">
-                  ✨ Tap any drum to create joyful music
+                <span className="rounded-full bg-black/60 border border-white/20 px-3 py-1 text-xs font-black text-amber-200 inline-flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>Tap any drum to create joyful music</span>
                 </span>
               </div>
             </div>

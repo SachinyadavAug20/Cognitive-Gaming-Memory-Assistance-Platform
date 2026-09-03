@@ -60,8 +60,8 @@ export function AdminSessionsTab({ sessions }: AdminSessionsTabProps) {
               <th className="py-3 px-3 font-black uppercase text-[10px]">Patient</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Therapy Module</th>
               <th className="py-3 px-3 font-black uppercase text-[10px]">Accuracy</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Motor Latency</th>
-              <th className="py-3 px-3 font-black uppercase text-[10px]">Duration</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">Motor Latency</th>
+              <th className="py-3 px-3 font-black uppercase text-[10px] hidden md:table-cell">Duration</th>
               <th className="py-3 px-3 font-black uppercase text-[10px] text-right">Timestamp</th>
             </tr>
           </thead>
@@ -90,10 +90,10 @@ export function AdminSessionsTab({ sessions }: AdminSessionsTabProps) {
                       {s.accuracyPercentage != null ? `${s.accuracyPercentage.toFixed(0)}%` : "100%"}
                     </span>
                   </td>
-                  <td className="py-3 px-3 font-mono text-amber-800">
+                  <td className="py-3 px-3 font-mono text-amber-800 hidden md:table-cell">
                     {s.motorReactionTimeMs != null ? `${s.motorReactionTimeMs} ms` : "850 ms"}
                   </td>
-                  <td className="py-3 px-3 text-ink-secondary">
+                  <td className="py-3 px-3 text-ink-secondary hidden md:table-cell">
                     {s.durationSeconds != null ? `${s.durationSeconds}s` : "60s"}
                   </td>
                   <td className="py-3 px-3 text-right font-mono text-ink-secondary">

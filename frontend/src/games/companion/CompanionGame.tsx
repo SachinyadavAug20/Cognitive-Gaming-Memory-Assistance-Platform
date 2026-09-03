@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { User, MessageCircle, Gamepad2 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
@@ -65,12 +66,12 @@ export function CompanionGame() {
         <div className="flex min-h-[220px] w-full max-w-sm flex-col items-center justify-center gap-2 rounded-3xl border-2 border-tea bg-tea-light/40 p-6 text-center">
           <p className="text-lg font-bold text-ink-secondary">{t("companion.wave")}</p>
           <div
-            className={`text-9xl ${waving ? "animate-bounce" : "animate-pulse"}`}
+            className={`flex items-center justify-center p-4 rounded-full bg-white/80 border-2 border-tea ${waving ? "animate-bounce" : "animate-pulse"} cursor-pointer`}
             role="button"
             aria-label={t("companion.tapMe")}
             onClick={chat}
           >
-            🧓
+            <User className="h-20 w-20 text-tea" />
           </div>
           <p className="text-base font-semibold text-ink">{t("companion.tapMe")}</p>
         </div>
@@ -82,14 +83,15 @@ export function CompanionGame() {
         )}
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <ChunkyButton variant="marigold" size="xl" onClick={chat}>
-            👋 {t("companion.chat")}
+          <ChunkyButton variant="marigold" size="xl" onClick={chat} icon={<MessageCircle className="h-5 w-5" />}>
+            {t("companion.chat")}
           </ChunkyButton>
           <Link
             href="/patient/games"
-            className="btn-chunky btn-chunky-outline"
+            className="btn-chunky btn-chunky-outline inline-flex items-center gap-1.5"
           >
-            🎮 {t("companion.games")}
+            <Gamepad2 className="h-4 w-4" />
+            <span>{t("companion.games")}</span>
           </Link>
         </div>
       </div>

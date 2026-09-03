@@ -65,12 +65,12 @@ export function PatientHeroCard({
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <div className="flex flex-col sm:flex-row md:flex-col xl:flex-row flex-wrap items-stretch gap-2.5 min-w-0 max-w-full">
               <ClinicalReportExportModal patient={patient} age={age ?? null} stage={stage} />
               <ClinicalDossierExport patient={patient} age={age} />
               <Link
                 href={`/caregiver/patients/${patient.id}/card`}
-                className="btn-chunky btn-chunky-marigold btn-chunky-xl"
+                className="btn-chunky btn-chunky-marigold lg:btn-chunky-xl text-center"
               >
                 🖨 Print ID Card
               </Link>

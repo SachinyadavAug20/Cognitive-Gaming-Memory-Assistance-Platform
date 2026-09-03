@@ -3,6 +3,14 @@
  * `src/store/useAuthStore.ts`. Kept as a local duplicate (rather than an
  * import) so this shared client module never crosses a "use client" boundary.
  */
+import type {
+  CaregiverSosRequest,
+  PatientSurveillance,
+  SurveillanceAlert,
+  SurveillanceDemoResult,
+  SurveillanceReading,
+} from "@/types/admin";
+
 const AUTH_STORAGE_KEY = "cognicare-auth";
 
 export function getApiBase(): string {
@@ -264,4 +272,41 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+
+  // Surveillance Endpoints (admin panel)
+  surveillancePatients: () =>
+    request<PatientSurveillance[]>("/admin/surveillance/patients"),
+  surveillanceAlerts: (unresolvedOnly = false) =>
+    request<SurveillanceAlert[]>(
+      `/admin/surveillance/alerts?unresolvedOnly=${unresolvedOnly}`
+    ),
+  surveillanceSos: (status = "PENDING") =>
+    request<CaregiverSosRequest[]>(`/admin/surveillance/sos?status=${status}`),
+  surveillanceHistory: (patientId: number, hours = 24) =>
+    request<SurveillanceReading[]>(
+      `/admin/surveillance/patients/${patientId}/history?hours=${hours}`
+    ),
+  resolveSurveillanceAlert: (alertId: number) =>
+    request<SurveillanceAlert>(`/admin/surveillance/alerts/${alertId}/resolve`, {
+      method: "POST",
+    }),
+  acknowledgeSos: (sosId: number) =>
+    request<CaregiverSosRequest>(`/admin/surveillance/sos/${sosId}/acknowledge`, {
+      method: "POST",
+    }),
+  runSurveillanceDemo: () =>
+    request<SurveillanceDemoResult>("/admin/surveillance/simulate", {
+      method: "POST",
+    }),
+  updatePatientLocation: (patientId: number, body: Record<string, unknown>) =>
+    request<SurveillanceReading>(
+      `/surveillance/patients/${patientId}/readings`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          readingType: "LOCATION",
+          ...body,
+        }),
+      }
+    ),
 };

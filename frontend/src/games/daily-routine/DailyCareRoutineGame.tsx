@@ -463,7 +463,7 @@ export function DailyCareRoutineGame() {
               <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 block mb-2 text-left">
                 📦 7-Day Pill Organizer Box:
               </span>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div className="p-2.5 rounded-xl border-2 border-emerald-800 bg-amber-200 text-center font-black text-xs shadow-xs animate-pulse">
                   <span className="text-xl block">☀️</span>
                   <span className="text-[10px] uppercase text-amber-950">Morning (AM)</span>

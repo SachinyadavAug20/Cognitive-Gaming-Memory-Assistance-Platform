@@ -22,6 +22,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PatientCardService {
 
+    /** Seed patient used by the frontend "Try Demo Patient" entry point. */
+    public static final long DEMO_PATIENT_ID = 2L;
+
     private final PatientCardRepository patientCardRepository;
     private final PatientRepository patientRepository;
     private final JwtService jwtService;
@@ -66,6 +69,23 @@ public class PatientCardService {
                 .patientName(patient.getName())
                 .issuedAt(card.getIssuedAt())
                 .isActive(card.isActive())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public KioskScanResponse demoLogin() {
+        Patient patient = patientRepository.findById(DEMO_PATIENT_ID)
+                .orElseThrow(() -> new PatientNotFoundException(DEMO_PATIENT_ID));
+
+        PatientProfileResponse profile = PatientProfileResponse.builder()
+                .id(patient.getId())
+                .name(patient.getName())
+                .languagePreference(patient.getPreferredLanguage())
+                .build();
+
+        return KioskScanResponse.builder()
+                .token(jwtService.generateToken(patient.getId()))
+                .patient(profile)
                 .build();
     }
 

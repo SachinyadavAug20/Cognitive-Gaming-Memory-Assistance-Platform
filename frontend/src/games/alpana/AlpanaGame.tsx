@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   RotateCcw,
   Activity,
+  Flower2,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -583,11 +584,16 @@ export function AlpanaGame() {
             {/* In-Game Helper Banner */}
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
               <span className="rounded-xl border-2 border-black bg-white/90 px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
-                {activeNodeIndex !== null
-                  ? "✨ Drag line to connecting node"
-                  : isVisionActive
-                  ? "Wave hand over dots to connect lines"
-                  : "Touch a dot and drag to connect lines"}
+                {activeNodeIndex !== null ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Sparkles className="h-3 w-3 text-amber-500" />
+                    <span>Drag line to connecting node</span>
+                  </span>
+                ) : isVisionActive ? (
+                  "Wave hand over dots to connect lines"
+                ) : (
+                  "Touch a dot and drag to connect lines"
+                )}
               </span>
 
               <span className="rounded-full border border-purple-400 bg-purple-950/90 px-2.5 py-0.5 text-[10px] font-black text-purple-300">
@@ -596,8 +602,9 @@ export function AlpanaGame() {
             </div>
           </div>
 
-          <p className="text-xs font-semibold text-ink-secondary text-center max-w-md">
-            🌸 <strong>How to draw:</strong> Touch or wave your hand between dots along the dotted guides to draw glowing sacred rice-paste lines. Complete all 12 lines to finish the sacred mandala!
+          <p className="text-xs font-semibold text-ink-secondary text-center max-w-md flex items-center justify-center gap-1.5">
+            <Flower2 className="h-3.5 w-3.5 text-pink-600 shrink-0" />
+            <span><strong>How to draw:</strong> Touch or wave your hand between dots along the dotted guides to draw glowing sacred rice-paste lines. Complete all 12 lines to finish the sacred mandala!</span>
           </p>
         </div>
       ) : (

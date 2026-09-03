@@ -57,13 +57,20 @@ export function KeyboardSwitchController({
     if (!active) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is actively typing in an input text field
+      // Always allow modifier combos (Ctrl/Cmd/Alt + key) so copy/paste and
+      // standard shortcuts keep working in text fields.
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      // Ignore if user is actively typing in an input or textarea field
+      const ae = document.activeElement as HTMLElement | null;
+      const tag = ae?.tagName;
       if (
-        document.activeElement?.tagName === "INPUT" &&
-        (document.activeElement as HTMLInputElement).type === "text"
+        tag === "INPUT" ||
+        tag === "TEXTAREA" ||
+        ae?.isContentEditable
       ) {
         if (e.key === "Escape") {
-          (document.activeElement as HTMLInputElement).blur();
+          ae?.blur();
         }
         return;
       }

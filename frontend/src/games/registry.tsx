@@ -24,6 +24,8 @@ import {
   Footprints,
   Flower,
   Sun,
+  Users,
+  Brain,
 } from "lucide-react";
 
 import { AlpanaGame } from "./alpana/AlpanaGame";
@@ -64,6 +66,11 @@ import { MemoryRoadGame } from "./memory-road/MemoryRoadGame";
 import { TeaGardenCatchGame } from "./tea-garden-catch/TeaGardenCatchGame";
 import { ButterflySanctuaryGame } from "./butterfly-sanctuary/ButterflySanctuaryGame";
 import { LotusPainterGame } from "./lotus-painter/LotusPainterGame";
+import { MakeMyTeaGame } from "./daily-tasks/MakeMyTeaGame";
+import { MemoryMatchGame } from "./memory/MemoryMatchGame";
+import { CompanionGame } from "./companion/CompanionGame";
+import { RhythmHillsGame } from "./rhythm-hills/RhythmHillsGame";
+import { WeavingGame } from "./weaving/WeavingGame";
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -510,6 +517,61 @@ export const GAMES: GameDef[] = [
     category: "attention",
     recommended: true,
     component: MemoryRoadGame,
+  },
+  {
+    id: "memory-match",
+    icon: Users,
+    titleKey: "memoryMatch.title",
+    descKey: "memoryMatch.desc",
+    accent: "bg-[#DB2777]",
+    domain: "Family Face Recognition & Working Memory",
+    category: "attention",
+    recommended: true,
+    component: MemoryMatchGame,
+  },
+  {
+    id: "daily-tasks",
+    icon: Coffee,
+    titleKey: "dailyTasks.title",
+    descKey: "dailyTasks.desc",
+    accent: "bg-[#C2410C]",
+    domain: "IADL Sequencing & Daily Routine",
+    category: "iadl",
+    recommended: true,
+    component: MakeMyTeaGame,
+  },
+  {
+    id: "companion",
+    icon: Brain,
+    titleKey: "companion.title",
+    descKey: "companion.desc",
+    accent: "bg-[#4C1D95]",
+    domain: "Conversational Reminiscence Companion",
+    category: "reminiscence",
+    recommended: true,
+    component: CompanionGame,
+  },
+  {
+    id: "rhythm-hills",
+    icon: Music,
+    titleKey: "rhythmHills.title",
+    descKey: "rhythmHills.desc",
+    accent: "bg-[#B45309]",
+    domain: "Kinesthetic Rhythm & Tempo Matching",
+    category: "calm",
+    recommended: true,
+    component: RhythmHillsGame,
+  },
+  {
+    id: "weaving",
+    icon: Grid3X3,
+    titleKey: "weaving.title",
+    descKey: "weaving.desc",
+    accent: "bg-[#5C3D2E]",
+    domain: "Traditional Motif Pattern Completion",
+    category: "attention",
+    recommended: true,
+    component: WeavingGame,
   },
 ];
 
