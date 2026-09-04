@@ -21,6 +21,7 @@ const RAW: Array<[string, string, string, string]> = [
   ["river-lanterns", "riverLanterns.title", "riverLanterns.desc", "3D Graphics & Optical Vision"],
   ["loom", "loom.title", "loom.desc", "3D Constructional Praxis"],
   ["drum", "drum.title", "drum.desc", "3D Auditory-Motor Entrainment"],
+  ["tuned-drum", "tunedDrum.title", "tunedDrum.desc", "Auto-Tuned Rhythmic Entrainment"],
   ["hornbill-flight", "hornbill.title", "hornbill.desc", "Visuomotor Glider Physics"],
   ["majuli-pottery", "pottery.title", "pottery.desc", "Tactile Motor Praxis"],
   // reminiscence

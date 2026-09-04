@@ -31,10 +31,19 @@ export default function PatientLayout({
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const login = useAuthStore((s) => s.login);
 
-  const isDemo = pathname?.includes("/demo") ?? false;
+  // Check demo from both Next.js pathname and browser window location
+  const isDemo = Boolean(
+    (pathname && pathname.includes("demo")) ||
+    (typeof window !== "undefined" && window.location.pathname.includes("demo"))
+  );
 
   useEffect(() => {
-    if (isDemo) {
+    // If demo route, NEVER redirect to kiosk/login
+    const isCurrentlyDemo =
+      isDemo ||
+      (typeof window !== "undefined" && window.location.pathname.includes("demo"));
+
+    if (isCurrentlyDemo) {
       if (!isAuthenticated) {
         login("demo-patient-token-101", {
           id: 101,
@@ -50,7 +59,12 @@ export default function PatientLayout({
     }
   }, [persisted, isAuthenticated, router, isDemo, login]);
 
-  if ((!persisted || !isAuthenticated) && !isDemo) {
+  // Demo route immediately renders content with zero auth blocking or spinner delay
+  if (isDemo) {
+    return <>{children}</>;
+  }
+
+  if (!persisted || !isAuthenticated) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-canvas">
         <Spinner />

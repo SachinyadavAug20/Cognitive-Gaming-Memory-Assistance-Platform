@@ -36,6 +36,8 @@ function isProtectedPatientPath(path: string): boolean {
 
 function handleSessionExpired(): void {
   if (typeof window === "undefined") return;
+  // NEVER redirect if currently in demo mode
+  if (window.location.pathname.includes("demo")) return;
   try {
     localStorage.removeItem(AUTH_STORAGE_KEY);
   } catch {

@@ -894,6 +894,10 @@
       "title": "The 3D Folk Rhythm Drummer: Dhol & Ksing",
       "desc": "Play traditional Bihu Dhol and Khasi Ksing beats with real-time 3D spring deformation and acoustic feedback"
     },
+    "tunedDrum": {
+      "title": "Auto-Tuned Dhol Circle",
+      "desc": "Drum with the webcam or your fingers — an auto-tuner snaps every strike onto the beat so it always sounds in tune"
+    },
     "alpana": {
       "title": "Sacred Alpana Sand Drawing",
       "desc": "Trace sacred festive floor motifs using in-browser webcam air motion or touch"

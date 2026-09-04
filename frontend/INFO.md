@@ -156,6 +156,7 @@ Domains: **vision-3d · reminiscence · attention · iadl · calm · spatial/adv
 | `river-lanterns` | vision-3d — 3D graphics & optical vision |
 | `loom` | vision-3d — 3D constructional praxis |
 | `drum` | vision-3d — 3D auditory-motor entrainment |
+| `tuned-drum` | vision-3d — auto-tuned rhythmic entrainment (OpenCV left/right + rhythm snap-to-grid auto-tuner) |
 | `hornbill-flight` | vision-3d — visuomotor glider physics |
 | `majuli-pottery` | vision-3d — tactile motor praxis |
 | `grandchild-chat` | reminiscence — AI conversational reminiscence |

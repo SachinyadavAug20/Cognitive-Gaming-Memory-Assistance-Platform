@@ -21,6 +21,9 @@ export function useIdleTimeout(timeoutMs: number = IDLE_TIMEOUT_MS) {
     let timer: ReturnType<typeof setTimeout> | null = null;
 
     const logoutAndRedirect = () => {
+      if (typeof window !== "undefined" && window.location.pathname.includes("demo")) {
+        return;
+      }
       logout();
       router.push("/kiosk/login");
     };

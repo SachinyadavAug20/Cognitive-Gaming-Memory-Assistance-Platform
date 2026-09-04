@@ -24,12 +24,14 @@ import {
   Flower,
   Sun,
   Brain,
+  Wand2,
 } from "lucide-react";
 
 import { AlpanaGame } from "./alpana/AlpanaGame";
 import { RiverLanternsGame } from "./river-lanterns/RiverLanternsGame";
 import { LoomGame } from "./loom/LoomGame";
 import { DrumGame } from "./drum/DrumGame";
+import { TunedDrumGame } from "./tuned-drum/TunedDrumGame";
 import { HornbillFlightGame } from "./hornbill-flight/HornbillFlightGame";
 import { MajuliPotteryGame } from "./majuli-pottery/MajuliPotteryGame";
 import { BrahmaputraBoatGame } from "./brahmaputra-boat/BrahmaputraBoatGame";
@@ -155,6 +157,17 @@ export const GAMES: GameDef[] = [
     category: "vision-3d",
     recommended: true,
     component: DrumGame,
+  },
+  {
+    id: "tuned-drum",
+    icon: Wand2,
+    titleKey: "tunedDrum.title",
+    descKey: "tunedDrum.desc",
+    accent: "bg-indigo-700",
+    domain: "Auto-Tuned Rhythmic Entrainment",
+    category: "vision-3d",
+    recommended: true,
+    component: TunedDrumGame,
   },
   {
     id: "hornbill-flight",

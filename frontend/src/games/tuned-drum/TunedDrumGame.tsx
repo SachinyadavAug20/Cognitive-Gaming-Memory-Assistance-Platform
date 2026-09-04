@@ -15,15 +15,18 @@ import {
   ArrowRight,
   Wand2,
   Gauge,
+  Play,
+  Square,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
+import { TunedDhol3D } from "@/components/games/TunedDhol3D";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { playPress, playCorrect, playComplete } from "@/lib/sound";
 import { ensureAudioContext, getVolume, isEnabled } from "@/lib/sound";
-import { speak, stopSpeaking } from "@/lib/speech";
+import { speak } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
@@ -231,12 +234,16 @@ export function TunedDrumGame() {
   const rate = speechRate(detail);
 
   const [phase, setPhase] = useState<"intro" | "play" | "done">("intro");
+  const [running, setRunning] = useState(false);
   const [hitsCount, setHitsCount] = useState(0);
-  const [lastHitSide, setLastHitSide] = useState<"left" | "right" | null>(null);
   const [leftHits, setLeftHits] = useState(0);
   const [rightHits, setRightHits] = useState(0);
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
+
+  // 3D dhol strike impulse counters (incremented on each left/right hit).
+  const [leftImpulse, setLeftImpulse] = useState(0);
+  const [rightImpulse, setRightImpulse] = useState(0);
 
   const [isVisionActive, setIsVisionActive] = useState(false);
   const [leftMotionLevel, setLeftMotionLevel] = useState(0);
@@ -268,9 +275,13 @@ export function TunedDrumGame() {
         if (prevHits >= TARGET_HITS) return prevHits;
 
         setTaps((t) => t + 1);
-        setLastHitSide(side);
-        if (side === "left") setLeftHits((l) => l + 1);
-        else setRightHits((r) => r + 1);
+        if (side === "left") {
+          setLeftHits((l) => l + 1);
+          setLeftImpulse((n) => n + 1);
+        } else {
+          setRightHits((r) => r + 1);
+          setRightImpulse((n) => n + 1);
+        }
 
         // Auto-tuner: snap the strike onto the upcoming grid slot so it always
         // lands cleanly on a beat. Read the last known grid offset for realism.
@@ -307,7 +318,7 @@ export function TunedDrumGame() {
         return nextHits;
       });
     },
-    [TARGET_HITS, autoTuneOn, level, patientId, startedAt, taps]
+    [autoTuneOn, level, patientId, startedAt, taps]
   );
 
   const handleMotionEvent = useCallback(
@@ -442,16 +453,24 @@ export function TunedDrumGame() {
       engineRef.current = engine;
     }
     engineRef.current.start();
+    setRunning(true);
     setPhase("play");
     setHitsCount(0);
     setLeftHits(0);
     setRightHits(0);
-    setLastHitSide(null);
     leftDrumStateRef.current = "ARMED";
     rightDrumStateRef.current = "ARMED";
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
+  }, []);
+
+  const stopGame = useCallback(() => {
+    playPress();
+    if (engineRef.current) {
+      engineRef.current.stop();
+    }
+    setRunning(false);
   }, []);
 
   useEffect(() => {
@@ -478,7 +497,6 @@ export function TunedDrumGame() {
 
   const str = getGameStrings("tuned-drum", locale);
   const beatPos = gridStep % 4;
-  const tuneWidth = autoTuneOn ? quantizedMs : 0;
 
   if (loading)
     return (
@@ -692,20 +710,56 @@ export function TunedDrumGame() {
           </div>
 
           {/* CONDUCTOR CUE */}
-          <div className="flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-1.5 text-xs sm:text-sm font-black text-white shadow-xs animate-pulse ${
-            (Math.floor(gridStep / 2) % 2) === 0 ? "bg-orange-500 border-orange-700" : "bg-red-500 border-red-700"
-          }">
-            {(Math.floor(gridStep / 2) % 2) === 0 ? (
-              <>
-                <ArrowLeft className="h-4 w-4 stroke-[3]" />
-                <span>HIT LEFT! (Bass)</span>
-              </>
+          <div className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-1.5 text-xs sm:text-sm font-black text-white shadow-xs ${
+            running
+              ? ((Math.floor(gridStep / 2) % 2) === 0 ? "bg-orange-500 border-orange-700 animate-pulse" : "bg-red-500 border-red-700 animate-pulse")
+              : "bg-gray-400 border-gray-500"
+          }`}>
+            {running ? (
+              (Math.floor(gridStep / 2) % 2) === 0 ? (
+                <>
+                  <ArrowLeft className="h-4 w-4 stroke-[3]" />
+                  <span>HIT LEFT! (Bass)</span>
+                </>
+              ) : (
+                <>
+                  <span>HIT RIGHT! (Treble)</span>
+                  <ArrowRight className="h-4 w-4 stroke-[3]" />
+                </>
+              )
             ) : (
-              <>
-                <span>HIT RIGHT! (Treble)</span>
-                <ArrowRight className="h-4 w-4 stroke-[3]" />
-              </>
+              <span>Press Start to begin drumming</span>
             )}
+          </div>
+
+          {/* 3D DHOL MODEL */}
+          <div className="w-full max-w-md">
+            <TunedDhol3D leftStrike={leftImpulse} rightStrike={rightImpulse} running={running} />
+          </div>
+
+          {/* START / STOP CONTROLS */}
+          <div className="w-full max-w-md flex items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={running ? stopGame : startGame}
+              className={`btn-tactile inline-flex items-center gap-2 px-6 py-3 rounded-xl border-3 border-black text-sm font-black shadow-[4px_4px_0px_#000] active:translate-y-1 cursor-pointer transition-all ${
+                running
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-emerald-500 text-white hover:bg-emerald-600"
+              }`}
+            >
+              {running ? (
+                <>
+                  <Square className="h-4 w-4 fill-white" />
+                  Stop
+                </>
+              ) : (
+                <>
+                  <Play className="h-4 w-4 fill-white" />
+                  Start
+                </>
+              )}
+            </button>
           </div>
 
           {/* LIVE PIP CAMERA FEED */}
@@ -792,23 +846,33 @@ export function TunedDrumGame() {
           <div className="w-full max-w-md grid grid-cols-2 gap-3 pt-1">
             <button
               type="button"
-              onClick={() => handleDrumHit("left")}
-              className={`btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 cursor-pointer transition-all ${
-                (Math.floor(gridStep / 2) % 2) === 0 ? "bg-orange-200 ring-4 ring-orange-400 animate-pulse" : "bg-orange-100 hover:bg-orange-200"
+              onClick={() => running && handleDrumHit("left")}
+              disabled={!running}
+              className={`btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 p-4 shadow-[4px_4px_0px_#000] transition-all ${
+                !running
+                  ? "border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
+                  : (Math.floor(gridStep / 2) % 2) === 0
+                    ? "border-black bg-orange-200 ring-4 ring-orange-400 animate-pulse cursor-pointer"
+                    : "border-black bg-orange-100 hover:bg-orange-200 active:translate-y-1 cursor-pointer"
               }`}
             >
-              <span className="text-sm font-black text-orange-950">LEFT DRUM</span>
-              <span className="text-[10px] font-bold text-orange-800 uppercase">Bass (Tuned)</span>
+              <span className={`text-sm font-black ${running ? "text-orange-950" : "text-gray-400"}`}>LEFT DRUM</span>
+              <span className={`text-[10px] font-bold uppercase ${running ? "text-orange-800" : "text-gray-400"}`}>Bass (Tuned)</span>
             </button>
             <button
               type="button"
-              onClick={() => handleDrumHit("right")}
-              className={`btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 border-black p-4 shadow-[4px_4px_0px_#000] active:translate-y-1 cursor-pointer transition-all ${
-                (Math.floor(gridStep / 2) % 2) === 1 ? "bg-red-200 ring-4 ring-red-400 animate-pulse" : "bg-red-100 hover:bg-red-200"
+              onClick={() => running && handleDrumHit("right")}
+              disabled={!running}
+              className={`btn-tactile flex flex-col items-center justify-center gap-1.5 rounded-2xl border-3 p-4 shadow-[4px_4px_0px_#000] transition-all ${
+                !running
+                  ? "border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed opacity-60"
+                  : (Math.floor(gridStep / 2) % 2) === 1
+                    ? "border-black bg-red-200 ring-4 ring-red-400 animate-pulse cursor-pointer"
+                    : "border-black bg-red-100 hover:bg-red-200 active:translate-y-1 cursor-pointer"
               }`}
             >
-              <span className="text-sm font-black text-red-950">RIGHT DRUM</span>
-              <span className="text-[10px] font-bold text-red-800 uppercase">Treble (Tuned)</span>
+              <span className={`text-sm font-black ${running ? "text-red-950" : "text-gray-400"}`}>RIGHT DRUM</span>
+              <span className={`text-[10px] font-bold uppercase ${running ? "text-red-800" : "text-gray-400"}`}>Treble (Tuned)</span>
             </button>
           </div>
         </div>

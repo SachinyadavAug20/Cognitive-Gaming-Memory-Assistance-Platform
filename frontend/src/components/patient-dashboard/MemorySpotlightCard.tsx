@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { HeartHandshake, Volume2, Sparkles, Search, Image as ImageIcon } from "lucide-react";
 import { getMediaUrl } from "@/lib/api";
 
@@ -37,10 +37,6 @@ export function MemorySpotlightCard({
   const photo = memoryOfDay ? getMediaUrl(memoryOfDay.photoUrl) : null;
   const [hasError, setHasError] = useState(false);
 
-  useEffect(() => {
-    setHasError(false);
-  }, [photo]);
-
   return (
     <div className={`${CARD} bg-surface p-4 sm:p-5 text-left`}>
       <div className="flex items-center gap-2 border-b-2 border-black/10 pb-2">
@@ -58,12 +54,11 @@ export function MemorySpotlightCard({
                 className="btn-tactile group shrink-0 overflow-hidden rounded-2xl border-3 border-black bg-amber-50 shadow-[3px_3px_0px_#000] cursor-pointer hover:scale-[1.02] transition-transform"
                 title="View Full Memory Photo"
               >
-                <div className="relative h-28 w-28 sm:h-32 sm:w-32 bg-black/5 overflow-hidden flex items-center justify-center">
+                <div key={photo || "none"} className="relative h-28 w-28 sm:h-32 sm:w-32 bg-black/5 overflow-hidden flex items-center justify-center">
                   {!hasError ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
-                      key={photo}
-                      src={photo}
+                      src={photo || ""}
                       alt={title}
                       className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
                       loading="eager"
