@@ -82,7 +82,7 @@
       "title": "साहा बागान बिलाइ बुथुमनाय (मोशन भिसन)",
       "subtitle": "आखायाव मोशनजों गोथां नै बिलाइ से दालाय बुथुमना संलोआव दोन।",
       "cameraPermission": "केमेरा बाहायनो अयाबा हो",
-      "waveToPluck": "आखायाव सालायना बिलाइ बुथुम 👋",
+      "waveToPluck": "आखायाव सालायना बिलाइ बुथुम",
       "leavesPlucked": "बुथुमनाय बिलाइ: {count}",
       "basketFull": "संलो गोथां बिलाइजों बुंखाबाय!",
       "gentleHint": "शान्तिजों आखायाव सालाय आरो गोथां बिलाइ दा।"
@@ -90,10 +90,6 @@
     "radio": {
       "title": "गोजाम आकासभानि रेडिअ",
       "desc": "गोजाम सुबुं मेथेय आरो आकासभानिखौ खोनासं"
-    },
-    "lotusLake": {
-      "title": "पद्म बिलनि दै-लौ",
-      "desc": "बिलनि दै-लौआव पद्म बारहोना गोसो सान्ति खालाम"
     },
     "kitchen": {
       "title": "आबौनि हारिमुवारि संग्रासाला",
@@ -107,14 +103,6 @@
       "title": "थांना थानाय रोदनि दालां",
       "desc": "दैमा सोजाव थांना थानाय रोदजों दालां दा"
     },
-    "bazaar": {
-      "title": "हारिमुवारि हाट आरो बेसेन",
-      "desc": "दुकानदारजों सावराय, गोथां बेसाद बाय आरो रां सामलाय"
-    },
-    "proverb": {
-      "title": "हारिमुवारि बाथ्रा आरो फाव",
-      "desc": "गोजाम बाथ्रा आरो मेथेयनि लांदां जायगा सुफुंना गोसोखांथि स्रां खालाम"
-    },
     "riverLanterns": {
       "title": "३D दैमानि गोसोखांथि साखि",
       "desc": "आखायाव दै-लौ बानायना ३D दैमानि साखिखौ खाथियाव लाबो"
@@ -126,10 +114,6 @@
     "drum": {
       "title": "३D खाम आरो सिफुंनि ताल",
       "desc": "हारिमुवारि खामनि तालाव आखायाव थाब थाब दाना रंजा"
-    },
-    "memoirScribe": {
-      "title": "गोसोखांथि बिजाब आरो लिरनाय",
-      "desc": "नखरनि मोजां गोसोखांथिखौ बुं, AI नोंनि थाखाय गंसे साबसिन बिलाइ बानायगोन"
     },
     "majuli": {
       "title": "माजुली थाबायनाय (३D जायगा गोसोखांथि)",
@@ -150,7 +134,7 @@
     "bihuDhol": {
       "title": "खाम आरो सिफुंनि ताल (गोसो शान्ति)",
       "subtitle": "हारिमुवारि खामनि तालाव आखायाव थाब थाब ट्याप खालाम।",
-      "tapPrompt": "खामनि तालाव ट्याप खालाम 🥁",
+      "tapPrompt": "खामनि तालाव ट्याप खालाम",
       "tempoCalm": "तालनि गोख्रैथि: {bpm} BPM (शान्ति)",
       "perfectBeat": "मोजां ताल!",
       "gentleRhythm": "शान्तिजों ताल मिलाय...",
@@ -158,20 +142,6 @@
       "calmSubtitle": "नोंनि आखाया खामनि तालजों मोजां मिलायबाय।",
       "playAgain": "खाम फिन दाम",
       "backToHub": "← थेरापी खथासिम थांफिन"
-    },
-    "brahmaputraVoice": {
-      "title": "लुइत दैमानि बाथ्रा (खोनासंनाय बाथ्रा)",
-      "subtitle": "दैमानि बार खोनासं आरो गोजाम बाथ्रानि लांदां सोदोब बुंना सुफुं।",
-      "listeningPrompt": "खोनासंगासिनो... माइकआव मोजाङै बुं 🎙️",
-      "tapToSpeak": "बाथ्रा बुंनो माइक सेर 🎙️",
-      "proverbPrompt": "दैमानि बाथ्राखौ सुफुं:",
-      "spokenAnswer": "नोंनि बाथ्रा:",
-      "correctFeedback": "मोजां! दैमाया नोंनि गियान बाथ्राखौ खोनाबाय।",
-      "retryFeedback": "फिन बुंनो नाजा।",
-      "scoreSummary": "बाथ्रा गोसोखांथि मिलायनाय: {score}%",
-      "playAgain": "गुबुन बाथ्रा गोसोखां",
-      "backToHub": "← थेरापी खथासिम थांफिन",
-      "welcomeSpeech": "लुइत दैमानि बाथ्रायाव बयखौबो बरायबाय। बाथ्रा बुंना दैमानि साखिखौ स्रां खालाम।"
     },
     "dayInMyWorld": {
       "title": "आंनि मुलुगनि से सान (३D खन्थाय खोङचथ)",
@@ -221,7 +191,7 @@
       "desc": "₹५०० बजेटआव बेसाद बाय आरो फिन मोननाय रांखौ आनजाद नाय।",
       "welcome": "गामिनि हाट",
       "instruction": "₹५०० नि बारा खालामनाङा, फिन मोननाय रांखौ नाय।",
-      "shopNow": "हाटआव थां 🛒",
+      "shopNow": "हाटआव थां",
       "remaining": "थालांनाय बजेट",
       "total": "गासै रां",
       "basketEmpty": "संलो लांदां। बेसाद हाहोनो ट्याप खालाम।",
@@ -244,15 +214,15 @@
       "desc": "बागानआव बिबार मिलाय, मा सोलायबाय नाय आरो सुरनि ताल दोहोराय।",
       "subgames": {
         "memoryMatch": {
-          "name": "बिबार मिलाय 🌸",
+          "name": "बिबार मिलाय",
           "desc": "ज'रा बिबार नायगिर"
         },
         "whatChanged": {
-          "name": "मा सोलायबाय? 👁️",
+          "name": "मा सोलायबाय?",
           "desc": "सोलायनाय बेसाद सिनाय"
         },
         "sequence": {
-          "name": "फारि गोसोखां 🔢",
+          "name": "फारि गोसोखां",
           "desc": "फारि बादि ट्याप खालाम"
         }
       },
@@ -290,11 +260,11 @@
       "backToHub": "थेरापी खथासिम थांफिन"
     },
     "memoryRoad": {
-      "title": "गोसोखांथि लामा (लामा ঙाकथाय)",
+      "title": "गोसोखांथि लामा (लामा ङाकथाय)",
       "desc": "सहरनि लामायाव ट्राफिक सिनायथि, जेब्रा क्रसिं आरो अस्पताल नायगिर।",
-      "welcome": "लामा ঙाकथाय नायगिरनाय",
+      "welcome": "लामा ङाकथाय नायगिरनाय",
       "instruction": "लामायाव बेखौ नायगिर:",
-      "startBtn": "लामा नायगिर 🚦",
+      "startBtn": "लामा नायगिर",
       "found": "मोनबाय!",
       "wrong": "बेयो गोरोन्थि, थार सिनायथिखौ नायगिर।",
       "levelComplete": "लामा लेभेल लोइबाय!",
@@ -312,17 +282,20 @@
     "sos": "गोनांथार हेफाजाब"
   },
   "common": {
-    "back": "थांफिनदो",
-    "continue": "सोलिबाय था",
-    "start": "जागाय",
-    "finish": "जोबबाय",
-    "retry": "नाजाफिन",
-    "close": "बन्द खालाम",
-    "listen": "खोनासं",
-    "speaking": "रायज्लायदों...",
-    "error": "गोरोन्थि जाबाय",
-    "loading": "लद जाबाय...",
-    "pts": "पइन्ट"
+    "required": "*",
+    "edit": "संपादन",
+    "save": "दोनथुम",
+    "cancel": "रद्द",
+    "remove": "बखार",
+    "add": "दाजाब",
+    "upload": "Upload",
+    "analyzing": {
+      "label": "रिपोर्ट खनिजाय...",
+      "desc": "मिनिट ३० लागिबो"
+    },
+    "maxSize": "बेसेन {size}MB",
+    "pdfOnly": "PDF मात्रै",
+    "imagesOnly": "फथ' मात्रै"
   },
   "game": {
     "back": "← थांफिनदो",
@@ -349,40 +322,444 @@
   "caregiver": {
     "title": "नायगिरि पर्टेल",
     "dashboard": "देसबर्ड",
+    "home": "घर",
     "patients": "साग्लोबग्राफोर",
+    "yourPatients": "नोंनि साग्लोबग्राफोर",
     "sessions": "सानफ्रोमनि गेलेनाय",
     "alerts": "खौरां",
     "telemetry": "तेलिमेत्रि",
     "addPatient": "गोदान साग्लोबग्रा",
+    "loadingPatients": "साग्लोबग्राफोर लद जाबाय...",
+    "loadError": "साग्लोबग्राफोर लद नङा। सर्भार अयाबा हो।",
+    "emptyTitle": "साग्लोबग्रा गैया",
+    "emptyList": "साग्लोबग्रा गैया। 'गोदान साग्लोबग्रा' क्लिक खालाम।",
+    "retry": "फिन नाजा",
+    "age": "बैसो {age}",
+    "ageUnknown": "बैसो गोनां",
+    "language": "राव",
     "medicalProfile": "फाहामथाय",
     "familyPhotos": "नखरनि फथ'",
     "save": "दोनथुम"
   },
   "intake": {
-    "title": "साग्लोबग्रा मुं थिसननाय",
-    "name": "मुं",
-    "age": "बैसो",
-    "gender": "हौवा/हिनजाव",
-    "language": "राव",
-    "caregiverName": "नायगिरिनि मुं",
-    "caregiverPhone": "फोन नम्बर",
-    "submit": "फोजोबबाय"
+    "step": "स्टेप {current} of {total}",
+    "back": "← थांफिनदो",
+    "continue": "सोलिबाय था →",
+    "submit": "साग्लोबग्रा प्रोफाइल बानाय",
+    "creating": "AI-नों रिपोर्ट खनिजाय...",
+    "wizard": {
+      "personal": "मोजांगै",
+      "medical": "रिपोर्ट",
+      "family": "नखर",
+      "life": "जिबन",
+      "places": "जायगा",
+      "review": "खन"
+    },
+    "complete": {
+      "title": "साग्लोबग्रा प्रोफाइल बानायबाय!",
+      "desc": "{name} नोंनि साग्लोबग्राफोरआव जाबाय। खेल आरो कार्य फिन बानायजाबाय।",
+      "dashboard": "देसबर्डआव थांफिन"
+    },
+    "personal": {
+      "title": "साग्लोबग्रा नायगिरनाय",
+      "subtitle": "साग्लोबग्रागै प्रोफाइल आरो खेल खातिर मोजां जायगा जाबिलाय।",
+      "name": {
+        "label": "मुं गोबां",
+        "placeholder": "जेरे, रमेश दत्ता"
+      },
+      "dob": "बिथार मह",
+      "gender": "हौवा/हिनजाव",
+      "phone": {
+        "label": "फोन नम्बर",
+        "placeholder": "जेरे, 9876543210"
+      },
+      "relationship": "नं फर्म बानायबाय ना?"
+    },
+    "medical": {
+      "title": "रिपोर्ट",
+      "subtitle": "नोंनि रिपोर्टखौ upload खालाम। AI-नों जायगा खनिजायबो।",
+      "upload": {
+        "label": "PDF दोन, नत्राय click खालाम",
+        "desc": "नोंनि रिपोर्ट (MMSE, MoCA) upload खालाम"
+      },
+      "analyze": "रिपोर्ट खन",
+      "skip": "रिपोर्ट गैया, बेखौ बाद खालाम",
+      "continue": "रिपोर्ट गैयाखारि सोलिबाय",
+      "extracted": "जायगा जाबिलायबाय",
+      "replace": "फिन रिपोर्ट upload",
+      "diagnosis": "रिपोर्ट",
+      "date": "मह",
+      "score": "स्कोर",
+      "medications": "दाओं",
+      "notes": "डाक्तारनि लिरनाय",
+      "physician": "डाक्तार",
+      "subscales": "स्कोर जुमाजुमा",
+      "assessment": "१७-जायगा Assessment",
+      "assessmentDesc": "AI-नों जायगा खनिजायबाय",
+      "intact": "ठीक",
+      "impaired": "बिग्राय",
+      "retained": "{pct}% अयाबाय",
+      "clinicalSummary": "सारांश",
+      "activePrescriptions": "दाओं ({count})",
+      "categoryCognitive": "मनन",
+      "categoryIadls": "दैनिक काम",
+      "categoryBehavioral": "व्यवहार"
+    },
+    "family": {
+      "title": "नखर",
+      "subtitle": "साग्लोबग्राखातिर मोजां नखर जुमाय।",
+      "add": "नखर गोदान",
+      "empty": "नखर बेसेन १ जुमाय।",
+      "remove": "बेखौ बखार",
+      "name": {
+        "placeholder": "मुं (जेरे, मीना)"
+      },
+      "notes": {
+        "placeholder": "गुवाहाटी, शनिबार बोरो आयो"
+      }
+    },
+    "life": {
+      "title": "जिबन आरो शौक",
+      "subtitle": "बेफोर खेल बानायनो मदत खालामबो।",
+      "occupation": {
+        "label": "काम",
+        "placeholder": "जेरे, शिक्षक, लाइ"
+      },
+      "events": {
+        "label": "जिबन घटना",
+        "add": "+ घटना जुमाय",
+        "event": {
+          "placeholder": "घटना"
+        },
+        "year": {
+          "placeholder": "बैसो"
+        }
+      },
+      "interests": "शौक",
+      "music": {
+        "label": "गान",
+        "placeholder": "जेरे, भूपेन हाजरिका गान"
+      },
+      "culture": {
+        "label": "संस्कृति",
+        "placeholder": "जेरे, बोडो"
+      },
+      "language": "राव",
+      "joy": {
+        "label": "नांगौ खासी?",
+        "placeholder": "फथ' नायना हर्षित हाबाय..."
+      }
+    },
+    "places": {
+      "title": "जायगा",
+      "subtitle": "साग्लोबग्रानि जायगा जुमाय।",
+      "add": "जायगा जुमाय",
+      "empty": "जायगा ३ जुमाय।",
+      "icon": "चिन सायख'",
+      "name": {
+        "placeholder": "मुं (जेरे, कामाख्या मन्दिर)"
+      },
+      "desc": {
+        "placeholder": "जेरे, शान्ति जायगा"
+      }
+    },
+    "review": {
+      "title": "खन",
+      "subtitle": "बानायनो सिगां खन।",
+      "edit": "संपादन",
+      "personal": "मुं",
+      "medical": "रिपोर्ट",
+      "family": "नखर",
+      "life": "जिबन",
+      "places": "जायगा",
+      "noReport": "रिपोर्ट गैया",
+      "noFamily": "नखर गैया",
+      "fieldName": "मुं",
+      "fieldDob": "बिथार मह",
+      "fieldGender": "हौवा/हिनजाव",
+      "fieldPhone": "फोन",
+      "fieldRelationship": "संबन्ध",
+      "fieldDiagnosis": "रिपोर्ट",
+      "fieldDate": "मह",
+      "fieldScore": "स्कोर",
+      "fieldMedications": "दाओं",
+      "fieldPhysician": "डाक्तार",
+      "fieldOccupation": "काम",
+      "fieldLanguage": "राव",
+      "fieldInterests": "शौक",
+      "fieldMusic": "गान",
+      "fieldLifeEvents": "घटना",
+      "fieldJoy": "खासी",
+      "noneSelected": "गैया",
+      "notSpecified": "दिंनो गैया"
+    },
+    "validation": {
+      "nameMinLength": "मुं बेसेन २ अक्षर जाबिलाय",
+      "dobRequired": "बिथार मह जाबिलाय",
+      "genderRequired": "हौवा/हिनजाव जाबिलाय",
+      "phoneMinLength": "फोन बेसेन १० नम्बर",
+      "relationshipRequired": "संबन्ध सायख'",
+      "familyMinCount": "नखर बेसेन १",
+      "placesMinCount": "जायगा बेसेन ३",
+      "submitFailed": "प्रोफाइल बानाय नङा। फिन नाजा।"
+    },
+    "photoPicker": {
+      "tooLarge": "फथ' ५MB नि ओंखारा",
+      "viewPhotoFor": "{label} फथ' नाय",
+      "viewPhoto": "फथ' नाय",
+      "previewThumb": "फथ' preview",
+      "view": "नाय",
+      "removePhoto": "फथ' बखार",
+      "uploadPhoto": "फथ' upload",
+      "preview": "फथ': {label}",
+      "previewDefault": "फथ' preview",
+      "closeViewer": "फथ' नाय बन्द",
+      "fullPreview": "पूर्ण फथ' नाय",
+      "changePhoto": "🔄 फथ' सोलाय",
+      "remove": "🗑 बखार"
+    },
+    "fileUpload": {
+      "tooLarge": "फाइल बेसेन जाबाय। बेसेन {maxSizeMB}MB।",
+      "pdfOnly": "PDF फाइल upload खालाम।",
+      "imageOnly": "फथ' फाइल upload खालाम।",
+      "preview": "नाय",
+      "uploadedReplace": "✓ upload जाबाय — click सोलायनो"
+    },
+    "progress": {
+      "ariaLabel": "फर्म लामा",
+      "step": "स्टेप",
+      "of": "of"
+    },
+    "dynamicList": {
+      "removeItem": "बेसाद {index} बखार"
+    },
+    "domainMatrix": {
+      "heading": "१७-जायगा Clinical Assessment",
+      "desc": "AI-नों जायगा आरो काम खनिजायबाय",
+      "empty": "रिपोर्टआव बिग्राय गैया",
+      "domains": {
+        "memory": "मनन",
+        "attention": "गोरोन्थि",
+        "executiveFunction": "निर्णय",
+        "orientation": "जायगा",
+        "language": "राव",
+        "visuospatial": "फथ' नायनाय",
+        "decisionMaking": "निर्णय",
+        "medicationManagement": "दाओं ब्यबस्थापन",
+        "financialManagement": "रां ब्यबस्थापन",
+        "navigation": "लामा",
+        "mealPreparation": "खाना",
+        "driving": "गाड़ी",
+        "householdTasks": "घरनि काम",
+        "apathy": "सोलिबो नाङै",
+        "agitation": "गोजोर",
+        "socialWithdrawal": "बन्द"
+      },
+      "severity": {
+        "severe": "गोबां ग्रासिबाय",
+        "moderate": "मध्यम",
+        "mild": "हल्का",
+        "intact": "ठीक"
+      }
+    },
+    "diagnosis": {
+      "notSpecified": "दिंनो गैया",
+      "icdPrefix": "ICD-10: ",
+      "mtaPrefix": "MRI MTA: ",
+      "fazekasPrefix": "Fazekas: "
+    }
   },
   "options": {
     "title": "सेटिं",
     "fontSize": "फन्ट गेदेर",
     "contrast": "हाय कन्ट्रास्ट",
     "airMouse": "एयार माउस",
-    "listenFirst": "खोनासं"
+    "listenFirst": "खोनासं",
+    "gender": {
+      "male": "हौवा",
+      "female": "हिनजाव",
+      "other": "गुबुन"
+    },
+    "relationship": {
+      "spouse": "बिबाहित",
+      "child": "सान",
+      "sibling": "भाइ/भनी",
+      "parent": "बा/आई",
+      "self": "नों",
+      "other": "गुबुन"
+    },
+    "relativeRelationship": {
+      "daughter": "सान मेथि",
+      "son": "सान बरा",
+      "spouse": "बिबाहित",
+      "grandchild": "नाती/पोता",
+      "sibling": "भाइ/भनी",
+      "friend": "लगो",
+      "other": "गुबुन"
+    },
+    "interests": {
+      "music": "गान",
+      "sports": "खेल",
+      "cooking": "खाना",
+      "gardening": "बागिचा",
+      "reading": "पढ़नाय",
+      "travel": "घुमनाय",
+      "religious": "धर्मिक",
+      "art": "कला",
+      "other": "गुबुन"
+    },
+    "status": {
+      "done": "जोबबाय",
+      "now": "दानि",
+      "later": "तेन्था"
+    },
+    "metrics": {
+      "memory": "मनन",
+      "spatial": "जायगा",
+      "reaction": "प्रतिक्रिया",
+      "lastSession": "सिगांनि सेसन"
+    }
   },
   "audio": {
     "welcome": "कग्निकेयारआव बरायबाय।",
-    "guide": "गोजोनै सानफ्रोमनि मेलेम गेलेनायखौ जागाय।"
+    "guide": "गोजोनै सानफ्रोमनि मेलेम गेलेनायखौ जागाय।",
+    "listen": "खोनासं",
+    "howToPlay": "केनना खेलनो",
+    "listenToStory": "कथा खोनासं",
+    "listenToDirections": "निर्देशन खोनासं"
   },
   "idcard": {
-    "title": "हेल्थ कार्ड",
-    "scan": "स्क्यान खालाम",
-    "print": "कार्ड साफाय",
-    "qrNote": "QR क'डखौ स्क्यान खालाम।"
+    "heading": "साग्लोबग्रा ID कार्ड",
+    "desc": "QR Health Card प्रिन्ट आरो डाउनलोड खालाम। कीओस्कआव स्क्यान खालाम।",
+    "regenerate": "कार्ड फिन बानाय",
+    "download": "PNG डाउनलोड",
+    "print": "कार्ड प्रिन्ट",
+    "backToProfile": "साग्लोबग्रा प्रोफाइलआव थांफिन",
+    "error": {
+      "fetch": "कार्ड लद नङा। फिन नाजा।",
+      "regenerate": "कार्ड फिन बानाय नङा। फिन नाजा।"
+    },
+    "badge": {
+      "label": "Health Card",
+      "hint": "QR स्क्यान खालाम",
+      "footer": "QR-Only Passkey"
+    }
+  },
+  "patientDetail": {
+    "loading": "क्लिनिकल तेलिमेत्रि लद जाबाय...",
+    "notFound": {
+      "title": "साग्लोबग्रा नोंखाया नुवाया।",
+      "desc": "साग्लोबग्रागै रेकर्ड बखार जाबाय, नत्राय लिंक बिग्राय।"
+    },
+    "hero": {
+      "backToDashboard": "देसबर्डआव थांफिन",
+      "stage": "स्टेज",
+      "patientId": "साग्लोबग्रा #{id}",
+      "age": "बैसो {age}",
+      "filledBy": "{relationship} बानायबाय",
+      "printCard": "ID कार्ड प्रिन्ट"
+    },
+    "vitals": {
+      "cognitiveScore": "स्कोर",
+      "mmse": "MMSE",
+      "clinicalStage": "क्लिनिकल स्टेज",
+      "gameLevel": "खेल लेभेल {difficulty}",
+      "brainBiomarkers": "मस्तिष्क बायोमार्कार",
+      "mta": "MTA:",
+      "fazekas": "Fazekas:",
+      "icd": "ICD: {code}",
+      "biomarkerBaseline": "बायोमार्कार बेसलाइन",
+      "qrHealthCard": "QR Health Card",
+      "activeReady": "सक्रिय आरो तयार",
+      "viewPrintBadge": "ब्याज नाय / प्रिन्ट"
+    },
+    "biomarkers": {
+      "title": "मस्तिष्क बायोमार्कार आरो गति",
+      "subtitle": "गति, प्रतिक्रिया, आरो ५-जायगा नायनाय",
+      "activeTelemetry": "सक्रिय तेलिमेत्रि"
+    },
+    "lightbox": {
+      "close": "बन्द",
+      "listen": "गोसोखांथि खोनासं",
+      "speaking": "रायज्लायदों..."
+    },
+    "clinicalSummary": {
+      "title": "दाओं आरो रिपोर्ट",
+      "subtitle": "मनन खननाय, रिपोर्ट, आरो डाक्तारनि लिरनाय",
+      "diagnosisIcd": "रिपोर्ट आरो ICD Code",
+      "diagnosisFallback": "मनन बिग्रायनाय",
+      "physician": "डाक्तार",
+      "physicianFallback": "डाक्तार",
+      "hospitalDate": "अस्पताल आरो मह",
+      "hospitalFallback": "अस्पताल",
+      "summaryHeading": "सारांश आरो मदत:",
+      "medications": "दाओं",
+      "subscaleBreakdown": "मनन स्कोर",
+      "deficits": "बिग्रायनाय आरो मदत"
+    },
+    "family": {
+      "title": "नखर आरो नायगिर",
+      "subtitle": "फथ' खेल खातिर मोजां नखर",
+      "saved": "दोनथुम जाबाय",
+      "empty": "नखर गैया।",
+      "view": "{name} नाय"
+    },
+    "places": {
+      "title": "जायगा",
+      "subtitle": "लामा नायनाय आरो लम्बी",
+      "landmarks": "जायगा",
+      "empty": "जायगा गैया।",
+      "view": "{name} नाय"
+    },
+    "lifeStory": {
+      "title": "जिबन आरो मनन",
+      "subtitle": "काम, गान, शौक आरो खासी",
+      "occupation": "काम",
+      "occupationFallback": "दिंनो गैया",
+      "music": "गान",
+      "musicFallback": "लोक गान",
+      "hobbies": "शौक",
+      "joyTriggers": "खासी आरो शान्ति",
+      "joyFallback": "गान खोनासं, सानमा बैसनाय, फथ' नाय।",
+      "tip": "टिप: बेफोर खालाम।",
+      "milestones": "जिबन घटना",
+      "year": "बैसो {year}"
+    },
+    "demographics": {
+      "title": "मुं आरो बैसो",
+      "fullName": "मुं गोबां",
+      "dobAge": "बिथार मह आरो बैसो",
+      "years": "बैसो {age}",
+      "gender": "हौवा/हिनजाव",
+      "phone": "फोन",
+      "relationship": "संबन्ध",
+      "language": "राव",
+      "languageFallback": "EN",
+      "background": "संस्कृति"
+    },
+    "gamingProgress": {
+      "title": "खेल स्कोर आरो गति",
+      "subtitle": "खेल स्कोर आरो गति नाय",
+      "liveTelemetry": "तेलिमेत्रि",
+      "avgAccuracy": "स्कोर",
+      "motorLatency": "गति",
+      "ms": "ms",
+      "spatialRecall": "मनन",
+      "totalSessions": "जुमासेसन",
+      "chartTitle": "खेल चार्ट",
+      "lastSessions": "सेसन {count}",
+      "accuracyLine": "स्कोर (%)",
+      "latencyLine": "गति (ms)",
+      "aiObservation": "AI क्लिनिकल (ASHA रिपोर्ट)"
+    },
+    "report": {
+      "export": "रिपोर्ट Export",
+      "copied": "Copy जाबाय",
+      "copyText": "Copy",
+      "printPdf": "प्रिन्ट / PDF",
+      "closeReport": "रिपोर्ट बन्द",
+      "title": "ABDM रिपोर्ट Exporter",
+      "subtitle": "Telemedicine & Evaluation Sheet"
+    }
   }
 }

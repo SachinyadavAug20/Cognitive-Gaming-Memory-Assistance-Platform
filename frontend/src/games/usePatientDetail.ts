@@ -20,14 +20,20 @@ export function usePatientDetail() {
     let cancelled = false;
     const timer = window.setTimeout(() => {
       if (!patientId) {
+        if (typeof window !== "undefined" && window.location.pathname.includes("/demo")) {
+          setDetail(DEMO_PATIENT_RECORD);
+          setLoading(false);
+          setError(false);
+          return;
+        }
         setDetail(null);
         setLoading(false);
         setError(false);
         return;
       }
 
-      // If demo patient ID 101, immediately provide full mock bundle
-      if (patientId === 101) {
+      // If demo patient ID 101 or 2, immediately provide full mock bundle
+      if (patientId === 101 || patientId === 2) {
         setDetail(DEMO_PATIENT_RECORD);
         setLoading(false);
         setError(false);

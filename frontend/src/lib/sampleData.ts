@@ -33,16 +33,26 @@ function languageCodeFromLabel(label: unknown): string {
   return LANGUAGE_OPTIONS.find((l) => l.label === text)?.code ?? text;
 }
 
-const EMOJI_ALIASES: Record<string, string> = {
-  "🛒": "🏪",
-  "🛍️": "🏪",
-  "🛍": "🏪",
+const LEGACY_EMOJI_TO_ID: Record<string, string> = {
+  "\uD83D\uDED2": "market",
+  "\uD83D\uDECD\uFE0F": "market",
+  "\uD83D\uDECD": "market",
+  "\uD83C\uDFE0": "home",
+  "\uD83C\uDFE1": "home",
+  "\uD83D\uDE4F": "temple",
+  "\uD83C\uDFE5": "clinic",
+  "\uD83C\uDFEB": "school",
+  "\uD83C\uDF33": "park",
+  "\uD83D\uDE8C": "bus",
+  "\uD83C\uDFEA": "store",
+  "\u26F0\uFE0F": "hills",
+  "\uD83C\uDF0A": "lake",
 };
 
 function landmarkEmoji(emoji: unknown): string {
   const text = asString(emoji).trim();
   if (LANDMARK_EMOJIS.includes(text)) return text;
-  return EMOJI_ALIASES[text] ?? "📍";
+  return LEGACY_EMOJI_TO_ID[text] ?? "home";
 }
 
 function mapLifeEvents(list: unknown): LifeEvent[] | null {
@@ -67,9 +77,9 @@ function mapInterests(list: unknown): string[] | null {
 
 /**
  * Resolves a bundled sample photo to its public URL:
- * - "images/patient_N_.../relatives/x.png"  -> "/sample-images/patient_N_.../relatives/x.png"
- * - "patient_N_.../relatives/x.png"         -> "/sample-images/patient_N_.../relatives/x.png"
- * - "01_son_manash_borah.png"               -> base + name (legacy flat layout)
+ * - "images/patient_N_.../relatives/x.jpg"  -> "/sample-images/patient_N_.../relatives/x.jpg"
+ * - "patient_N_.../relatives/x.jpg"         -> "/sample-images/patient_N_.../relatives/x.jpg"
+ * - "01_son_manash_borah.jpg"               -> base + name (legacy flat layout)
  */
 function sampleImageUrl(base: string, filename: unknown): string {
   const name = asString(filename).trim();

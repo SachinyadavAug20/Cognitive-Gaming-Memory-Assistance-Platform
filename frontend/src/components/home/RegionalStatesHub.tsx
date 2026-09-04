@@ -83,7 +83,6 @@ const NER_STATES: StateData[] = [
     icon: BambooShootIcon,
     bgGrad: "from-amber-500 to-orange-700",
     games: [
-      { title: "Cheraw Bamboo Rhythm", domain: "Timing & Motor Sync", path: "/patient/games" },
       { title: "Blue Mountain Village Route", domain: "Wayfinding", path: "/patient/games" },
     ],
     memoryHeritage: "Chapchar Kut harvest festival, vibrant woven Puan patterns, and breezy hilltop morning mist.",

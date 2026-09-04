@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 interface DynamicListProps<T> {
   items: T[];
@@ -21,6 +22,7 @@ export function DynamicList<T>({
   addLabel,
   emptyMessage,
 }: DynamicListProps<T>) {
+  const t = useTranslations("intake");
   return (
     <div className="space-y-3">
       {items.length === 0 ? (
@@ -36,7 +38,7 @@ export function DynamicList<T>({
                 <button
                   onClick={() => onRemove(i)}
                   className="absolute top-2 right-2 w-8 h-8 rounded-full bg-brick-light text-brick border-2 border-brick font-bold text-sm hover:bg-brick hover:text-white transition-colors flex items-center justify-center"
-                  aria-label={`Remove item ${i + 1}`}
+                  aria-label={t("dynamicList.removeItem", { index: i + 1 })}
                 >
                   ×
                 </button>

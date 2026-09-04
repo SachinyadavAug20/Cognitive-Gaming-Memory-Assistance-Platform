@@ -1,15 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRouter } from "@/i18n/navigation";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { PortalCard } from "@/components/home/PortalCard";
-import { useAuthStore } from "@/store/useAuthStore";
-import { playScanSuccess, playTapFeedback } from "@/lib/sound";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sun, QrCode } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { api } from "@/lib/api";
-import type { KioskScanResponse } from "@/types/auth";
 
 const Hero3DLandscape = dynamic(
   () => import("@/components/home/Hero3DLandscape").then((mod) => mod.Hero3DLandscape),
@@ -26,34 +21,14 @@ const Hero3DLandscape = dynamic(
 
 export function HomeClient() {
   const t = useTranslations("home");
-  const router = useRouter();
-  const login = useAuthStore((s) => s.login);
-
-  const handleLaunchDemo = async () => {
-    playTapFeedback();
-    playScanSuccess();
-    try {
-      const res = await api.post<KioskScanResponse>("/auth/kiosk/demo", {});
-      login(res.token, res.patient);
-    } catch {
-      // Backend offline fallback: enter the demo patient session with mock data
-      login("demo-offline-session", {
-        id: 2,
-        name: "Biren Borah",
-        languagePreference: "as",
-      });
-    }
-    setTimeout(() => {
-      router.push("/patient");
-    }, 300);
-  };
 
   return (
     <div className="space-y-4">
       {/* 1. Warm Greeting & Primary Patient Check-In CTA */}
       <div className="text-center">
-        <h1 className="font-serif font-black text-3xl md:text-5xl text-ink leading-tight">
-          {t("greeting")} 🌞
+        <h1 className="font-serif font-black text-3xl md:text-5xl text-ink leading-tight flex items-center justify-center gap-2.5">
+          <span>{t("greeting")}</span>
+          <Sun className="h-8 w-8 md:h-11 md:w-11 text-amber-500 stroke-[2.2]" />
         </h1>
         <p className="text-base md:text-lg text-ink-secondary mt-1 max-w-xl mx-auto font-medium">
           {t("ready")}
@@ -64,7 +39,7 @@ export function HomeClient() {
       <div className="max-w-xl mx-auto w-full">
         <PortalCard
           headerBg="bg-marigold"
-          emoji="🔍"
+          icon={QrCode}
           title={t("kiosk.title")}
           subtitle={t("kiosk.subtitle")}
           description={t("kiosk.description")}
@@ -103,20 +78,6 @@ export function HomeClient() {
             </div>
           </div>
         </PortalCard>
-      </div>
-
-      {/* Small Discrete Demo Pass Button */}
-      <div className="flex justify-center pt-1">
-        <button
-          type="button"
-          onClick={handleLaunchDemo}
-          className="btn-tactile inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-black bg-surface hover:bg-tea-light hover:border-tea text-ink text-xs font-black shadow-[2px_2px_0px_#000] transition-all cursor-pointer group"
-          title="Instant Demo Patient Access for Testing & Evaluation"
-        >
-          <Sparkles className="h-3.5 w-3.5 text-marigold animate-pulse" />
-          <span>Try Demo Patient (Biren Borah &bull; 72y &bull; MCI)</span>
-          <ArrowRight className="h-3 w-3 text-tea group-hover:translate-x-0.5 transition-transform" />
-        </button>
       </div>
 
       {/* 2. Sensory Calming 3D Three.js Diorama (Brahmaputra Valley & Tea Hills) */}

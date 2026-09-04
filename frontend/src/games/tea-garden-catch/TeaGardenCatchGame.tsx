@@ -11,7 +11,13 @@ import {
   CheckCircle2,
   Volume2,
   Leaf,
+  Citrus,
+  Flower2,
+  Hand,
+  Zap,
+  Sparkles,
 } from "lucide-react";
+import { AssamTeaLeafIcon, KazirangaButterflyIcon } from "@/components/ui/CulturalIcons";
 import { GameShell } from "@/components/games/GameShell";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -34,13 +40,25 @@ interface FallingItem {
   id: number;
   type: "tea_leaf" | "butterfly" | "orange" | "flower";
   name: string;
-  emoji: string;
   x: number; // 0..1 horizontal normalized
   y: number; // 0..1 vertical normalized
   speed: number;
   size: number;
   caught: boolean;
   handSide: "left" | "right" | "center";
+}
+
+function renderFallingItemIcon(type: FallingItem["type"], className = "h-8 w-8") {
+  switch (type) {
+    case "tea_leaf":
+      return <AssamTeaLeafIcon className={`${className} text-emerald-400`} />;
+    case "butterfly":
+      return <KazirangaButterflyIcon className={`${className} text-cyan-300`} />;
+    case "orange":
+      return <Citrus className={`${className} text-amber-400`} />;
+    case "flower":
+      return <Flower2 className={`${className} text-rose-400`} />;
+  }
 }
 
 export function TeaGardenCatchGame() {
@@ -102,29 +120,29 @@ export function TeaGardenCatchGame() {
       const updated = prevItems.map((item) => {
         if (item.caught) return item;
 
-        // Check distance to Left Hand (exclude upper face region Y <= 0.26)
+        // Check distance to Left Hand (1:1 viewport reach across all corners)
         let hit = false;
-        if (evt.leftHand && evt.leftHand.y > 0.26) {
+        if (evt.leftHand) {
           const dx = item.x - evt.leftHand.x;
           const dy = item.y - evt.leftHand.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 0.16) hit = true;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 0.18) hit = true;
         }
 
-        // Check distance to Right Hand (exclude upper face region Y <= 0.26)
-        if (!hit && evt.rightHand && evt.rightHand.y > 0.26) {
+        // Check distance to Right Hand (1:1 viewport reach across all corners)
+        if (!hit && evt.rightHand) {
           const dx = item.x - evt.rightHand.x;
           const dy = item.y - evt.rightHand.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 0.16) hit = true;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 0.18) hit = true;
         }
 
-        // Fallback: Check primary centroid strictly in lower interactive field (Y > 0.35)
-        if (!hit && evt.hasMotion && evt.y > 0.35 && evt.energy > 0.15) {
+        // Fallback: Check primary motion centroid (reaches all corners)
+        if (!hit && evt.hasMotion && evt.energy > 0.12) {
           const dx = item.x - evt.x;
           const dy = item.y - evt.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 0.15) hit = true;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 0.18) hit = true;
         }
 
         if (hit) {
@@ -182,6 +200,7 @@ export function TeaGardenCatchGame() {
       showHands: true,
       showGrid: true,
       showMetrics: true,
+      videoEl: trackerRef.current?.getVideoElement(),
     });
   }, [motionEvent, phase]);
 
@@ -195,11 +214,11 @@ export function TeaGardenCatchGame() {
         if (prev.filter((i) => !i.caught).length >= 4) return prev;
 
         const id = nextItemIdRef.current++;
-        const itemTypes: { type: FallingItem["type"]; name: string; emoji: string }[] = [
-          { type: "tea_leaf", name: "Golden Tea Leaf", emoji: "🍃" },
-          { type: "butterfly", name: "Kaziranga Butterfly", emoji: "🦋" },
-          { type: "orange", name: "Assam Mandarin Orange", emoji: "🍊" },
-          { type: "flower", name: "Kopou Orchid", emoji: "🌸" },
+        const itemTypes: { type: FallingItem["type"]; name: string }[] = [
+          { type: "tea_leaf", name: "Golden Tea Leaf" },
+          { type: "butterfly", name: "Kaziranga Butterfly" },
+          { type: "orange", name: "Assam Mandarin Orange" },
+          { type: "flower", name: "Kopou Orchid" },
         ];
         const choice = itemTypes[Math.floor(Math.random() * itemTypes.length)];
         const xPos = 0.15 + Math.random() * 0.7;
@@ -213,7 +232,6 @@ export function TeaGardenCatchGame() {
             id,
             type: choice.type,
             name: choice.name,
-            emoji: choice.emoji,
             x: xPos,
             y: 0.05,
             speed: 0.0035 + (level === 2 ? 0.0015 : level === 3 ? 0.003 : 0),
@@ -389,8 +407,14 @@ export function TeaGardenCatchGame() {
                 <span className="text-[10px] font-black uppercase text-teal-900 block">
                   Harvest Progress
                 </span>
-                <span className="text-xs font-black text-ink">
-                  {caughtCount >= targetGoal ? "Goal Reached! 🎉" : `${targetGoal - caughtCount} items left to harvest`}
+                <span className="text-xs font-black text-ink flex items-center gap-1">
+                  {caughtCount >= targetGoal ? (
+                    <span className="flex items-center gap-1 text-emerald-800">
+                      Goal Reached! <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                    </span>
+                  ) : (
+                    `${targetGoal - caughtCount} items left to harvest`
+                  )}
                 </span>
               </div>
             </div>
@@ -459,9 +483,9 @@ export function TeaGardenCatchGame() {
                 }`}
               >
                 <div className="relative flex flex-col items-center">
-                  <span className="text-4xl sm:text-5xl filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]">
-                    {item.emoji}
-                  </span>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black/40 border border-white/20 filter drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)]">
+                    {renderFallingItemIcon(item.type, "h-8 w-8")}
+                  </div>
                   <span className="mt-0.5 rounded-full border border-black bg-white/90 px-1.5 py-0.2 text-[9px] font-black text-ink shadow-xs">
                     {item.name}
                   </span>
@@ -471,19 +495,29 @@ export function TeaGardenCatchGame() {
 
             {/* Bottom Status / Gesture Feedback */}
             <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20 pointer-events-none">
-              <span className="rounded-xl border-2 border-black bg-white/90 px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
-                {motionEvent?.hasMotion ? `⚡ ${motionEvent.gesture.replace(/_/g, " ")}` : "Wave Hands to Catch 🍃"}
+              <span className="rounded-xl border-2 border-black bg-white/90 px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] flex items-center gap-1">
+                {motionEvent?.hasMotion ? (
+                  <>
+                    <Zap className="h-3.5 w-3.5 text-amber-600" />
+                    <span>{motionEvent.gesture.replace(/_/g, " ")}</span>
+                  </>
+                ) : (
+                  <>
+                    <Hand className="h-3.5 w-3.5 text-tea" />
+                    <span>Wave Hands to Catch</span>
+                  </>
+                )}
               </span>
 
               {motionEvent?.leftHand && (
-                <span className="rounded-full border border-emerald-400 bg-emerald-950/80 px-2 py-0.5 text-[10px] font-black text-emerald-300">
-                  ✋ Left Hand Active
+                <span className="rounded-full border border-emerald-400 bg-emerald-950/80 px-2 py-0.5 text-[10px] font-black text-emerald-300 flex items-center gap-1">
+                  <Hand className="h-3 w-3" /> Left Hand Active
                 </span>
               )}
 
               {motionEvent?.rightHand && (
-                <span className="rounded-full border border-amber-400 bg-amber-950/80 px-2 py-0.5 text-[10px] font-black text-amber-300">
-                  ✋ Right Hand Active
+                <span className="rounded-full border border-amber-400 bg-amber-950/80 px-2 py-0.5 text-[10px] font-black text-amber-300 flex items-center gap-1">
+                  <Hand className="h-3 w-3" /> Right Hand Active
                 </span>
               )}
             </div>
@@ -505,7 +539,9 @@ export function TeaGardenCatchGame() {
                     onClick={() => handleManualCatch(item)}
                     className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black bg-amber-100 p-3 text-ink shadow-[3px_3px_0px_#000] hover:bg-amber-200 active:translate-y-0.5 cursor-pointer text-left"
                   >
-                    <span className="text-2xl">{item.emoji}</span>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/10">
+                      {renderFallingItemIcon(item.type, "h-6 w-6")}
+                    </div>
                     <div className="truncate">
                       <span className="text-[10px] font-bold text-amber-900 uppercase block">
                         Tap to Harvest

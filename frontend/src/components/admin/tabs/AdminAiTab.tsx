@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import { Sliders, Send } from "lucide-react";
+import { Sliders, Send, Zap } from "lucide-react";
 import type { AdminAiTuning } from "@/types/admin";
 
 interface AdminAiTabProps {
@@ -162,7 +161,14 @@ export function AdminAiTab({
             disabled={testingAi}
             className="mt-2 w-full btn-tactile rounded-xl border-2 border-black bg-purple-200 py-2 text-xs font-black text-purple-950 shadow-[2px_2px_0px_#000] hover:bg-purple-300 cursor-pointer disabled:opacity-50"
           >
-            {testingAi ? "Evaluating with Ollama..." : "Run Benchmark Prompt ⚡"}
+            {testingAi ? (
+              "Evaluating with Ollama..."
+            ) : (
+              <span className="inline-flex items-center justify-center gap-1.5">
+                <span>Run Benchmark Prompt</span>
+                <Zap className="h-3.5 w-3.5" />
+              </span>
+            )}
           </button>
         </div>
 

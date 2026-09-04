@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore, useCallback, useState } from "react";
 import {
-  Eye,
+  Moon,
   Hand,
   Volume2,
   Sliders,
@@ -162,8 +162,15 @@ function getCursorPaceSnapshot(): "calm" | "gentle" | "standard" {
   return "calm"; // Default: Slow, calm, steady movement for elders
 }
 
+const emptySubscribe = () => () => {};
+
 export function AccessibilityToolbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   const fontSizeLevel = useSyncExternalStore<"sm" | "md" | "lg">(
     subscribeStorage,
@@ -403,10 +410,18 @@ export function AccessibilityToolbar() {
     }
   }, []);
 
+  const activeFontSizeLevel = mounted ? fontSizeLevel : "md";
+  const activeHighContrast = mounted ? highContrast : false;
+  const activeInputMode = mounted ? inputMode : "physical";
+  const activeListenFirst = mounted ? listenFirstActive : false;
+
   return (
     <>
       {/* ── TOP GOVERNMENT & ACCESSIBILITY COMMAND BAR ── */}
-      <div className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto">
+      <div
+        suppressHydrationWarning
+        className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto"
+      >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-2 flex-nowrap">
           {/* Government of India / MDoNER Mandate Badge */}
           <div className="flex items-center gap-1.5 font-bold shrink-0">
@@ -422,7 +437,7 @@ export function AccessibilityToolbar() {
 
           {/* Quick Accessibility Controls */}
           <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            {/* 🖱️ / 🖐️ INPUT MODE SEGMENTED TOGGLE (STRICT MUTUAL EXCLUSION: ONE AT A TIME) */}
+            {/* Input Mode Segmented Toggle (Physical vs Virtual Air Mouse) */}
             <div
               className="flex items-center rounded-xl border-2 border-black/50 bg-surface p-0.5 shadow-xs shrink-0"
               title="Input Mode: Either Physical Mouse or OpenCV Virtual Air Mouse (One at a time)"
@@ -433,9 +448,9 @@ export function AccessibilityToolbar() {
                   playPress();
                   setInputMode("physical");
                 }}
-                aria-pressed={inputMode === "physical"}
+                aria-pressed={activeInputMode === "physical"}
                 className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black transition-all cursor-pointer ${
-                  inputMode === "physical"
+                  activeInputMode === "physical"
                     ? "bg-tea text-white shadow-xs"
                     : "text-ink hover:bg-surface-muted"
                 }`}
@@ -451,9 +466,9 @@ export function AccessibilityToolbar() {
                   playPress();
                   setInputMode("virtual");
                 }}
-                aria-pressed={inputMode === "virtual"}
+                aria-pressed={activeInputMode === "virtual"}
                 className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black transition-all cursor-pointer ${
-                  inputMode === "virtual"
+                  activeInputMode === "virtual"
                     ? "bg-amber-400 text-black shadow-xs ring-2 ring-amber-300 animate-pulse"
                     : "text-ink hover:bg-surface-muted"
                 }`}
@@ -461,24 +476,24 @@ export function AccessibilityToolbar() {
               >
                 <Hand className="h-3 w-3 stroke-[2.5]" />
                 <span className="hidden md:inline">
-                  {inputMode === "virtual" ? "Air (ON)" : "Air Mouse"}
+                  {activeInputMode === "virtual" ? "Air (ON)" : "Air Mouse"}
                 </span>
                 <span className="md:hidden">
-                  {inputMode === "virtual" ? "Air: ON" : "Air"}
+                  {activeInputMode === "virtual" ? "Air: ON" : "Air"}
                 </span>
               </button>
             </div>
 
-            {/* 🗣️ Listen-First Quick Toggle */}
+            {/* Listen-First Quick Toggle */}
             <button
               type="button"
               onClick={() => {
                 playPress();
                 toggleListenFirst();
               }}
-              aria-pressed={listenFirstActive}
+              aria-pressed={activeListenFirst}
               className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
-                listenFirstActive
+                activeListenFirst
                   ? "bg-emerald-400 text-black border-black shadow-xs"
                   : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
               }`}
@@ -486,11 +501,11 @@ export function AccessibilityToolbar() {
             >
               <Volume2 className="h-3.5 w-3.5 stroke-[2.5]" />
               <span className="hidden lg:inline">
-                {listenFirstActive ? "Listen: ON" : "Listen-First"}
+                {activeListenFirst ? "Listen: ON" : "Listen-First"}
               </span>
             </button>
 
-            {/* ⚙️ Accessibility Suite Settings Modal */}
+            {/* Accessibility Suite Settings Modal */}
             <button
               type="button"
               onClick={() => {
@@ -504,20 +519,20 @@ export function AccessibilityToolbar() {
               <span className="hidden lg:inline">Settings</span>
             </button>
 
-            {/* High Contrast Toggle */}
+            {/* Circadian Night Mode Toggle */}
             <button
               type="button"
               onClick={toggleHighContrast}
-              aria-pressed={highContrast}
+              aria-pressed={activeHighContrast}
               className={`flex items-center gap-1 rounded-lg px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
-                highContrast
+                activeHighContrast
                   ? "bg-amber-400 text-black border-black shadow-xs"
                   : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
               }`}
-              title="Toggle High Contrast Mode"
+              title="Toggle Circadian Night Mode (Zero Blue Light, Sleep-Safe)"
             >
-              <Eye className="h-3.5 w-3.5" />
-              <span className="hidden lg:inline">{highContrast ? "Contrast: ON" : "Contrast"}</span>
+              <Moon className="h-3.5 w-3.5" />
+              <span className="hidden lg:inline">{activeHighContrast ? "Night: ON" : "Night Mode"}</span>
             </button>
 
             {/* Font Size Scaler */}
@@ -526,7 +541,7 @@ export function AccessibilityToolbar() {
                 type="button"
                 onClick={() => setFontSize("sm")}
                 className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
-                  fontSizeLevel === "sm" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
+                  activeFontSizeLevel === "sm" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Small Text"
               >
@@ -536,7 +551,7 @@ export function AccessibilityToolbar() {
                 type="button"
                 onClick={() => setFontSize("md")}
                 className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
-                  fontSizeLevel === "md" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
+                  activeFontSizeLevel === "md" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Standard Text"
               >
@@ -546,7 +561,7 @@ export function AccessibilityToolbar() {
                 type="button"
                 onClick={() => setFontSize("lg")}
                 className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
-                  fontSizeLevel === "lg" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
+                  activeFontSizeLevel === "lg" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Large Text (Elder Assist)"
               >
@@ -560,7 +575,7 @@ export function AccessibilityToolbar() {
       {/* ── GLOBAL ACTIVE ACCESSIBILITY RUNTIMES ── */}
       {/* 1. OpenCV Virtual Air Mouse (Strict Mutual Exclusion) */}
       <VirtualAirMouse
-        active={inputMode === "virtual"}
+        active={mounted && inputMode === "virtual"}
         onClose={() => setInputMode("physical")}
         dwellTimeMs={dwellTimeMs}
         smoothing={smoothing}

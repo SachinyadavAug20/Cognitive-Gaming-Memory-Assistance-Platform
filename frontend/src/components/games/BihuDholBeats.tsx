@@ -9,7 +9,13 @@ import {
   RotateCcw,
   CheckCircle2,
   Music,
+  MessageSquare,
+  Leaf,
+  Sparkles,
+  Activity,
+  Zap,
 } from "lucide-react";
+import { BihuDholIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
@@ -27,12 +33,16 @@ export function BihuDholBeats() {
   const { speakVoice, stopVoice, isMuted, toggleMute, currentSubtitle } = useGameVoice();
 
   const [bpm, setBpm] = useState(55); // Calming resting tempo
+  const [tempoMode, setTempoMode] = useState<"calm" | "standard" | "lively" | "adaptive">("standard");
   const [isPlaying, setIsPlaying] = useState(false);
   const [beatIndex, setBeatIndex] = useState(0);
   const [targetBeats] = useState(16);
   const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [beatHits, setBeatHits] = useState<Array<"perfect" | "gentle" | "miss">>([]);
   const [feedbackText, setFeedbackText] = useState<string | null>(null);
   const [isFinished, setIsFinished] = useState(false);
+  const [breathingGuide, setBreathingGuide] = useState(true);
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
 
   // Telemetry references
@@ -42,6 +52,14 @@ export function BihuDholBeats() {
   const tapIntervalsRef = useRef<number[]>([]);
   const lastTapTimeRef = useRef<number>(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Set tempo preset
+  const handleTempoPreset = (mode: "calm" | "standard" | "lively" | "adaptive") => {
+    setTempoMode(mode);
+    if (mode === "calm") setBpm(46);
+    else if (mode === "standard") setBpm(55);
+    else if (mode === "lively") setBpm(65);
+  };
 
   // Synthesize traditional Assamese Dhol Hand-Drum Acoustic Pulse
   const triggerDholSound = useCallback((accent = false) => {
@@ -144,11 +162,13 @@ export function BihuDholBeats() {
     tapLatenciesRef.current.push(offset);
     tapIntervalsRef.current.push(intervalFromLastTap);
 
-    // Adaptive Pacing: Decelerate BPM if patient is tapping slower
-    if (intervalFromLastTap > beatInterval * 1.35 && bpm > 44) {
-      setBpm((b) => Math.max(44, b - 3));
-    } else if (offset < 100 && bpm < 65) {
-      setBpm((b) => Math.min(65, b + 1));
+    // Adaptive Pacing if enabled
+    if (tempoMode === "adaptive") {
+      if (intervalFromLastTap > beatInterval * 1.35 && bpm > 44) {
+        setBpm((b) => Math.max(44, b - 3));
+      } else if (offset < 100 && bpm < 65) {
+        setBpm((b) => Math.min(65, b + 1));
+      }
     }
 
     triggerDholSound(true);
@@ -162,12 +182,16 @@ export function BihuDholBeats() {
 
     setRipples((prev) => [...prev.slice(-6), { id: now, x, y }]);
 
-    // Rhythmic scoring without harsh penalties
+    // Rhythmic scoring and streak tracking without harsh penalties
     if (offset < 180) {
       setScore((s) => s + 25);
-      setFeedbackText(t("goodRhythm"));
+      setStreak((st) => st + 1);
+      setBeatHits((prev) => [...prev.slice(-15), "perfect"]);
+      setFeedbackText(streak >= 2 ? `${streak + 1} in Rhythm!` : t("goodRhythm"));
     } else {
       setScore((s) => s + 10);
+      setStreak(0);
+      setBeatHits((prev) => [...prev.slice(-15), "gentle"]);
       setFeedbackText(t("gentleTouch"));
     }
   };
@@ -175,7 +199,9 @@ export function BihuDholBeats() {
   const restartSession = () => {
     setBeatIndex(0);
     setScore(0);
-    setBpm(55);
+    setStreak(0);
+    setBeatHits([]);
+    setBpm(tempoMode === "calm" ? 46 : tempoMode === "lively" ? 65 : 55);
     setIsFinished(false);
     setIsPlaying(true);
     startTimeRef.current = Date.now();
@@ -197,8 +223,9 @@ export function BihuDholBeats() {
         {/* Visual Subtitle Pill Fallback */}
         {currentSubtitle && (
           <div className="mb-4 flex items-center justify-center animate-fade-in">
-            <span className="rounded-full border-2 border-amber-900/40 bg-amber-100 px-4 py-1.5 text-xs font-black text-amber-950 shadow-sm">
-              💬 {currentSubtitle}
+            <span className="rounded-full border-2 border-amber-900/40 bg-amber-100 px-4 py-1.5 text-xs font-black text-amber-950 shadow-sm inline-flex items-center gap-1.5">
+              <MessageSquare className="w-3.5 h-3.5 text-amber-900" />
+              <span>{currentSubtitle}</span>
             </span>
           </div>
         )}
@@ -270,15 +297,15 @@ export function BihuDholBeats() {
             {/* Top Navigation HUD */}
             <div className="flex w-full items-center justify-between rounded-2xl border-3 border-black bg-[#FAF3E0] px-4 py-3 shadow-[3px_3px_0px_#000]">
               <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-amber-400 text-lg font-black">
-                  🥁
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-amber-400 text-amber-950 font-black">
+                  <BihuDholIcon className="w-5 h-5" />
                 </span>
                 <div>
                   <span className="text-[10px] font-black uppercase text-ink-secondary">
                     {t("title")}
                   </span>
                   <div className="text-xs sm:text-sm font-black text-ink">
-                    {t("bpmText", { bpm })}
+                    {bpm} BPM • {tempoMode.toUpperCase()}
                   </div>
                 </div>
               </div>
@@ -303,6 +330,40 @@ export function BihuDholBeats() {
               </div>
             </div>
 
+            {/* 16-Beat Visual Entrainment Track */}
+            <div className="w-full rounded-2xl border-2 border-black/20 bg-surface p-3 shadow-xs">
+              <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider text-ink-secondary mb-2">
+                <span>Rhythm Cycle (16 Pulses):</span>
+                {streak >= 2 && (
+                  <span className="text-emerald-700 font-black flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" /> {streak} Beats In Sync!
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-16 gap-1 sm:gap-1.5">
+                {Array.from({ length: targetBeats }).map((_, idx) => {
+                  const isPast = idx < beatIndex;
+                  const isCurrent = idx === beatIndex - 1;
+                  const hitType = beatHits[idx];
+                  return (
+                    <div
+                      key={idx}
+                      className={`h-4 sm:h-5 rounded-md border border-black transition-all flex items-center justify-center ${
+                        isCurrent
+                          ? "bg-amber-400 scale-110 shadow-sm border-2 animate-pulse"
+                          : isPast
+                          ? hitType === "perfect"
+                            ? "bg-emerald-500"
+                            : "bg-amber-200"
+                          : "bg-black/5"
+                      }`}
+                      title={`Beat ${idx + 1}`}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Main Interactive Dhol Drum Target */}
             <div
               onClick={handleDrumTap}
@@ -320,6 +381,16 @@ export function BihuDholBeats() {
                 }}
               />
 
+              {/* Visual Rhythm Metronome Pulse Ring */}
+              {isPlaying && (
+                <div
+                  className="absolute inset-4 rounded-full border-4 border-amber-400/50 pointer-events-none animate-ping opacity-30"
+                  style={{
+                    animationDuration: `${(60 / bpm) * 1000}ms`,
+                  }}
+                />
+              )}
+
               {/* Concentric Beat Ripples */}
               {ripples.map((rip) => (
                 <span
@@ -328,16 +399,16 @@ export function BihuDholBeats() {
                     left: `${rip.x}%`,
                     top: `${rip.y}%`,
                   }}
-                  className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 h-20 w-20 rounded-full bg-amber-400/40 animate-ping"
+                  className="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2 h-24 w-24 rounded-full bg-amber-400/50 animate-ping"
                 />
               ))}
 
               {/* Center Drum Head Emblem */}
               <div className="relative z-10 flex flex-col items-center justify-center text-center">
-                <span className="text-5xl sm:text-6xl drop-shadow-md group-hover:scale-110 transition-transform">
-                  🥁
+                <span className="drop-shadow-md group-hover:scale-110 transition-transform text-amber-950">
+                  <BihuDholIcon className="w-16 h-16 sm:w-20 sm:h-20" />
                 </span>
-                <span className="mt-2 text-xs font-black text-amber-950 uppercase tracking-wider bg-amber-200/80 px-3 py-0.5 rounded-full border border-amber-900/30">
+                <span className="mt-2 text-xs font-black text-amber-950 uppercase tracking-wider bg-amber-200/90 px-3.5 py-1 rounded-full border-2 border-amber-900/40 shadow-xs">
                   {isPlaying ? "Tap In Rhythm" : "Tap to Start"}
                 </span>
 
@@ -349,9 +420,85 @@ export function BihuDholBeats() {
               </div>
             </div>
 
+            {/* Tempo Presets Bar */}
+            <div className="flex flex-wrap items-center justify-center gap-2 w-full">
+              <span className="text-[10px] font-black uppercase text-ink-secondary mr-1">
+                Tempo:
+              </span>
+              <button
+                type="button"
+                onClick={() => handleTempoPreset("calm")}
+                className={`btn-tactile rounded-xl border-2 border-black px-3 py-1.5 text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  tempoMode === "calm"
+                    ? "bg-teal-700 text-white shadow-[2px_2px_0px_#000]"
+                    : "bg-surface text-ink hover:bg-surface-muted"
+                }`}
+              >
+                <Leaf className="h-3.5 w-3.5" />
+                <span>Calm 46 BPM</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleTempoPreset("standard")}
+                className={`btn-tactile rounded-xl border-2 border-black px-3 py-1.5 text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  tempoMode === "standard"
+                    ? "bg-amber-600 text-white shadow-[2px_2px_0px_#000]"
+                    : "bg-surface text-ink hover:bg-surface-muted"
+                }`}
+              >
+                <Music className="h-3.5 w-3.5" />
+                <span>Festive 55 BPM</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleTempoPreset("lively")}
+                className={`btn-tactile rounded-xl border-2 border-black px-3 py-1.5 text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  tempoMode === "lively"
+                    ? "bg-rose-700 text-white shadow-[2px_2px_0px_#000]"
+                    : "bg-surface text-ink hover:bg-surface-muted"
+                }`}
+              >
+                <Zap className="h-3.5 w-3.5" />
+                <span>Lively 65 BPM</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleTempoPreset("adaptive")}
+                className={`btn-tactile rounded-xl border-2 border-black px-3 py-1.5 text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  tempoMode === "adaptive"
+                    ? "bg-purple-700 text-white shadow-[2px_2px_0px_#000]"
+                    : "bg-surface text-ink hover:bg-surface-muted"
+                }`}
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                <span>Adaptive</span>
+              </button>
+            </div>
+
+            {/* Grounding Respiration Guide */}
+            {breathingGuide && (
+              <div className="flex w-full items-center justify-between rounded-2xl border-2 border-black/20 bg-amber-50 px-4 py-2.5 text-xs text-amber-950 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <Leaf className="h-4 w-4 text-emerald-700 shrink-0" />
+                  <span className="font-bold">
+                    Grounding Rhythm: Breathe gently and tap naturally with each dhol beat.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setBreathingGuide(false)}
+                  className="text-[10px] font-black uppercase text-amber-900/60 hover:text-amber-950"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+
             {/* Action Guide & Calibration Notice */}
             <div className="flex w-full items-center gap-3 rounded-2xl border-2 border-black/20 bg-surface p-3 text-left shadow-sm">
-              <span className="text-2xl">🌿</span>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-emerald-100 text-emerald-800">
+                <Leaf className="w-5 h-5" />
+              </span>
               <p className="text-xs font-semibold text-ink">
                 <span className="font-black text-amber-900 uppercase text-[10px] block">
                   Calm Sensory Entrainment:

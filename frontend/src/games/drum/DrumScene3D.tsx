@@ -160,12 +160,12 @@ export function DrumScene3D({
     scene.add(drumGroup);
 
     // 6. ANIMATION LOOP
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
     let animId: number;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
+      const time = (performance.now() - startTime) * 0.001;
 
       // Gentle floating sway
       drumGroup.position.y = Math.sin(time * 1.5) * 0.08;

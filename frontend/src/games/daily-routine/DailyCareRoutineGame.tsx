@@ -18,7 +18,15 @@ import {
   Moon,
   Heart,
   Volume2,
+  Package,
+  XCircle,
+  FileText,
+  Mail,
+  Tv,
+  CloudSun,
+  Bed,
 } from "lucide-react";
+import { DiyaLampIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -59,7 +67,7 @@ export interface RoutineTask {
   options: {
     id: string;
     label: { en: string; hi: string; as: string };
-    emoji: string;
+    icon: React.ComponentType<{ className?: string }>;
     isCorrect: boolean;
   }[];
   educationalFact: { en: string; hi: string; as: string };
@@ -89,7 +97,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "सुबह का सूर्य दवा बॉक्स (बीपी और विटामिन)",
           as: "ৰাতিপুৱাৰ সূৰ্য্য ঔষধৰ বাকচ (বিপি আৰু ভিটামিন)",
         },
-        emoji: "💊",
+        icon: Pill,
         isCorrect: true,
       },
       {
@@ -99,7 +107,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "रात का चंद्र दवा बॉक्स (केवल रात)",
           as: "ৰাতিৰ চন্দ্ৰ ঔষধৰ বাকচ (কেৱল ৰাতিৰ বাবে)",
         },
-        emoji: "🌙",
+        icon: Moon,
         isCorrect: false,
       },
       {
@@ -109,7 +117,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "मीठा पीठा नाश्ता बॉक्स",
           as: "মিঠা পিঠা আৰু লাডুৰ টেমা",
         },
-        emoji: "🥮",
+        icon: Package,
         isCorrect: false,
       },
     ],
@@ -142,7 +150,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "1 पूरा पीतल का गिलास (250 मिली शुद्ध जल)",
           as: "১ কাঁহৰ গিলাচ (২৫০ মিলিলিটাৰ বিশুদ্ধ পানী)",
         },
-        emoji: "🥛",
+        icon: Droplets,
         isCorrect: true,
       },
       {
@@ -152,7 +160,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "पानी न पिएं और रात तक इंतज़ार करें",
           as: "পানী নোখোৱাকৈ ৰাতিলৈ বাট চাওক",
         },
-        emoji: "🚫",
+        icon: XCircle,
         isCorrect: false,
       },
     ],
@@ -185,7 +193,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "डिजिटल आभा (ABHA) स्वास्थ्य कार्ड व डायरी",
           as: "ডিজিটেল আভা (ABHA) স্বাস্থ্য কাৰ্ড আৰু ডায়েৰী",
         },
-        emoji: "🪪",
+        icon: FileText,
         isCorrect: true,
       },
       {
@@ -195,7 +203,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "पुराना डाक लिफाफा",
           as: "পুৰণি ডাক খাম",
         },
-        emoji: "✉️",
+        icon: Mail,
         isCorrect: false,
       },
     ],
@@ -228,7 +236,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "दीया जलाकर संध्या वंदना व शांत प्रार्थना",
           as: "মাটিৰ চাকি জ্বলাই নামঘৰত সন্ধিয়া প্ৰাৰ্থনা আৰু দিহানাম",
         },
-        emoji: "🪔",
+        icon: DiyaLampIcon,
         isCorrect: true,
       },
       {
@@ -238,7 +246,7 @@ const ROUTINE_TASKS: RoutineTask[] = [
           hi: "तेज़ आवाज़ में टीवी देखना",
           as: "উচ্চ শব্দত টেলিভিছন চোৱা",
         },
-        emoji: "📺",
+        icon: Tv,
         isCorrect: false,
       },
     ],
@@ -460,29 +468,37 @@ export function DailyCareRoutineGame() {
           {/* DEDICATED TACTILE MINI-STATION WIDGET */}
           {currentTask.id === "morning-meds" && (
             <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 shadow-[4px_4px_0px_#000]">
-              <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 block mb-2 text-left">
-                📦 7-Day Pill Organizer Box:
+              <span className="text-[11px] font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5 mb-2 text-left">
+                <Package className="h-4 w-4 text-amber-800" /> 7-Day Pill Organizer Box:
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <div className="p-2.5 rounded-xl border-2 border-emerald-800 bg-amber-200 text-center font-black text-xs shadow-xs animate-pulse">
-                  <span className="text-xl block">☀️</span>
-                  <span className="text-[10px] uppercase text-amber-950">Morning (AM)</span>
-                  <span className="text-xs block text-emerald-950 mt-1 font-bold">BP + Memory 💊</span>
+                  <Sun className="h-6 w-6 text-amber-700 mx-auto" />
+                  <span className="text-[10px] uppercase text-amber-950 mt-1 block">Morning (AM)</span>
+                  <span className="text-xs flex items-center justify-center gap-1 text-emerald-950 mt-1 font-bold">
+                    BP + Memory <Pill className="h-3.5 w-3.5 text-emerald-800" />
+                  </span>
                 </div>
                 <div className="p-2.5 rounded-xl border-2 border-black/30 bg-white/70 text-center font-bold text-xs opacity-75">
-                  <span className="text-xl block">🌤️</span>
-                  <span className="text-[10px] uppercase text-ink-secondary">Noon</span>
-                  <span className="text-[10px] block text-ink-secondary mt-1">Water 🥛</span>
+                  <CloudSun className="h-6 w-6 text-amber-600 mx-auto" />
+                  <span className="text-[10px] uppercase text-ink-secondary mt-1 block">Noon</span>
+                  <span className="text-[10px] flex items-center justify-center gap-1 text-ink-secondary mt-1">
+                    Water <Droplets className="h-3 w-3 text-sky-600" />
+                  </span>
                 </div>
                 <div className="p-2.5 rounded-xl border-2 border-black/30 bg-white/70 text-center font-bold text-xs opacity-75">
-                  <span className="text-xl block">🌆</span>
-                  <span className="text-[10px] uppercase text-ink-secondary">Evening</span>
-                  <span className="text-[10px] block text-ink-secondary mt-1">Prayer 🪔</span>
+                  <Sunset className="h-6 w-6 text-orange-600 mx-auto" />
+                  <span className="text-[10px] uppercase text-ink-secondary mt-1 block">Evening</span>
+                  <span className="text-[10px] flex items-center justify-center gap-1 text-ink-secondary mt-1">
+                    Prayer <DiyaLampIcon className="h-3.5 w-3.5 text-amber-700" />
+                  </span>
                 </div>
                 <div className="p-2.5 rounded-xl border-2 border-black/30 bg-white/70 text-center font-bold text-xs opacity-75">
-                  <span className="text-xl block">🌙</span>
-                  <span className="text-[10px] uppercase text-ink-secondary">Night</span>
-                  <span className="text-[10px] block text-ink-secondary mt-1">Rest 💤</span>
+                  <Moon className="h-6 w-6 text-indigo-700 mx-auto" />
+                  <span className="text-[10px] uppercase text-ink-secondary mt-1 block">Night</span>
+                  <span className="text-[10px] flex items-center justify-center gap-1 text-ink-secondary mt-1">
+                    Rest <Bed className="h-3 w-3 text-indigo-700" />
+                  </span>
                 </div>
               </div>
             </div>
@@ -490,8 +506,8 @@ export function DailyCareRoutineGame() {
 
           {currentTask.id === "morning-water" && (
             <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#EFF6FF] p-4 shadow-[4px_4px_0px_#000]">
-              <span className="text-[11px] font-black uppercase tracking-wider text-sky-900 block mb-2 text-left">
-                💧 Himalayan Spring Hydration Tracker:
+              <span className="text-[11px] font-black uppercase tracking-wider text-sky-900 flex items-center gap-1.5 mb-2 text-left">
+                <Droplets className="h-4 w-4 text-sky-700" /> Himalayan Spring Hydration Tracker:
               </span>
               <div className="flex items-center justify-center gap-4 py-2">
                 <div className="relative h-28 w-16 rounded-b-2xl border-3 border-sky-900 bg-white overflow-hidden shadow-inner flex flex-col justify-end p-1">
@@ -516,8 +532,8 @@ export function DailyCareRoutineGame() {
 
           {currentTask.id === "afternoon-appt" && (
             <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#ECFDF5] p-4 shadow-[4px_4px_0px_#000]">
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-900 block mb-2 text-left">
-                🪪 Government of India ABHA Health Registry Card:
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-900 flex items-center gap-1.5 mb-2 text-left">
+                <FileText className="h-4 w-4 text-emerald-800" /> Government of India ABHA Health Registry Card:
               </span>
               <div className="rounded-xl border-2 border-emerald-800 bg-white p-3 shadow-xs flex items-center justify-between text-left">
                 <div className="space-y-0.5">
@@ -527,8 +543,8 @@ export function DailyCareRoutineGame() {
                   <p className="font-serif text-xs sm:text-sm font-black text-ink">
                     ABHA No: 91-4820-3918-4720
                   </p>
-                  <p className="text-[11px] font-bold text-ink-secondary">
-                    Status: <span className="text-emerald-700 font-black">ASHA Checkup Synchronized ✓</span>
+                  <p className="text-[11px] font-bold text-ink-secondary flex items-center gap-1">
+                    Status: <span className="text-emerald-700 font-black flex items-center gap-1">ASHA Checkup Synchronized <CheckCircle2 className="h-3.5 w-3.5 text-emerald-700 inline" /></span>
                   </p>
                 </div>
                 <div className="h-10 w-10 rounded-full border-2 border-emerald-700 bg-emerald-100 flex items-center justify-center font-black text-emerald-900 text-xs shadow-inner">
@@ -540,12 +556,12 @@ export function DailyCareRoutineGame() {
 
           {currentTask.id === "evening-prayer" && (
             <div className="w-full max-w-md rounded-2xl border-3 border-black bg-gradient-to-r from-amber-100 via-orange-100 to-amber-200 p-4 shadow-[4px_4px_0px_#000]">
-              <span className="text-[11px] font-black uppercase tracking-wider text-amber-950 block mb-2 text-left">
-                🪔 Sandhya Aarti & Mustard Oil Diya Lamp:
+              <span className="text-[11px] font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5 mb-2 text-left">
+                <DiyaLampIcon className="h-4 w-4 text-amber-800" /> Sandhya Aarti & Mustard Oil Diya Lamp:
               </span>
               <div className="flex items-center justify-center gap-3 py-1">
-                <div className="relative text-5xl animate-bounce" style={{ animationDuration: "2.5s" }}>
-                  🪔
+                <div className="relative flex items-center justify-center p-2 animate-bounce" style={{ animationDuration: "2.5s" }}>
+                  <DiyaLampIcon className="h-12 w-12 text-amber-600" />
                 </div>
                 <div className="text-left">
                   <p className="font-serif font-black text-sm text-amber-950">
@@ -563,6 +579,7 @@ export function DailyCareRoutineGame() {
           <div className="w-full max-w-md space-y-3 pt-1">
             {currentTask.options.map((opt) => {
               const isSelected = selectedOptionId === opt.id;
+              const OptionIcon = opt.icon;
               return (
                 <button
                   key={opt.id}
@@ -576,7 +593,9 @@ export function DailyCareRoutineGame() {
                       : "bg-surface hover:bg-amber-50"
                   }`}
                 >
-                  <span className="text-4xl shrink-0">{opt.emoji}</span>
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50">
+                    <OptionIcon className="h-6 w-6 text-amber-900" />
+                  </div>
                   <div className="flex-1">
                     <span className="font-serif text-sm sm:text-base font-black text-ink block leading-tight">
                       {opt.label[normLocale]}

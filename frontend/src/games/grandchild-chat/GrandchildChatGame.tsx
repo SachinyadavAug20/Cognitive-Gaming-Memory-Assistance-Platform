@@ -13,7 +13,9 @@ import {
   MicOff,
   Volume2,
   Heart,
+  Image as ImageIcon,
 } from "lucide-react";
+import { ClayKulharIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -118,10 +120,10 @@ export function GrandchildChatGame() {
       return {
         greeting: "नमस्ते दादाजी! मैंने आपके लिए अदरक और इलायची वाली गरमा-गरम चाय बनाई है। आइए, साथ बैठकर एक चुस्की लेते हैं! आज आपका मन कैसा है?",
         replies: [
-          "चाय बहुत स्वादिष्ट बनी है, बेटा! ☕",
-          "आज की सुबह बहुत शांत और सुखद रही। 🌸",
-          "गुवाहाटी में तुम्हारा काम कैसा चल रहा है? 🏡",
-          "चलो भूपेन हज़ारिका जी का कोई गीत सुनते हैं। 📻",
+          "चाय बहुत स्वादिष्ट बनी है, बेटा!",
+          "आज की सुबह बहुत शांत और सुखद रही।",
+          "गुवाहाटी में तुम्हारा काम कैसा चल रहा है?",
+          "चलो भूपेन हज़ारिका जी का कोई गीत सुनते हैं।",
         ],
       };
     }
@@ -129,20 +131,20 @@ export function GrandchildChatGame() {
       return {
         greeting: "নমস্কাৰ দেউতা! মই আপোনাৰ বাবে আদা আৰু ইলাচী দি গৰম ৰঙা চাহ বনাইছোঁ। আহক, একেলগে একাপ চাহ খাওঁ! আজি আপোনাৰ দিনটো কেনে লাগিছে?",
         replies: [
-          "চাহ কাপ বৰ সোৱাদ হৈছে, বোপা! ☕",
-          "আজি ৰাতিপুৱাটো বৰ শান্ত আছিল। 🌸",
-          "গুৱাহাটীত তোমাৰ খবৰ কোৱাচোন। 🏡",
-          "আহক ড০ ভূপেন হাজৰিকাৰ গান শুনোঁ। 📻",
+          "চাহ কাপ বৰ সোৱাদ হৈছে, বোপা!",
+          "আজি ৰাতিপুৱাটো বৰ শান্ত আছিল।",
+          "গুৱাহাটীত তোমাৰ খবৰ কোৱাচোন।",
+          "আহক ড০ ভূপেন হাজৰিকাৰ গান শুনোঁ।",
         ],
       };
     }
     return {
       greeting: "Deuta, good afternoon! I brewed warm cardamom Assam tea for us. Look how fragrant it is! How are you feeling today?",
       replies: [
-        "The tea smells wonderful, dear! ☕",
-        "I had a very peaceful morning today. 🌸",
-        "Tell me how your day went in Guwahati. 🏡",
-        "Let us put on some sweet folk music. 📻",
+        "The tea smells wonderful, dear!",
+        "I had a very peaceful morning today.",
+        "Tell me how your day went in Guwahati.",
+        "Let us put on some sweet folk music.",
       ],
     };
   }, [locale]);
@@ -292,9 +294,9 @@ export function GrandchildChatGame() {
 
       setMessages((prev) => [...prev, aiMsg]);
       setQuickReplies(res.suggestedQuickReplies || [
-        "Tell me about our old village memories. 🌾",
-        "Let us take another sip of tea. ☕",
-        "The weather is very pleasant today. 🌤️",
+        "Tell me about our old village memories.",
+        "Let us take another sip of tea.",
+        "The weather is very pleasant today.",
       ]);
       playCorrect();
       speak(aiMsg.text, locale, rate);
@@ -330,9 +332,9 @@ export function GrandchildChatGame() {
       };
       setMessages((prev) => [...prev, fallbackAiMsg]);
       setQuickReplies([
-        "Tell me more about your work! 🏡",
-        "The tea is so comforting. ☕",
-        "You take care of yourself too, son. 💛",
+        "Tell me more about your work!",
+        "The tea is so comforting.",
+        "You take care of yourself too, son.",
       ]);
       speak(fallbackAiMsg.text, locale, rate);
     } finally {
@@ -416,8 +418,8 @@ export function GrandchildChatGame() {
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-amber-950 shadow-sm text-2xl">
-                👨‍🦱
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-amber-950 shadow-sm">
+                <User className="h-6 w-6 text-amber-900" />
               </div>
               <div>
                 <p className="text-base font-black text-ink">{persona.name}</p>
@@ -444,7 +446,7 @@ export function GrandchildChatGame() {
           <div className="flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-black bg-amber-100 text-sm">
-                👨‍🦱
+                <User className="h-4 w-4 text-amber-900" />
               </div>
               <div>
                 <span className="text-xs font-black text-ink block leading-tight">{persona.name}</span>
@@ -460,7 +462,9 @@ export function GrandchildChatGame() {
                 className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 hover:bg-amber-300 px-3 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer active:translate-y-0.5"
                 title="Take a warm sip of tea together"
               >
-                <span>☕ Sip Tea</span>
+                <span className="flex items-center gap-1.5">
+                  <ClayKulharIcon className="h-3.5 w-3.5 text-amber-950" /> Sip Tea
+                </span>
                 <span className="bg-white/80 rounded px-1.5 py-0.2 text-[10px] font-black border border-black/30">
                   {reminiscenceCount} / {targetInteractions}
                 </span>
@@ -471,7 +475,9 @@ export function GrandchildChatGame() {
           {/* FAMILY PHOTO MEMORY POPUP IF AVAILABLE */}
           {activePhoto && (
             <div className="flex items-center gap-3 rounded-2xl border-2 border-black bg-amber-50 p-2.5 shadow-sm animate-in fade-in">
-              <span className="text-2xl">🖼️</span>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-black/20 bg-amber-100">
+                <ImageIcon className="h-5 w-5 text-amber-800" />
+              </div>
               <div className="flex-1">
                 <p className="text-xs font-black text-ink">{activePhoto.title}</p>
                 <p className="text-[11px] font-semibold text-ink-secondary">{activePhoto.note}</p>
@@ -496,7 +502,7 @@ export function GrandchildChatGame() {
                     m.sender === "ai" ? "bg-amber-100 text-amber-950 text-base" : "bg-tea text-white"
                   }`}
                 >
-                  {m.sender === "ai" ? "👨‍🦱" : <User className="h-4 w-4" />}
+                  {m.sender === "ai" ? <User className="h-4 w-4 text-amber-900" /> : <User className="h-4 w-4" />}
                 </div>
                 <div
                   className={`rounded-2xl border-2 border-black p-3 text-xs sm:text-sm font-semibold leading-relaxed shadow-sm ${

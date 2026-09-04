@@ -1,13 +1,13 @@
 {
   "home": {
-    "greeting": "য़ाङ्ग्लो!",
-    "ready": "अमुক तारोंग Springfield!",
+    "greeting": "य़ाङ्ग्लो!",
+    "ready": "अमुक तारोंग Springfield!",
     "subtitle": "CogniCare",
     "description": "AI মরল নнун-মরল",
     "nerInitiative": "MDoNER ফগ"
   },
   "kiosk": {
-    "title": "CogniCare দা য़ाङ्ग্লो",
+    "title": "CogniCare দা य़ाङ্গ्लो",
     "subtitle": "अखুনা Health Card ফোং দৌদৌ।",
     "loading": "ইনা য়েংনা...",
     "error": {
@@ -82,7 +82,7 @@
       "title": "Kheit Sla Sha (Motion Vision)",
       "subtitle": "Pynkhih ia ki kti ban kheit ia ki ar sla bad uwei u tnat sha ha shang.",
       "cameraPermission": "Ai bor ia ka camera",
-      "waveToPluck": "Pynkhih kti ban kheit sla sha 👋",
+      "waveToPluck": "Pynkhih kti ban kheit sla sha",
       "leavesPlucked": "Ki sla sha ba la kheit: {count}",
       "basketFull": "Ka shang ka la dap bha da ki sla sha!",
       "gentleHint": "Pynkhih jem ia ki kti bad ktah ia ki sla jyrngam."
@@ -90,10 +90,6 @@
     "radio": {
       "title": "Radio Akashvani Rim",
       "desc": "Sngap ia ki sur jingrwai tynrai bad ki khubor rim Akashvani"
-    },
-    "lotusLake": {
-      "title": "Pung Ward's Lake & Syntu Puka",
-      "desc": "Pynkhih um bad pynphuh ia ki syntu puka ha pung Ward's Lake"
     },
     "kitchen": {
       "title": "Ka Rympei Iawbei",
@@ -107,14 +103,6 @@
       "title": "Ka Jingkieng Jri Ba Im",
       "desc": "Tei bad pyniasoh ia ki thied jri ban shna jingkieng halor wah"
     },
-    "bazaar": {
-      "title": "Iew Sohra & Ka Dor-Mur",
-      "desc": "Iakren bad u nongdie ha iew, thied ia ki mar tynrai bad pyniaid ia ki tyngka"
-    },
-    "proverb": {
-      "title": "Ki Ktien Tymmen & Puriskam",
-      "desc": "Pyndap ia ki ktien kiba duna ha ki ktien tymmen Khasi ban pynkynmaw pat"
-    },
     "riverLanterns": {
       "title": "Ka Wah 3D & Ki Sharak Jingkynmaw",
       "desc": "Khyllie um da ki kti ban pyniaid ia ki sharak jingkynmaw ha ka wah Dawki"
@@ -126,10 +114,6 @@
     "drum": {
       "title": "Ka Sur Ksing & Bom 3D",
       "desc": "Tem ia ka ksing Khasi da baroh ar kti katkum ka sur tynrai"
-    },
-    "memoirScribe": {
-      "title": "Ki Ktien Jingkynmaw & Kot Puriskam",
-      "desc": "Iathuh ia ki jingkynmaw kiba sngewbha, bad ka AI kan shna ia ka sla kot jingkynmaw"
     },
     "majuli": {
       "title": "Lynti Majuli (३D Jingkynmaw Shnong)",
@@ -150,7 +134,7 @@
     "bihuDhol": {
       "title": "Ka Sur Ksing & Dhol (Jingsuk Jingmut)",
       "subtitle": "Tem ksing mian mian ryngkat ka sur tynrai.",
-      "tapPrompt": "Thab mian mian halor ksing 🥁",
+      "tapPrompt": "Thab mian mian halor ksing",
       "tempoCalm": "Ka jingstet sur: {bpm} BPM (Jingsuk)",
       "perfectBeat": "Sur ba bha!",
       "gentleRhythm": "Tem katkum ka sur...",
@@ -158,20 +142,6 @@
       "calmSubtitle": "Ki kti jong phi ki la tem bha katkum ka sur ksing.",
       "playAgain": "Tem biang ia ka ksing",
       "backToHub": "← Wanphai sha Therapy Hub"
-    },
-    "brahmaputraVoice": {
-      "title": "Ka Ktien Wah Brahmaputra (Jingkynmaw Ktien)",
-      "subtitle": "Sngap ia ka lyer wah bad pyndap ia ki ktien tymmen da kaba kren.",
-      "listeningPrompt": "Dang sngap... Kren shai ha mike 🎙️",
-      "tapToSpeak": "Kren ha mike 🎙️",
-      "proverbPrompt": "Pyndap ia ka ktien tymmen wah:",
-      "spokenAnswer": "Ka jubab jong phi:",
-      "correctFeedback": "Kmen shibun! Ka wah ka sngap ia ki ktien stad jong phi.",
-      "retryFeedback": "Kren biang lang mian mian.",
-      "scoreSummary": "Jingkynmaw Ktien: {score}%",
-      "playAgain": "Kynmaw pat ia ka ktien tymmen",
-      "backToHub": "← Wanphai sha Therapy Hub",
-      "welcomeSpeech": "Pdiang sngewbha sha ka Ktien Wah Brahmaputra. Kren ktien tymmen ban pynshai sharak."
     },
     "dayInMyWorld": {
       "title": "Kawei Ka Sngi Ha Jingim Jong Nga (३D Story Campaign)",
@@ -221,7 +191,7 @@
       "desc": "Thied mar hapoh ka budget ₹500 bad khein ia ka tyngka phai na u nongdie.",
       "welcome": "Iew Shnong",
       "instruction": "Thied mar hapoh ₹500 bad pynshisha ia ka tyngka phai.",
-      "shopNow": "Mih sha iew 🛒",
+      "shopNow": "Mih sha iew",
       "remaining": "Tyngka ba dang sah",
       "total": "Baroh Tyngka",
       "basketEmpty": "Ka shang ka thylli. Khem ban thep mar.",
@@ -244,15 +214,15 @@
       "desc": "Pyniasoh syntu, ithuh ia kaba kylla bad bud ia ka sur jingrwai.",
       "subgames": {
         "memoryMatch": {
-          "name": "Pyniasoh Syntu 🌸",
+          "name": "Pyniasoh Syntu",
           "desc": "Wad ia ki shijor syntu"
         },
         "whatChanged": {
-          "name": "Kaei Kaba Kylla? 👁️",
+          "name": "Kaei Kaba Kylla?",
           "desc": "Ithuh ia kaba kylla"
         },
         "sequence": {
-          "name": "Kynmaw ia ka Ryntih 🔢",
+          "name": "Kynmaw ia ka Ryntih",
           "desc": "Bud ryntih katkum ka sur"
         }
       },
@@ -294,7 +264,7 @@
       "desc": "Wad ia ki dak traffic, zebra crossing bad hospital ha lynti shnong.",
       "welcome": "Wad Dak Jingshngain Lynti",
       "instruction": "Wad ia kine ha lynti:",
-      "startBtn": "Sdang wad lynti 🚦",
+      "startBtn": "Sdang wad lynti",
       "found": "La shem!",
       "wrong": "Kane ka dei kawei pat, wad ia u dak ba dei.",
       "levelComplete": "Lynti level la dep!",
@@ -312,17 +282,20 @@
     "sos": "JINGIARAP KYNDIT"
   },
   "common": {
-    "back": "Leit Phai",
-    "continue": "Iaibteng",
-    "start": "Sdang",
-    "finish": "La Dep",
-    "retry": "Pyrshang Biang",
-    "close": "Khad",
-    "listen": "Sngap",
-    "speaking": "Kren...",
-    "error": "Don jingbakla",
-    "loading": "Loading...",
-    "pts": "Points"
+    "required": "*",
+    "edit": "Pynkylla",
+    "save": "Kynshew",
+    "cancel": "Khiah ia",
+    "remove": "Khot",
+    "add": "Pynrung",
+    "upload": "Upload",
+    "analyzing": {
+      "label": "Report peit mek...",
+      "desc": "Man minute 30 a nei ang"
+    },
+    "maxSize": "Tlukhnem {size}MB",
+    "pdfOnly": "PDF phar",
+    "imagesOnly": "Dur phar"
   },
   "game": {
     "back": "← Leit Phai",
@@ -349,40 +322,444 @@
   "caregiver": {
     "title": "Portal u Nongsumar",
     "dashboard": "Dashboard",
+    "home": "Iing",
     "patients": "Ki Nongpang",
+    "yourPatients": "Ki Nongpang jong phi",
     "sessions": "Jingialehkai Man Ka Sngi",
     "alerts": "Khubor",
     "telemetry": "Telemetry",
     "addPatient": "Pynrung Nongpang Thymmai",
+    "loadingPatients": "Nongpang loading...",
+    "loadError": "Nongpang load na. Server-ah peit rawh.",
+    "emptyTitle": "Nongpang a awm lo",
+    "emptyList": "Nongpang a awm lo. 'Pynrung Nongpang Thymmai' click rawh.",
+    "retry": "Pyrshang biang",
+    "age": "Rta {age}",
+    "ageUnknown": "Rta hriatlo",
+    "language": "Ktien",
     "medicalProfile": "Jingsumar",
     "familyPhotos": "Dur Kiba Ha Iing",
     "save": "Kynshew"
   },
   "intake": {
-    "title": "Rejista Nongpang",
-    "name": "Kyrteng",
-    "age": "Rta",
-    "gender": "Shynrang/Kynthei",
-    "language": "Ktien",
-    "caregiverName": "Kyrteng Nongsumar",
-    "caregiverPhone": "Phone",
-    "submit": "Pynkut"
+    "step": "Step {current} of {total}",
+    "back": "← Leit Phai",
+    "continue": "Iaibteng →",
+    "submit": "Nongpang Profile Siam",
+    "creating": "AI-n report peit mek...",
+    "wizard": {
+      "personal": "Jingsngewbha",
+      "medical": "Report",
+      "family": "Iing",
+      "life": "Jingim",
+      "places": "Jaka",
+      "review": "Peit"
+    },
+    "complete": {
+      "title": "Nongpang profile la siam!",
+      "desc": "{name} ki la tel ha ki nongpang jong phi. Game bad ki hna ki la pyndep thymmai.",
+      "dashboard": "Dashboard ah leit phai"
+    },
+    "personal": {
+      "title": "Da nongpang",
+      "subtitle": "Ki jaka ba deina ki don ban pyndep nongpang profile bad game ba bha.",
+      "name": {
+        "label": "Kyrteng Pynsim",
+        "placeholder": "Tileng, Ramesh Dutta"
+      },
+      "dob": "Jingsngewbha Ni",
+      "gender": "Shynrang/Kynthei",
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Tileng, 9876543210"
+      },
+      "relationship": "Nangne ka form ba shon?"
+    },
+    "medical": {
+      "title": "Jingsumar",
+      "subtitle": "Report phah rawh. AI-n ki jaka ba deina ki lyng ban thuh ha report.",
+      "upload": {
+        "label": "PDF buh rawh, pawh sawn rawh",
+        "desc": "Report (MMSE, MoCA) phah rawh"
+      },
+      "analyze": "Report Peit",
+      "skip": "Report a awm lo, hla peit",
+      "continue": "Report a awm lovin iaibteng",
+      "extracted": "Jaka ba la hmu",
+      "replace": "Report phah pat",
+      "diagnosis": "Jingsumar",
+      "date": "Jingsumar Ni",
+      "score": "Score",
+      "medications": "Damdawi",
+      "notes": "Doctor ziak",
+      "physician": "Doctor",
+      "subscales": "Score Zau Zau",
+      "assessment": "17 Jaka Assessment",
+      "assessmentDesc": "AI-n ka hmu thuh",
+      "intact": "Ka tla",
+      "impaired": "Ka sang",
+      "retained": "{pct}% ka don",
+      "clinicalSummary": "Kawng Thuchhuah",
+      "activePrescriptions": "Damdawi ({count})",
+      "categoryCognitive": "Thuhna",
+      "categoryIadls": "Ki kam iing",
+      "categoryBehavioral": "Jingsngewbha"
+    },
+    "family": {
+      "title": "Iing",
+      "subtitle": "Da nongpang phah kane ki iing ba sngewbha ban peit ia ki dur.",
+      "add": "Nongpang thar",
+      "empty": "Kawei nongpang a ngai.",
+      "remove": "He nongpang kha khot",
+      "name": {
+        "placeholder": "Kyrteng (Tileng, Meena)"
+      },
+      "notes": {
+        "placeholder": "Tun khan, Guwahati ah a inhnawk, Kumkum Ni thleng a kal"
+      }
+    },
+    "life": {
+      "title": "Jingim & Jingsngewbha",
+      "subtitle": "Ki jaka kine ki ban pyndep game bad jingkynmaw ba bha.",
+      "occupation": {
+        "label": "Hnaiat",
+        "placeholder": "Tileng, u nongbeit, u ril tih"
+      },
+      "events": {
+        "label": "Jingim Pawimawh",
+        "add": "+ Jingim thar",
+        "event": {
+          "placeholder": "Jingim"
+        },
+        "year": {
+          "placeholder": "Rta"
+        }
+      },
+      "interests": "Jingsngewbha",
+      "music": {
+        "label": "Hla",
+        "placeholder": "Tileng, Bhupen Hazarika hla"
+      },
+      "culture": {
+        "label": "Jaka",
+        "placeholder": "Tileng, Khasi jaka"
+      },
+      "language": "Ktien",
+      "joy": {
+        "label": "Kaei ba phi sngew bha?",
+        "placeholder": "Tileng, dur peit kham noh a ngia..."
+      }
+    },
+    "places": {
+      "title": "Jaka hriat",
+      "subtitle": "Jaka ba phi hriat jied rawh. Game ah a hmang dawn.",
+      "add": "Jaka thar",
+      "empty": "Jaka 3 a ngai.",
+      "icon": "Icon jied rawh",
+      "name": {
+        "placeholder": "Kyrteng (Tileng, Kamakhya Temple)"
+      },
+      "desc": {
+        "placeholder": "Tun khan, pynpawna jaka"
+      }
+    },
+    "review": {
+      "title": "Peit rawh le",
+      "subtitle": "Profile peit ha mai.",
+      "edit": "Pynkylla",
+      "personal": "Kyrteng",
+      "medical": "Report",
+      "family": "Iing",
+      "life": "Jingim",
+      "places": "Jaka",
+      "noReport": "Report a awm lo",
+      "noFamily": "Nongpang a awm lo",
+      "fieldName": "Kyrteng",
+      "fieldDob": "Jingsngewbha Ni",
+      "fieldGender": "Shynrang/Kynthei",
+      "fieldPhone": "Phone",
+      "fieldRelationship": "Jingsngewbha",
+      "fieldDiagnosis": "Jingsumar",
+      "fieldDate": "Ni",
+      "fieldScore": "Score",
+      "fieldMedications": "Damdawi",
+      "fieldPhysician": "Doctor",
+      "fieldOccupation": "Hnaiat",
+      "fieldLanguage": "Ktien",
+      "fieldInterests": "Jingsngewbha",
+      "fieldMusic": "Hla",
+      "fieldLifeEvents": "Jingim",
+      "fieldJoy": "Sngewbha",
+      "noneSelected": "A awm lo",
+      "notSpecified": "A tarlan lo"
+    },
+    "validation": {
+      "nameMinLength": "Kyrteng kum 2 a ngai tawngah",
+      "dobRequired": "Jingsngewbha Ni a ngai",
+      "genderRequired": "Shynrang/Kynthei a ngai",
+      "phoneMinLength": "Phone kum 10 a ngai tawngah",
+      "relationshipRequired": "Jingsngewbha jied rawh",
+      "familyMinCount": "Kawei nongpang a ngai",
+      "placesMinCount": "Jaka 3 a ngai Game thlen turin",
+      "submitFailed": "Profile siam thei ta lo. Pyrshang biang."
+    },
+    "photoPicker": {
+      "tooLarge": "Dur hi 5MB a lian hle",
+      "viewPhotoFor": "{label} dur peit",
+      "viewPhoto": "Dur peit",
+      "previewThumb": "Dur preview",
+      "view": "Peit",
+      "removePhoto": "Dur khot",
+      "uploadPhoto": "Dur upload",
+      "preview": "Dur: {label}",
+      "previewDefault": "Dur preview",
+      "closeViewer": "Dur peit khad",
+      "fullPreview": "Dur pynsim peit",
+      "changePhoto": "🔄 Dur sih",
+      "remove": "🗑 Khot"
+    },
+    "fileUpload": {
+      "tooLarge": "File a lian hle. Tlukhnem {maxSizeMB}MB a ni.",
+      "pdfOnly": "PDF file phah rawh.",
+      "imageOnly": "Dur file phah rawh.",
+      "preview": "Peit",
+      "uploadedReplace": "✓ La upload — click a sih theih"
+    },
+    "progress": {
+      "ariaLabel": "Form lam",
+      "step": "Step",
+      "of": "of"
+    },
+    "dynamicList": {
+      "removeItem": "Item {index} khot"
+    },
+    "domainMatrix": {
+      "heading": "17 Jaka Clinical Assessment",
+      "desc": "AI-n ka hmu thuh ki jaka thuh bad kynmia",
+      "empty": "Jingsumar a tarlan lo ha report",
+      "domains": {
+        "memory": "Jingkynmaw",
+        "attention": "Peit ba shai",
+        "executiveFunction": "Kam pyndep",
+        "orientation": "Jaka hriat",
+        "language": "Ktien",
+        "visuospatial": "Hmul peit",
+        "decisionMaking": "Khein ba dei",
+        "medicationManagement": "Damdawi enkawl",
+        "financialManagement": "Tyngka enkawl",
+        "navigation": "Lynti hriat",
+        "mealPreparation": "Jingbam siam",
+        "driving": "Kar thildan",
+        "householdTasks": "Ki kam iing",
+        "apathy": "Wat pyndep thei lo",
+        "agitation": "Jingsngewkhia",
+        "socialWithdrawal": "Lem ha shnong lo"
+      },
+      "severity": {
+        "severe": "A rem lo hle",
+        "moderate": "Tla",
+        "mild": "Tla taka",
+        "intact": "Ka tla"
+      }
+    },
+    "diagnosis": {
+      "notSpecified": "A tarlan lo",
+      "icdPrefix": "ICD-10: ",
+      "mtaPrefix": "MRI MTA: ",
+      "fazekasPrefix": "Fazekas: "
+    }
   },
   "options": {
     "title": "Settings",
     "fontSize": "Font Kiba Heh",
     "contrast": "High Contrast",
     "airMouse": "Virtual Air Mouse",
-    "listenFirst": "Sur Kren"
+    "listenFirst": "Sur Kren",
+    "gender": {
+      "male": "Shynrang",
+      "female": "Kynthei",
+      "other": "Dang"
+    },
+    "relationship": {
+      "spouse": "Sngewbha",
+      "child": "Kba",
+      "sibling": "Kynshan",
+      "parent": "Kynrei",
+      "self": "Nga",
+      "other": "Dang"
+    },
+    "relativeRelationship": {
+      "daughter": "Kynthei kba",
+      "son": "Shynrang kba",
+      "spouse": "Sngewbha",
+      "grandchild": "Kba kba",
+      "sibling": "Kynshan",
+      "friend": "Kynshan",
+      "other": "Dang"
+    },
+    "interests": {
+      "music": "Hla",
+      "sports": "Sport",
+      "cooking": "Jingbam siam",
+      "gardening": "Zauhna",
+      "reading": "Kot peit",
+      "travel": "Iaid lyngba",
+      "religious": "Kristien",
+      "art": "Art",
+      "other": "Dang"
+    },
+    "status": {
+      "done": "La dep",
+      "now": "Tun khan",
+      "later": "Ah dawn leh"
+    },
+    "metrics": {
+      "memory": "Jingkynmaw",
+      "spatial": "Jaka",
+      "reaction": "Pyndep",
+      "lastSession": "Kum hmaa"
+    }
   },
   "audio": {
     "welcome": "Pdiang sngewbha sha CogniCare.",
-    "guide": "Shong suk bad sdang ia ka jingpynkhlain jingmut."
+    "guide": "Shong suk bad sdang ia ka jingpynkhlain jingmut.",
+    "listen": "Sngap",
+    "howToPlay": "Engtia Khel Tur",
+    "listenToStory": "Jingim Sngap",
+    "listenToDirections": "Damdawi hnenah thuhna sngap"
   },
   "idcard": {
-    "title": "Health Card",
-    "scan": "Scan ia u QR",
-    "print": "Print ia ka Card",
-    "qrNote": "Pyndonkam ia une u QR code."
+    "heading": "Nongpang ID Card",
+    "desc": "QR Health Card print rawh bad download rawh. Kiosk ah scan kynnei a khlem dawn.",
+    "regenerate": "Card sih pat",
+    "download": "PNG Download",
+    "print": "Card Print",
+    "backToProfile": "Nongpang Profile ah leit phai",
+    "error": {
+      "fetch": "Card load na. Pyrshang biang.",
+      "regenerate": "Card sih thei na. Pyrshang biang."
+    },
+    "badge": {
+      "label": "Health Card",
+      "hint": "QR scan kynnei a khlem dawn",
+      "footer": "QR-Only Passkey"
+    }
+  },
+  "patientDetail": {
+    "loading": "Clinical telemetry loading...",
+    "notFound": {
+      "title": "Nongpang a hmuh lo.",
+      "desc": "Nongpang record khot tawh emaw, link ba dei lo nge."
+    },
+    "hero": {
+      "backToDashboard": "Dashboard ah leit phai",
+      "stage": "Stage",
+      "patientId": "Nongpang #{id}",
+      "age": "Rta {age}",
+      "filledBy": "{relationship} la ziak",
+      "printCard": "ID Card Print"
+    },
+    "vitals": {
+      "cognitiveScore": "Score",
+      "mmse": "MMSE",
+      "clinicalStage": "Enkawl Stage",
+      "gameLevel": "Game Level {difficulty}",
+      "brainBiomarkers": "Thluak Biomarkers",
+      "mta": "MTA:",
+      "fazekas": "Fazekas:",
+      "icd": "ICD: {code}",
+      "biomarkerBaseline": "Biomarker a hmaa",
+      "qrHealthCard": "QR Health Card",
+      "activeReady": "Tlawngin a awm",
+      "viewPrintBadge": "Badge Peit / Print"
+    },
+    "biomarkers": {
+      "title": "Thluak Biomarkers bad Kam Kawm",
+      "subtitle": "Kam leh thuhna a inmilna",
+      "activeTelemetry": "Telemetry Tlawng"
+    },
+    "lightbox": {
+      "close": "Khad",
+      "listen": "Jingkynmaw sngap",
+      "speaking": "Kren mek..."
+    },
+    "clinicalSummary": {
+      "title": "Damdawi bad Jingsumar",
+      "subtitle": "Thluak enkawl, jingsumar, bad doctor ziak",
+      "diagnosisIcd": "Jingsumar & ICD Code",
+      "diagnosisFallback": "Thluak sangna a hmaa",
+      "physician": "Doctor",
+      "physicianFallback": "Doctor",
+      "hospitalDate": "Hospital & Ni",
+      "hospitalFallback": "Hospital",
+      "summaryHeading": "Kawng Thuchhuah & Nongsumar guidance:",
+      "medications": "Damdawi",
+      "subscaleBreakdown": "Thluak Score",
+      "deficits": "Sangna & Tihtan tur"
+    },
+    "family": {
+      "title": "Iing bad Nongsumar",
+      "subtitle": "Iing kiba sngewbha Dur Game atan",
+      "saved": "La kynshew",
+      "empty": "Nongpang a awm lo.",
+      "view": "{name} Peit"
+    },
+    "places": {
+      "title": "Jaka hriat",
+      "subtitle": "Lynti hriatna bad kamna",
+      "landmarks": "Jaka",
+      "empty": "Jaka a awm lo.",
+      "view": "{name} Peit"
+    },
+    "lifeStory": {
+      "title": "Jingim bad Thluak",
+      "subtitle": "Hnaiat, hla, jingsngewbha bad sngewbha",
+      "occupation": "Hnaiat",
+      "occupationFallback": "A tarlan lo",
+      "music": "Hla",
+      "musicFallback": "Hla thuneihna",
+      "hobbies": "Jingsngewbha",
+      "joyTriggers": "Sngewbha bad Jingsuk",
+      "joyFallback": "Hla sngap, ni ei, dur peit.",
+      "tip": "Tip: Ki jaka kine peit rawh.",
+      "milestones": "Jingim Pawimawh",
+      "year": "Rta {year}"
+    },
+    "demographics": {
+      "title": "Kyrteng bad Nihna",
+      "fullName": "Kyrteng Pynsim",
+      "dobAge": "Jingsngewbha Ni & Rta",
+      "years": "Rta {age}",
+      "gender": "Shynrang/Kynthei",
+      "phone": "Phone",
+      "relationship": "Jingsngewbha",
+      "language": "Ktien",
+      "languageFallback": "EN",
+      "background": "Jaka"
+    },
+    "gamingProgress": {
+      "title": "Game Score & Kam Kawm",
+      "subtitle": "Game score leh kam kawm en",
+      "liveTelemetry": "Telemetry",
+      "avgAccuracy": "Score",
+      "motorLatency": "Kam Kawm",
+      "ms": "ms",
+      "spatialRecall": "Jingkynmaw",
+      "totalSessions": "Total Session",
+      "chartTitle": "Game Chart",
+      "lastSessions": "Session {count}",
+      "accuracyLine": "Score (%)",
+      "latencyLine": "Kam Kawm (ms)",
+      "aiObservation": "AI Kawng (ASHA Report)"
+    },
+    "report": {
+      "export": "Report Export",
+      "copied": "Copied",
+      "copyText": "Copy",
+      "printPdf": "Print / PDF",
+      "closeReport": "Report Khad",
+      "title": "ABDM Report Exporter",
+      "subtitle": "Telemedicine & Evaluation Sheet"
+    }
   }
 }

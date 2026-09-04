@@ -11,7 +11,6 @@ import {
   Compass,
   Leaf,
   Radio,
-  Flower2,
   Utensils,
   GitFork,
   ArrowRight,
@@ -274,7 +273,6 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           { id: "wayfinding", icon: Compass, color: "bg-emerald-800/15 text-emerald-800" },
           { id: "tea-harvest", icon: Leaf, color: "bg-emerald-600/15 text-emerald-600" },
           { id: "radio", icon: Radio, color: "bg-amber-800/15 text-amber-800" },
-          { id: "lotus-lake", icon: Flower2, color: "bg-teal-600/15 text-teal-600" },
           { id: "heritage-kitchen", icon: Utensils, color: "bg-terracotta/15 text-terracotta" },
           { id: "root-bridge", icon: GitFork, color: "bg-green-800/15 text-green-800" },
         ].map((item) => {

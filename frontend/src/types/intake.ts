@@ -63,6 +63,8 @@ export interface DiagnosticData {
   score: number | null;
   maxScore: number | null;
   stage: string;
+  severity?: string;
+  cognitiveScores?: { testType: string; score: number; maxScore: number }[];
   recommendedStartLevel: number;
   mtaScore?: string;
   fazekasGrade?: string;
@@ -123,10 +125,10 @@ export const EMPTY_FORM: IntakeFormData = {
     joyNote: "",
   },
   landmarks: [
-    { name: "Home", description: "Where we live", emoji: "🏠" },
-    { name: "Local Market", description: "Where we shop", emoji: "🍵" },
-    { name: "Temple", description: "Place of worship", emoji: "🛕" },
-    { name: "Clinic", description: "Doctor's office", emoji: "🏥" },
+    { name: "Home", description: "Where we live", emoji: "home" },
+    { name: "Local Market", description: "Where we shop", emoji: "market" },
+    { name: "Temple", description: "Place of worship", emoji: "temple" },
+    { name: "Clinic", description: "Doctor's office", emoji: "clinic" },
   ],
 };
 
@@ -177,11 +179,30 @@ export const RELATIVE_RELATIONSHIP_OPTIONS = [
   "Other",
 ];
 
+export const LANDMARK_ICONS = [
+  { id: "home", label: "Home" },
+  { id: "market", label: "Market" },
+  { id: "temple", label: "Temple / Worship" },
+  { id: "clinic", label: "Clinic / Hospital" },
+  { id: "school", label: "School" },
+  { id: "park", label: "Park / Garden" },
+  { id: "bus", label: "Bus / Transit" },
+  { id: "store", label: "Store" },
+  { id: "hills", label: "Hills / Scenic" },
+  { id: "lake", label: "Lake / River" },
+] as const;
+
 export const LANDMARK_EMOJIS = [
-  "🏠", "🍵", "🛕", "🏥", "🏫", "🌳", "🚌", "🏪",
-  "🏛️", "⛰️", "🌇", "🏖️", "🎪", "🚉", "🏦", "📿",
-  "🕌", "⛩️", "🏞️", "🎑", "🏤", "🏩", "🏰",
-  "🗼", "🗽", "🗿", "🏗️", "🛤️", "🌉", "🌃", "💒",
+  "home",
+  "market",
+  "temple",
+  "clinic",
+  "school",
+  "park",
+  "bus",
+  "store",
+  "hills",
+  "lake",
 ];
 
 export const SCORE_TYPE_OPTIONS = ["MMSE", "MoCA", "Other"];

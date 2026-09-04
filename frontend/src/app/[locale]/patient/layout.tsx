@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
-import { useRouter } from "@/i18n/navigation";
+import { useRouter, usePathname } from "@/i18n/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Spinner } from "@/components/ui/Spinner";
 import { CaregiverSosButton } from "@/components/patient/CaregiverSosButton";
@@ -26,16 +26,31 @@ export default function PatientLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const persisted = usePersisted();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const login = useAuthStore((s) => s.login);
+
+  const isDemo = pathname?.includes("/demo") ?? false;
 
   useEffect(() => {
+    if (isDemo) {
+      if (!isAuthenticated) {
+        login("demo-patient-token-101", {
+          id: 101,
+          name: "Biren Borah",
+          languagePreference: "as",
+        });
+      }
+      return;
+    }
+
     if (persisted && !isAuthenticated) {
       router.replace("/kiosk/login");
     }
-  }, [persisted, isAuthenticated, router]);
+  }, [persisted, isAuthenticated, router, isDemo, login]);
 
-  if (!persisted || !isAuthenticated) {
+  if ((!persisted || !isAuthenticated) && !isDemo) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-canvas">
         <Spinner />

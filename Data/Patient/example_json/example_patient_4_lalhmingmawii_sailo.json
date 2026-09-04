@@ -1,41 +1,131 @@
 {
+  "patient_id": "PAT-NE-2026-004",
+  "slug": "patient_4_lalhmingmawii_sailo",
+  "state": "Mizoram",
+  "city": "Aizawl",
   "step_1_about_patient": {
     "full_name": "Lalhmingmawii Sailo",
+    "regional_script_name": "Lalhmingmawii Sailo (Mizo)",
     "date_of_birth": "18/08/1962",
+    "age": 64,
     "gender": "Female",
     "phone_number": "9436142100",
-    "form_filled_by": "Spouse"
+    "form_filled_by": "Spouse",
+    "caregiver_name": "Lalrinzuala Sailo",
+    "caregiver_relation": "Spouse"
+  },
+  "step_2_caregiver_contact": {
+    "primary_caregiver": "Lalrinzuala Sailo",
+    "caregiver_relation": "Spouse",
+    "caregiver_phone": "+91 94361 77332",
+    "residence_address": "Zarkawt Veng, Aizawl, Mizoram - 796001",
+    "primary_health_centre": "Aizawl Civil Hospital / Zarkawt Urban Health Post"
   },
   "step_3_family_and_relatives": [
     {
+      "id": "p4_r1",
       "name": "Lalrinzuala Sailo",
       "relation": "Spouse",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/01_spouse_lalrinzuala_sailo.png",
-      "notes": "Married 40 years; retired state revenue inspector; helps me with morning walks and prepares meals."
+      "age": 67,
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/01_spouse_lalrinzuala_sailo.jpg",
+      "notes": "Married 40 years; retired state revenue inspector; helps me with morning walks and prepares meals.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          45,
+          80,
+          120
+        ],
+        "hair_style": "short",
+        "hair_color": [
+          120,
+          120,
+          125
+        ],
+        "has_specs": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
+      }
     },
     {
+      "id": "p4_r2",
       "name": "Vanlalruati Sailo",
       "relation": "Daughter",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/02_daughter_vanlalruati_sailo.png",
-      "notes": "Lives in Aizawl; lecturer at Pachhunga University College; assists with daily cognitive exercises."
+      "age": 35,
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/02_daughter_vanlalruati_sailo.jpg",
+      "notes": "Lives in Aizawl; lecturer at Pachhunga University College; assists with daily cognitive exercises.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          180,
+          60,
+          90
+        ],
+        "hair_style": "long",
+        "has_specs": true,
+        "bg_type": "cool_office"
+      }
     },
     {
+      "id": "p4_r3",
       "name": "Lalbiakzuala Sailo",
       "relation": "Son",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/03_son_lalbiakzuala_sailo.png",
-      "notes": "Civil engineer in PWD; lives in Mission Veng; brings fresh mountain fruit every weekend."
+      "age": 38,
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/03_son_lalbiakzuala_sailo.jpg",
+      "notes": "Civil engineer in PWD; lives in Mission Veng; brings fresh mountain fruit every weekend.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          35,
+          110,
+          130
+        ],
+        "hair_style": "short",
+        "bg_type": "outdoor_garden"
+      }
     },
     {
+      "id": "p4_r4",
       "name": "Lalramchhani Sailo",
       "relation": "Grandchild",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/04_grandchild_lalramchhani_sailo.png",
-      "notes": "Granddaughter; loves playing Mizo word puzzle games and drawing pictures with Pi Hmingi."
+      "age": 9,
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/04_grandchild_lalramchhani_sailo.jpg",
+      "notes": "Granddaughter; loves playing Mizo word puzzle games and drawing pictures with Pi Hmingi.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          240,
+          140,
+          50
+        ],
+        "hair_style": "girl",
+        "is_child": true,
+        "bg_type": "warm_indoor"
+      }
     },
     {
+      "id": "p4_r5",
       "name": "Lalthanmawii Sailo",
       "relation": "Sibling",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/relatives/05_sibling_lalthanmawii_sailo.png",
-      "notes": "Younger sister; lives in Khatla; attends Presbyterian Women's fellowship with me every Tuesday."
+      "age": 62,
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/05_sibling_lalthanmawii_sailo.jpg",
+      "notes": "Younger sister; lives in Khatla; attends Presbyterian Women's fellowship with me every Tuesday.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          90,
+          60,
+          130
+        ],
+        "hair_style": "bun",
+        "hair_color": [
+          110,
+          110,
+          115
+        ],
+        "is_elderly": true,
+        "bg_type": "traditional_home"
+      }
     }
   ],
   "step_4_life_story_and_interests": {
@@ -71,34 +161,69 @@
   },
   "step_5_and_6_familiar_places": [
     {
+      "id": "p4_pl1",
       "place_name": "Home (Zarkawt Hill Residence)",
+      "category": "Home",
       "short_description": "Where we live — cliffside Aizawl home overlooking the green rolling valleys.",
       "icon_symbol": "🏠",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/places/01_home_zarkawt_residence.png"
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/01_home_zarkawt_residence.jpg",
+      "style": {
+        "type": "home",
+        "roof_color": [
+          180,
+          45,
+          40
+        ],
+        "sky_type": "misty_hills"
+      }
     },
     {
+      "id": "p4_pl2",
       "place_name": "Aizawl Bara Bazar (Burra Bazar)",
+      "category": "Local Market",
       "short_description": "Multi-tier hill market where we buy fresh bamboo shoots, local vegetables, and handwoven Puan.",
       "icon_symbol": "🛒",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/places/02_aizawl_bara_bazar.png"
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/02_aizawl_bara_bazar.jpg",
+      "style": {
+        "type": "market",
+        "sky_type": "blue_day"
+      }
     },
     {
+      "id": "p4_pl3",
       "place_name": "Zarkawt Presbyterian Church",
+      "category": "Place of Worship",
       "short_description": "Place of worship — neighborhood white church where she attended fellowship for 40 years.",
       "icon_symbol": "🛕",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/places/03_zarkawt_presbyterian_church.png"
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/03_zarkawt_presbyterian_church.jpg",
+      "style": {
+        "type": "church",
+        "sky_type": "misty_hills"
+      }
     },
     {
+      "id": "p4_pl4",
       "place_name": "Aizawl Civil Hospital & UPHC",
+      "category": "Clinic",
       "short_description": "Where I visit for monthly senior checkups and prescription refills.",
       "icon_symbol": "🏥",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/places/04_aizawl_civil_hospital.png"
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/04_aizawl_civil_hospital.jpg",
+      "style": {
+        "type": "clinic",
+        "sky_type": "blue_day"
+      }
     },
     {
+      "id": "p4_pl5",
       "place_name": "Durtlang Hills Viewpoint Park",
+      "category": "Park",
       "short_description": "Where we walk — scenic mountain ridge promenade offering panoramic views of Aizawl city.",
       "icon_symbol": "🌳",
-      "image_file": "images/patient_4_lalhmingmawii_sailo/places/05_durtlang_hills_viewpoint.png"
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/05_durtlang_hills_viewpoint.jpg",
+      "style": {
+        "type": "viewpoint",
+        "sky_type": "golden_hour"
+      }
     }
   ]
 }

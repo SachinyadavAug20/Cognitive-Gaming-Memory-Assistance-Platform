@@ -15,6 +15,11 @@ import {
   Play,
   Loader,
   Activity,
+  Heart,
+  Droplets,
+  Battery,
+  Check,
+  MapPin,
 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { api } from "@/lib/api";
@@ -396,11 +401,19 @@ export function AdminSurveillanceTab({
                         <div className="text-[9px] text-ink-muted">{p.district} • {p.gender}</div>
                       </td>
                       <td className="p-2 font-mono text-[10px] text-ink-secondary">
-                        {p.heartRateBpm != null ? `♥${p.heartRateBpm}` : "—"}
-                        <span className="text-ink-muted">/</span>
-                        {p.spo2Pct != null ? `O₂${p.spo2Pct}%` : "—"}
+                        <span className="inline-flex items-center gap-0.5">
+                          <Heart className="h-2.5 w-2.5 text-rose-600 fill-rose-600" />
+                          <span>{p.heartRateBpm != null ? p.heartRateBpm : "—"}</span>
+                        </span>
+                        <span className="text-ink-muted"> / </span>
+                        <span>{p.spo2Pct != null ? `O₂${p.spo2Pct}%` : "—"}</span>
                         <br />
-                        {p.bodyTempC != null ? `${p.bodyTempC}°C` : "—"} • {p.hydrationGlasses ?? 0}💧
+                        <span className="inline-flex items-center gap-1">
+                          <span>{p.bodyTempC != null ? `${p.bodyTempC}°C` : "—"}</span>
+                          <span className="text-ink-muted">•</span>
+                          <Droplets className="h-2.5 w-2.5 text-blue-600" />
+                          <span>{p.hydrationGlasses ?? 0}</span>
+                        </span>
                       </td>
                       <td className="p-2 hidden md:table-cell text-[10px]">
                         {p.activityLevel ?? "—"}
@@ -424,7 +437,12 @@ export function AdminSurveillanceTab({
                         }`}>
                           {p.networkType}
                         </span>
-                        <div className="text-[9px] text-ink-muted hidden md:block">{p.queuedPackets} pkts • 🔋{p.batteryPct}%</div>
+                        <div className="text-[9px] text-ink-muted hidden md:flex items-center gap-1">
+                          <span>{p.queuedPackets} pkts</span>
+                          <span>•</span>
+                          <Battery className="h-2.5 w-2.5 text-ink-secondary" />
+                          <span>{p.batteryPct}%</span>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -469,9 +487,10 @@ export function AdminSurveillanceTab({
                   <button
                     type="button"
                     onClick={() => void handleResolveAlert(a.id)}
-                    className="shrink-0 rounded-xl border border-black bg-emerald-100 px-3 py-1 text-[11px] font-black text-emerald-950 hover:bg-emerald-200 cursor-pointer"
+                    className="shrink-0 inline-flex items-center gap-1 rounded-xl border border-black bg-emerald-100 px-3 py-1 text-[11px] font-black text-emerald-950 hover:bg-emerald-200 cursor-pointer"
                   >
-                    ✓ Resolve
+                    <Check className="h-3 w-3" />
+                    <span>Resolve</span>
                   </button>
                 </div>
               ))}
@@ -528,8 +547,8 @@ export function AdminSurveillanceTab({
                       <p className="text-[11px] font-semibold text-ink-secondary mt-0.5">{p.networkType} • {p.queuedPackets} Encrypted Packets</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-black text-ink-secondary">
-                    🔋 {p.batteryPct}% • {timeAgo(p.lastSeen)}
+                  <span className="text-[10px] font-black text-ink-secondary inline-flex items-center gap-1">
+                    <Battery className="h-3 w-3" /> {p.batteryPct}% • {timeAgo(p.lastSeen)}
                   </span>
                 </div>
               ))}
@@ -573,9 +592,10 @@ export function AdminSurveillanceTab({
                 <button
                   type="button"
                   onClick={() => void handleAcknowledgeSos(s.id)}
-                  className="btn-tactile shrink-0 rounded-xl border-2 border-black bg-emerald-600 text-white px-4 py-2 text-xs font-black shadow-[2px_2px_0px_#000] hover:bg-emerald-700 cursor-pointer"
+                  className="btn-tactile shrink-0 inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-emerald-600 text-white px-4 py-2 text-xs font-black shadow-[2px_2px_0px_#000] hover:bg-emerald-700 cursor-pointer"
                 >
-                  ✓ Acknowledge & Dispatch Caregiver
+                  <Check className="h-3.5 w-3.5" />
+                  <span>Acknowledge & Dispatch Caregiver</span>
                 </button>
               </div>
             ))}
@@ -693,7 +713,10 @@ export function AdminSurveillanceTab({
                   <td className="p-3 text-xs text-ink-secondary hidden md:table-cell">
                     <div className="flex flex-wrap gap-1">
                       {row.sundowningAgitationHotspots.map((h, i) => (
-                        <span key={i} className="rounded-sm bg-black/5 px-1.5 py-0.2 text-[10px] font-semibold text-ink">📍 {h}</span>
+                        <span key={i} className="inline-flex items-center gap-0.5 rounded-sm bg-black/5 px-1.5 py-0.2 text-[10px] font-semibold text-ink">
+                          <MapPin className="h-2.5 w-2.5 text-ink-secondary" />
+                          <span>{h}</span>
+                        </span>
                       ))}
                     </div>
                   </td>

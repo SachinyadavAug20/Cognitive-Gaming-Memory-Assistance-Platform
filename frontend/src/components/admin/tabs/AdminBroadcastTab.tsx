@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Megaphone } from "lucide-react";
+import { Megaphone, AlertTriangle, MapPin } from "lucide-react";
 import type { AdminEmergencyBroadcast } from "@/types/admin";
 
 export interface EmergencyBroadcastFormState {
@@ -99,7 +99,14 @@ export function AdminBroadcastTab({
             disabled={dispatchingBroadcast}
             className="btn-tactile rounded-xl border-2 border-black bg-rose-600 px-5 py-2.5 text-xs font-black text-white shadow-[3px_3px_0px_#000] hover:bg-rose-700 cursor-pointer disabled:opacity-50"
           >
-            {dispatchingBroadcast ? "Dispatched..." : "Broadcast Emergency Siren to Caregivers 🚨"}
+            {dispatchingBroadcast ? (
+              "Dispatched..."
+            ) : (
+              <span className="inline-flex items-center justify-center gap-1.5">
+                <span>Broadcast Emergency Siren to Caregivers</span>
+                <AlertTriangle className="h-3.5 w-3.5" />
+              </span>
+            )}
           </button>
         </form>
 
@@ -114,8 +121,8 @@ export function AdminBroadcastTab({
                 <div>
                   <span className="font-mono text-[10px] font-black text-ink-secondary">{bc.broadcastId}</span>
                   <p className="font-bold text-ink mt-0.5">{bc.messageText}</p>
-                  <span className="text-[10px] text-ink-secondary">
-                    📍 {bc.targetDistrict} • Delivered to {bc.recipientsDelivered} households
+                  <span className="text-[10px] text-ink-secondary inline-flex items-center gap-1">
+                    <MapPin className="h-3 w-3 shrink-0" /> {bc.targetDistrict} • Delivered to {bc.recipientsDelivered} households
                   </span>
                 </div>
                 <span className="rounded-full bg-emerald-100 border border-emerald-400 px-2 py-0.5 text-[9px] font-black text-emerald-950">

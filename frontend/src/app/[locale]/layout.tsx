@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { hasLocale } from "next-intl";
@@ -144,16 +143,16 @@ export default async function LocaleLayout({ children, params }: Props) {
         <meta name="theme-color" content="#15803D" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <Script
+        <script
           id="cognicare-init-theme"
-          strategy="beforeInteractive"
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var s=localStorage.getItem('cognicare_font_size');if(s==='sm'){document.documentElement.style.fontSize='16px'}else if(s==='lg'){document.documentElement.style.fontSize='22px'}else{document.documentElement.style.fontSize='18px'}if(localStorage.getItem('cognicare_high_contrast')==='true'){document.documentElement.classList.add('high-contrast-mode')}}catch(e){}})();`,
           }}
         />
-        <Script
+        <script
           id="cognicare-keyboard-focus"
-          strategy="beforeInteractive"
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var K=['Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Escape',' '];var h=document.documentElement;var off=function(){h.classList.remove('keyboard-user')};var on=function(e){if(K.indexOf(e.key)!==-1){h.classList.add('keyboard-user')}};window.addEventListener('mousedown',off);window.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse')off()});window.addEventListener('keydown',on)}catch(e){}})();`,
           }}

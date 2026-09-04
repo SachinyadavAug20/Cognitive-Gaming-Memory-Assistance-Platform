@@ -2,7 +2,7 @@
   "home": {
     "greeting": "Welcome Back!",
     "ready": "We're happy to see you again. Ready for your daily memory exercises?",
-  "comingSoon": "Coming Soon",
+    "comingSoon": "Coming Soon",
     "routine": {
       "title": "Today's Daily Routine",
       "label": "Today's Routine",
@@ -15,7 +15,7 @@
       "appointment_time": "Dr. B. K. Sarma • Dispur PHC",
       "memories_count": "12 memories with Sunita",
       "now": "Now"
-  },
+    },
     "patient": {
       "title": "I am a Patient",
       "subtitle": "Patient Portal",
@@ -76,7 +76,7 @@
         "desc": "Play with photos of {count} family members",
         "descZero": "Play with your family's photos"
       },
-"jigsaw": {
+      "jigsaw": {
         "title": "Family Face Puzzle",
         "desc": "Put the pieces together to make a face"
       },
@@ -188,7 +188,7 @@
     "step": "Step {current} of {total}",
     "back": "← Back",
     "continue": "Continue →",
-    "submit": "Create Patient Profile ✓",
+    "submit": "Create Patient Profile",
     "creating": "Analyzing Medical Report with Local AI...",
     "wizard": {
       "personal": "Personal Info",
@@ -253,7 +253,7 @@
       "subtitle": "Add the people important to the patient. Their photos and names are used in the Memory Pieces game.",
       "add": "Add Family Member",
       "empty": "Add at least one family member to help with the Memory Pieces game.",
-      "remove": "✕ Remove this family member",
+      "remove": "Remove this family member",
       "name": {
         "placeholder": "Name (e.g., Meena)"
       },
@@ -335,6 +335,81 @@
       "fieldJoy": "What brings joy",
       "noneSelected": "None selected",
       "notSpecified": "Not specified"
+    },
+    "validation": {
+      "nameMinLength": "Name must be at least 2 characters",
+      "dobRequired": "Date of birth is required",
+      "genderRequired": "Gender is required",
+      "phoneMinLength": "Phone must be at least 10 digits",
+      "relationshipRequired": "Please select your relationship",
+      "familyMinCount": "Add at least one family member",
+      "placesMinCount": "Add at least 3 landmarks for the Wayfinding game",
+      "submitFailed": "Failed to create patient profile. Please try again."
+    },
+    "photoPicker": {
+      "tooLarge": "Photo must be under 5MB",
+      "viewPhotoFor": "View photo for {label}",
+      "viewPhoto": "View photo",
+      "previewThumb": "Photo preview thumbnail",
+      "view": "View",
+      "removePhoto": "Remove photo",
+      "uploadPhoto": "Upload photo",
+      "preview": "Photo: {label}",
+      "previewDefault": "Photo preview",
+      "closeViewer": "Close photo viewer",
+      "fullPreview": "Full photo preview",
+      "changePhoto": "🔄 Change Photo",
+      "remove": "🗑 Remove"
+    },
+    "fileUpload": {
+      "tooLarge": "File is too large. Maximum size is {maxSizeMB}MB.",
+      "pdfOnly": "Please upload a PDF file.",
+      "imageOnly": "Please upload an image file.",
+      "preview": "Preview",
+      "uploadedReplace": "✓ Uploaded — click to replace"
+    },
+    "progress": {
+      "ariaLabel": "Form progress",
+      "step": "Step",
+      "of": "of"
+    },
+    "dynamicList": {
+      "removeItem": "Remove item {index}"
+    },
+    "domainMatrix": {
+      "heading": "17-Domain Clinical Assessment",
+      "desc": "Quantified cognitive & functional breakdown extracted by local AI",
+      "empty": "No clinical deficit noted in report",
+      "domains": {
+        "memory": "Memory",
+        "attention": "Attention",
+        "executiveFunction": "Executive Function",
+        "orientation": "Orientation",
+        "language": "Language",
+        "visuospatial": "Visuospatial",
+        "decisionMaking": "Decision Making",
+        "medicationManagement": "Medication Management",
+        "financialManagement": "Financial Management",
+        "navigation": "Navigation",
+        "mealPreparation": "Meal Preparation",
+        "driving": "Driving",
+        "householdTasks": "Household Tasks",
+        "apathy": "Apathy",
+        "agitation": "Agitation",
+        "socialWithdrawal": "Social Withdrawal"
+      },
+      "severity": {
+        "severe": "Severe",
+        "moderate": "Moderate",
+        "mild": "Mild",
+        "intact": "Intact"
+      }
+    },
+    "diagnosis": {
+      "notSpecified": "Not Specified",
+      "icdPrefix": "ICD-10: ",
+      "mtaPrefix": "MRI MTA: ",
+      "fazekasPrefix": "Fazekas: "
     }
   },
   "options": {
@@ -436,6 +511,123 @@
       "footer": "QR-Only Passkey"
     }
   },
+  "patientDetail": {
+    "loading": "Loading clinical telemetry…",
+    "notFound": {
+      "title": "Patient not found.",
+      "desc": "The patient record may have been removed, or the link is invalid."
+    },
+    "hero": {
+      "backToDashboard": "Back to Dashboard",
+      "stage": "Stage",
+      "patientId": "Patient #{id}",
+      "age": "Age {age}",
+      "filledBy": "Filled by {relationship}",
+      "printCard": "Print ID Card"
+    },
+    "vitals": {
+      "cognitiveScore": "Cognitive Score",
+      "mmse": "MMSE",
+      "clinicalStage": "Clinical Stage",
+      "gameLevel": "Game Level {difficulty}",
+      "brainBiomarkers": "Brain Biomarkers",
+      "mta": "MTA:",
+      "fazekas": "Fazekas:",
+      "icd": "ICD: {code}",
+      "biomarkerBaseline": "Biomarker baseline",
+      "qrHealthCard": "QR Health Card",
+      "activeReady": "Active & Ready",
+      "viewPrintBadge": "View / Print Badge"
+    },
+    "biomarkers": {
+      "title": "Continuous Cognitive Biomarkers & Motor Trajectory",
+      "subtitle": "Real-time motor path curvature, micro-hesitation latencies, and 5-domain clinical competency radar",
+      "activeTelemetry": "Active Clinical Telemetry"
+    },
+    "lightbox": {
+      "close": "Close",
+      "listen": "Listen to memory",
+      "speaking": "Speaking…"
+    },
+    "clinicalSummary": {
+      "title": "Medical & Clinical Profile",
+      "subtitle": "Cognitive assessment, clinical diagnosis, and physician notes",
+      "diagnosisIcd": "Diagnosis & ICD Code",
+      "diagnosisFallback": "Cognitive Impairment Baseline",
+      "physician": "Examining Physician",
+      "physicianFallback": "Attending Physician",
+      "hospitalDate": "Hospital / Clinic & Date",
+      "hospitalFallback": "Civil Hospital",
+      "summaryHeading": "Clinical Summary & Caretaker Guidance:",
+      "medications": "Prescribed Medications",
+      "subscaleBreakdown": "Cognitive Subscale Breakdown",
+      "deficits": "Identified Deficits & Assistance Needs"
+    },
+    "family": {
+      "title": "Family & Care Circle",
+      "subtitle": "Key family members and loved ones for photo-recognition games",
+      "saved": "Saved",
+      "empty": "No family members registered yet.",
+      "view": "View {name}"
+    },
+    "places": {
+      "title": "Familiar Places & Landmarks",
+      "subtitle": "Visual wayfinding cues and daily walking route memories",
+      "landmarks": "Landmarks",
+      "empty": "No familiar places registered yet.",
+      "view": "View {name}"
+    },
+    "lifeStory": {
+      "title": "Life Story & Cognitive Personalization",
+      "subtitle": "Career, music, hobbies, and emotional calming cues",
+      "occupation": "Occupation & Background",
+      "occupationFallback": "Not specified",
+      "music": "Favorite Music & Audio Cues",
+      "musicFallback": "Traditional folk & gospel melodies",
+      "hobbies": "Hobbies & Interests",
+      "joyTriggers": "Joy Triggers & Calming Cues",
+      "joyFallback": "Listening to familiar church hymns, sitting in the morning sun, and looking at family photo albums.",
+      "tip": "Tip: Use these topics to soothe agitation or prompt joyful recall during exercises.",
+      "milestones": "Key Life Milestones & Timeline",
+      "year": "Year {year}"
+    },
+    "demographics": {
+      "title": "Demographics & Registration Details",
+      "fullName": "Full Legal Name",
+      "dobAge": "Date of Birth & Age",
+      "years": "{age} years",
+      "gender": "Gender",
+      "phone": "Primary Phone Number",
+      "relationship": "Relationship to Caregiver",
+      "language": "Preferred Language",
+      "languageFallback": "EN",
+      "background": "Cultural & Community Background"
+    },
+    "gamingProgress": {
+      "title": "Cognitive Gaming Progress & Motor Stability",
+      "subtitle": "Active telemetry tracking cognitive accuracy, motor reaction latency, and AI clinical summary",
+      "liveTelemetry": "Live Telemetry Loop",
+      "avgAccuracy": "Avg Accuracy",
+      "motorLatency": "Motor Latency",
+      "ms": "ms",
+      "spatialRecall": "Spatial Recall",
+      "totalSessions": "Total Sessions",
+      "chartTitle": "Session-by-Session Cognitive & Motor Trajectory",
+      "lastSessions": "Last {count} Sessions",
+      "accuracyLine": "Accuracy (%)",
+      "latencyLine": "Motor Latency (ms)",
+      "aiObservation": "AI Clinical Observation (ASHA Health Worker Report)"
+    },
+    "report": {
+      "export": "Export Clinical Report",
+      "copied": "Copied",
+      "copyText": "Copy Text",
+      "printPdf": "Print / PDF",
+      "closeReport": "Close Report",
+      "title": "ABDM Diagnostic Report Exporter",
+      "subtitle": "Official Telemedicine & Neuropsychological Evaluation Sheet"
+    }
+  },
   "games": {
     "title": "Games Hub",
     "subtitle": "Gentle games to keep your mind and daily routine strong.",
@@ -501,10 +693,10 @@
       "allCompletePlacesSpeech": "You rebuilt all your familiar landmarks today. What wonderful memories!",
       "notesEmpty": "A memory your family wrote for you.",
       "viewPicture": "View picture",
-      "categoryFamily": "🧑‍🤝‍🧑 Family Members",
-      "categoryPlaces": "📍 Familiar Places",
-      "guideOn": "💡 Guide: ON",
-      "guideOff": "💡 Guide: OFF",
+      "categoryFamily": "‍ ‍ Family Members",
+      "categoryPlaces": "Familiar Places",
+      "guideOn": "Guide: ON",
+      "guideOff": "Guide: OFF",
       "levelGentle": "2×2 Easy (4 pcs)",
       "levelClassic": "3×3 Classic (9 pcs)",
       "levelMaster": "4×4 Master (16 pcs)",
@@ -548,9 +740,9 @@
     "wayfinding": {
       "title": "Heritage Village Walk",
       "desc": "Walk home through familiar landmarks & scenic village paths",
-      "modeScenic": "🌸 Scenic Walk",
-      "modeRecall": "🧭 Find the Way",
-      "startJourney": "Begin Your Walk 🚶",
+      "modeScenic": "Scenic Walk",
+      "modeRecall": "Find the Way",
+      "startJourney": "Begin Your Walk",
       "currentLocation": "You are at {name}",
       "nextDestination": "Next destination: {name}",
       "stepCounter": "Station {current} of {total}",
@@ -558,13 +750,13 @@
       "landmarkMemory": "Familiar Memory",
       "viewScrapbook": "Open Landmark View",
       "listenGuide": "Hear Guide",
-      "walkButton": "Walk Along Path 🚶",
-      "hintWhisper": "💡 Look closely — the path to {name} is right ahead!",
+      "walkButton": "Walk Along Path",
+      "hintWhisper": "Look closely — the path to {name} is right ahead!",
       "congratulations": "Welcome Back Home!",
       "completedJourneyDesc": "You navigated through {count} familiar landmarks and reached {home} safely.",
       "postcardTitle": "Hometown Walk Postcard",
-      "musicCta": "Play Hometown Tune 🎵",
-      "walkAgain": "Walk Another Route 🔄",
+      "musicCta": "Play Hometown Tune",
+      "walkAgain": "Walk Another Route",
       "speechIntro": "Welcome to your village walk. Let us begin at {start} and walk together towards {home}.",
       "speechArrived": "We have arrived at {name}. {description}",
       "speechTurn": "Which path should we take to reach {target}?",
@@ -650,16 +842,21 @@
       "desc": "Weave traditional silk patterns with rhythmic wooden shuttle taps"
     },
     "teaHarvest": {
-      "title": "Two Leaves & A Bud",
-      "desc": "Harvest fresh morning tea shoots across Upper Assam hills"
+      "title": "Tea Garden Harvest (Webcam Motion Tracking)",
+      "subtitle": "Wave your hand in the air to pluck fresh tea buds into your traditional Khorahi basket.",
+      "cameraPermission": "Camera tracking active. Move your hand gently across the screen.",
+      "waveToPluck": "Wave hand or tap to pluck fresh shoots",
+      "leavesPlucked": "Shoots Harvested",
+      "basketFull": "Harvest Complete! Your basket is brimming with fresh Assam tea leaves.",
+      "gentleHint": "Move your hand gently over the glowing leaves to harvest them.",
+      "encouragement": "Very good! Keep your hand gentle.",
+      "playAgain": "Harvest New Bush",
+      "backToHub": "← Back to Therapy Suite",
+      "welcomeSpeech": "Welcome to Tea Garden Harvest. Wave your hand in the air or touch the fresh two leaves and a bud to harvest them."
     },
     "radio": {
       "title": "The Nostalgia Tuner",
       "desc": "Tune into vintage Akashvani broadcasts & timeless memories"
-    },
-    "lotusLake": {
-      "title": "Lotus Ripples on Ward's Lake",
-      "desc": "Create soothing water ripples & blossom floating pink lotuses"
     },
     "kitchen": {
       "title": "Grandmother's Heritage Kitchen",
@@ -685,14 +882,6 @@
       "title": "The Living Heritage Storybook",
       "desc": "Step into living nostalgic tales woven from North Eastern landscapes and memories"
     },
-    "bazaar": {
-      "title": "The Heritage Bazaar Barter",
-      "desc": "Converse with a friendly local shopkeeper, barter for goods & manage your daily wallet budget"
-    },
-    "proverb": {
-      "title": "Folk Proverb & Rhyme Cloze",
-      "desc": "Activate semantic recall by completing timeless North Eastern folk proverbs and verses"
-    },
     "riverLanterns": {
       "title": "The 3D Living River of Memories",
       "desc": "Wave your hand across 3D water ripples to guide floating family memory lanterns on the sunlit Brahmaputra"
@@ -704,10 +893,6 @@
     "drum": {
       "title": "The 3D Folk Rhythm Drummer: Dhol & Ksing",
       "desc": "Play traditional Bihu Dhol and Khasi Ksing beats with real-time 3D spring deformation and acoustic feedback"
-    },
-    "memoirScribe": {
-      "title": "The Voice Reminiscence Scribe: Living Memoirs",
-      "desc": "Speak heartfelt family memories and let local AI synthesize an illustrated Golden Memoir page"
     },
     "alpana": {
       "title": "Sacred Alpana Sand Drawing",
@@ -725,10 +910,6 @@
       "title": "Tawang Sacred Chimes",
       "desc": "Listen to sacred singing bowls and bells of Tawang Monastery and repeat melodic sequences"
     },
-    "bambooDance": {
-      "title": "Cheraw Bamboo Dance Rhythm",
-      "desc": "Step to the festive rhythm of Mizoram's Cheraw bamboo staves with agile motor timing"
-    },
     "boat": {
       "title": "Brahmaputra Boat Navigator",
       "desc": "Steer a traditional wooden riverboat across flowing river tides gathering pink lotuses"
@@ -744,12 +925,12 @@
     "majuli": {
       "title": "Majuli Village Walk (3D Spatial Memory)",
       "subtitle": "Stroll along the sunrise path on Majuli Island and recall sacred cultural landmarks.",
-      "walkingPrompt": "Step Forward Along Sunrise Path 👣",
+      "walkingPrompt": "Step Forward Along Sunrise Path",
       "walking": "Walking Along Path...",
       "lookAround": "Look around using the angle controls to spot landmarks.",
-      "lookLeft": "◀ Look Left",
-      "lookAhead": "Ahead ▲",
-      "lookRight": "Look Right ▶",
+      "lookLeft": "Look Left",
+      "lookAhead": "Ahead",
+      "lookRight": "Look Right",
       "currentLandmark": "Current Landmark",
       "spatialPrompt": "Spatial Memory Prompt:",
       "questionNamghar": "Which sacred prayer hall did we just pass on our left?",
@@ -765,45 +946,18 @@
       "speakPromptChangGhar": "Look to your right, standing above the green fields is the traditional Mising bamboo stilt house.",
       "speakPromptRiverGhat": "You have reached the serene Kamalabari River Ghat overlooking the sunlit Brahmaputra River."
     },
-    "teaHarvest": {
-      "title": "Tea Garden Harvest (Webcam Motion Tracking)",
-      "subtitle": "Wave your hand in the air to pluck fresh tea buds into your traditional Khorahi basket.",
-      "cameraPermission": "Camera tracking active. Move your hand gently across the screen.",
-      "waveToPluck": "Wave hand or tap to pluck fresh shoots",
-      "leavesPlucked": "Shoots Harvested",
-      "basketFull": "Harvest Complete! Your basket is brimming with fresh Assam tea leaves.",
-      "gentleHint": "Move your hand gently over the glowing leaves to harvest them.",
-      "encouragement": "Very good! Keep your hand gentle.",
-      "playAgain": "Harvest New Bush",
-      "backToHub": "← Back to Therapy Suite",
-      "welcomeSpeech": "Welcome to Tea Garden Harvest. Wave your hand in the air or touch the fresh two leaves and a bud to harvest them."
-    },
     "bihuDhol": {
       "title": "Bihu Dhol Beats (Rhythm & Grounding)",
       "subtitle": "Tap the traditional Assamese dhol in rhythm to calm agitation and practice motor coordination.",
-      "tapPrompt": "Tap in Rhythm with the Drum 🥁",
+      "tapPrompt": "Tap in Rhythm with the Drum",
       "bpmText": "Tempo: {bpm} BPM",
-      "goodRhythm": "Good Rhythm 🎵",
-      "gentleTouch": "Gentle Touch 🌿",
+      "goodRhythm": "Good Rhythm",
+      "gentleTouch": "Gentle Touch",
       "rhythmScore": "Rhythm Accuracy: {score}%",
       "calmComplete": "Rhythmic Therapy Session Complete",
       "calmSubtitle": "Your motor rhythm aligned smoothly with the calming Assamese beat.",
       "playAgain": "Play Dhol Again",
       "backToHub": "← Back to Therapy Suite"
-    },
-    "brahmaputraVoice": {
-      "title": "Voice of the Brahmaputra (Spoken Folk Recall)",
-      "subtitle": "Listen to the sacred river breeze and speak the completing word of the traditional folk verse.",
-      "listeningPrompt": "Listening... speak aloud clearly into microphone 🎙️",
-      "tapToSpeak": "Tap Microphone to Speak 🎙️",
-      "proverbPrompt": "Complete the River Proverb:",
-      "spokenAnswer": "Your spoken answer:",
-      "correctFeedback": "Wonderful! The river echoes with your wisdom.",
-      "retryFeedback": "Gentle try! Let us speak the folk verse together.",
-      "scoreSummary": "Spoken Recall Harmony: {score}%",
-      "playAgain": "Recall Next River Proverb",
-      "backToHub": "← Back to Therapy Suite",
-      "welcomeSpeech": "Welcome to Voice of the Brahmaputra. Speak the traditional wisdom to make the river glow."
     },
     "dayInMyWorld": {
       "title": "A Day in My World (3D Story Campaign)",
@@ -862,7 +1016,7 @@
       "desc": "Shop for everyday groceries within a ₹500 budget and verify your cashier change.",
       "welcome": "Village Bazaar",
       "instruction": "Select items for your basket without exceeding ₹500, then verify your change at the cashier.",
-      "shopNow": "Enter Bazaar 🛒",
+      "shopNow": "Enter Bazaar",
       "remaining": "Budget Remaining",
       "total": "Basket Total",
       "basketEmpty": "Your shopping basket is empty. Tap items to add.",
@@ -884,9 +1038,18 @@
       "title": "Memory Garden (Multi-Activity Suite)",
       "desc": "Play memory matching, spot what changed, and replay auditory sequences in a serene garden.",
       "subgames": {
-        "memoryMatch": { "name": "Memory Match 🌸", "desc": "Flip and match garden pairs" },
-        "whatChanged": { "name": "What Changed? 👁️", "desc": "Spot the item that transformed" },
-        "sequence": { "name": "Remember Sequence 🔢", "desc": "Memorize and repeat order" }
+        "memoryMatch": {
+          "name": "Memory Match",
+          "desc": "Flip and match garden pairs"
+        },
+        "whatChanged": {
+          "name": "What Changed?",
+          "desc": "Spot the item that transformed"
+        },
+        "sequence": {
+          "name": "Remember Sequence",
+          "desc": "Memorize and repeat order"
+        }
       },
       "memoryMatch": {
         "name": "Memory Match",
@@ -915,7 +1078,9 @@
         "good": "Good Effort!",
         "tryAgain": "Let's Practice Again!"
       },
-      "stats": { "score": "Garden Score" },
+      "stats": {
+        "score": "Garden Score"
+      },
       "playAgain": "Play Again",
       "backToHub": "Back to Therapy Suite"
     },
@@ -924,7 +1089,7 @@
       "desc": "Locate key road safety signs, zebra crossings, and landmarks amid city distractors.",
       "welcome": "Road Safety Search",
       "instruction": "Find all instances of:",
-      "startBtn": "Start Road Search 🚦",
+      "startBtn": "Start Road Search",
       "found": "Target found!",
       "wrong": "That's a distractor, look for the target item.",
       "levelComplete": "Street Cleared!",

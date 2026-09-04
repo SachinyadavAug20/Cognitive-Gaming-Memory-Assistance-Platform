@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useTranslations } from "next-intl";
+import { Download, Printer, Loader2 } from "lucide-react";
 
 interface PrintPatientCardProps {
   patientName: string;
@@ -215,7 +216,7 @@ export function PrintPatientCard({
           fontSize="9"
           fill="#6a5c40"
         >
-          ✦ {t("badge.footer")}
+          {t("badge.footer")}
         </text>
         <text
           x="284"
@@ -235,16 +236,18 @@ export function PrintPatientCard({
         <button
           onClick={handleDownload}
           disabled={busy}
-          className="btn-chunky btn-chunky-tea btn-chunky-xl"
+          className="btn-chunky btn-chunky-tea btn-chunky-xl inline-flex items-center justify-center gap-2"
         >
-          {busy ? "⏳" : "⬇"} {t("download")}
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+          <span>{t("download")}</span>
         </button>
         <button
           onClick={handlePrint}
           disabled={busy}
-          className="btn-chunky btn-chunky-xl"
+          className="btn-chunky btn-chunky-xl inline-flex items-center justify-center gap-2"
         >
-          {busy ? "⏳" : "🖨"} {t("print")}
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Printer className="h-4 w-4" />}
+          <span>{t("print")}</span>
         </button>
       </div>
     </div>

@@ -556,7 +556,7 @@ export default function PatientHome() {
         speakingLabel="Speaking..."
       />
 
-      {/* Interactive Saathi AI Voice Companion */}
+      {/* Interactive Saathi Voice Companion */}
       <SaathiVoiceCompanion
         key={locale}
         patientName={patientName}

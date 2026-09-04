@@ -336,15 +336,14 @@ export function AlpanaGame() {
     [activeNodeIndex, level, lines, patientId, redrawCanvas, startedAt, taps]
   );
 
-  // Handle Air-Camera Motion Event
+  // Handle Air-Camera Motion Event (1:1 viewport reach across all corners)
   const handleMotionEvent = useCallback(
     (evt: MotionEvent) => {
-      // Exclude face zone: only accept hand movement below head line Y > 0.26
       const hand = evt.rightHand || evt.leftHand;
       const effectiveY = hand ? hand.y : evt.y;
       const effectiveX = hand ? hand.x : evt.x;
 
-      if (effectiveY > 0.26 && evt.hasMotion && evt.energy > 0.12) {
+      if (evt.hasMotion && evt.energy > 0.12) {
         handlePointInput(effectiveX, effectiveY);
       }
     },

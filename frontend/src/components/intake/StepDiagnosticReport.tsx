@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { FileText } from "lucide-react";
 import { StepHeader } from "./StepHeader";
 import { FileUploadZone } from "./FileUploadZone";
 import { DiagnosisBanner } from "./DiagnosisBanner";
@@ -68,7 +69,8 @@ export function StepDiagnosticReport({
               onClick={() => onFileSelect(null)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface border-2 border-border rounded-xl text-xs font-bold text-ink hover:bg-surface-muted shadow-[2px_2px_0_var(--color-border)] active:translate-y-0.5 transition-all cursor-pointer"
             >
-              📄 {tMedical("replace") || "Upload different file"}
+              <FileText className="w-3.5 h-3.5" />
+              <span>{tMedical("replace")}</span>
             </button>
           </div>
           <DiagnosisBanner data={ext} />

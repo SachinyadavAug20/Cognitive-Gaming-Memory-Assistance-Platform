@@ -7,6 +7,7 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api";
 import { AudioToggle } from "@/components/ui/AudioToggle";
+import { CreditCard } from "lucide-react";
 import type { PatientSummary } from "@/types";
 
 export function CaregiverContent() {
@@ -94,7 +95,11 @@ export function CaregiverContent() {
             </div>
           ) : patients.length === 0 ? (
             <div className="scrapbook-card text-center py-14">
-              <p className="text-6xl mb-4">🪪</p>
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-tea-light border-3 border-tea flex items-center justify-center text-tea">
+                  <CreditCard className="h-8 w-8 stroke-[2.2]" />
+                </div>
+              </div>
               <p className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink mb-1">
                 {t("emptyTitle")}
               </p>

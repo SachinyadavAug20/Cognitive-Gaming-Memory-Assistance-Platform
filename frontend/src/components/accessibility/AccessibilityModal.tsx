@@ -6,6 +6,7 @@ import {
   Volume2,
   Keyboard,
   Eye,
+  Moon,
   Sliders,
   X,
   MousePointer,
@@ -646,17 +647,20 @@ export function AccessibilityModal({
               </div>
               <div>
                 <h3 className="text-sm font-black flex items-center gap-1.5">
-                  <Eye className="h-4 w-4 text-tea" />
-                  <span>Visual Ergonomics</span>
+                  <Moon className="h-4 w-4 text-tea" />
+                  <span>Visual & Circadian Ergonomics</span>
                 </h3>
                 <p className="text-xs font-bold text-ink-secondary">
-                  High contrast WCAG 7:1 ratio and text magnification
+                  Circadian night readability (zero blue light, sleep-safe) and text magnifier
                 </p>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <span className="text-xs font-black">High Contrast Mode</span>
+              <div>
+                <span className="text-xs font-black block">Circadian Night Mode</span>
+                <span className="text-[10px] text-ink-secondary">Deep espresso, roasted walnut & zero blue/cyan light</span>
+              </div>
               <button
                 type="button"
                 onClick={() => {
@@ -669,11 +673,11 @@ export function AccessibilityModal({
               >
                 {highContrast ? (
                   <span className="inline-flex items-center gap-1">
-                    <span>Enabled</span>
+                    <span>Night: ON</span>
                     <Check className="h-3 w-3" />
                   </span>
                 ) : (
-                  "Turn On"
+                  "Enable Night Mode"
                 )}
               </button>
             </div>

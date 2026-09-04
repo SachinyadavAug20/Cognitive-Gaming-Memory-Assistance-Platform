@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { HeartHandshake } from "lucide-react";
+import { HeartHandshake, MapPin } from "lucide-react";
 import type { AdminCaregiverBurnout } from "@/types/admin";
 
 interface AdminBurnoutTabProps {
@@ -51,7 +51,9 @@ export function AdminBurnoutTab({
 
               <h3 className="font-serif text-base font-black text-ink">{cb.caregiverName}</h3>
               <p className="text-xs text-ink-secondary">{cb.relationship} • Caring for {cb.patientName}</p>
-              <p className="text-xs font-bold text-ink-secondary mt-0.5">📍 {cb.district}</p>
+              <p className="text-xs font-bold text-ink-secondary mt-0.5 inline-flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-ink-secondary" /> {cb.district}
+              </p>
 
               <div className="mt-3 rounded-2xl border border-black/15 bg-surface p-3 text-xs space-y-1">
                 <div className="flex justify-between">

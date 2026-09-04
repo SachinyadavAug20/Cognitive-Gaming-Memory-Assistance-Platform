@@ -133,8 +133,8 @@ export function RiverLanternsGame() {
 
     if (cameraActive && phase === "river") {
       tracker = new OpticalMotionTracker((evt: MotionEvent) => {
-        // Clinical guard: Ignore movements in upper camera zone (patient's face/head)
-        if (evt.hasMotion && evt.y > 0.26) {
+        // 1:1 viewport reach across all corners
+        if (evt.hasMotion) {
           setMotionCoords({ x: evt.x, y: evt.y });
           setMotionDetected(true);
           setTimeout(() => setMotionDetected(false), 300);
@@ -350,7 +350,14 @@ export function RiverLanternsGame() {
 
               {cameraActive && (
                 <span className={`rounded-xl border-2 border-black px-2.5 py-1 text-[10px] font-black shadow-[2px_2px_0px_#000] ${motionDetected ? "bg-teal-300 text-teal-950" : "bg-white/90 text-ink"}`}>
-                  {motionDetected ? "🌊 Ripple Cast" : "Vision Active"}
+                  {motionDetected ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Waves className="h-3 w-3 text-teal-950" />
+                      <span>Ripple Cast</span>
+                    </span>
+                  ) : (
+                    "Vision Active"
+                  )}
                 </span>
               )}
             </div>
@@ -369,7 +376,7 @@ export function RiverLanternsGame() {
                   Tap to Catch Floating Lantern:
                 </span>
                 <span className="font-serif text-lg font-black text-ink">
-                  🏮 Catch {currentTarget.name}&apos;s Memory Lantern
+                  Catch {currentTarget.name}&apos;s Memory Lantern
                 </span>
               </div>
             </button>

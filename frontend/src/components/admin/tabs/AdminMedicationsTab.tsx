@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Pill, PhoneCall } from "lucide-react";
+import { Pill, PhoneCall, Droplets } from "lucide-react";
 import type { AdminMedicationAdherence } from "@/types/admin";
 
 interface AdminMedicationsTabProps {
@@ -53,9 +53,10 @@ export function AdminMedicationsTab({
                     {med.activePrescriptions.map((p) => (
                       <span
                         key={p}
-                        className="rounded-md border border-black/20 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-950"
+                        className="inline-flex items-center gap-1 rounded-md border border-black/20 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-950"
                       >
-                        💊 {p}
+                        <Pill className="h-3 w-3 shrink-0 text-emerald-700" />
+                        <span>{p}</span>
                       </span>
                     ))}
                   </div>
@@ -65,7 +66,9 @@ export function AdminMedicationsTab({
                   <span className="text-[10px] text-ink-secondary block">{med.missedDosesThisWeek} missed this week</span>
                 </td>
                 <td className="py-3 px-3 hidden md:table-cell">
-                  <span className="text-blue-900 font-black">💧 {med.hydrationAvgGlasses} / 6 glasses</span>
+                  <span className="text-blue-900 font-black inline-flex items-center gap-1">
+                    <Droplets className="h-3 w-3 text-blue-700" /> {med.hydrationAvgGlasses} / 6 glasses
+                  </span>
                 </td>
                 <td className="py-3 px-3">
                   <span

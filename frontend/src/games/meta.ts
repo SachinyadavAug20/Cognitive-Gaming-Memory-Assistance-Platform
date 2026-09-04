@@ -23,11 +23,9 @@ const RAW: Array<[string, string, string, string]> = [
   ["drum", "drum.title", "drum.desc", "3D Auditory-Motor Entrainment"],
   ["hornbill-flight", "hornbill.title", "hornbill.desc", "Visuomotor Glider Physics"],
   ["majuli-pottery", "pottery.title", "pottery.desc", "Tactile Motor Praxis"],
-  ["bamboo-dance", "bambooDance.title", "bambooDance.desc", "Visuomotor Rhythm Step"],
   // reminiscence
   ["grandchild-chat", "grandchildChat.title", "grandchildChat.desc", "AI Conversational Reminiscence"],
   ["memory-detective", "memoryDetective.title", "memoryDetective.desc", "Face & Clue Spaced Retrieval"],
-  ["memoir-scribe", "memoirScribe.title", "memoirScribe.desc", "AI Spoken Memoirs & Scribe"],
   ["timeline", "timeline.title", "timeline.desc", "Chronological Life Milestones"],
   ["jigsaw", "jigsaw.title", "jigsaw.desc", "Visuospatial Family Puzzles"],
   ["radio", "radio.title", "radio.desc", "Auditory Vintage Reminiscence"],
@@ -42,23 +40,18 @@ const RAW: Array<[string, string, string, string]> = [
   // iadl
   ["daily-routine", "dailyRoutine.title", "dailyRoutine.desc", "Prospective Memory & Routine"],
   ["heritage-kitchen", "kitchen.title", "kitchen.desc", "IADL Recipe Sequencing"],
-  ["bazaar", "bazaar.title", "bazaar.desc", "AI Market Barter & IADL"],
   ["sorting", "sorting.title", "sorting.desc", "Executive Categorisation"],
-  ["proverb", "proverb.title", "proverb.desc", "AI Cultural Cloze & Wisdom"],
   // calm
-  ["lotus-lake", "lotusLake.title", "lotusLake.desc", "Sensory Calming"],
   // spatial vector
   ["arrow-escape", "arrowEscape.title", "arrowEscape.desc", "Spatial Planning & Vector Clearance"],
   // advanced
   ["majuli-walk", "majuliWalk.title", "majuliWalk.desc", "3D Spatial Memory Navigation"],
   ["tea-harvest-vision", "teaHarvestVision.title", "teaHarvestVision.desc", "OpenCV Motion Tracking Harvest"],
   ["bihu-dhol", "bihuDhol.title", "bihuDhol.desc", "Adaptive Acoustic Drum Rhythm"],
-  ["brahmaputra-voice", "brahmaputraVoice.title", "brahmaputraVoice.subtitle", "Spoken Proverb Recall & River Glow Canvas"],
   ["day-in-my-world", "dayInMyWorld.title", "dayInMyWorld.subtitle", "6-Chapter 3D Story Campaign & Saathi AI"],
   ["bazaar-buddies", "bazaarBuddies.title", "bazaarBuddies.desc", "IADL Budget & Money Management"],
   ["memory-garden", "memoryGarden.title", "memoryGarden.desc", "Multi-Activity Memory Suite"],
   ["memory-road", "memoryRoad.title", "memoryRoad.desc", "Road Safety & Visual Search"],
-  ["memory-match", "memoryMatch.title", "memoryMatch.desc", "Family Face Recognition & Working Memory"],
   ["daily-tasks", "dailyTasks.title", "dailyTasks.desc", "IADL Sequencing & Daily Routine"],
   ["companion", "companion.title", "companion.desc", "Conversational Reminiscence Companion"],
   ["rhythm-hills", "rhythmHills.title", "rhythmHills.desc", "Kinesthetic Rhythm & Tempo Matching"],

@@ -13,7 +13,14 @@ import {
   CheckCircle2,
   HelpCircle,
   Trash2,
+  Wheat,
+  Soup,
+  Droplets,
+  Package,
+  Flame,
+  Check,
 } from "lucide-react";
+import { AssamTeaLeafIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -60,7 +67,27 @@ interface Product {
   id: string;
   name: Localized;
   price: number;
-  emoji: string;
+  category: "rice" | "dal" | "oil" | "sugar" | "salt" | "tea" | "atta" | "spices";
+}
+
+function renderProductIcon(category: Product["category"], className = "h-5 w-5") {
+  switch (category) {
+    case "tea":
+      return <AssamTeaLeafIcon className={`${className} text-emerald-800`} />;
+    case "oil":
+      return <Droplets className={`${className} text-amber-700`} />;
+    case "rice":
+    case "atta":
+      return <Wheat className={`${className} text-amber-800`} />;
+    case "dal":
+      return <Soup className={`${className} text-orange-700`} />;
+    case "spices":
+      return <Flame className={`${className} text-red-700`} />;
+    case "sugar":
+    case "salt":
+    default:
+      return <Package className={`${className} text-stone-700`} />;
+  }
 }
 
 const PRODUCTS: Product[] = [
@@ -80,7 +107,7 @@ const PRODUCTS: Product[] = [
       lus: "Buhfai (1 kg)",
     },
     price: 80,
-    emoji: "🍚",
+    category: "rice",
   },
   {
     id: "dal",
@@ -98,7 +125,7 @@ const PRODUCTS: Product[] = [
       lus: "Dal (500 g)",
     },
     price: 65,
-    emoji: "🫘",
+    category: "dal",
   },
   {
     id: "oil",
@@ -116,7 +143,7 @@ const PRODUCTS: Product[] = [
       lus: "Hriak (1 L)",
     },
     price: 90,
-    emoji: "🫙",
+    category: "oil",
   },
   {
     id: "sugar",
@@ -134,7 +161,7 @@ const PRODUCTS: Product[] = [
       lus: "Chini (1 kg)",
     },
     price: 45,
-    emoji: "🍬",
+    category: "sugar",
   },
   {
     id: "salt",
@@ -152,7 +179,7 @@ const PRODUCTS: Product[] = [
       lus: "Chi (1 kg)",
     },
     price: 25,
-    emoji: "🧂",
+    category: "salt",
   },
   {
     id: "tea",
@@ -170,7 +197,7 @@ const PRODUCTS: Product[] = [
       lus: "Thingpui hnah (250 g)",
     },
     price: 55,
-    emoji: "🍵",
+    category: "tea",
   },
   {
     id: "atta",
@@ -188,7 +215,7 @@ const PRODUCTS: Product[] = [
       lus: "Atta (5 kg)",
     },
     price: 140,
-    emoji: "🪨",
+    category: "atta",
   },
   {
     id: "spices",
@@ -206,7 +233,7 @@ const PRODUCTS: Product[] = [
       lus: "Chawhmeh thil al (6 chi)",
     },
     price: 100,
-    emoji: "🫚",
+    category: "spices",
   },
 ];
 
@@ -480,7 +507,9 @@ export function BazaarBuddiesGame() {
                       : "bg-surface hover:bg-tea-light"
                   }`}
                 >
-                  <span className="text-2xl shrink-0">{product.emoji}</span>
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-black/5">
+                    {renderProductIcon(product.category, "h-5 w-5")}
+                  </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] font-black text-ink leading-tight truncate">
                       {productName(product)}
@@ -490,9 +519,7 @@ export function BazaarBuddiesGame() {
                     </p>
                   </div>
                   {inBasket && (
-                    <span className="text-[10px] font-black text-tea shrink-0">
-                      ✓
-                    </span>
+                    <Check className="h-3.5 w-3.5 text-tea shrink-0" />
                   )}
                 </button>
               );
@@ -520,8 +547,8 @@ export function BazaarBuddiesGame() {
                       key={id}
                       className="flex items-center justify-between text-base font-black text-ink"
                     >
-                      <span>
-                        {p.emoji} {productName(p)}
+                      <span className="flex items-center gap-2">
+                        {renderProductIcon(p.category, "h-4 w-4")} {productName(p)}
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-tea">₹{p.price}</span>
@@ -570,8 +597,8 @@ export function BazaarBuddiesGame() {
                     key={id}
                     className="flex items-center justify-between text-base font-black text-ink"
                   >
-                    <span>
-                      {p.emoji} {productName(p)}
+                    <span className="flex items-center gap-2">
+                      {renderProductIcon(p.category, "h-4 w-4")} {productName(p)}
                     </span>
                     <span className="text-tea">₹{p.price}</span>
                   </div>
@@ -735,8 +762,8 @@ export function BazaarBuddiesGame() {
                       key={id}
                       className="flex items-center justify-between text-base font-black text-ink"
                     >
-                      <span>
-                        {p.emoji} {productName(p)}
+                      <span className="flex items-center gap-2">
+                        {renderProductIcon(p.category, "h-4 w-4")} {productName(p)}
                       </span>
                       <span className="text-tea">₹{p.price}</span>
                     </div>
@@ -751,7 +778,7 @@ export function BazaarBuddiesGame() {
                   className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
                   <Music className="h-4 w-4 text-ink" />
-                  <span className="text-base font-black">🎵</span>
+                  <span className="text-xs font-black">Play Melody</span>
                 </button>
                 <span className="text-base font-bold text-ink-secondary">
                   {t("complete")}

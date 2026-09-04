@@ -162,7 +162,7 @@ interface Butterfly {
   name: string;
   species: string;
   color: string;
-  wingEmoji: string;
+  wingIcon: string;
   x: number; // 0..1
   y: number; // 0..1
   targetX: number;
@@ -236,18 +236,16 @@ export function ButterflySanctuaryGame() {
       const updated = prev.map((bf) => {
         if (bf.perched) return bf;
 
-        // Check if deliberate hand is near the butterfly (exclude face zone Y <= 0.26)
+        // Check if deliberate hand is near the butterfly (1:1 viewport reach across all corners)
         const hand = evt.rightHand || evt.leftHand;
         const handX = hand ? hand.x : evt.x;
         const handY = hand ? hand.y : evt.y;
 
-        if (handY <= 0.26) return bf; // Filter out face region
-
         const dx = bf.x - handX;
         const dy = bf.y - handY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dist = Math.hypot(dx, dy);
 
-        if (dist < 0.20) {
+        if (dist < 0.22) {
           const nextProg = bf.perchedProgress + 3; // Calm, steady hold (~1.2s of steady hand)
           if (nextProg >= 100) {
             newlyPerched = true;
@@ -320,6 +318,7 @@ export function ButterflySanctuaryGame() {
       showHands: true,
       showGrid: false,
       showMetrics: true,
+      videoEl: trackerRef.current?.getVideoElement(),
     });
   }, [motionEvent, phase]);
 
@@ -349,7 +348,7 @@ export function ButterflySanctuaryGame() {
             name: sp.name,
             species: sp.species,
             color: sp.color,
-            wingEmoji: "🦋",
+            wingIcon: "butterfly",
             x: Math.random() * 0.7 + 0.15,
             y: Math.random() * 0.4 + 0.1,
             targetX: flower.x,

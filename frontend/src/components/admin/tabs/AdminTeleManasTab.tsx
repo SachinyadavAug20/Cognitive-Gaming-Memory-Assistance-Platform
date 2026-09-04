@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Video } from "lucide-react";
+import { Video, Stethoscope, Clock } from "lucide-react";
 import type { AdminTeleManasConsultation } from "@/types/admin";
 
 interface AdminTeleManasTabProps {
@@ -43,8 +43,8 @@ export function AdminTeleManasTab({ teleManasQueue }: AdminTeleManasTabProps) {
               <h3 className="font-serif text-lg font-black text-ink">
                 {tm.patientName} (Patient #{tm.patientId})
               </h3>
-              <p className="text-xs font-bold text-blue-900 mt-0.5">
-                🩺 {tm.specialistDoctor}
+              <p className="text-xs font-bold text-blue-900 mt-0.5 inline-flex items-center gap-1">
+                <Stethoscope className="h-3.5 w-3.5 shrink-0 text-blue-700" /> {tm.specialistDoctor}
               </p>
               <p className="text-xs text-ink-secondary">{tm.hospitalCenter}</p>
 
@@ -55,8 +55,8 @@ export function AdminTeleManasTab({ teleManasQueue }: AdminTeleManasTabProps) {
             </div>
 
             <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between">
-              <span className="text-xs font-bold text-ink">
-                ⏰ {new Date(tm.scheduledAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+              <span className="text-xs font-bold text-ink inline-flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5 shrink-0 text-ink-secondary" /> {new Date(tm.scheduledAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
               </span>
 
               <a

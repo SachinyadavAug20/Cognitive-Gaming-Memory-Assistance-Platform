@@ -111,19 +111,22 @@ export function getMediaUrl(path?: string | null): string | null {
   if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("blob:") || path.startsWith("data:")) {
     return path;
   }
+  const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  if (cleanPath.startsWith("sample-images/")) {
+    return `/${cleanPath}`;
+  }
+  if (cleanPath.startsWith("images/")) {
+    return `/sample-images/${cleanPath.replace(/^images\//, "")}`;
+  }
   const apiBase = getApiBase();
   const baseUrl = apiBase.replace(/\/api\/v1\/?$/, "");
-  if (path.startsWith("/uploads/")) {
-    return `${baseUrl}${path}`;
+  if (cleanPath.startsWith("uploads/")) {
+    return `${baseUrl}/${cleanPath}`;
   }
-  if (path.startsWith("uploads/")) {
-    return `${baseUrl}/${path}`;
-  }
-  if (path.startsWith("patients/") || path.startsWith("/patients/")) {
-    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+  if (cleanPath.startsWith("patients/")) {
     return `${baseUrl}/uploads/${cleanPath}`;
   }
-  return path;
+  return `/${cleanPath}`;
 }
 
 export interface AiChatPayload {

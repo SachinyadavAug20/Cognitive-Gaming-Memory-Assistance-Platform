@@ -11,13 +11,19 @@ import {
   Music,
   Volume2,
   VolumeX,
+  MessageSquare,
+  ShoppingBag,
+  Sparkles,
+  Leaf,
 } from "lucide-react";
+import { AssamTeaLeafIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useGameVoice } from "@/hooks/useGameVoice";
 import { submitGameSessionTelemetry } from "@/lib/gameTelemetry";
 import { useAuthStore } from "@/store/useAuthStore";
+import { remapCamToScreen, drawCroppedCameraFeed } from "@/lib/vision";
 import {
   playPress,
   playCorrect,
@@ -73,7 +79,7 @@ export function TeaHarvestVision() {
   const reactionTimesRef = useRef<number[]>([]);
   const lastPluckTimeRef = useRef<number>(0);
 
-  // Frame processing loop for optical motion tracking
+  // Frame processing loop for optical motion tracking (1:1 viewport reach to all corners)
   const processFrame = useCallback(
     (
       ctx: CanvasRenderingContext2D,
@@ -81,11 +87,8 @@ export function TeaHarvestVision() {
       width: number,
       height: number
     ): { handX: number; handY: number; isTracking: boolean } => {
-      ctx.save();
-      ctx.translate(width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0, width, height);
-      ctx.restore();
+      // 1:1 Mirrored & Cropped camera feed matching screen viewport
+      drawCroppedCameraFeed(ctx, video, width, height);
 
       ctx.fillStyle = "rgba(20, 83, 45, 0.15)";
       ctx.fillRect(0, 0, width, height);
@@ -132,9 +135,19 @@ export function TeaHarvestVision() {
         // Ignore canvas security errors on raw streams
       }
 
+      let finalHandX = width / 2;
+      let finalHandY = height / 2;
+
       if (hasMotion) {
+        // 1:1 camera viewport mapping so motion in front of camera reaches all 4 corners of the game
+        const normX = motionX / width;
+        const normY = motionY / height;
+        const remapped = remapCamToScreen(normX, normY);
+        finalHandX = remapped.screenX * width;
+        finalHandY = remapped.screenY * height;
+
         ctx.beginPath();
-        ctx.arc(motionX, motionY, 32, 0, Math.PI * 2);
+        ctx.arc(finalHandX, finalHandY, 32, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(250, 204, 21, 0.4)";
         ctx.fill();
         ctx.lineWidth = 4;
@@ -142,12 +155,12 @@ export function TeaHarvestVision() {
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.arc(motionX, motionY, 8, 0, Math.PI * 2);
+        ctx.arc(finalHandX, finalHandY, 8, 0, Math.PI * 2);
         ctx.fillStyle = "#FFFFFF";
         ctx.fill();
       }
 
-      return { handX: motionX, handY: motionY, isTracking: hasMotion };
+      return { handX: finalHandX, handY: finalHandY, isTracking: hasMotion };
     },
     []
   );
@@ -345,8 +358,9 @@ export function TeaHarvestVision() {
         {/* Visual Subtitle Pill Fallback */}
         {currentSubtitle && (
           <div className="mb-3 flex items-center justify-center animate-fade-in">
-            <span className="rounded-full border-2 border-emerald-900/40 bg-emerald-100 px-4 py-1.5 text-xs font-black text-emerald-950 shadow-sm">
-              💬 {currentSubtitle}
+            <span className="rounded-full border-2 border-emerald-900/40 bg-emerald-100 px-4 py-1.5 text-xs font-black text-emerald-950 shadow-sm inline-flex items-center gap-1.5">
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>{currentSubtitle}</span>
             </span>
           </div>
         )}
@@ -422,8 +436,8 @@ export function TeaHarvestVision() {
             {/* Top HUD Banner */}
             <div className="flex w-full items-center justify-between rounded-2xl border-3 border-black bg-[#FAF3E0] px-4 py-2.5 shadow-[3px_3px_0px_#000]">
               <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-emerald-400 text-lg font-black">
-                  🧺
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-emerald-400 text-emerald-950 font-black">
+                  <ShoppingBag className="w-5 h-5" />
                 </span>
                 <div>
                   <span className="text-[10px] font-black uppercase text-ink-secondary">
@@ -487,26 +501,30 @@ export function TeaHarvestVision() {
                     className="group absolute flex flex-col items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-125"
                     aria-label="Two leaves and a bud"
                   >
-                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl border-3 border-black bg-emerald-400 text-3xl shadow-[3px_3px_0px_#000] animate-bounce ring-4 ring-yellow-300">
-                      🌿
+                    <span className="flex h-14 w-14 items-center justify-center rounded-2xl border-3 border-black bg-emerald-400 text-emerald-950 shadow-[3px_3px_0px_#000] animate-bounce ring-4 ring-yellow-300">
+                      <AssamTeaLeafIcon className="w-8 h-8 text-emerald-950" />
                     </span>
-                    <span className="mt-1 rounded-md bg-black/80 px-2 py-0.5 text-[9px] font-black text-yellow-300 border border-yellow-300/40">
-                      Pluck ✦
+                    <span className="mt-1 inline-flex items-center gap-1 rounded-md bg-black/80 px-2 py-0.5 text-[9px] font-black text-yellow-300 border border-yellow-300/40">
+                      <Sparkles className="w-2.5 h-2.5 text-yellow-300" />
+                      <span>Pluck</span>
                     </span>
                   </button>
                 );
               })}
 
               {handPos.active && (
-                <div className="absolute top-3 left-3 rounded-full bg-black/60 border border-white/20 px-3 py-1 text-xs font-black text-amber-300 backdrop-blur-sm pointer-events-none">
-                  👋 Hand detected: Hover over leaves to pluck
+                <div className="absolute top-3 left-3 rounded-full bg-black/60 border border-white/20 px-3 py-1 text-xs font-black text-amber-300 backdrop-blur-sm pointer-events-none inline-flex items-center gap-1.5">
+                  <Hand className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Hand detected: Hover over leaves to pluck</span>
                 </div>
               )}
             </div>
 
             {/* Instructions */}
             <div className="flex w-full items-center gap-3 rounded-2xl border-2 border-black/20 bg-surface p-3 text-left shadow-sm">
-              <span className="text-2xl">🌱</span>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-emerald-100 text-emerald-800">
+                <Leaf className="w-5 h-5" />
+              </span>
               <p className="text-xs font-semibold text-ink">
                 <span className="font-black text-emerald-900 uppercase text-[10px] block">
                   Motion Physical Exercise:

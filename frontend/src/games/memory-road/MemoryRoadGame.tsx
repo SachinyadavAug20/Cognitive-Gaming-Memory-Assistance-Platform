@@ -9,6 +9,20 @@ import {
   HelpCircle,
   RotateCcw,
   ArrowRight,
+  TrafficCone,
+  Footprints,
+  Octagon,
+  Home,
+  Building2,
+  User,
+  Store,
+  Car,
+  Bus,
+  Bike,
+  Trees,
+  Clock,
+  Check,
+  Sparkles,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -55,15 +69,44 @@ type Localized = Record<string, string>;
 interface GameObject {
   id: string;
   type: "target" | "filler";
-  emoji: string;
   name: Localized;
+}
+
+function renderRoadObjectIcon(id: string, className = "h-8 w-8") {
+  switch (id) {
+    case "traffic":
+      return <TrafficCone className={`${className} text-amber-600`} />;
+    case "zebra":
+      return <Footprints className={`${className} text-stone-700`} />;
+    case "stop":
+      return <Octagon className={`${className} text-red-600`} />;
+    case "home":
+      return <Home className={`${className} text-amber-700`} />;
+    case "hospital":
+      return <Building2 className={`${className} text-blue-700`} />;
+    case "person":
+      return <User className={`${className} text-teal-700`} />;
+    case "shop":
+      return <Store className={`${className} text-emerald-700`} />;
+    case "car":
+      return <Car className={`${className} text-indigo-600`} />;
+    case "bus":
+      return <Bus className={`${className} text-yellow-600`} />;
+    case "bicycle":
+      return <Bike className={`${className} text-cyan-700`} />;
+    case "tree":
+      return <Trees className={`${className} text-emerald-700`} />;
+    case "clock":
+      return <Clock className={`${className} text-slate-700`} />;
+    default:
+      return <Route className={className} />;
+  }
 }
 
 const OBJECTS: GameObject[] = [
   {
     id: "traffic",
     type: "target",
-    emoji: "🚦",
     name: {
       en: "Traffic Signal",
       hi: "ट्रैफिक सिग्नल",
@@ -81,7 +124,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "zebra",
     type: "target",
-    emoji: "🚸",
     name: {
       en: "Zebra Crossing",
       hi: "ज़ेब्रा क्रॉसिंग",
@@ -99,7 +141,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "stop",
     type: "target",
-    emoji: "🛑",
     name: {
       en: "STOP Sign",
       hi: "स्टॉप साइन",
@@ -117,7 +158,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "home",
     type: "target",
-    emoji: "🏠",
     name: {
       en: "Home",
       hi: "घर",
@@ -135,7 +175,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "hospital",
     type: "target",
-    emoji: "🏥",
     name: {
       en: "Hospital",
       hi: "अस्पताल",
@@ -153,7 +192,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "person",
     type: "target",
-    emoji: "🧍",
     name: {
       en: "Person",
       hi: "व्यक्ति",
@@ -171,7 +209,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "shop",
     type: "target",
-    emoji: "🏪",
     name: {
       en: "Shop",
       hi: "दुकान",
@@ -189,7 +226,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "car",
     type: "filler",
-    emoji: "🚗",
     name: {
       en: "Car",
       hi: "गाड़ी",
@@ -207,7 +243,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "bus",
     type: "filler",
-    emoji: "🚌",
     name: {
       en: "Bus",
       hi: "बस",
@@ -225,7 +260,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "bicycle",
     type: "filler",
-    emoji: "🚲",
     name: {
       en: "Bicycle",
       hi: "साइकिल",
@@ -243,7 +277,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "tree",
     type: "filler",
-    emoji: "🌳",
     name: {
       en: "Tree",
       hi: "पेड़",
@@ -261,7 +294,6 @@ const OBJECTS: GameObject[] = [
   {
     id: "clock",
     type: "filler",
-    emoji: "🕐",
     name: {
       en: "Clock",
       hi: "घड़ी",
@@ -555,7 +587,9 @@ export function MemoryRoadGame() {
         <div className="flex flex-col items-center gap-4 py-2">
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-4 py-2.5 shadow-[2px_2px_0px_#000]">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{targetObj.emoji}</span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black/5">
+                {renderRoadObjectIcon(targetObj.id, "h-5 w-5")}
+              </div>
               <span className="text-base font-black text-ink">
                 Find: <strong className="text-tea">{localizedName(targetObj)}</strong>
               </span>
@@ -580,7 +614,7 @@ export function MemoryRoadGame() {
                 type="button"
                 disabled={tile.found}
                 onClick={() => tapTile(tile.uid)}
-                className={`btn-tactile aspect-square flex items-center justify-center rounded-2xl border-3 border-black text-5xl shadow-[4px_4px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-50 ${
+                className={`btn-tactile aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-50 ${
                   tile.found
                     ? "bg-tea-light border-tea ring-2 ring-tea"
                     : tile.wrongFlash
@@ -588,7 +622,11 @@ export function MemoryRoadGame() {
                     : "bg-surface hover:bg-tea-light/40"
                 }`}
               >
-                {tile.found ? "✓" : tile.object.emoji}
+                {tile.found ? (
+                  <Check className="h-10 w-10 text-emerald-700" />
+                ) : (
+                  renderRoadObjectIcon(tile.object.id, "h-10 w-10")
+                )}
               </button>
             ))}
           </div>
@@ -609,7 +647,7 @@ export function MemoryRoadGame() {
       {/* ─── LEVEL DONE ─── */}
       {phase === "levelDone" && (
         <div className="flex flex-col items-center gap-5 py-12 text-center">
-          <div className="text-6xl animate-bounce">🎉</div>
+          <Sparkles className="h-16 w-16 text-amber-500 animate-bounce" />
           <h3 className="font-serif text-3xl font-black text-ink">
             {t("levelComplete")}
           </h3>

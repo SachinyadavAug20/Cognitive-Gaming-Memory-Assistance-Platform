@@ -92,13 +92,32 @@ export function RiverScene3D({
     }
   }, []);
 
-  // Handle external camera motion coords
+  // Handle external camera motion coords (1:1 viewport reach)
   useEffect(() => {
     if (!motionCoords || !cameraRef.current) return;
-    const worldX = (motionCoords.x - 0.5) * 12;
-    const worldZ = -8 + motionCoords.y * 12;
+    const worldX = (motionCoords.x - 0.5) * 14;
+    const worldZ = -10 + motionCoords.y * 14;
     addRipple(worldX, worldZ);
-  }, [motionCoords, addRipple]);
+
+    // Raycast selection with camera motion (reaches all corners)
+    const ndcX = motionCoords.x * 2 - 1;
+    const ndcY = -(motionCoords.y * 2 - 1);
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(ndcX, ndcY), cameraRef.current);
+
+    const lanternMeshes = lanternsRef.current.map((l) => l.mesh);
+    const intersects = raycaster.intersectObjects(lanternMeshes, true);
+    if (intersects.length > 0) {
+      let topMesh: THREE.Object3D | null = intersects[0].object;
+      while (topMesh && topMesh.parent && topMesh.parent !== sceneRef.current) {
+        topMesh = topMesh.parent;
+      }
+      const match = lanternsRef.current.find((l) => l.mesh === topMesh);
+      if (match) {
+        onSelectTarget(match.target);
+      }
+    }
+  }, [motionCoords, addRipple, onSelectTarget]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -241,12 +260,12 @@ export function RiverScene3D({
     scene.add(particles);
 
     // 7. ANIMATION LOOP
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
     let animId: number;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
+      const time = (performance.now() - startTime) * 0.001;
 
       // Deform River Water Surface
       if (waterMeshRef.current && origPositionsRef.current) {

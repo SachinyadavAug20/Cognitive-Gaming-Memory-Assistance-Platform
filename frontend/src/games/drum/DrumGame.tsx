@@ -26,7 +26,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
-import { OpticalMotionTracker, type MotionEvent } from "@/lib/vision";
+import { OpticalMotionTracker, drawCroppedCameraFeed, type MotionEvent } from "@/lib/vision";
 import { DrumScene3D } from "./DrumScene3D";
 import { getGameStrings } from "@/lib/gameI18n";
 
@@ -221,11 +221,7 @@ export function DrumGame() {
         if (ctx) {
           const videoEl = trackerRef.current?.getVideoElement();
           if (videoEl && videoEl.readyState >= 2) {
-            ctx.save();
-            ctx.translate(canvas.width, 0);
-            ctx.scale(-1, 1);
-            ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
+            drawCroppedCameraFeed(ctx, videoEl, canvas.width, canvas.height);
           } else {
             ctx.fillStyle = "#1e1b18";
             ctx.fillRect(0, 0, canvas.width, canvas.height);

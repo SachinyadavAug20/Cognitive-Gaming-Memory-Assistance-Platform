@@ -1,6 +1,8 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { Printer } from "lucide-react";
 import { ClinicalDossierExport } from "@/components/clinical/ClinicalDossierExport";
 import { ClinicalReportExportModal } from "@/components/patient-detail/ClinicalReportExportModal";
 import type { PatientDetailRecord } from "@/types";
@@ -20,6 +22,8 @@ export function PatientHeroCard({
   age,
   loading,
 }: PatientHeroCardProps) {
+  const t = useTranslations("patientDetail");
+
   return (
     <div className="bg-ink border-b-4 border-border px-4 py-6 md:px-8">
       <div className="max-w-6xl mx-auto">
@@ -27,7 +31,7 @@ export function PatientHeroCard({
           href="/caregiver"
           className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-base transition-colors mb-4 inline-block"
         >
-          ← Back to Dashboard
+          ← {t("hero.backToDashboard")}
         </Link>
 
         {loading && (
@@ -41,38 +45,39 @@ export function PatientHeroCard({
         )}
 
         {patient && (
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mt-2">
-            <div className="flex items-start gap-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 mt-2">
+            <div className="flex items-start gap-4 min-w-0">
               <div className="w-16 h-16 rounded-2xl border-3 border-tea bg-tea/20 flex items-center justify-center text-3xl text-tea font-bold shrink-0 shadow-[2px_2px_0px_var(--color-tea)]">
                 {patient.name.charAt(0)}
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="font-[family-name:var(--font-serif)] font-bold text-2xl md:text-3xl text-ink-inverse">
+                  <h1 className="font-[family-name:var(--font-serif)] font-bold text-2xl md:text-3xl text-ink-inverse truncate">
                     {patient.name}
                   </h1>
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide border ${stageStyle}`}>
-                    {stage} Stage
+                    {stage} {t("hero.stage")}
                   </span>
                 </div>
                 <p className="text-ink-inverse/70 text-sm md:text-base mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <span>Patient #{patient.id}</span>
-                  {age != null && <span>• Age {age}</span>}
+                  <span>{t("hero.patientId", { id: patient.id })}</span>
+                  {age != null && <span>• {t("hero.age", { age })}</span>}
                   {patient.gender && <span>• {patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}</span>}
                   {patient.preferredLanguage && <span>• {patient.preferredLanguage.toUpperCase()}</span>}
-                  {patient.relationship && <span>• Filled by {patient.relationship}</span>}
+                  {patient.relationship && <span>• {t("hero.filledBy", { relationship: patient.relationship })}</span>}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row md:flex-col xl:flex-row flex-wrap items-stretch gap-2.5 min-w-0 max-w-full">
+            <div className="flex flex-wrap items-center gap-2.5 max-w-full">
               <ClinicalReportExportModal patient={patient} age={age ?? null} stage={stage} />
               <ClinicalDossierExport patient={patient} age={age} />
               <Link
                 href={`/caregiver/patients/${patient.id}/card`}
-                className="btn-chunky btn-chunky-marigold lg:btn-chunky-xl text-center"
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-marigold px-4 py-2 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-amber-600 transition-colors"
               >
-                🖨 Print ID Card
+                <Printer className="h-4 w-4" />
+                <span>{t("hero.printCard")}</span>
               </Link>
             </div>
           </div>

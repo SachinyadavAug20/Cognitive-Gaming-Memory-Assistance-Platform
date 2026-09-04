@@ -11,6 +11,10 @@ import {
   ShieldCheck,
   CheckCircle2,
   Music,
+  Disc,
+  Wind,
+  Headphones,
+  Play,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -52,7 +56,7 @@ interface BellInstrument {
   id: number;
   name: string;
   subname: string;
-  emoji: string;
+  iconType: "gong" | "bowl" | "chime" | "bell";
   color: string;
   activeColor: string;
   frequency: number; // Hz
@@ -63,7 +67,7 @@ const SACRED_BELLS: BellInstrument[] = [
     id: 0,
     name: "Golden Gong",
     subname: "Deep Resonant Bass",
-    emoji: "🥁",
+    iconType: "gong",
     color: "bg-amber-100 border-amber-600 text-amber-950",
     activeColor: "bg-amber-400 border-amber-800 text-black ring-4 ring-amber-300 scale-105",
     frequency: 220,
@@ -72,7 +76,7 @@ const SACRED_BELLS: BellInstrument[] = [
     id: 1,
     name: "Bronze Singing Bowl",
     subname: "Harmonic Overtone",
-    emoji: "🥣",
+    iconType: "bowl",
     color: "bg-emerald-100 border-emerald-600 text-emerald-950",
     activeColor: "bg-emerald-400 border-emerald-800 text-black ring-4 ring-emerald-300 scale-105",
     frequency: 330,
@@ -81,7 +85,7 @@ const SACRED_BELLS: BellInstrument[] = [
     id: 2,
     name: "Tawang Wind Chime",
     subname: "High Shimmer",
-    emoji: "🎐",
+    iconType: "chime",
     color: "bg-sky-100 border-sky-600 text-sky-950",
     activeColor: "bg-sky-400 border-sky-800 text-black ring-4 ring-sky-300 scale-105",
     frequency: 440,
@@ -90,7 +94,7 @@ const SACRED_BELLS: BellInstrument[] = [
     id: 3,
     name: "Sacred Temple Bell",
     subname: "Clear High Chime",
-    emoji: "🔔",
+    iconType: "bell",
     color: "bg-rose-100 border-rose-600 text-rose-950",
     activeColor: "bg-rose-400 border-rose-800 text-black ring-4 ring-rose-300 scale-105",
     frequency: 550,
@@ -305,8 +309,18 @@ export function MonasteryBellGame() {
             <span className="text-xs font-black uppercase tracking-wider text-purple-950 flex items-center gap-1.5">
               <Sparkles className="h-4 w-4 text-purple-700" /> {str.hudProgress}: {currentRound} / {TOTAL_ROUNDS}
             </span>
-            <span className="text-xs font-black px-2 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300">
-              {phase === "demonstrate" ? "🎧 Listen Carefully..." : "👉 Your Turn to Play!"}
+            <span className="text-xs font-black px-2 py-0.5 rounded bg-purple-100 text-purple-900 border border-purple-300 inline-flex items-center gap-1">
+              {phase === "demonstrate" ? (
+                <>
+                  <Headphones className="w-3.5 h-3.5" />
+                  <span>Listen Carefully...</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-3.5 h-3.5" />
+                  <span>Your Turn to Play!</span>
+                </>
+              )}
             </span>
           </div>
 
@@ -324,7 +338,17 @@ export function MonasteryBellGame() {
                     isLit ? bell.activeColor : bell.color
                   }`}
                 >
-                  <span className="text-4xl">{bell.emoji}</span>
+                  <span className="flex h-12 w-12 items-center justify-center">
+                    {bell.iconType === "gong" ? (
+                      <Disc className="w-10 h-10" />
+                    ) : bell.iconType === "bowl" ? (
+                      <Bell className="w-10 h-10 rotate-180" />
+                    ) : bell.iconType === "chime" ? (
+                      <Wind className="w-10 h-10" />
+                    ) : (
+                      <Bell className="w-10 h-10" />
+                    )}
+                  </span>
                   <div>
                     <span className="font-serif text-base font-black block leading-tight">
                       {bell.name}

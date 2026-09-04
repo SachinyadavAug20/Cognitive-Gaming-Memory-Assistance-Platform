@@ -82,7 +82,7 @@
       "title": "Thingpui Hnah Lawr (Motion Vision)",
       "subtitle": "Kut vaiin thingpui hnah thar leh a par lawr la, bawmah dah rawh.",
       "cameraPermission": "Camera hman phalna pe rawh",
-      "waveToPluck": "Kut vaiin thingpui hnah lawr rawh 👋",
+      "waveToPluck": "Kut vaiin thingpui hnah lawr rawh",
       "leavesPlucked": "Hnah lawr zat: {count}",
       "basketFull": "Bawm thingpui hnahin a khat e!",
       "gentleHint": "Muangchangin kut vai la, hnah hring va tawk rawh."
@@ -90,10 +90,6 @@
     "radio": {
       "title": "Akashvani Radio Hlunte",
       "desc": "Hmanlai hla mawi leh Akashvani thupuan hlu tak tak ngaihthlakna"
-    },
-    "lotusLake": {
-      "title": "Dil Cham & Senhri Par",
-      "desc": "Tui fim tak chunga senhri par vul tirin hahdamna hmun siam rawh"
     },
     "kitchen": {
       "title": "Pi Pi Choka",
@@ -107,14 +103,6 @@
       "title": "Thing Zung Lei Dawhna",
       "desc": "Lui chungah thing zung nung hmanga lei nghet tak siamna"
     },
-    "bazaar": {
-      "title": "Bara Bazar & Sumdawnna",
-      "desc": "Dawr neitu nena inbiakna leh thil man bituk fel thiamna"
-    },
-    "proverb": {
-      "title": "Mizo Thufing & Hla Phuahte",
-      "desc": "Mizo thufing leh hla thluk hriat chhuahna hmanga hriatna tihchak"
-    },
     "riverLanterns": {
       "title": "३D Lui & Hriatrengna Khawnvar",
       "desc": "Kut vaiin ३D lui tui fawn siam la, chhungkaw hriatrengna khawnvarte hnaih rawh"
@@ -126,10 +114,6 @@
     "drum": {
       "title": "३D Khuang & Rimawi Tumna",
       "desc": "Mizo khuang leh dar rimawi thluk milin kut hnihin tum rawh"
-    },
-    "memoirScribe": {
-      "title": "Hriatrengna Lehkhabu & Thuziak",
-      "desc": "Chhungkaw hriatrengna hlu takte sawi la, AI-in phek mawi tak a siam ang"
     },
     "majuli": {
       "title": "Majuli Zin Kualna (३D Spatial Memory)",
@@ -150,7 +134,7 @@
     "bihuDhol": {
       "title": "Khuang & Dhol Tumna (Rilru Hahdamna)",
       "subtitle": "Khuang thluk milin muangchangin kut han khawng rawh.",
-      "tapPrompt": "Khuang thluk milin khawng rawh 🥁",
+      "tapPrompt": "Khuang thluk milin khawng rawh",
       "tempoCalm": "Rimawi kal chak zawng: {bpm} BPM (Hahdam)",
       "perfectBeat": "Thluk dik tak a ni!",
       "gentleRhythm": "Muangchangin thluk zawh rawh...",
@@ -159,23 +143,9 @@
       "playAgain": "Khuang tum leh rawh",
       "backToHub": "← Therapy Hub-ah let leh rawh"
     },
-    "brahmaputraVoice": {
-      "title": "Brahmaputra Aw (Hriatrengna Thufing)",
-      "subtitle": "Lui thli thaw ngaithla la, thufing tawngkam kimlo aw-in sawi zawm rawh.",
-      "listeningPrompt": "A ngaithla mek... Mike-ah chiang takin sawi rawh 🎙️",
-      "tapToSpeak": "Sawi turin mike hmet rawh 🎙️",
-      "proverbPrompt": "Lui thufing sawi zawm rawh:",
-      "spokenAnswer": "I chhanna:",
-      "correctFeedback": "A ropui hle mai! Lui-in i finna thute a hre ta e.",
-      "retryFeedback": "Sawi zawm leh tum chhin teh.",
-      "scoreSummary": "Aw Hriatrengna Inmil Dan: {score}%",
-      "playAgain": "Thufing dang hrechhuak rawh",
-      "backToHub": "← Therapy Hub-ah let leh rawh",
-      "welcomeSpeech": "Brahmaputra Aw-ah kan lo lawm a che. Thufing sawiin lui khawnvar ti eng rawh."
-    },
     "dayInMyWorld": {
       "title": "Ka Khawvela Ni Khat (३D Story Campaign)",
-      "subtitle": "Saathi nen zing atanga tlai thleng bung 6-ah i ni hman dan hriat chhuah lehna.",
+      "subtitle": "Saathi nen zing atanga tlai thleng bung 6-ah i ni hman dan hriat chhuak lehna.",
       "welcomeTitle": "Zing Hriatrengna Tharlam",
       "welcomeDesc": "Pindanah zing ni a lo eng ta. Saathi-in nilengin a hruai dawn che a ni.",
       "beginDayButton": "Zing zinkawng tan rawh",
@@ -221,7 +191,7 @@
       "desc": "₹500 budget chhungin thil lei la, cheng kir tur uluk takin chhut rawh.",
       "welcome": "Khawchhung Bazar",
       "instruction": "₹500 pel lovin thil lei la, pawisa kir tur chhut dik rawh.",
-      "shopNow": "Bazar-ah lut rawh 🛒",
+      "shopNow": "Bazar-ah lut rawh",
       "remaining": "Budget La Bang",
       "total": "Sum Hman Zat",
       "basketEmpty": "Bawm a ruak. Thil dah nan hmet rawh.",
@@ -244,15 +214,15 @@
       "desc": "Pangpar inmil zawng la, thil danglam hre chhuak la, rimawi kal dan zui rawh.",
       "subgames": {
         "memoryMatch": {
-          "name": "Pangpar Inmil 🌸",
+          "name": "Pangpar Inmil",
           "desc": "Pangpar inmil zawng rawh"
         },
         "whatChanged": {
-          "name": "Eng Nge Danglam? 👁️",
+          "name": "Eng Nge Danglam?",
           "desc": "Thil danglam hre chhuak rawh"
         },
         "sequence": {
-          "name": "Indawt Hre Reng Rawh 🔢",
+          "name": "Indawt Hre Reng Rawh",
           "desc": "Indawt dan zui rawh"
         }
       },
@@ -294,7 +264,7 @@
       "desc": "Khawpui kawngpui-ah traffic sign, zebra crossing leh damdawi in hriatna zawng rawh.",
       "welcome": "Kawng Himna Zawnna",
       "instruction": "Kawngah heng hi zawng rawh:",
-      "startBtn": "Kawng zawnna tan rawh 🚦",
+      "startBtn": "Kawng zawnna tan rawh",
       "found": "Hmuh a ni ta!",
       "wrong": "A dik lo zawk a ni, a dik zawk zawng rawh.",
       "levelComplete": "Level zawh a ni e!",
@@ -312,17 +282,20 @@
     "sos": "TANPUINA KAN MAMAWH"
   },
   "common": {
-    "back": "Kir leh rawh",
-    "continue": "Chhunzawm rawh",
-    "start": "Tan rawh",
-    "finish": "Zo ta",
-    "retry": "Ti nawn leh rawh",
-    "close": "Khar rawh",
-    "listen": "Ngaithla rawh",
-    "speaking": "A tawng mek...",
-    "error": "Dik lo a awm",
-    "loading": "Loading...",
-    "pts": "Points"
+    "required": "*",
+    "edit": "Sih tih",
+    "save": "Vawng tha rawh",
+    "cancel": "Tihnan erawh",
+    "remove": "Tihlang rawh",
+    "add": "Tih lem rawh",
+    "upload": "Upload",
+    "analyzing": {
+      "label": "Report en mek...",
+      "desc": "A tam vei a, minute 30 veiin a lo ta ang"
+    },
+    "maxSize": "Tlukhnem {size}MB",
+    "pdfOnly": "PDF pawh a ni",
+    "imagesOnly": "Thlalak pawh a ni"
   },
   "game": {
     "back": "← Kir leh rawh",
@@ -349,40 +322,444 @@
   "caregiver": {
     "title": "Enkawltu Portal",
     "dashboard": "Dashboard",
+    "home": "In",
     "patients": "Damlo te",
+    "yourPatients": "I Damlo te",
     "sessions": "Nitintin Infiamna",
     "alerts": "Hriattirna",
     "telemetry": "Telemetry",
     "addPatient": "Damlo Thar",
+    "loadingPatients": "Damlo te loading...",
+    "loadError": "Damlo te load thei ta lo. Server awm teh en rawh.",
+    "emptyTitle": "Damlo a awm lo",
+    "emptyList": "Damlo a awm lo. '+ Damlo Thar' click rawh.",
+    "retry": "I dawn nawn leh",
+    "age": "Kum {age}",
+    "ageUnknown": "Kum hriatlo",
+    "language": "Tawng",
     "medicalProfile": "Enkawlna Chhinchhiahna",
     "familyPhotos": "Chhungkaw Thlalak",
     "save": "Vawng tha rawh"
   },
   "intake": {
-    "title": "Damlo Ziak Lut Rawh",
-    "name": "Hming",
-    "age": "Kum",
-    "gender": "Mipa/Hmeichhia",
-    "language": "Tawng",
-    "caregiverName": "Enkawltu Hming",
-    "caregiverPhone": "Phone Number",
-    "submit": "Ziak Lut Rawh"
+    "step": "Step {current} of {total}",
+    "back": "← Kir leh rawh",
+    "continue": "Chhunzawm rawh →",
+    "submit": "Damlo Profile Siam",
+    "creating": "AI-n reports en mek...",
+    "wizard": {
+      "personal": "Tlangval/ni",
+      "medical": "Report",
+      "family": "Famil",
+      "life": "Chanchin",
+      "places": "Hmun",
+      "review": "En"
+    },
+    "complete": {
+      "title": "Damlo profile siam tawh!",
+      "desc": "{name} hi i damlo-te ah a lo tel ta. Game leh hna te an rawn thlak tir dawn.",
+      "dashboard": "Dashboard-ah kir leh"
+    },
+    "personal": {
+      "title": "Damlo vei tu chungchang",
+      "subtitle": "A hmanga i damlo profile siam tur hla i hriattirna tluk chuan a la kal tir dawn.",
+      "name": {
+        "label": "Hming Tam",
+        "placeholder": "Tileng, Ramesh Dutta"
+      },
+      "dob": "Kum Ni",
+      "gender": "Tlangval/ni",
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Tileng, 9876543210"
+      },
+      "relationship": "He form hi eng nge a ziak?"
+    },
+    "medical": {
+      "title": "Report",
+      "subtitle": "I report upload rawh. AI-in report atanga thil i hriat tir a ni ang.",
+      "upload": {
+        "label": "PDF hnuaiah dah rawh, pawh sawn rawh",
+        "desc": "I report (MMSE, MoCA) upload rawh"
+      },
+      "analyze": "Report En",
+      "skip": "Report a awm lo, hla en khan",
+      "continue": "Report awm lovin chhunzawm rawh",
+      "extracted": "Thil i hriat tawh",
+      "replace": "Report dang upload rawh",
+      "diagnosis": "Enkawl",
+      "date": "Enkawl Ni",
+      "score": "Score",
+      "medications": "Damdawi",
+      "notes": "Doctor ziak",
+      "physician": "Doctor",
+      "subscales": "Score Zau Zau",
+      "assessment": "17 Hmun Assessment",
+      "assessmentDesc": "AI-in a hriat tir thil",
+      "intact": "A tla",
+      "impaired": "A sang",
+      "retained": "{pct}% a awm",
+      "clinicalSummary": "Kawng Thuchhuah",
+      "activePrescriptions": "Damdawi ({count})",
+      "categoryCognitive": "Thil hriatna",
+      "categoryIadls": "Nitintin hna",
+      "categoryBehavioral": "Thucham chhuak"
+    },
+    "family": {
+      "title": "Famil",
+      "subtitle": "I damlo vei tan a pawimawh chu familiate hriat turin hla thlang rawh.",
+      "add": "Famil member thar",
+      "empty": "Famil member khat a ngai.",
+      "remove": "He member kha tihlang rawh",
+      "name": {
+        "placeholder": "Hming (Tileng, Meena)"
+      },
+      "notes": {
+        "placeholder": "Tun khan, Guwahati-ah a inhnawk, Kumkum Ni thleng a kal"
+      }
+    },
+    "life": {
+      "title": "Chanchin & Tihna",
+      "subtitle": "He thilte hian i hriatna tur a rawn siam tir a ni ang.",
+      "occupation": {
+        "label": "Hna",
+        "placeholder": "Tileng, tlangval ziak, ril tih"
+      },
+      "events": {
+        "label": "Chanchin Pawimawh",
+        "add": "+ Chanchin thar",
+        "event": {
+          "placeholder": "Chanchin"
+        },
+        "year": {
+          "placeholder": "Kum"
+        }
+      },
+      "interests": "Tihna",
+      "music": {
+        "label": "Hla",
+        "placeholder": "Tileng, Bhupen Hazarika hla"
+      },
+      "culture": {
+        "label": "Ram",
+        "placeholder": "Tileng, Mizo"
+      },
+      "language": "Tawng",
+      "joy": {
+        "label": "Eng nge i hlim?",
+        "placeholder": "Tileng, thlalak en a nih chuan hlim tak a lo..."
+      }
+    },
+    "places": {
+      "title": "Hmun hriat",
+      "subtitle": "I hriat hmun thlang rawh. He Game ah a hmang dawn.",
+      "add": "Hmun thar",
+      "empty": "Hmun 3 a ngai.",
+      "icon": "Icon thlang rawh",
+      "name": {
+        "placeholder": "Hming (Tileng, Kamakhya Temple)"
+      },
+      "desc": {
+        "placeholder": "Tun khan, par duhna hmun"
+      }
+    },
+    "review": {
+      "title": "En rawh le",
+      "subtitle": "Profile siam hmain en rawh.",
+      "edit": "Sih tih",
+      "personal": "Hming",
+      "medical": "Report",
+      "family": "Famil",
+      "life": "Chanchin",
+      "places": "Hmun",
+      "noReport": "Report a awm lo",
+      "noFamily": "Famil member a awm lo",
+      "fieldName": "Hming",
+      "fieldDob": "Kum Ni",
+      "fieldGender": "Tlangval/ni",
+      "fieldPhone": "Phone",
+      "fieldRelationship": "Sakhuana",
+      "fieldDiagnosis": "Enkawl",
+      "fieldDate": "Ni",
+      "fieldScore": "Score",
+      "fieldMedications": "Damdawi",
+      "fieldPhysician": "Doctor",
+      "fieldOccupation": "Hna",
+      "fieldLanguage": "Tawng",
+      "fieldInterests": "Tihna",
+      "fieldMusic": "Hla",
+      "fieldLifeEvents": "Chanchin",
+      "fieldJoy": "Hlimna",
+      "noneSelected": "A awm lo",
+      "notSpecified": "A tarlan lo"
+    },
+    "validation": {
+      "nameMinLength": "Hming kum 2 a ngai tawngah",
+      "dobRequired": "Kum ni a ngai",
+      "genderRequired": "Tlangval/ni a ngai",
+      "phoneMinLength": "Phone kum 10 a ngai tawngah",
+      "relationshipRequired": "Sakhuana thlang rawh",
+      "familyMinCount": "Famil member khat a ngai",
+      "placesMinCount": "Hmun 3 a ngai Game thlen turin",
+      "submitFailed": "Profile siam thei ta lo. I dawn nawn leh."
+    },
+    "photoPicker": {
+      "tooLarge": "Thlalak hi 5MB a ni tawhah a ngai",
+      "viewPhotoFor": "{label} thlalak en",
+      "viewPhoto": "Thlalak en",
+      "previewThumb": "Thlalak preview",
+      "view": "En",
+      "removePhoto": "Thlalak tihlang",
+      "uploadPhoto": "Thlalak upload",
+      "preview": "Thlalak: {label}",
+      "previewDefault": "Thlalak preview",
+      "closeViewer": "Thlalak en chu khar rawh",
+      "fullPreview": "Thlalak tlem loh takin en",
+      "changePhoto": "🔄 Thlalak sih",
+      "remove": "🗑 Tihlang"
+    },
+    "fileUpload": {
+      "tooLarge": "File hi a lian hle. Tur tak {maxSizeMB}MB a ni.",
+      "pdfOnly": "PDF file upload rawh.",
+      "imageOnly": "Thlalak file upload rawh.",
+      "preview": "En",
+      "uploadedReplace": "✓ Upload tawh — click in a sih theih"
+    },
+    "progress": {
+      "ariaLabel": "Form lam",
+      "step": "Step",
+      "of": "of"
+    },
+    "dynamicList": {
+      "removeItem": "Item {index} tihlang"
+    },
+    "domainMatrix": {
+      "heading": "17-Hmun Clinical Assessment",
+      "desc": "AI-n a hriat tir thil tlem leh chawh",
+      "empty": "Enkawh a lo tarlan lo",
+      "domains": {
+        "memory": "Hriatna",
+        "attention": "En thlakna",
+        "executiveFunction": "Thawk theihna",
+        "orientation": "Hriatna",
+        "language": "Tawng",
+        "visuospatial": "Hmul en",
+        "decisionMaking": "Zir tih",
+        "medicationManagement": "Damdawi enkawl",
+        "financialManagement": "Sum enkawl",
+        "navigation": "Kawng hriat",
+        "mealPreparation": "Chaw siam",
+        "driving": "Kar thildan",
+        "householdTasks": "In hna",
+        "apathy": "A awh thei lo",
+        "agitation": "Hratna",
+        "socialWithdrawal": "Tlawng kal lo"
+      },
+      "severity": {
+        "severe": "A rem lo hle",
+        "moderate": "A tla",
+        "mild": "Tla taka",
+        "intact": "A tla"
+      }
+    },
+    "diagnosis": {
+      "notSpecified": "A tarlan lo",
+      "icdPrefix": "ICD-10: ",
+      "mtaPrefix": "MRI MTA: ",
+      "fazekasPrefix": "Fazekas: "
+    }
   },
   "options": {
     "title": "Settings",
     "fontSize": "Hawrawp Lian",
     "contrast": "High Contrast",
     "airMouse": "Virtual Air Mouse",
-    "listenFirst": "Aw Ngaithlakna"
+    "listenFirst": "Aw Ngaithlakna",
+    "gender": {
+      "male": "Tlangval",
+      "female": "Nula",
+      "other": "Dang"
+    },
+    "relationship": {
+      "spouse": "Ni neitu",
+      "child": "Fifi",
+      "sibling": "Tlingmit",
+      "parent": "Papa/Mama",
+      "self": "Ka",
+      "other": "Dang"
+    },
+    "relativeRelationship": {
+      "daughter": "Nula",
+      "son": "Fifi",
+      "spouse": "Ni neitu",
+      "grandchild": "Fifi",
+      "sibling": "Tlingmit",
+      "friend": "Pian",
+      "other": "Dang"
+    },
+    "interests": {
+      "music": "Hla",
+      "sports": "Sport",
+      "cooking": "Chaw siam",
+      "gardening": "Zauhna",
+      "reading": "Ziah",
+      "travel": "Zin",
+      "religious": "Kristien",
+      "art": "Art",
+      "other": "Dang"
+    },
+    "status": {
+      "done": "Zo ta",
+      "now": "Tunah",
+      "later": "Ah dawn leh"
+    },
+    "metrics": {
+      "memory": "Hriatna",
+      "spatial": "Hmun",
+      "reaction": "Chhiat dan",
+      "lastSession": "Kum hmaa"
+    }
   },
   "audio": {
     "welcome": "CogniCare-ah kan lo lawm a che.",
-    "guide": "Hahdam takin thluak tihchakna tan rawh le."
+    "guide": "Hahdam takin thluak tihchakna tan rawh le.",
+    "listen": "Ngaithla rawh",
+    "howToPlay": "Engtia Khel Tur",
+    "listenToStory": "Chanchin Hlir Rawh",
+    "listenToDirections": "Damdawi hnenah hriattirna hlir rawh"
   },
   "idcard": {
-    "title": "Health Card",
-    "scan": "Scan rawh",
-    "print": "Card print rawh",
-    "qrNote": "QR Code hi scan rawh."
+    "heading": "Damlo ID Card",
+    "desc": "I QR Health Card print rawh leh download rawh. Kiosk-ah scan chuan a hruai ta ang.",
+    "regenerate": "Card sih nawn leh",
+    "download": "PNG Download",
+    "print": "Card Print",
+    "backToProfile": "Damlo Profile-ah kir leh",
+    "error": {
+      "fetch": "Card load thei ta lo. I dawn nawn leh.",
+      "regenerate": "Card sih thei ta lo. I dawn nawn leh."
+    },
+    "badge": {
+      "label": "Health Card",
+      "hint": "QR scan in i hruai tur",
+      "footer": "QR-Only Passkey"
+    }
+  },
+  "patientDetail": {
+    "loading": "Clinical telemetry load mek...",
+    "notFound": {
+      "title": "Damlo a hmuh lo.",
+      "desc": "Damlo record tihlang tawh emaw, link a dik lo nge."
+    },
+    "hero": {
+      "backToDashboard": "Dashboard-ah kir leh",
+      "stage": "Stage",
+      "patientId": "Damlo #{id}",
+      "age": "Kum {age}",
+      "filledBy": "{relationship} in a ziak",
+      "printCard": "ID Card Print"
+    },
+    "vitals": {
+      "cognitiveScore": "Score",
+      "mmse": "MMSE",
+      "clinicalStage": "Enkawl Stage",
+      "gameLevel": "Game Level {difficulty}",
+      "brainBiomarkers": "Thluak Biomarkers",
+      "mta": "MTA:",
+      "fazekas": "Fazekas:",
+      "icd": "ICD: {code}",
+      "biomarkerBaseline": "Biomarker a hmaa",
+      "qrHealthCard": "QR Health Card",
+      "activeReady": "Tlawngin a awm",
+      "viewPrintBadge": "Badge En / Print"
+    },
+    "biomarkers": {
+      "title": "Thluak Biomarkers & Thawkna",
+      "subtitle": "En thlakna leh thawkna a inmilna",
+      "activeTelemetry": "Telemetry Tlawng"
+    },
+    "lightbox": {
+      "close": "Khar rawh",
+      "listen": "Hriatna hlir rawh",
+      "speaking": "Tlawng mek..."
+    },
+    "clinicalSummary": {
+      "title": "Damdawi & Enkawl Profile",
+      "subtitle": "Thluak enkawl, enkawl, leh doctor ziak",
+      "diagnosisIcd": "Enkawl & ICD Code",
+      "diagnosisFallback": "Thluak sangna a hmaa",
+      "physician": "Doctor",
+      "physicianFallback": "Doctor",
+      "hospitalDate": "Hospital & Ni",
+      "hospitalFallback": "Hospital",
+      "summaryHeading": "Kawng Thuchhuah & Enkawltu guidance:",
+      "medications": "Damdawi",
+      "subscaleBreakdown": "Thluak Score",
+      "deficits": "Sangna & Tihtan tur"
+    },
+    "family": {
+      "title": "Famil & Enkawltu",
+      "subtitle": "Thlalak Game atan a pawimawh chu familiate",
+      "saved": "Vawng tawh",
+      "empty": "Famil member a awm lo.",
+      "view": "{name} En"
+    },
+    "places": {
+      "title": "Hmun hriat",
+      "subtitle": "Kawng hriatna leh kalna",
+      "landmarks": "Hmun",
+      "empty": "Hmun a awm lo.",
+      "view": "{name} En"
+    },
+    "lifeStory": {
+      "title": "Chanchin & Thluak",
+      "subtitle": "Hna, hla, tihna leh hlimna",
+      "occupation": "Hna",
+      "occupationFallback": "A tarlan lo",
+      "music": "Hla",
+      "musicFallback": "Hla thuneihna",
+      "hobbies": "Tihna",
+      "joyTriggers": "Hlimna & Hahdamna",
+      "joyFallback": "Hla hlir, ni ei, thlalak en.",
+      "tip": "Tip: Hman thawkna tur.",
+      "milestones": "Chanchin Pawimawh",
+      "year": "Kum {year}"
+    },
+    "demographics": {
+      "title": "Hming & Nihna",
+      "fullName": "Hming Tam",
+      "dobAge": "Kum Ni & Kum",
+      "years": "Kum {age}",
+      "gender": "Tlangval/ni",
+      "phone": "Phone",
+      "relationship": "Sakhuana",
+      "language": "Tawng",
+      "languageFallback": "EN",
+      "background": "Ram"
+    },
+    "gamingProgress": {
+      "title": "Game Hla & Thawkna",
+      "subtitle": "Game score leh thawkna en",
+      "liveTelemetry": "Telemetry",
+      "avgAccuracy": "Score",
+      "motorLatency": "Thawkna",
+      "ms": "ms",
+      "spatialRecall": "Hriatna",
+      "totalSessions": "Total Session",
+      "chartTitle": "Game Chart",
+      "lastSessions": "Session {count}",
+      "accuracyLine": "Score (%)",
+      "latencyLine": "Thawkna (ms)",
+      "aiObservation": "AI Kawn (ASHA Report)"
+    },
+    "report": {
+      "export": "Report Export",
+      "copied": "Copied",
+      "copyText": "Copy",
+      "printPdf": "Print / PDF",
+      "closeReport": "Report Khar",
+      "title": "ABDM Report Exporter",
+      "subtitle": "Telemedicine & Evaluation Sheet"
+    }
   }
 }

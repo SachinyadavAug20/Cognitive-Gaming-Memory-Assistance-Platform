@@ -1,41 +1,131 @@
 {
+  "patient_id": "PAT-NE-2026-002",
+  "slug": "patient_2_mary_nongrum",
+  "state": "Meghalaya",
+  "city": "Shillong",
   "step_1_about_patient": {
     "full_name": "Mary Nongrum",
+    "regional_script_name": "Mary Nongrum (Khasi)",
     "date_of_birth": "10/11/1957",
+    "age": 68,
     "gender": "Female",
     "phone_number": "9436108722",
-    "form_filled_by": "Child"
+    "form_filled_by": "Child",
+    "caregiver_name": "Daphisha Nongrum",
+    "caregiver_relation": "Daughter"
+  },
+  "step_2_caregiver_contact": {
+    "primary_caregiver": "Daphisha Nongrum",
+    "caregiver_relation": "Daughter",
+    "caregiver_phone": "+91 94361 99881",
+    "residence_address": "Nongrim Hills, Laitumkhrah, Shillong, Meghalaya - 793003",
+    "primary_health_centre": "Laitumkhrah Urban PHC / Shillong Civil Hospital"
   },
   "step_3_family_and_relatives": [
     {
+      "id": "p2_r1",
       "name": "Daphisha Nongrum",
       "relation": "Daughter",
-      "image_file": "images/patient_2_mary_nongrum/relatives/01_daughter_daphisha_nongrum.png",
-      "notes": "Lives in Shillong with me; school teacher at St. Mary's; prepares herbal morning tea and organizes medicines."
+      "age": 36,
+      "photo_file": "images/patient_2_mary_nongrum/relatives/01_daughter_daphisha_nongrum.jpg",
+      "notes": "Lives in Shillong with me; school teacher at St. Mary's; prepares herbal morning tea and organizes medicines.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          160,
+          60,
+          110
+        ],
+        "hair_style": "long",
+        "has_specs": true,
+        "bg_type": "outdoor_garden"
+      }
     },
     {
+      "id": "p2_r2",
       "name": "Banker Nongrum",
       "relation": "Spouse",
-      "image_file": "images/patient_2_mary_nongrum/relatives/02_spouse_banker_nongrum.png",
-      "notes": "Married 45 years; retired forestry officer; loves tending the orchid and hydrangea garden with me."
+      "age": 70,
+      "photo_file": "images/patient_2_mary_nongrum/relatives/02_spouse_banker_nongrum.jpg",
+      "notes": "Married 45 years; retired forestry officer; loves tending the orchid and hydrangea garden with me.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          50,
+          95,
+          75
+        ],
+        "hair_style": "short",
+        "hair_color": [
+          130,
+          130,
+          135
+        ],
+        "has_moustache": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
+      }
     },
     {
+      "id": "p2_r3",
       "name": "Banylla Nongrum",
       "relation": "Grandchild",
-      "image_file": "images/patient_2_mary_nongrum/relatives/03_grandchild_banylla_nongrum.png",
-      "notes": "Granddaughter; loves reading illustrated Khasi folktales and singing church choir hymns with Kong Mary."
+      "age": 8,
+      "photo_file": "images/patient_2_mary_nongrum/relatives/03_grandchild_banylla_nongrum.jpg",
+      "notes": "Granddaughter; loves reading illustrated Khasi folktales and singing church choir hymns with Kong Mary.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          235,
+          120,
+          150
+        ],
+        "hair_style": "girl",
+        "is_child": true,
+        "bg_type": "warm_indoor"
+      }
     },
     {
+      "id": "p2_r4",
       "name": "Pynskhem Nongrum",
       "relation": "Son",
-      "image_file": "images/patient_2_mary_nongrum/relatives/04_son_pynskhem_nongrum.png",
-      "notes": "Lives in Mawlai; works in state tourism; visits every Wednesday evening and brings traditional Khasi snacks."
+      "age": 40,
+      "photo_file": "images/patient_2_mary_nongrum/relatives/04_son_pynskhem_nongrum.jpg",
+      "notes": "Lives in Mawlai; works in state tourism; visits every Wednesday evening and brings traditional Khasi snacks.",
+      "style": {
+        "gender": "male",
+        "cloth_color": [
+          45,
+          115,
+          155
+        ],
+        "hair_style": "short",
+        "bg_type": "cool_office"
+      }
     },
     {
+      "id": "p2_r5",
       "name": "Ibadalin Nongrum",
       "relation": "Sibling",
-      "image_file": "images/patient_2_mary_nongrum/relatives/05_sibling_ibadalin_nongrum.png",
-      "notes": "Younger sister; lives near Police Bazar; knits woollen sweaters with me every Saturday afternoon."
+      "age": 65,
+      "photo_file": "images/patient_2_mary_nongrum/relatives/05_sibling_ibadalin_nongrum.jpg",
+      "notes": "Younger sister; lives near Police Bazar; knits woollen sweaters with me every Saturday afternoon.",
+      "style": {
+        "gender": "female",
+        "cloth_color": [
+          120,
+          80,
+          140
+        ],
+        "hair_style": "bun",
+        "hair_color": [
+          140,
+          140,
+          145
+        ],
+        "is_elderly": true,
+        "bg_type": "warm_indoor"
+      }
     }
   ],
   "step_4_life_story_and_interests": {
@@ -71,34 +161,69 @@
   },
   "step_5_and_6_familiar_places": [
     {
+      "id": "p2_pl1",
       "place_name": "Home (Nongrim Hills Cottage)",
+      "category": "Home",
       "short_description": "Where we live — wooden-roof heritage cottage with blooming orchid garden.",
       "icon_symbol": "🏠",
-      "image_file": "images/patient_2_mary_nongrum/places/01_home_nongrim_hills_cottage.png"
+      "photo_file": "images/patient_2_mary_nongrum/places/01_home_nongrim_hills_cottage.jpg",
+      "style": {
+        "type": "home",
+        "roof_color": [
+          140,
+          50,
+          45
+        ],
+        "sky_type": "misty_hills"
+      }
     },
     {
+      "id": "p2_pl2",
       "place_name": "Laitumkhrah Main Market",
+      "category": "Local Market",
       "short_description": "Where we shop — bakery, fresh fruit stalls, and woollen garment shops.",
       "icon_symbol": "🛒",
-      "image_file": "images/patient_2_mary_nongrum/places/02_laitumkhrah_main_market.png"
+      "photo_file": "images/patient_2_mary_nongrum/places/02_laitumkhrah_main_market.jpg",
+      "style": {
+        "type": "market",
+        "sky_type": "blue_day"
+      }
     },
     {
+      "id": "p2_pl3",
       "place_name": "Cathedral of Mary Help of Christians",
+      "category": "Place of Worship",
       "short_description": "Place of worship — iconic blue cathedral in Laitumkhrah where she attends Sunday mass.",
       "icon_symbol": "🛕",
-      "image_file": "images/patient_2_mary_nongrum/places/03_cathedral_mary_help_christians.png"
+      "photo_file": "images/patient_2_mary_nongrum/places/03_cathedral_mary_help_christians.jpg",
+      "style": {
+        "type": "church",
+        "sky_type": "misty_hills"
+      }
     },
     {
+      "id": "p2_pl4",
       "place_name": "Shillong Civil Hospital OPD",
+      "category": "Clinic",
       "short_description": "Where I worked for 35 years and get monthly blood pressure checkups.",
       "icon_symbol": "🏥",
-      "image_file": "images/patient_2_mary_nongrum/places/04_shillong_civil_hospital.png"
+      "photo_file": "images/patient_2_mary_nongrum/places/04_shillong_civil_hospital.jpg",
+      "style": {
+        "type": "clinic",
+        "sky_type": "blue_day"
+      }
     },
     {
+      "id": "p2_pl5",
       "place_name": "Ward's Lake (Nan Polok)",
+      "category": "Park",
       "short_description": "Where we stroll — scenic horseshoe lake with wooden bridge, swans, and flowerbeds.",
       "icon_symbol": "🌳",
-      "image_file": "images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.png"
+      "photo_file": "images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.jpg",
+      "style": {
+        "type": "lake",
+        "sky_type": "morning_sun"
+      }
     }
   ]
 }

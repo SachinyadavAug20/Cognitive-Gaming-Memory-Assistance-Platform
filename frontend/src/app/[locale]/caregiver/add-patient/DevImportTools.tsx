@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Wrench, AlertTriangle } from "lucide-react";
 import { IntakeWizardClient } from "@/components/intake/IntakeWizardClient";
 import { Spinner } from "@/components/ui/Spinner";
 import { mapSampleJsonToFormData } from "@/lib/sampleData";
@@ -44,8 +45,9 @@ export function DevImportTools() {
       <details
         className="mb-4 rounded-xl border-2 border-dashed border-border-soft bg-surface/60 backdrop-blur-sm transition-colors open:border-border"
       >
-        <summary className="cursor-pointer select-none px-4 py-2.5 font-bold text-sm text-ink-secondary hover:text-ink">
-          🛠 Dev Tools: Import JSON
+        <summary className="inline-flex items-center gap-1.5 cursor-pointer select-none px-4 py-2.5 font-bold text-sm text-ink-secondary hover:text-ink">
+          <Wrench className="h-4 w-4 text-tea" />
+          <span>Dev Tools: Import JSON</span>
         </summary>
         <div className="px-4 pb-4 pt-2 space-y-3">
           <p className="text-xs text-ink-secondary leading-snug">
@@ -72,8 +74,9 @@ export function DevImportTools() {
             className="w-full font-mono text-xs rounded-lg border-3 border-border-soft bg-surface p-3 text-ink placeholder:text-ink-secondary/40 focus:outline-none focus:border-marigold transition-colors resize-y disabled:opacity-60"
           />
           {importError && (
-            <p role="alert" className="text-brick text-xs font-bold">
-              ⚠ {importError}
+            <p role="alert" className="flex items-center gap-1.5 text-brick text-xs font-bold">
+              <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
+              <span>{importError}</span>
             </p>
           )}
           <div className="flex gap-2">

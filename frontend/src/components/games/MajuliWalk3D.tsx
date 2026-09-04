@@ -13,6 +13,10 @@ import {
   Music,
   Volume2,
   VolumeX,
+  MessageSquare,
+  Landmark as LandmarkIcon,
+  Home,
+  Ship,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { Celebration } from "@/components/games/Celebration";
@@ -87,7 +91,7 @@ export function MajuliWalk3D() {
         position: [-6, 0, 8],
         side: "left",
         category: "namghar",
-        emoji: "🛕",
+        emoji: "namghar",
         question: t("questionNamghar"),
         correctAnswer: "Auniati Satra Namghar",
         options: ["Auniati Satra Namghar", "Modern Highway", "Market Clock Tower"],
@@ -100,7 +104,7 @@ export function MajuliWalk3D() {
         position: [6, 0, -2],
         side: "right",
         category: "stilt_house",
-        emoji: "🏡",
+        emoji: "stilt_house",
         question: t("questionChangGhar"),
         correctAnswer: "Mising Bamboo Chang Ghar",
         options: ["Mising Bamboo Chang Ghar", "Brick Factory", "Concrete Apartment"],
@@ -113,7 +117,7 @@ export function MajuliWalk3D() {
         position: [0, 0, -14],
         side: "center",
         category: "river_ghat",
-        emoji: "⛵",
+        emoji: "river_ghat",
         question: t("questionRiverGhat"),
         correctAnswer: "Kamalabari River Ghat",
         options: ["Kamalabari River Ghat", "Airport Terminal", "Railway Junction"],
@@ -399,8 +403,9 @@ export function MajuliWalk3D() {
         {/* Visual Subtitle Fallback Pill */}
         {currentSubtitle && (
           <div className="mb-3 flex items-center justify-center animate-fade-in">
-            <span className="rounded-full border-2 border-emerald-900/40 bg-emerald-100 px-4 py-1.5 text-xs font-black text-emerald-950 shadow-sm">
-              💬 {currentSubtitle}
+            <span className="rounded-full border-2 border-emerald-900/40 bg-emerald-100 px-4 py-1.5 text-xs font-black text-emerald-950 shadow-sm inline-flex items-center gap-1.5">
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>{currentSubtitle}</span>
             </span>
           </div>
         )}
@@ -430,7 +435,13 @@ export function MajuliWalk3D() {
                   </span>
                   {localizedLandmarks.map((lm) => (
                     <div key={lm.id} className="flex items-center gap-2 text-xs font-bold text-ink">
-                      <span className="text-base">{lm.emoji}</span>
+                      {lm.category === "namghar" ? (
+                        <LandmarkIcon className="w-4 h-4 text-amber-700 shrink-0" />
+                      ) : lm.category === "stilt_house" ? (
+                        <Home className="w-4 h-4 text-emerald-700 shrink-0" />
+                      ) : (
+                        <Ship className="w-4 h-4 text-blue-700 shrink-0" />
+                      )}
                       <span>{lm.name}</span>
                     </div>
                   ))}
@@ -471,8 +482,8 @@ export function MajuliWalk3D() {
             {/* Top Navigation HUD */}
             <div className="flex w-full items-center justify-between rounded-2xl border-3 border-black bg-[#FAF3E0] px-4 py-3 shadow-[3px_3px_0px_#000]">
               <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-amber-400 text-base font-black">
-                  🚶
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-amber-400 text-amber-950 font-black">
+                  <Footprints className="w-5 h-5" />
                 </span>
                 <div>
                   <span className="text-[10px] font-black uppercase text-ink-secondary">

@@ -27,7 +27,7 @@
       "name": "Manash Borah",
       "relation": "Son",
       "age": 42,
-      "photo_file": "images/patient_1_biren_borah/relatives/01_son_manash_borah.png",
+      "photo_file": "images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
       "notes": "Lives in Guwahati with me; works as senior engineer at Tech Mahindra; takes me for evening walks every day.",
       "style": {
         "gender": "male",
@@ -37,7 +37,8 @@
           176
         ],
         "has_specs": true,
-        "hair_type": "short"
+        "hair_style": "short",
+        "bg_type": "cool_office"
       }
     },
     {
@@ -45,7 +46,7 @@
       "name": "Pratima Borah",
       "relation": "Spouse",
       "age": 68,
-      "photo_file": "images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.png",
+      "photo_file": "images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.jpg",
       "notes": "Married for 46 years; cooks traditional Masor Tenga; reminds me of daily prayers at Namghar.",
       "style": {
         "gender": "female",
@@ -54,13 +55,16 @@
           50,
           45
         ],
-        "hair_type": "bun",
+        "hair_style": "bun",
         "hair_color": [
           130,
           130,
           135
         ],
-        "has_bindi": true
+        "has_bindi": true,
+        "has_necklace": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     },
     {
@@ -68,7 +72,7 @@
       "name": "Ananya Borah",
       "relation": "Daughter",
       "age": 38,
-      "photo_file": "images/patient_1_biren_borah/relatives/03_daughter_ananya_borah.png",
+      "photo_file": "images/patient_1_biren_borah/relatives/03_daughter_ananya_borah.jpg",
       "notes": "Lives in Jorhat; visits every second weekend with fresh homemade Pitha; calls daily at 7 PM.",
       "style": {
         "gender": "female",
@@ -77,8 +81,9 @@
           130,
           125
         ],
-        "hair_type": "long",
-        "has_bindi": true
+        "hair_style": "long",
+        "has_bindi": true,
+        "bg_type": "outdoor_garden"
       }
     },
     {
@@ -86,7 +91,7 @@
       "name": "Arnav Borah",
       "relation": "Grandchild",
       "age": 11,
-      "photo_file": "images/patient_1_biren_borah/relatives/04_grandchild_arnav_borah.png",
+      "photo_file": "images/patient_1_biren_borah/relatives/04_grandchild_arnav_borah.jpg",
       "notes": "Studies in Class 6 in Guwahati; loves playing carrom and listening to folk tales with Dadu.",
       "style": {
         "gender": "male",
@@ -95,8 +100,9 @@
           180,
           35
         ],
-        "hair_type": "boy",
-        "is_child": true
+        "hair_style": "boy",
+        "is_child": true,
+        "bg_type": "warm_indoor"
       }
     },
     {
@@ -104,7 +110,7 @@
       "name": "Dhireswar Borah",
       "relation": "Sibling",
       "age": 66,
-      "photo_file": "images/patient_1_biren_borah/relatives/05_sibling_dhireswar_borah.png",
+      "photo_file": "images/patient_1_biren_borah/relatives/05_sibling_dhireswar_borah.jpg",
       "notes": "Younger brother; retired PWD engineer living in Uzan Bazar; visits every Sunday for tea and newspaper.",
       "style": {
         "gender": "male",
@@ -119,7 +125,9 @@
           110,
           110,
           115
-        ]
+        ],
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     }
   ],
@@ -162,14 +170,15 @@
       "category": "Home",
       "short_description": "Where we live — 2-storey ancestral home near Silpukhuri pond with green garden.",
       "icon_symbol": "🏠",
-      "photo_file": "images/patient_1_biren_borah/places/01_home_silpukhuri_residence.png",
+      "photo_file": "images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
       "style": {
         "type": "home",
         "roof_color": [
-          35,
-          110,
-          75
-        ]
+          40,
+          115,
+          80
+        ],
+        "sky_type": "morning_sun"
       }
     },
     {
@@ -178,9 +187,10 @@
       "category": "Local Market",
       "short_description": "Where we shop — morning fresh fish and local vegetable stalls 300m away.",
       "icon_symbol": "🛒",
-      "photo_file": "images/patient_1_biren_borah/places/02_silpukhuri_daily_market.png",
+      "photo_file": "images/patient_1_biren_borah/places/02_silpukhuri_daily_market.jpg",
       "style": {
-        "type": "market"
+        "type": "market",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -189,9 +199,10 @@
       "category": "Place of Worship",
       "short_description": "Place of worship — Community prayer hall for daily 5:30 PM Naam-Kirtan prayers.",
       "icon_symbol": "🛕",
-      "photo_file": "images/patient_1_biren_borah/places/03_silpukhuri_hari_namghar.png",
+      "photo_file": "images/patient_1_biren_borah/places/03_silpukhuri_hari_namghar.jpg",
       "style": {
-        "type": "namghar"
+        "type": "namghar",
+        "sky_type": "golden_hour"
       }
     },
     {
@@ -200,9 +211,10 @@
       "category": "Clinic",
       "short_description": "Where I get checkups — neighborhood healthcare clinic on Nabagraha Road.",
       "icon_symbol": "🏥",
-      "photo_file": "images/patient_1_biren_borah/places/04_community_phc_clinic.png",
+      "photo_file": "images/patient_1_biren_borah/places/04_community_phc_clinic.jpg",
       "style": {
-        "type": "clinic"
+        "type": "clinic",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -211,9 +223,10 @@
       "category": "Park",
       "short_description": "Where we walk — lakeside walking path where he meets fellow retired teachers.",
       "icon_symbol": "🌳",
-      "photo_file": "images/patient_1_biren_borah/places/05_dighalipukhuri_lake_park.png",
+      "photo_file": "images/patient_1_biren_borah/places/05_dighalipukhuri_lake_park.jpg",
       "style": {
-        "type": "lake"
+        "type": "lake",
+        "sky_type": "morning_sun"
       }
     }
   ]

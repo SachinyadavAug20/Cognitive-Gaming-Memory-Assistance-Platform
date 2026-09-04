@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import {
   Paperclip,
   CheckCircle2,
+  Check,
+  RotateCcw,
   AlertTriangle,
   QrCode,
   HeartHandshake,
@@ -152,8 +154,9 @@ export function KioskLoginClient() {
                   <CheckCircle2 className="h-10 w-10 stroke-[2.5]" />
                 </div>
 
-                <span className="px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-black uppercase tracking-wider mb-2">
-                  ✓ Card Verified
+                <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-black uppercase tracking-wider mb-2">
+                  <Check className="h-3.5 w-3.5 stroke-[3]" />
+                  <span>Card Verified</span>
                 </span>
 
                 <h2 className="font-serif font-black text-2xl md:text-3xl text-ink">
@@ -190,9 +193,10 @@ export function KioskLoginClient() {
                 <button
                   type="button"
                   onClick={resetScanner}
-                  className="btn-chunky btn-chunky-tea text-xs font-black cursor-pointer"
+                  className="btn-chunky btn-chunky-tea text-xs font-black cursor-pointer inline-flex items-center gap-1.5"
                 >
-                  🔄 Scan Again
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span>Scan Again</span>
                 </button>
               </div>
             </div>

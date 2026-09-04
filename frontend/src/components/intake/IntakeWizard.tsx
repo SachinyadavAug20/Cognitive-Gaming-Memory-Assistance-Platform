@@ -17,7 +17,7 @@ import { parseAnalyzeReport, buildOnboardPayload } from "@/lib/intake";
 import type { IntakeFormData, Relative, LandmarkEntry } from "@/types/intake";
 
 const STORAGE_KEY = "cognicare:intake:draft";
-const STEP_ICONS = ["👤", "🏥", "👨‍👩‍👧", "📖", "📍", "✅"] as const;
+const STEP_KEYS = ["personal", "medical", "family", "life", "places", "review"] as const;
 
 export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
   const t = useTranslations("intake");
@@ -58,10 +58,9 @@ export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
 
   const stepMeta = useMemo(
     () =>
-      STEP_ICONS.map((icon, i) => {
-        const keys = ["personal", "medical", "family", "life", "places", "review"] as const;
-        return { icon, label: tWizard(keys[i]) };
-      }),
+      STEP_KEYS.map((k) => ({
+        label: tWizard(k),
+      })),
     [tWizard]
   );
 
@@ -219,7 +218,7 @@ export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
   const handleAddLandmark = useCallback(() => {
     setFormData((prev) => ({
       ...prev,
-      landmarks: [...prev.landmarks, { name: "", description: "", emoji: "📍" }],
+      landmarks: [...prev.landmarks, { name: "", description: "", emoji: "place" }],
     }));
   }, []);
 
@@ -244,21 +243,21 @@ export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
 
       if (step === 0) {
         if (!formData.personal.fullName || formData.personal.fullName.length < 2)
-          errs.fullName = "Name must be at least 2 characters";
-        if (!formData.personal.dateOfBirth) errs.dateOfBirth = "Date of birth is required";
-        if (!formData.personal.gender) errs.gender = "Gender is required";
+          errs.fullName = t("validation.nameMinLength");
+        if (!formData.personal.dateOfBirth) errs.dateOfBirth = t("validation.dobRequired");
+        if (!formData.personal.gender) errs.gender = t("validation.genderRequired");
         if (!formData.personal.phone || formData.personal.phone.length < 10)
-          errs.phone = "Phone must be at least 10 digits";
-        if (!formData.personal.relationship) errs.relationship = "Please select your relationship";
+          errs.phone = t("validation.phoneMinLength");
+        if (!formData.personal.relationship) errs.relationship = t("validation.relationshipRequired");
       }
 
       if (step === 2) {
-        if (formData.relatives.length === 0) errs.relatives = "Add at least one family member";
+        if (formData.relatives.length === 0) errs.relatives = t("validation.familyMinCount");
       }
 
       if (step === 4) {
         if (formData.landmarks.length < 3)
-          errs.landmarks = "Add at least 3 landmarks for the Wayfinding game";
+          errs.landmarks = t("validation.placesMinCount");
       }
 
       return errs;
@@ -307,7 +306,7 @@ export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
     } catch (err) {
       setIsSubmitting(false);
       setSubmitError(
-        err instanceof Error ? err.message : "Failed to create patient profile. Please try again."
+        err instanceof Error ? err.message : t("validation.submitFailed")
       );
     }
   }, [formData, router]);

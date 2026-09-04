@@ -17,6 +17,9 @@ import {
   ChevronRight,
   Sparkles,
   Loader2,
+  Music,
+  Flame,
+  Trees,
 } from "lucide-react";
 import {
   useArrowEscapeStore,
@@ -716,7 +719,8 @@ export function ArrowEscape() {
                     onClick={() => playLifeSong()}
                     className="group flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] active:translate-y-0.5 cursor-pointer hover:bg-amber-300"
                   >
-                    <span>🎵 Play Bihu Flute Tune</span>
+                    <Music className="w-3.5 h-3.5" />
+                    <span>Play Bihu Flute Tune</span>
                   </button>
                   <span className="text-[11px] font-black text-ink-secondary">
                     Calm Intervention
@@ -786,8 +790,9 @@ export function ArrowEscape() {
                   <span className="text-[10px] font-black uppercase text-ink-secondary">
                     {strings.streak}
                   </span>
-                  <div className="text-sm font-black text-amber-700">
-                    🔥 {streak}
+                  <div className="text-sm font-black text-amber-700 inline-flex items-center gap-1 justify-end">
+                    <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-600 shrink-0" />
+                    <span>{streak}</span>
                   </div>
                 </div>
               </div>
@@ -931,8 +936,8 @@ export function ArrowEscape() {
 
             {/* Instruction Card & Cultural Lore */}
             <div className="flex w-full max-w-lg items-center gap-3 rounded-2xl border-2 border-black/20 bg-surface p-3 text-left shadow-sm">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-lg">
-                🎋
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-amber-800">
+                <Trees className="w-5 h-5" />
               </div>
               <div className="flex-1 text-xs font-semibold text-ink">
                 <span className="font-black text-amber-900 block uppercase text-[10px]">

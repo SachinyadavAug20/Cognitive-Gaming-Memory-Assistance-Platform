@@ -443,50 +443,53 @@ html.keyboard-user .btn-chunky:focus-visible {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   GIGW & WCAG 2.1 AAA HIGH CONTRAST CLINICAL ACCESSIBILITY MODE
+   CIRCADIAN NIGHT READABILITY & HIGH CONTRAST (ZERO BLUE LIGHT)
+   Designed for elderly dementia care: soothing deep espresso &
+   roasted walnut surfaces, buttermilk parchment text, warm amber accents,
+   and 0% blue/cyan spectrum to protect melatonin and prevent sundowning.
    ══════════════════════════════════════════════════════════════ */
 
 html.high-contrast-mode {
-  --color-canvas: #1a1611;
-  --color-surface: #211c15;
-  --color-surface-muted: #2a241b;
-  --color-ink: #1a1611;
-  --color-ink-secondary: #d5c5a3;
-  --color-ink-soft: #c9b78f;
-  --color-ink-inverse: #f3e9d2;
-  --color-border: #5a4e38;
-  --color-border-soft: #4a4131;
-  --color-marigold: #e8a34a;
-  --color-marigold-hover: #d98f35;
-  --color-marigold-light: #3a2f1e;
-  --color-terracotta: #d97b3a;
-  --color-terracotta-hover: #c5692e;
-  --color-terracotta-light: #33231a;
-  --color-tea: #c9a24a;
-  --color-tea-hover: #b58f3c;
-  --color-tea-light: #2e2818;
-  --color-sky: #9a8c63;
-  --color-sky-light: #26211a;
-  --color-brick: #b4442e;
-  --color-brick-light: #331b16;
-  --color-cream: #332b20;
-  --color-warm-surface: #211c15;
-  --color-surface-cream: #211c15;
+  --color-canvas: #161310;
+  --color-surface: #221C16;
+  --color-surface-muted: #2D251E;
+  --color-ink: #F7EFE2;
+  --color-ink-secondary: #D4C4A8;
+  --color-ink-soft: #B8A990;
+  --color-ink-inverse: #161310;
+  --color-border: #4F4335;
+  --color-border-soft: #3B3125;
+  --color-marigold: #D97706;
+  --color-marigold-hover: #B45309;
+  --color-marigold-light: #332316;
+  --color-terracotta: #C24E26;
+  --color-terracotta-hover: #9E3A18;
+  --color-terracotta-light: #331A12;
+  --color-tea: #B4720A;
+  --color-tea-hover: #925807;
+  --color-tea-light: #2D2012;
+  --color-sky: #C27838;
+  --color-sky-light: #2D2218;
+  --color-brick: #B4442E;
+  --color-brick-light: #331612;
+  --color-cream: #221C16;
+  --color-warm-surface: #221C16;
+  --color-surface-cream: #221C16;
 }
 
-/* ── 1. Warm Charcoal Canvas & Reset Background Noise ── */
+/* ── 1. Deep Espresso Canvas & Reset Backgrounds ── */
 .high-contrast-mode body,
 .high-contrast-mode html {
-  background-color: #1a1611 !important;
-  color: #f3e9d2 !important;
+  background-color: #161310 !important;
+  color: #F7EFE2 !important;
 }
 
 .high-contrast-mode .paper-texture {
   background-image: none !important;
-  background-color: #1a1611 !important;
+  background-color: #161310 !important;
 }
 
-/* ── 2. Universal Warm Dark Surface & Container Overrides ── */
+/* ── 2. Universal Warm Roasted Walnut Surfaces & Cards ── */
 .high-contrast-mode main,
 .high-contrast-mode section,
 .high-contrast-mode header,
@@ -499,46 +502,57 @@ html.high-contrast-mode {
 .high-contrast-mode .bg-surface-muted,
 .high-contrast-mode .bg-white,
 .high-contrast-mode .bg-white\/70,
+.high-contrast-mode .bg-white\/80,
 .high-contrast-mode .bg-white\/90,
 .high-contrast-mode .bg-surface\/70,
-.high-contrast-mode [class*="bg-gradient-"],
-.high-contrast-mode [class*="from-"],
-.high-contrast-mode [class*="to-"],
-.high-contrast-mode [class*="bg-\[\#"],
-.high-contrast-mode [class*="bg-white"],
 .high-contrast-mode [class*="bg-stone-"],
 .high-contrast-mode [class*="bg-gray-"],
 .high-contrast-mode [class*="bg-zinc-"],
 .high-contrast-mode [class*="bg-slate-"],
 .high-contrast-mode [class*="bg-neutral-"],
-.high-contrast-mode [class*="bg-amber-"],
-.high-contrast-mode [class*="bg-emerald-"],
-.high-contrast-mode [class*="bg-teal-"],
-.high-contrast-mode [class*="bg-green-"],
-.high-contrast-mode [class*="bg-sky-"],
-.high-contrast-mode [class*="bg-blue-"],
-.high-contrast-mode [class*="bg-indigo-"],
-.high-contrast-mode [class*="bg-violet-"],
-.high-contrast-mode [class*="bg-purple-"],
-.high-contrast-mode [class*="bg-rose-"],
-.high-contrast-mode [class*="bg-orange-"],
-.high-contrast-mode [class*="bg-yellow-"],
-.high-contrast-mode [class*="bg-pink-"],
-.high-contrast-mode [class*="bg-lime-"],
-.high-contrast-mode [class*="bg-cyan-"],
-.high-contrast-mode [class*="bg-fuchsia-"],
+.high-contrast-mode [class*="bg-amber-50"],
+.high-contrast-mode [class*="bg-amber-100"],
+.high-contrast-mode [class*="bg-orange-50"],
+.high-contrast-mode [class*="bg-orange-100"],
+.high-contrast-mode [class*="bg-yellow-50"],
+.high-contrast-mode [class*="bg-yellow-100"],
 .high-contrast-mode [class*="bg-red-50"],
-.high-contrast-mode [class*="bg-red-100"],
-.high-contrast-mode [class*="bg-red-200"],
-.high-contrast-mode [class*="bg-red-300"],
+.high-contrast-mode [class*="bg-emerald-50"],
 .high-contrast-mode [class*="bg-tea-light"],
 .high-contrast-mode [class*="bg-brick-light"] {
   background-image: none !important;
-  background-color: #211c15 !important;
-  color: #f3e9d2 !important;
+  background-color: #221C16 !important;
+  color: #F7EFE2 !important;
 }
 
-/* ── 3. Warm High-Contrast Text Color Hierarchy ── */
+/* ── 3. Strict Circadian Shield: Zero Blue / Cyan Light ── */
+.high-contrast-mode [class*="bg-sky-"],
+.high-contrast-mode [class*="bg-blue-"],
+.high-contrast-mode [class*="bg-cyan-"],
+.high-contrast-mode [class*="bg-indigo-"],
+.high-contrast-mode [class*="bg-violet-"] {
+  background-image: none !important;
+  background-color: #332316 !important;
+  color: #F7EFE2 !important;
+  border-color: #D97706 !important;
+}
+
+.high-contrast-mode [class*="text-sky-"],
+.high-contrast-mode [class*="text-blue-"],
+.high-contrast-mode [class*="text-cyan-"],
+.high-contrast-mode [class*="text-indigo-"],
+.high-contrast-mode [class*="text-violet-"] {
+  color: #D97706 !important;
+}
+
+.high-contrast-mode [class*="border-sky-"],
+.high-contrast-mode [class*="border-blue-"],
+.high-contrast-mode [class*="border-cyan-"],
+.high-contrast-mode [class*="border-indigo-"] {
+  border-color: #4F4335 !important;
+}
+
+/* ── 4. Soft Buttermilk Typography & Hierarchy ── */
 .high-contrast-mode p,
 .high-contrast-mode h1,
 .high-contrast-mode h2,
@@ -546,146 +560,133 @@ html.high-contrast-mode {
 .high-contrast-mode h4,
 .high-contrast-mode h5,
 .high-contrast-mode h6,
-.high-contrast-mode span,
 .high-contrast-mode label,
 .high-contrast-mode li,
 .high-contrast-mode [class*="text-ink"],
-.high-contrast-mode [class*="text-ink-secondary"],
 .high-contrast-mode [class*="text-black"],
-.high-contrast-mode text-white,
 .high-contrast-mode .text-white,
 .high-contrast-mode [class*="text-stone-"],
 .high-contrast-mode [class*="text-gray-"],
 .high-contrast-mode [class*="text-zinc-"],
 .high-contrast-mode [class*="text-neutral-"],
-.high-contrast-mode [class*="text-slate-"],
-.high-contrast-mode [class*="text-amber-9"],
-.high-contrast-mode [class*="text-amber-8"],
-.high-contrast-mode [class*="text-emerald-9"],
-.high-contrast-mode [class*="text-emerald-8"],
-.high-contrast-mode [class*="text-emerald-7"],
-.high-contrast-mode [class*="text-teal-9"],
-.high-contrast-mode [class*="text-teal-8"],
-.high-contrast-mode [class*="text-teal-7"],
-.high-contrast-mode [class*="text-purple-9"],
-.high-contrast-mode [class*="text-purple-8"],
-.high-contrast-mode [class*="text-orange-9"],
-.high-contrast-mode [class*="text-orange-8"] {
-  color: #f3e9d2 !important;
+.high-contrast-mode [class*="text-slate-"] {
+  color: #F7EFE2 !important;
 }
 
-/* ── 4. Warm Amber Accents ── */
+.high-contrast-mode [class*="text-ink-secondary"],
+.high-contrast-mode [class*="text-stone-6"],
+.high-contrast-mode [class*="text-stone-5"],
+.high-contrast-mode [class*="text-gray-6"],
+.high-contrast-mode [class*="text-gray-5"] {
+  color: #D4C4A8 !important;
+}
+
+/* ── 5. Warm Amber & Gold Accents ── */
 .high-contrast-mode a,
 .high-contrast-mode [class*="text-marigold"],
-.high-contrast-mode [class*="text-amber-3"],
-.high-contrast-mode [class*="text-amber-4"],
-.high-contrast-mode [class*="text-amber-5"],
+.high-contrast-mode [class*="text-amber-"],
 .high-contrast-mode [class*="text-yellow-"],
 .high-contrast-mode .text-tea {
-  color: #e8a34a !important;
+  color: #D97706 !important;
 }
 
 .high-contrast-mode a:hover {
   text-decoration: underline !important;
-  color: #e8a34a !important;
+  color: #F59E0B !important;
 }
 
-/* ── 5. Crisp Warm Structural Borders & Outlines ── */
+/* ── 6. Warm Bronze Structural Borders ── */
 .high-contrast-mode [class*="border-"],
 .high-contrast-mode [class*="border-black"],
 .high-contrast-mode [class*="border-border"],
 .high-contrast-mode hr {
-  border-color: #6a5c40 !important;
+  border-color: #4F4335 !important;
 }
 
 .high-contrast-mode [class*="border-tea"],
-.high-contrast-mode [class*="border-marigold"],
-.high-contrast-mode [class*="border-yellow"] {
-  border-color: #e8a34a !important;
+.high-contrast-mode [class*="border-marigold"] {
+  border-color: #D97706 !important;
 }
 
 .high-contrast-mode [class*="shadow-"] {
-  box-shadow: 0 0 0 2px #6a5c40 !important;
+  box-shadow: 0 0 0 1px #4F4335 !important;
 }
 
-/* ── 6. High-Contrast Interactive Buttons & State Pills ── */
-.high-contrast-mode button,
+/* ── 7. Night Mode Interactive Tactile Controls ── */
 .high-contrast-mode .btn-tactile,
 .high-contrast-mode .btn-chunky {
-  background-color: #211c15 !important;
-  color: #f3e9d2 !important;
-  border: 2px solid #e8a34a !important;
-  box-shadow: 0 0 0 1px #e8a34a !important;
+  background-color: #2D251E !important;
+  color: #F7EFE2 !important;
+  border-color: #D97706 !important;
 }
 
-.high-contrast-mode button:hover,
 .high-contrast-mode .btn-tactile:hover,
 .high-contrast-mode .btn-chunky:hover {
-  background-color: #e8a34a !important;
-  color: #1a1611 !important;
-  border-color: #e8a34a !important;
-  box-shadow: 0 0 0 2px #e8a34a !important;
+  background-color: #D97706 !important;
+  color: #161310 !important;
+  border-color: #F7EFE2 !important;
 }
 
-.high-contrast-mode button:hover *,
 .high-contrast-mode .btn-tactile:hover *,
 .high-contrast-mode .btn-chunky:hover * {
-  color: #1a1611 !important;
+  color: #161310 !important;
 }
 
-/* Primary Active / Selected Elements (Warm Amber Anchor) */
+/* Primary Active Elements (Warm Amber) */
 .high-contrast-mode .btn-chunky-marigold,
-.high-contrast-mode .bg-marigold,
 .high-contrast-mode [aria-selected="true"],
 .high-contrast-mode button[class*="bg-tea text-white"],
-.high-contrast-mode [class*="bg-amber-400"] {
-  background-color: #e8a34a !important;
-  color: #1a1611 !important;
-  border: 2px solid #f3e9d2 !important;
+.high-contrast-mode [class*="bg-amber-400"],
+.high-contrast-mode [class*="bg-amber-300"] {
+  background-color: #D97706 !important;
+  color: #161310 !important;
+  border: 2px solid #F7EFE2 !important;
 }
 
 .high-contrast-mode .btn-chunky-marigold *,
-.high-contrast-mode .bg-marigold *,
 .high-contrast-mode [aria-selected="true"] *,
 .high-contrast-mode button[class*="bg-tea text-white"] *,
-.high-contrast-mode [class*="bg-amber-400"] * {
-  color: #1a1611 !important;
+.high-contrast-mode [class*="bg-amber-400"] *,
+.high-contrast-mode [class*="bg-amber-300"] * {
+  color: #161310 !important;
 }
 
-/* Emergency / SOS Elements */
+/* Emergency / SOS Elements (Muted Warm Terracotta) */
 .high-contrast-mode [class*="bg-brick"],
-.high-contrast-mode [class*="bg-red-"] {
-  background-color: #b4442e !important;
-  color: #f7e8dc !important;
-  border: 2px solid #e8a34a !important;
+.high-contrast-mode [class*="bg-red-6"],
+.high-contrast-mode [class*="bg-red-5"] {
+  background-color: #B4442E !important;
+  color: #FDF4EB !important;
+  border: 2px solid #D97706 !important;
 }
 
 .high-contrast-mode [class*="bg-brick"] *,
-.high-contrast-mode [class*="bg-red-"] * {
-  color: #f7e8dc !important;
+.high-contrast-mode [class*="bg-red-6"] *,
+.high-contrast-mode [class*="bg-red-5"] * {
+  color: #FDF4EB !important;
 }
 
-/* ── 7. Accessible Form Controls, Inputs & Dropdowns ── */
+/* ── 8. Form Controls ── */
 .high-contrast-mode input,
 .high-contrast-mode select,
 .high-contrast-mode textarea {
-  background-color: #211c15 !important;
-  color: #f3e9d2 !important;
-  border: 2px solid #6a5c40 !important;
+  background-color: #221C16 !important;
+  color: #F7EFE2 !important;
+  border: 2px solid #4F4335 !important;
 }
 
 .high-contrast-mode input:focus,
 .high-contrast-mode select:focus,
 .high-contrast-mode textarea:focus {
-  outline: 3px solid #e8a34a !important;
+  outline: 3px solid #D97706 !important;
   outline-offset: 2px !important;
 }
 
-/* ── 8. Progress Bars ── */
+/* ── 9. Progress Bars ── */
 .high-contrast-mode [class*="bg-tea h-full"],
 .high-contrast-mode [class*="bg-marigold h-full"],
 .high-contrast-mode [class*="bg-emerald-"] {
-  background-color: #e8a34a !important;
+  background-color: #D97706 !important;
 }
 
 /* ── 9. Universal Switch Access & Focus Visibility ── */

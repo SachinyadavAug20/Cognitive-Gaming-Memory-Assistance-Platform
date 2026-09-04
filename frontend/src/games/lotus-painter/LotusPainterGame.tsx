@@ -222,14 +222,14 @@ export function LotusPainterGame() {
       const canvas = paintCanvasRef.current;
       if (!canvas) return;
 
-      // Filter out face motion (only hands below face line Y > 0.28)
+      // 1:1 camera viewport mapping to canvas (reaches all 4 corners)
       const hand = evt.rightHand || evt.leftHand;
       const effectiveY = hand ? hand.y : evt.y;
       const effectiveX = hand ? hand.x : evt.x;
 
-      if (effectiveY > 0.28 && evt.hasMotion && evt.energy > 0.12) {
-        const px = effectiveX * canvas.width;
-        const py = effectiveY * canvas.height;
+      if (evt.hasMotion && evt.energy > 0.12) {
+        const px = Math.max(0, Math.min(canvas.width, effectiveX * canvas.width));
+        const py = Math.max(0, Math.min(canvas.height, effectiveY * canvas.height));
         appendPointToActiveLine(px, py);
       } else {
         if (currentStrokeRef.current.length > 0) {
@@ -265,6 +265,7 @@ export function LotusPainterGame() {
       showHands: true,
       showGrid: false,
       showMetrics: true,
+      videoEl: trackerRef.current?.getVideoElement(),
     });
   }, [motionEvent, phase]);
 
@@ -575,9 +576,7 @@ export function LotusPainterGame() {
                 }}
                 className="absolute z-15 pointer-events-none flex flex-col items-center animate-in zoom-in-75 duration-300"
               >
-                <span className="text-4xl sm:text-5xl filter drop-shadow-[0_0_14px_rgba(236,72,153,0.9)]">
-                  🪷
-                </span>
+                <Flower2 className="w-10 h-10 sm:w-12 sm:h-12 text-pink-500 fill-pink-300 drop-shadow-[0_0_14px_rgba(236,72,153,0.9)]" />
                 <span
                   style={{ backgroundColor: l.color }}
                   className="rounded-full px-2 py-0.2 text-[8px] font-black text-white border border-black shadow-xs mt-0.5"
@@ -592,7 +591,7 @@ export function LotusPainterGame() {
               <span className="rounded-xl border-2 border-black bg-white/90 px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000]">
                 {cameraActive
                   ? motionEvent?.hasMotion
-                    ? "✨ Painting In-Air Lines"
+                    ? "Painting In-Air Lines"
                     : "Wave Hand Downward to Paint Lines"
                   : "Drag Finger or Pointer to Paint Lines"}
               </span>

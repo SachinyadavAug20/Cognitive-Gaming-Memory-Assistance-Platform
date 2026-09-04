@@ -14,7 +14,6 @@ import {
   Music,
   GitFork,
   Store,
-  Quote,
   Waves,
   Feather,
   Clock,
@@ -24,7 +23,6 @@ import {
   Footprints,
   Flower,
   Sun,
-  Users,
   Brain,
 } from "lucide-react";
 
@@ -34,15 +32,11 @@ import { LoomGame } from "./loom/LoomGame";
 import { DrumGame } from "./drum/DrumGame";
 import { HornbillFlightGame } from "./hornbill-flight/HornbillFlightGame";
 import { MajuliPotteryGame } from "./majuli-pottery/MajuliPotteryGame";
-import { BambooDanceGame } from "./bamboo-dance/BambooDanceGame";
 import { BrahmaputraBoatGame } from "./brahmaputra-boat/BrahmaputraBoatGame";
 import { DzukouBotanistGame } from "./dzukou-botanist/DzukouBotanistGame";
-import { MemoirScribeGame } from "./memoir-scribe/MemoirScribeGame";
 import { GrandchildChatGame } from "./grandchild-chat/GrandchildChatGame";
 import { MemoryDetectiveGame } from "./memory-detective/MemoryDetectiveGame";
 import { StorybookGame } from "./storybook/StorybookGame";
-import { BazaarGame } from "./bazaar/BazaarGame";
-import { ProverbGame } from "./proverb/ProverbGame";
 import { JigsawGame } from "./jigsaw/JigsawGame";
 import { WayfindingGame } from "./wayfinding/WayfindingGame";
 import { TeaHarvestGame } from "./tea-harvest/TeaHarvestGame";
@@ -51,14 +45,12 @@ import { NostalgiaRadioGame } from "./radio/NostalgiaRadioGame";
 import { HeritageKitchenGame } from "./heritage-kitchen/HeritageKitchenGame";
 import { RootBridgeGame } from "./root-bridge/RootBridgeGame";
 import { DailyCareRoutineGame } from "./daily-routine/DailyCareRoutineGame";
-import { LotusLakeGame } from "./lotus-lake/LotusLakeGame";
 import { TimelineGame } from "./timeline/TimelineGame";
 import { SortingGame } from "./sorting/SortingGame";
 import { ArrowEscape } from "@/components/games/ArrowEscape";
 import { MajuliWalk3D } from "@/components/games/MajuliWalk3D";
 import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
 import { BihuDholBeats } from "@/components/games/BihuDholBeats";
-import { VoiceOfBrahmaputra } from "@/components/games/VoiceOfBrahmaputra";
 import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
 import { BazaarBuddiesGame } from "./bazaar-buddies/BazaarBuddiesGame";
 import { MemoryGardenGame } from "./memory-garden/MemoryGardenGame";
@@ -67,7 +59,6 @@ import { TeaGardenCatchGame } from "./tea-garden-catch/TeaGardenCatchGame";
 import { ButterflySanctuaryGame } from "./butterfly-sanctuary/ButterflySanctuaryGame";
 import { LotusPainterGame } from "./lotus-painter/LotusPainterGame";
 import { MakeMyTeaGame } from "./daily-tasks/MakeMyTeaGame";
-import { MemoryMatchGame } from "./memory/MemoryMatchGame";
 import { CompanionGame } from "./companion/CompanionGame";
 import { RhythmHillsGame } from "./rhythm-hills/RhythmHillsGame";
 import { WeavingGame } from "./weaving/WeavingGame";
@@ -187,17 +178,6 @@ export const GAMES: GameDef[] = [
     recommended: true,
     component: MajuliPotteryGame,
   },
-  {
-    id: "bamboo-dance",
-    icon: Footprints,
-    titleKey: "bambooDance.title",
-    descKey: "bambooDance.desc",
-    accent: "bg-emerald-900",
-    domain: "Visuomotor Rhythm Step",
-    category: "vision-3d",
-    recommended: true,
-    component: BambooDanceGame,
-  },
 
   // ── DOMAIN 2: AUTOBIOGRAPHICAL REMINISCENCE & MEMORY RETRIEVAL (6 Modules) ──
   {
@@ -221,17 +201,6 @@ export const GAMES: GameDef[] = [
     category: "reminiscence",
     recommended: true,
     component: MemoryDetectiveGame,
-  },
-  {
-    id: "memoir-scribe",
-    icon: Feather,
-    titleKey: "memoirScribe.title",
-    descKey: "memoirScribe.desc",
-    accent: "bg-amber-900",
-    domain: "AI Spoken Memoirs & Scribe",
-    category: "reminiscence",
-    recommended: true,
-    component: MemoirScribeGame,
   },
   {
     id: "timeline",
@@ -370,17 +339,6 @@ export const GAMES: GameDef[] = [
     component: HeritageKitchenGame,
   },
   {
-    id: "bazaar",
-    icon: Store,
-    titleKey: "bazaar.title",
-    descKey: "bazaar.desc",
-    accent: "bg-amber-700",
-    domain: "AI Market Barter & IADL",
-    category: "iadl",
-    recommended: true,
-    component: BazaarGame,
-  },
-  {
     id: "sorting",
     icon: Boxes,
     titleKey: "sorting.title",
@@ -391,30 +349,8 @@ export const GAMES: GameDef[] = [
     recommended: false,
     component: SortingGame,
   },
-  {
-    id: "proverb",
-    icon: Quote,
-    titleKey: "proverb.title",
-    descKey: "proverb.desc",
-    accent: "bg-tea",
-    domain: "AI Cultural Cloze & Wisdom",
-    category: "iadl",
-    recommended: true,
-    component: ProverbGame,
-  },
 
   // ── DOMAIN 5: SENSORY CALMING & MINDFULNESS (1 Module) ──
-  {
-    id: "lotus-lake",
-    icon: Flower2,
-    titleKey: "lotusLake.title",
-    descKey: "lotusLake.desc",
-    accent: "bg-teal-700",
-    domain: "Sensory Calming",
-    category: "calm",
-    recommended: false,
-    component: LotusLakeGame,
-  },
 
   // ── DOMAIN 6: SPATIAL VECTOR RECOGNITION & PLANNING (1 Module) ──
   {
@@ -463,17 +399,7 @@ export const GAMES: GameDef[] = [
     recommended: true,
     component: BihuDholBeats,
   },
-  {
-    id: "brahmaputra-voice",
-    icon: Waves,
-    titleKey: "brahmaputraVoice.title",
-    descKey: "brahmaputraVoice.subtitle",
-    accent: "bg-[#0F2B38]",
-    domain: "Spoken Proverb Recall & River Glow Canvas",
-    category: "reminiscence",
-    recommended: true,
-    component: VoiceOfBrahmaputra,
-  },
+
   {
     id: "day-in-my-world",
     icon: Sun,
@@ -517,17 +443,6 @@ export const GAMES: GameDef[] = [
     category: "attention",
     recommended: true,
     component: MemoryRoadGame,
-  },
-  {
-    id: "memory-match",
-    icon: Users,
-    titleKey: "memoryMatch.title",
-    descKey: "memoryMatch.desc",
-    accent: "bg-[#DB2777]",
-    domain: "Family Face Recognition & Working Memory",
-    category: "attention",
-    recommended: true,
-    component: MemoryMatchGame,
   },
   {
     id: "daily-tasks",

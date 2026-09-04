@@ -141,9 +141,9 @@ export function HornbillFlightGame() {
       birdPosRef.current.vx *= 0.92; // Damping
       birdPosRef.current.vy *= 0.92;
 
-      // Clamp to screen bounds
-      birdPosRef.current.x = Math.max(0.1, Math.min(0.9, birdPosRef.current.x));
-      birdPosRef.current.y = Math.max(0.2, Math.min(0.85, birdPosRef.current.y));
+      // Clamp to screen bounds (1:1 viewport reach across all corners)
+      birdPosRef.current.x = Math.max(0.04, Math.min(0.96, birdPosRef.current.x));
+      birdPosRef.current.y = Math.max(0.04, Math.min(0.95, birdPosRef.current.y));
       birdPosRef.current.bankAngle = birdPosRef.current.vx * 25;
 
       // 2. Clear Sky Background (Highland Twilight / Morning Horizon)
@@ -324,12 +324,15 @@ export function HornbillFlightGame() {
     };
   }, [phase]);
 
-  // Optical Motion Tracking
+  // Optical Motion Tracking (1:1 viewport reach across all corners)
   const handleMotionEvent = useCallback((evt: MotionEvent) => {
     if (evt.hasMotion) {
       const activeHand = evt.rightHand || evt.leftHand || { x: evt.x, y: evt.y };
       const smoothed = smoothKineticTrajectory(
-        { x: activeHand.x, y: activeHand.y },
+        {
+          x: Math.max(0.04, Math.min(0.96, activeHand.x)),
+          y: Math.max(0.04, Math.min(0.95, activeHand.y)),
+        },
         lastPointRef.current,
         0.35
       );

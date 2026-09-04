@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { FileText, Image as ImageIcon, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface FileUploadZoneProps {
   accept: string;
@@ -28,21 +30,23 @@ export function FileUploadZone({
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropZoneRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("intake");
+  const tc = useTranslations("common");
 
   const validateFile = useCallback(
     (file: File): string | null => {
       if (file.size > maxSizeMB * 1024 * 1024) {
-        return `File is too large. Maximum size is ${maxSizeMB}MB.`;
+        return t("fileUpload.tooLarge", { maxSizeMB });
       }
       if (accept === ".pdf" && file.type !== "application/pdf") {
-        return "Please upload a PDF file.";
+        return t("fileUpload.pdfOnly");
       }
       if (accept === "image/*" && !file.type.startsWith("image/")) {
-        return "Please upload an image file.";
+        return t("fileUpload.imageOnly");
       }
       return null;
     },
-    [accept, maxSizeMB]
+    [accept, maxSizeMB, t]
   );
 
   const handleFile = useCallback(
@@ -134,36 +138,41 @@ export function FileUploadZone({
         {isProcessing ? (
           <>
             <div className="w-10 h-10 border-4 border-marigold border-t-transparent rounded-full animate-spin" />
-            <p className="font-bold text-ink text-lg">Analyzing report...</p>
-            <p className="text-ink-secondary text-sm">This takes about 30 seconds</p>
+            <p className="font-bold text-ink text-lg">{tc("analyzing.label")}</p>
+            <p className="text-ink-secondary text-sm">{tc("analyzing.desc")}</p>
           </>
         ) : currentFile ? (
           <>
             {preview && isPdf ? (
-              <span className="text-4xl">📄</span>
+              <FileText className="w-10 h-10 text-tea" />
             ) : preview ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={preview}
-                alt="Preview"
+                alt={t("fileUpload.preview")}
                 className="w-20 h-20 rounded-xl object-cover border-2 border-border"
               />
+            ) : isPdf ? (
+              <FileText className="w-10 h-10 text-tea" />
             ) : (
-              <span className="text-4xl">{isPdf ? "📄" : "🖼️"}</span>
+              <ImageIcon className="w-10 h-10 text-tea" />
             )}
             <p className="font-bold text-ink">{currentFile.name}</p>
             <p className="text-sm text-ink-secondary">
               {(currentFile.size / 1024 / 1024).toFixed(1)}MB
             </p>
-            <p className="text-sm text-tea font-bold">✓ Uploaded — click to replace</p>
+            <p className="text-sm text-tea font-bold inline-flex items-center gap-1">
+              <Check className="w-4 h-4" />
+              <span>{t("fileUpload.uploadedReplace")}</span>
+            </p>
           </>
         ) : (
           <>
-            <span className="text-5xl">{isPdf ? "📄" : "🖼️"}</span>
+            {isPdf ? <FileText className="w-12 h-12 text-ink-secondary/60" /> : <ImageIcon className="w-12 h-12 text-ink-secondary/60" />}
             <p className="font-bold text-ink text-lg">{label}</p>
             <p className="text-ink-secondary text-sm text-center">{description}</p>
             <p className="text-xs text-ink-secondary/60 mt-1">
-              Max {maxSizeMB}MB • {isPdf ? "PDF only" : "Images only"}
+              {tc("maxSize", { size: maxSizeMB })} • {isPdf ? tc("pdfOnly") : tc("imagesOnly")}
             </p>
           </>
         )}

@@ -1,4 +1,4 @@
-import { Activity, ShieldCheck, Cpu, Globe2 } from "lucide-react";
+import { Activity, ShieldCheck, Cpu, Globe2, Check } from "lucide-react";
 
 export function ClinicalImpactBadges() {
   return (
@@ -16,8 +16,9 @@ export function ClinicalImpactBadges() {
             Clinically calibrated across 5 cognitive domains, 3D motor kinematics, and daily memory recall.
           </p>
         </div>
-        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-tea uppercase tracking-wider">
-          ✓ Memory • Attention • Motor
+        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-tea uppercase tracking-wider flex items-center gap-1">
+          <Check className="h-3 w-3 stroke-[3]" />
+          <span>Memory • Attention • Motor</span>
         </div>
       </div>
 
@@ -34,8 +35,9 @@ export function ClinicalImpactBadges() {
             Local Ollama LLM extracts 17 clinical report domains with zero patient data leaving the device.
           </p>
         </div>
-        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-marigold-dark uppercase tracking-wider">
-          ✓ Private • On-Device • Edge
+        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-marigold-dark uppercase tracking-wider flex items-center gap-1">
+          <Check className="h-3 w-3 stroke-[3]" />
+          <span>Private • On-Device • Edge</span>
         </div>
       </div>
 
@@ -52,8 +54,9 @@ export function ClinicalImpactBadges() {
             Native voice & visual support across all 8 North Eastern states with zero-flicker language transitions.
           </p>
         </div>
-        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-sky-800 uppercase tracking-wider">
-          ✓ 8 NES States • Zero-Flicker
+        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-sky-800 uppercase tracking-wider flex items-center gap-1">
+          <Check className="h-3 w-3 stroke-[3]" />
+          <span>8 NES States • Zero-Flicker</span>
         </div>
       </div>
 
@@ -70,8 +73,9 @@ export function ClinicalImpactBadges() {
             Ayushman Bharat ABHA Health ID integration with continuous 8-state public health telemetry.
           </p>
         </div>
-        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-emerald-800 uppercase tracking-wider">
-          ✓ ABHA ID • GIS Telemetry
+        <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+          <Check className="h-3 w-3 stroke-[3]" />
+          <span>ABHA ID • GIS Telemetry</span>
         </div>
       </div>
     </section>

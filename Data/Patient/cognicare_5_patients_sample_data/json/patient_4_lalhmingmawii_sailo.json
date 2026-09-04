@@ -27,7 +27,7 @@
       "name": "Lalrinzuala Sailo",
       "relation": "Spouse",
       "age": 67,
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/01_spouse_lalrinzuala_sailo.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/01_spouse_lalrinzuala_sailo.jpg",
       "notes": "Married 40 years; retired state revenue inspector; helps me with morning walks and prepares meals.",
       "style": {
         "gender": "male",
@@ -36,13 +36,15 @@
           80,
           120
         ],
-        "hair_type": "short",
+        "hair_style": "short",
         "hair_color": [
           120,
           120,
           125
         ],
-        "has_specs": true
+        "has_specs": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     },
     {
@@ -50,7 +52,7 @@
       "name": "Vanlalruati Sailo",
       "relation": "Daughter",
       "age": 35,
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/02_daughter_vanlalruati_sailo.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/02_daughter_vanlalruati_sailo.jpg",
       "notes": "Lives in Aizawl; lecturer at Pachhunga University College; assists with daily cognitive exercises.",
       "style": {
         "gender": "female",
@@ -59,8 +61,9 @@
           60,
           90
         ],
-        "hair_type": "long",
-        "has_specs": true
+        "hair_style": "long",
+        "has_specs": true,
+        "bg_type": "cool_office"
       }
     },
     {
@@ -68,7 +71,7 @@
       "name": "Lalbiakzuala Sailo",
       "relation": "Son",
       "age": 38,
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/03_son_lalbiakzuala_sailo.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/03_son_lalbiakzuala_sailo.jpg",
       "notes": "Civil engineer in PWD; lives in Mission Veng; brings fresh mountain fruit every weekend.",
       "style": {
         "gender": "male",
@@ -77,7 +80,8 @@
           110,
           130
         ],
-        "hair_type": "short"
+        "hair_style": "short",
+        "bg_type": "outdoor_garden"
       }
     },
     {
@@ -85,7 +89,7 @@
       "name": "Lalramchhani Sailo",
       "relation": "Grandchild",
       "age": 9,
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/04_grandchild_lalramchhani_sailo.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/04_grandchild_lalramchhani_sailo.jpg",
       "notes": "Granddaughter; loves playing Mizo word puzzle games and drawing pictures with Pi Hmingi.",
       "style": {
         "gender": "female",
@@ -94,8 +98,9 @@
           140,
           50
         ],
-        "hair_type": "girl",
-        "is_child": true
+        "hair_style": "girl",
+        "is_child": true,
+        "bg_type": "warm_indoor"
       }
     },
     {
@@ -103,7 +108,7 @@
       "name": "Lalthanmawii Sailo",
       "relation": "Sibling",
       "age": 62,
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/05_sibling_lalthanmawii_sailo.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/relatives/05_sibling_lalthanmawii_sailo.jpg",
       "notes": "Younger sister; lives in Khatla; attends Presbyterian Women's fellowship with me every Tuesday.",
       "style": {
         "gender": "female",
@@ -112,12 +117,14 @@
           60,
           130
         ],
-        "hair_type": "bun",
+        "hair_style": "bun",
         "hair_color": [
           110,
           110,
           115
-        ]
+        ],
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     }
   ],
@@ -159,14 +166,15 @@
       "category": "Home",
       "short_description": "Where we live — cliffside Aizawl home overlooking the green rolling valleys.",
       "icon_symbol": "🏠",
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/01_home_zarkawt_residence.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/01_home_zarkawt_residence.jpg",
       "style": {
         "type": "home",
         "roof_color": [
           180,
           45,
           40
-        ]
+        ],
+        "sky_type": "misty_hills"
       }
     },
     {
@@ -175,9 +183,10 @@
       "category": "Local Market",
       "short_description": "Multi-tier hill market where we buy fresh bamboo shoots, local vegetables, and handwoven Puan.",
       "icon_symbol": "🛒",
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/02_aizawl_bara_bazar.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/02_aizawl_bara_bazar.jpg",
       "style": {
-        "type": "market"
+        "type": "market",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -186,9 +195,10 @@
       "category": "Place of Worship",
       "short_description": "Place of worship — neighborhood white church where she attended fellowship for 40 years.",
       "icon_symbol": "🛕",
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/03_zarkawt_presbyterian_church.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/03_zarkawt_presbyterian_church.jpg",
       "style": {
-        "type": "church"
+        "type": "church",
+        "sky_type": "misty_hills"
       }
     },
     {
@@ -197,9 +207,10 @@
       "category": "Clinic",
       "short_description": "Where I visit for monthly senior checkups and prescription refills.",
       "icon_symbol": "🏥",
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/04_aizawl_civil_hospital.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/04_aizawl_civil_hospital.jpg",
       "style": {
-        "type": "clinic"
+        "type": "clinic",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -208,9 +219,10 @@
       "category": "Park",
       "short_description": "Where we walk — scenic mountain ridge promenade offering panoramic views of Aizawl city.",
       "icon_symbol": "🌳",
-      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/05_durtlang_hills_viewpoint.png",
+      "photo_file": "images/patient_4_lalhmingmawii_sailo/places/05_durtlang_hills_viewpoint.jpg",
       "style": {
-        "type": "viewpoint"
+        "type": "viewpoint",
+        "sky_type": "golden_hour"
       }
     }
   ]

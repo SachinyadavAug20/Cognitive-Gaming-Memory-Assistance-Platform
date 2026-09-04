@@ -11,6 +11,9 @@ import {
   CheckCircle2,
   Search,
   Music,
+  Flower2,
+  Leaf,
+  Check,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -52,7 +55,7 @@ interface FloraSpecimen {
   id: string;
   name: string;
   latinName: string;
-  emoji: string;
+  iconType: "lily" | "rhododendron" | "vanda" | "bamboo_orchid";
   color: string;
   description: string;
   isTarget: boolean;
@@ -64,7 +67,7 @@ const BOTANICAL_PLANTS: FloraSpecimen[] = [
     id: "dzukou-lily",
     name: "Rare Dzukou Lily",
     latinName: "Lilium chitrangadae",
-    emoji: "🌸",
+    iconType: "lily",
     color: "bg-pink-100 border-pink-500 text-pink-950",
     description: "The sacred, world-famous pink alpine lily found only in Dzukou Valley on the Nagaland border.",
     isTarget: true,
@@ -74,7 +77,7 @@ const BOTANICAL_PLANTS: FloraSpecimen[] = [
     id: "rhododendron",
     name: "Crimson Tree Rhododendron",
     latinName: "Rhododendron arboreum",
-    emoji: "🌺",
+    iconType: "rhododendron",
     color: "bg-rose-100 border-rose-500 text-rose-950",
     description: "Vibrant high-altitude crimson flowers that carpet the Himalayan ridge during springtime.",
     isTarget: true,
@@ -84,7 +87,7 @@ const BOTANICAL_PLANTS: FloraSpecimen[] = [
     id: "blue-vanda",
     name: "Sacred Blue Vanda Orchid",
     latinName: "Vanda coerulea",
-    emoji: "🪻",
+    iconType: "vanda",
     color: "bg-indigo-100 border-indigo-500 text-indigo-950",
     description: "A rare, protected blue-violet wild orchid flourishing in the mist-laden subtropical canopies.",
     isTarget: true,
@@ -94,13 +97,20 @@ const BOTANICAL_PLANTS: FloraSpecimen[] = [
     id: "bamboo-orchid",
     name: "Assam Bamboo Orchid",
     latinName: "Arundina graminifolia",
-    emoji: "🎋",
+    iconType: "bamboo_orchid",
     color: "bg-amber-100 border-amber-500 text-amber-950",
     description: "Delicate purple and white reed-like wild flowers growing along hill slopes.",
     isTarget: true,
     discovered: false,
   },
 ];
+
+function renderFloraIcon(iconType: FloraSpecimen["iconType"], className = "w-10 h-10") {
+  if (iconType === "lily") return <Flower2 className={`${className} text-pink-600`} />;
+  if (iconType === "rhododendron") return <Flower2 className={`${className} text-rose-600`} />;
+  if (iconType === "vanda") return <Flower2 className={`${className} text-indigo-600`} />;
+  return <Leaf className={`${className} text-amber-700`} />;
+}
 
 export function DzukouBotanistGame() {
   const locale = useLocale();
@@ -252,10 +262,10 @@ export function DzukouBotanistGame() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="h-16 w-16 rounded-2xl border-2 border-emerald-800 bg-white flex items-center justify-center text-4xl shadow-inner relative group">
-                <span className="animate-pulse">{currentTarget.emoji}</span>
+              <div className="h-16 w-16 rounded-2xl border-2 border-emerald-800 bg-white flex items-center justify-center shadow-inner relative group">
+                <span className="animate-pulse">{renderFloraIcon(currentTarget.iconType, "w-8 h-8")}</span>
                 <span className="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[10px] font-black shadow-sm">
-                  🔍
+                  <Search className="w-3 h-3 text-white" />
                 </span>
               </div>
               <div className="flex-1">
@@ -265,8 +275,9 @@ export function DzukouBotanistGame() {
                 <p className="text-xs font-semibold text-ink-secondary italic">
                   {currentTarget.latinName}
                 </p>
-                <p className="text-[11px] font-bold text-emerald-900 mt-1">
-                  🌿 {currentTarget.description}
+                <p className="text-[11px] font-bold text-emerald-900 mt-1 inline-flex items-center gap-1">
+                  <Leaf className="w-3 h-3 text-emerald-800 shrink-0" />
+                  <span>{currentTarget.description}</span>
                 </p>
               </div>
             </div>
@@ -285,15 +296,25 @@ export function DzukouBotanistGame() {
                     : plant.color
                 }`}
               >
-                <span className="text-5xl animate-bounce" style={{ animationDuration: "3s" }}>
-                  {plant.emoji}
+                <span className="animate-bounce" style={{ animationDuration: "3s" }}>
+                  {renderFloraIcon(plant.iconType, "w-12 h-12")}
                 </span>
                 <div>
                   <span className="font-serif text-sm sm:text-base font-black block leading-tight">
                     {plant.name}
                   </span>
-                  <span className="text-[10px] font-bold opacity-80 uppercase block mt-0.5">
-                    {plant.discovered ? "✓ In Herbarium" : "🔍 Inspect & Collect"}
+                  <span className="text-[10px] font-bold opacity-80 uppercase flex items-center justify-center gap-1 mt-0.5">
+                    {plant.discovered ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-300" />
+                        <span>In Herbarium</span>
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-3 h-3" />
+                        <span>Inspect & Collect</span>
+                      </>
+                    )}
                   </span>
                 </div>
               </button>

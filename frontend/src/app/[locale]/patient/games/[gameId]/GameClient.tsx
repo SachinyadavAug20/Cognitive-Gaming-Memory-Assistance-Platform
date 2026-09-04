@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { Construction } from "lucide-react";
 import { GAME_BY_ID } from "@/games/registry";
 
 export function GameClient() {
@@ -13,7 +14,7 @@ export function GameClient() {
   if (!game) {
     return (
       <div className="flex flex-col items-center justify-center gap-6 px-4 py-20 text-center">
-        <div className="text-7xl">🚧</div>
+        <Construction className="w-16 h-16 text-amber-600 stroke-[1.5]" />
         <h1 className="font-[family-name:var(--font-serif)] text-3xl font-extrabold text-ink">
           {t("notFound.title")}
         </h1>

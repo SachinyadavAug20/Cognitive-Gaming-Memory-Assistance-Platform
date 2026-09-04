@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Wrench } from "lucide-react";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 
 export function GameLoading() {
@@ -17,7 +18,7 @@ export function GameError({ onRetry }: { onRetry: () => void }) {
   const t = useTranslations("games");
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-16 text-center">
-      <div className="text-6xl">🛠️</div>
+      <Wrench className="w-16 h-16 text-amber-600 stroke-[1.5]" />
       <p className="max-w-xs text-lg font-semibold text-ink-secondary">
         {t("loadError")}
       </p>

@@ -26,6 +26,8 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    unoptimized: true,
+    contentDispositionType: "inline",
     remotePatterns: [
       {
         protocol: "http",

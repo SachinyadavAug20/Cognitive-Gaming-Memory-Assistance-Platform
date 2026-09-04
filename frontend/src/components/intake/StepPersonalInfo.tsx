@@ -54,7 +54,7 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         </Field>
 
         <Field label={t("gender")} error={errors.gender} required>
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Gender">
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("gender")}>
             {GENDER_KEYS.map((key) => (
               <SelectChip
                 key={key}
@@ -80,7 +80,7 @@ export function StepPersonalInfo({ data, errors, onChange }: StepPersonalInfoPro
         </Field>
 
         <Field label={t("relationship")} error={errors.relationship} required>
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Relationship">
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("relationship")}>
             {RELATIONSHIP_KEYS.map((key) => (
               <SelectChip
                 key={key}

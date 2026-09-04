@@ -27,7 +27,7 @@
       "name": "Daphisha Nongrum",
       "relation": "Daughter",
       "age": 36,
-      "photo_file": "images/patient_2_mary_nongrum/relatives/01_daughter_daphisha_nongrum.png",
+      "photo_file": "images/patient_2_mary_nongrum/relatives/01_daughter_daphisha_nongrum.jpg",
       "notes": "Lives in Shillong with me; school teacher at St. Mary's; prepares herbal morning tea and organizes medicines.",
       "style": {
         "gender": "female",
@@ -36,8 +36,9 @@
           60,
           110
         ],
-        "hair_type": "long",
-        "has_specs": true
+        "hair_style": "long",
+        "has_specs": true,
+        "bg_type": "outdoor_garden"
       }
     },
     {
@@ -45,7 +46,7 @@
       "name": "Banker Nongrum",
       "relation": "Spouse",
       "age": 70,
-      "photo_file": "images/patient_2_mary_nongrum/relatives/02_spouse_banker_nongrum.png",
+      "photo_file": "images/patient_2_mary_nongrum/relatives/02_spouse_banker_nongrum.jpg",
       "notes": "Married 45 years; retired forestry officer; loves tending the orchid and hydrangea garden with me.",
       "style": {
         "gender": "male",
@@ -54,13 +55,15 @@
           95,
           75
         ],
-        "hair_type": "short",
+        "hair_style": "short",
         "hair_color": [
           130,
           130,
           135
         ],
-        "has_moustache": true
+        "has_moustache": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     },
     {
@@ -68,7 +71,7 @@
       "name": "Banylla Nongrum",
       "relation": "Grandchild",
       "age": 8,
-      "photo_file": "images/patient_2_mary_nongrum/relatives/03_grandchild_banylla_nongrum.png",
+      "photo_file": "images/patient_2_mary_nongrum/relatives/03_grandchild_banylla_nongrum.jpg",
       "notes": "Granddaughter; loves reading illustrated Khasi folktales and singing church choir hymns with Kong Mary.",
       "style": {
         "gender": "female",
@@ -77,8 +80,9 @@
           120,
           150
         ],
-        "hair_type": "girl",
-        "is_child": true
+        "hair_style": "girl",
+        "is_child": true,
+        "bg_type": "warm_indoor"
       }
     },
     {
@@ -86,7 +90,7 @@
       "name": "Pynskhem Nongrum",
       "relation": "Son",
       "age": 40,
-      "photo_file": "images/patient_2_mary_nongrum/relatives/04_son_pynskhem_nongrum.png",
+      "photo_file": "images/patient_2_mary_nongrum/relatives/04_son_pynskhem_nongrum.jpg",
       "notes": "Lives in Mawlai; works in state tourism; visits every Wednesday evening and brings traditional Khasi snacks.",
       "style": {
         "gender": "male",
@@ -95,7 +99,8 @@
           115,
           155
         ],
-        "hair_type": "short"
+        "hair_style": "short",
+        "bg_type": "cool_office"
       }
     },
     {
@@ -103,7 +108,7 @@
       "name": "Ibadalin Nongrum",
       "relation": "Sibling",
       "age": 65,
-      "photo_file": "images/patient_2_mary_nongrum/relatives/05_sibling_ibadalin_nongrum.png",
+      "photo_file": "images/patient_2_mary_nongrum/relatives/05_sibling_ibadalin_nongrum.jpg",
       "notes": "Younger sister; lives near Police Bazar; knits woollen sweaters with me every Saturday afternoon.",
       "style": {
         "gender": "female",
@@ -112,12 +117,14 @@
           80,
           140
         ],
-        "hair_type": "bun",
+        "hair_style": "bun",
         "hair_color": [
           140,
           140,
           145
-        ]
+        ],
+        "is_elderly": true,
+        "bg_type": "warm_indoor"
       }
     }
   ],
@@ -159,14 +166,15 @@
       "category": "Home",
       "short_description": "Where we live — wooden-roof heritage cottage with blooming orchid garden.",
       "icon_symbol": "🏠",
-      "photo_file": "images/patient_2_mary_nongrum/places/01_home_nongrim_hills_cottage.png",
+      "photo_file": "images/patient_2_mary_nongrum/places/01_home_nongrim_hills_cottage.jpg",
       "style": {
         "type": "home",
         "roof_color": [
           140,
           50,
           45
-        ]
+        ],
+        "sky_type": "misty_hills"
       }
     },
     {
@@ -175,9 +183,10 @@
       "category": "Local Market",
       "short_description": "Where we shop — bakery, fresh fruit stalls, and woollen garment shops.",
       "icon_symbol": "🛒",
-      "photo_file": "images/patient_2_mary_nongrum/places/02_laitumkhrah_main_market.png",
+      "photo_file": "images/patient_2_mary_nongrum/places/02_laitumkhrah_main_market.jpg",
       "style": {
-        "type": "market"
+        "type": "market",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -186,9 +195,10 @@
       "category": "Place of Worship",
       "short_description": "Place of worship — iconic blue cathedral in Laitumkhrah where she attends Sunday mass.",
       "icon_symbol": "🛕",
-      "photo_file": "images/patient_2_mary_nongrum/places/03_cathedral_mary_help_christians.png",
+      "photo_file": "images/patient_2_mary_nongrum/places/03_cathedral_mary_help_christians.jpg",
       "style": {
-        "type": "church"
+        "type": "church",
+        "sky_type": "misty_hills"
       }
     },
     {
@@ -197,9 +207,10 @@
       "category": "Clinic",
       "short_description": "Where I worked for 35 years and get monthly blood pressure checkups.",
       "icon_symbol": "🏥",
-      "photo_file": "images/patient_2_mary_nongrum/places/04_shillong_civil_hospital.png",
+      "photo_file": "images/patient_2_mary_nongrum/places/04_shillong_civil_hospital.jpg",
       "style": {
-        "type": "clinic"
+        "type": "clinic",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -208,9 +219,10 @@
       "category": "Park",
       "short_description": "Where we stroll — scenic horseshoe lake with wooden bridge, swans, and flowerbeds.",
       "icon_symbol": "🌳",
-      "photo_file": "images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.png",
+      "photo_file": "images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.jpg",
       "style": {
-        "type": "lake"
+        "type": "lake",
+        "sky_type": "morning_sun"
       }
     }
   ]

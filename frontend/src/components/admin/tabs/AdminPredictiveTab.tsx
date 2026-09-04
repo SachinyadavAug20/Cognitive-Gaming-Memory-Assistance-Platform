@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Sparkles, Check } from "lucide-react";
 import type { AdminPredictiveTrajectory } from "@/types/admin";
 
 interface AdminPredictiveTabProps {
@@ -75,8 +75,9 @@ export function AdminPredictiveTab({
               </div>
 
               {/* Preservative Gain */}
-              <div className="mt-3 text-xs font-bold text-emerald-800">
-                ✨ Gaming Adherence Impact: +{traj.adherenceImpactFactor}% stability gain
+              <div className="mt-3 text-xs font-bold text-emerald-800 inline-flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                <span>Gaming Adherence Impact: +{traj.adherenceImpactFactor}% stability gain</span>
               </div>
 
               <div className="mt-3">
@@ -85,8 +86,9 @@ export function AdminPredictiveTab({
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {traj.recommendedInterventions.map((rec) => (
-                    <span key={rec} className="rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-950">
-                      ✓ {rec}
+                    <span key={rec} className="inline-flex items-center gap-1 rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-950">
+                      <Check className="h-3 w-3 shrink-0 text-amber-700" />
+                      <span>{rec}</span>
                     </span>
                   ))}
                 </div>

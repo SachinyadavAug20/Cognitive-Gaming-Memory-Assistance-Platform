@@ -664,40 +664,54 @@ export function playDholBeat(accent = false): void {
   try {
     const now = ctx.currentTime;
 
-    // 1. Deep Bass Resonance
+    // 1. Deep Bass Body Resonance (Dag head)
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
 
     osc.type = "sine";
-    osc.frequency.setValueAtTime(accent ? 145 : 120, now);
-    osc.frequency.exponentialRampToValueAtTime(45, now + 0.32);
+    osc.frequency.setValueAtTime(accent ? 155 : 128, now);
+    osc.frequency.exponentialRampToValueAtTime(42, now + 0.38);
 
     filter.type = "lowpass";
-    filter.frequency.setValueAtTime(320, now);
+    filter.frequency.setValueAtTime(360, now);
+    filter.Q.setValueAtTime(3.5, now);
 
-    gain.gain.setValueAtTime(accent ? 0.8 : 0.6, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    gain.gain.setValueAtTime(accent ? 0.85 : 0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
 
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(_duckGain);
     osc.start(now);
-    osc.stop(now + 0.36);
+    osc.stop(now + 0.43);
 
-    // 2. High Rim Snap
+    // 2. High Rim Snap & Membrane Slap (Tali head)
     const rimOsc = ctx.createOscillator();
     const rimGain = ctx.createGain();
     rimOsc.type = "triangle";
-    rimOsc.frequency.setValueAtTime(accent ? 360 : 280, now);
-    rimOsc.frequency.exponentialRampToValueAtTime(160, now + 0.12);
-    rimGain.gain.setValueAtTime(accent ? 0.35 : 0.2, now);
-    rimGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    rimOsc.frequency.setValueAtTime(accent ? 410 : 310, now);
+    rimOsc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
+    rimGain.gain.setValueAtTime(accent ? 0.42 : 0.28, now);
+    rimGain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
 
     rimOsc.connect(rimGain);
     rimGain.connect(_duckGain);
     rimOsc.start(now);
-    rimOsc.stop(now + 0.15);
+    rimOsc.stop(now + 0.17);
+
+    // 3. Subtle Wood/Bamboo Stick Tap Click
+    const clickOsc = ctx.createOscillator();
+    const clickGain = ctx.createGain();
+    clickOsc.type = "square";
+    clickOsc.frequency.setValueAtTime(accent ? 920 : 740, now);
+    clickGain.gain.setValueAtTime(accent ? 0.12 : 0.08, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+
+    clickOsc.connect(clickGain);
+    clickGain.connect(_duckGain);
+    clickOsc.start(now);
+    clickOsc.stop(now + 0.04);
   } catch {
     playPress();
   }

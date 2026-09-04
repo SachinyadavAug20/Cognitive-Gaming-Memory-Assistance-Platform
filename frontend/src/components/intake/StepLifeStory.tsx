@@ -96,7 +96,7 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       </div>
 
       <Field label={t("interests")}>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Interests">
+        <div className="flex flex-wrap gap-2" role="group" aria-label={t("interests")}>
           {INTEREST_KEYS.map((key) => (
             <SelectChip
               key={key}
@@ -132,7 +132,7 @@ export function StepLifeStory({ data, errors, onChange }: StepLifeStoryProps) {
       </Field>
 
       <Field label={t("language")} error={errors.preferredLanguage} required>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Preferred language">
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t("language")}>
           {LANGUAGE_OPTIONS.map((lang) => (
             <SelectChip
               key={lang.code}

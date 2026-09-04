@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Radio, Music, Search } from "lucide-react";
+import { Radio, Music, Search, Bell, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { BihuDholIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -33,8 +34,20 @@ export interface RadioStation {
   title: string;
   stationName: string;
   desc: string;
-  emoji: string;
   soundType: "flute" | "chimes" | "dhol" | "calm";
+}
+
+function renderStationIcon(id: string, className = "h-6 w-6") {
+  switch (id) {
+    case "guwahati":
+      return <Music className={className} />;
+    case "shillong":
+      return <Bell className={className} />;
+    case "bihu":
+      return <BihuDholIcon className={className} />;
+    default:
+      return <Radio className={className} />;
+  }
 }
 
 const STATIONS: RadioStation[] = [
@@ -44,7 +57,6 @@ const STATIONS: RadioStation[] = [
     title: "Akashvani Guwahati",
     stationName: "Folk Airs & Brahmaputra Melodies",
     desc: "Acoustic flute melodies reminiscent of Dr. Bhupen Hazarika.",
-    emoji: "🪈",
     soundType: "flute",
   },
   {
@@ -53,7 +65,6 @@ const STATIONS: RadioStation[] = [
     title: "Akashvani Shillong",
     stationName: "Cathedral Chimes & Choral Airs",
     desc: "Peaceful Sunday cathedral bells and evening hymn harmonies.",
-    emoji: "🔔",
     soundType: "chimes",
   },
   {
@@ -62,7 +73,6 @@ const STATIONS: RadioStation[] = [
     title: "Village Gramophone",
     stationName: "Festive Dhol & Spring Rhythms",
     desc: "Heartwarming rhythmic beats of the spring harvest festival.",
-    emoji: "🥁",
     soundType: "dhol",
   },
   {
@@ -71,7 +81,6 @@ const STATIONS: RadioStation[] = [
     title: "Hilltop Weather & Memories",
     stationName: "Evening Veranda Stories",
     desc: "Soothing acoustic tunes and childhood nostalgic airs.",
-    emoji: "📻",
     soundType: "calm",
   },
 ];
@@ -239,7 +248,7 @@ export function NostalgiaRadioGame() {
     <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
-          <div className="text-6xl animate-pulse">📻</div>
+          <Radio className="h-16 w-16 text-tea animate-pulse" />
           <p className="font-serif text-3xl font-black text-ink">{str.introTitle}</p>
           <p className="max-w-md text-lg font-semibold text-ink-secondary">
             {str.introSubtitle}
@@ -254,7 +263,7 @@ export function NostalgiaRadioGame() {
               {STATIONS.map((s) => (
                 <div key={s.id} className="flex items-center justify-between border-b border-border/60 pb-1.5 last:border-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{s.emoji}</span>
+                    <span className="text-tea">{renderStationIcon(s.id, "h-5 w-5")}</span>
                     <span className="text-sm font-bold text-ink">{s.title}</span>
                   </div>
                   <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-black text-amber-900 border border-amber-300">
@@ -279,7 +288,9 @@ export function NostalgiaRadioGame() {
         <div className="flex flex-col items-center gap-5 py-4">
           {/* DISCOVERY PROGRESS BAR */}
           <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-2 border-black bg-surface px-4 py-2 shadow-sm">
-            <span className="text-sm font-black text-tea">📻 Akashvani Receiver</span>
+            <span className="text-sm font-black text-tea flex items-center gap-1.5">
+              <Radio className="h-4 w-4" /> Akashvani Receiver
+            </span>
             <span className="text-xs font-bold text-ink-secondary">
               {discoveredStations.length} / {STATIONS.length} Stations Tuned
             </span>
@@ -334,9 +345,10 @@ export function NostalgiaRadioGame() {
                     if (matching) tuneToStation(matching);
                     else playRadioTune();
                   }}
-                  className="btn-tactile px-2.5 py-1 rounded-lg border border-amber-500 bg-amber-950 text-amber-200 text-xs font-black hover:bg-amber-900 cursor-pointer shadow-xs"
+                  className="btn-tactile px-2.5 py-1 rounded-lg border border-amber-500 bg-amber-950 text-amber-200 text-xs font-black hover:bg-amber-900 cursor-pointer shadow-xs flex items-center gap-1"
                 >
-                  ⏪ -50 kHz
+                  <ChevronLeft className="h-3 w-3 inline" />
+                  <span>-50 kHz</span>
                 </button>
 
                 <span className="font-serif text-base sm:text-lg font-black text-amber-300">
@@ -352,9 +364,10 @@ export function NostalgiaRadioGame() {
                     if (matching) tuneToStation(matching);
                     else playRadioTune();
                   }}
-                  className="btn-tactile px-2.5 py-1 rounded-lg border border-amber-500 bg-amber-950 text-amber-200 text-xs font-black hover:bg-amber-900 cursor-pointer shadow-xs"
+                  className="btn-tactile px-2.5 py-1 rounded-lg border border-amber-500 bg-amber-950 text-amber-200 text-xs font-black hover:bg-amber-900 cursor-pointer shadow-xs flex items-center gap-1"
                 >
-                  +50 kHz ⏩
+                  <span>+50 kHz</span>
+                  <ChevronRight className="h-3 w-3 inline" />
                 </button>
               </div>
             </div>
@@ -414,13 +427,15 @@ export function NostalgiaRadioGame() {
                         : "bg-surface text-ink hover:bg-surface-muted"
                     }`}
                   >
-                    <span className="text-3xl">{station.emoji}</span>
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/10">
+                      {renderStationIcon(station.id, "h-6 w-6")}
+                    </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-black leading-tight truncate">
                         {station.title}
                       </p>
-                      <span className="text-[10px] font-bold opacity-80">
-                        {station.freq} kHz {isDiscovered ? "✓" : ""}
+                      <span className="text-[10px] font-bold opacity-80 flex items-center gap-1">
+                        {station.freq} kHz {isDiscovered && <Check className="h-3 w-3 text-emerald-700 inline" />}
                       </span>
                     </div>
                   </button>
@@ -446,7 +461,9 @@ export function NostalgiaRadioGame() {
                 {STATIONS.map((s) => (
                   <div key={s.id} className="flex items-center justify-between text-xs font-extrabold text-ink">
                     <span>{s.title}</span>
-                    <span className="text-tea">Tuned ({s.freq} kHz) ✓</span>
+                    <span className="text-tea flex items-center gap-1">
+                      Tuned ({s.freq} kHz) <Check className="h-3 w-3 text-emerald-700" />
+                    </span>
                   </div>
                 ))}
               </div>

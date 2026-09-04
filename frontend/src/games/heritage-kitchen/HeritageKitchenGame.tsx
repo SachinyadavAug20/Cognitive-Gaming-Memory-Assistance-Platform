@@ -3,7 +3,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Utensils, Music } from "lucide-react";
+import {
+  Utensils,
+  Music,
+  CookingPot,
+  Fish,
+  Citrus,
+  Wheat,
+  Soup,
+  Carrot,
+  Salad,
+  Flame,
+  Droplets,
+  Leaf,
+  Sparkles,
+} from "lucide-react";
+import { BambooShootIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -27,7 +42,7 @@ import { getGameStrings } from "@/lib/gameI18n";
 export interface RecipeStep {
   id: string;
   name: string;
-  emoji: string;
+  icon: React.ComponentType<{ className?: string }>;
   actionDesc: string;
 }
 
@@ -35,7 +50,7 @@ export interface Recipe {
   id: string;
   title: string;
   subtitle: string;
-  emoji: string;
+  icon: React.ComponentType<{ className?: string }>;
   steps: RecipeStep[];
 }
 
@@ -44,49 +59,49 @@ const RECIPES: Recipe[] = [
     id: "tenga",
     title: "Assamese Masor Tenga",
     subtitle: "Tangy fresh river curry with fragrant Kaji Nemu lemon",
-    emoji: "🍲",
+    icon: CookingPot,
     steps: [
-      { id: "oil", name: "Pure Mustard Oil", emoji: "🫒", actionDesc: "Pour golden mustard oil into hot pan" },
-      { id: "spices", name: "Panch Phoron & Ginger", emoji: "🫚", actionDesc: "Add fragrant five spices and crushed ginger" },
-      { id: "turmeric", name: "Golden Turmeric", emoji: "🧂", actionDesc: "Sprinkle turmeric and sea salt" },
-      { id: "fish", name: "Fresh River Fish", emoji: "🐟", actionDesc: "Gently add fresh tender fish pieces" },
-      { id: "lemon", name: "Kaji Nemu Lemon Juice", emoji: "🍋", actionDesc: "Squeeze fresh tangy Kaji Nemu juice" },
+      { id: "oil", name: "Pure Mustard Oil", icon: Droplets, actionDesc: "Pour golden mustard oil into hot pan" },
+      { id: "spices", name: "Panch Phoron & Ginger", icon: Sparkles, actionDesc: "Add fragrant five spices and crushed ginger" },
+      { id: "turmeric", name: "Golden Turmeric", icon: Flame, actionDesc: "Sprinkle turmeric and sea salt" },
+      { id: "fish", name: "Fresh River Fish", icon: Fish, actionDesc: "Gently add fresh tender fish pieces" },
+      { id: "lemon", name: "Kaji Nemu Lemon Juice", icon: Citrus, actionDesc: "Squeeze fresh tangy Kaji Nemu juice" },
     ],
   },
   {
     id: "jadoh",
     title: "Khasi Fragrant Jadoh",
     subtitle: "Traditional Shillong rice stew with turmeric & herbs",
-    emoji: "🍚",
+    icon: Wheat,
     steps: [
-      { id: "oil", name: "Mustard Oil", emoji: "🫒", actionDesc: "Heat the clay pot" },
-      { id: "onion", name: "Chopped Onions & Ginger", emoji: "🧅", actionDesc: "Sauté onions till golden" },
-      { id: "bay", name: "Bay Leaves & Cardamom", emoji: "🍃", actionDesc: "Add aromatic hill spices" },
-      { id: "rice", name: "Highland Sticky Rice", emoji: "🍚", actionDesc: "Stir in the washed local rice" },
+      { id: "oil", name: "Mustard Oil", icon: Droplets, actionDesc: "Heat the clay pot" },
+      { id: "onion", name: "Chopped Onions & Ginger", icon: Carrot, actionDesc: "Sauté onions till golden" },
+      { id: "bay", name: "Bay Leaves & Cardamom", icon: Leaf, actionDesc: "Add aromatic hill spices" },
+      { id: "rice", name: "Highland Sticky Rice", icon: Wheat, actionDesc: "Stir in the washed local rice" },
     ],
   },
   {
     id: "thukpa",
     title: "Sikkimese Mountain Thukpa",
     subtitle: "Warming Himalayan noodle broth with mountain herbs",
-    emoji: "🍜",
+    icon: Soup,
     steps: [
-      { id: "broth", name: "Clear Mountain Broth", emoji: "🥣", actionDesc: "Simmer fragrant herb broth" },
-      { id: "veggies", name: "Bok Choy & Carrots", emoji: "🥬", actionDesc: "Add crisp mountain greens" },
-      { id: "noodles", name: "Handmade Wheat Noodles", emoji: "🍜", actionDesc: "Drop in fresh soft noodles" },
-      { id: "garlic", name: "Fried Mountain Garlic", emoji: "🧄", actionDesc: "Garnish with golden crispy garlic" },
+      { id: "broth", name: "Clear Mountain Broth", icon: Soup, actionDesc: "Simmer fragrant herb broth" },
+      { id: "veggies", name: "Bok Choy & Carrots", icon: Salad, actionDesc: "Add crisp mountain greens" },
+      { id: "noodles", name: "Handmade Wheat Noodles", icon: Utensils, actionDesc: "Drop in fresh soft noodles" },
+      { id: "garlic", name: "Fried Mountain Garlic", icon: Sparkles, actionDesc: "Garnish with golden crispy garlic" },
     ],
   },
   {
     id: "bai",
     title: "Mizo Herbal Bai",
     subtitle: "Soothing indigenous vegetable & bamboo shoot stew",
-    emoji: "🌱",
+    icon: BambooShootIcon,
     steps: [
-      { id: "water", name: "Spring Water Base", emoji: "💧", actionDesc: "Bring fresh hill spring water to boil" },
-      { id: "bamboo", name: "Fresh Bamboo Shoots", emoji: "🎍", actionDesc: "Add tender sliced mountain bamboo shoots" },
-      { id: "greens", name: "Local Mustard Greens", emoji: "🥬", actionDesc: "Fold in freshly harvested greens" },
-      { id: "herbs", name: "Steamed Fermented Soya", emoji: "🌿", actionDesc: "Season with fragrant mountain herbs" },
+      { id: "water", name: "Spring Water Base", icon: Droplets, actionDesc: "Bring fresh hill spring water to boil" },
+      { id: "bamboo", name: "Fresh Bamboo Shoots", icon: BambooShootIcon, actionDesc: "Add tender sliced mountain bamboo shoots" },
+      { id: "greens", name: "Local Mustard Greens", icon: Leaf, actionDesc: "Fold in freshly harvested greens" },
+      { id: "herbs", name: "Steamed Fermented Soya", icon: Leaf, actionDesc: "Season with fragrant mountain herbs" },
     ],
   },
 ];
@@ -261,7 +276,9 @@ export function HeritageKitchenGame() {
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
-            <div className="text-6xl animate-bounce">🍲</div>
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-black bg-amber-100 shadow-[3px_3px_0px_#000] animate-bounce">
+              <CookingPot className="h-9 w-9 text-amber-900" />
+            </div>
             <p className="font-serif text-3xl font-black text-ink">
               {str.introTitle}
             </p>
@@ -283,7 +300,9 @@ export function HeritageKitchenGame() {
                     className="btn-tactile group flex items-center justify-between rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_rgba(0,0,0,1)] transition-transform hover:scale-102 cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-4xl">{r.emoji}</span>
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50">
+                        <r.icon className="h-6 w-6 text-amber-900" />
+                      </div>
                       <div>
                         <p className="text-base font-black text-ink">{r.title}</p>
                         <p className="text-xs font-semibold text-ink-secondary">{r.subtitle}</p>
@@ -302,7 +321,7 @@ export function HeritageKitchenGame() {
             />
 
             <ChunkyButton variant="tea" size="2xl" onClick={() => startCooking(0)}>
-              Start Cooking 🍲
+              Start Cooking
             </ChunkyButton>
           </div>
         ) : phase === "cook" ? (
@@ -322,8 +341,8 @@ export function HeritageKitchenGame() {
 
               {/* Sizzling Steam Effect */}
               {isSizzling && (
-                <div className="absolute top-4 text-3xl animate-ping pointer-events-none">
-                  ♨️
+                <div className="absolute top-4 pointer-events-none animate-ping">
+                  <Flame className="h-8 w-8 text-orange-400" />
                 </div>
               )}
 
@@ -335,16 +354,19 @@ export function HeritageKitchenGame() {
 
                 {/* Added Ingredients inside the pot */}
                 <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2 max-w-[120px]">
-                  {potIngredients.map((item, idx) => (
-                    <span key={idx} className="text-2xl animate-bounce" title={item.name}>
-                      {item.emoji}
-                    </span>
-                  ))}
+                  {potIngredients.map((item, idx) => {
+                    const ItemIcon = item.icon;
+                    return (
+                      <div key={idx} className="p-1 rounded bg-amber-800/90 border border-amber-600 animate-bounce" title={item.name}>
+                        <ItemIcon className="h-4 w-4 text-amber-200" />
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {isSizzling && (
-                  <span className="mt-1 text-[11px] font-black text-amber-400 animate-pulse">
-                    ♨️ Sizzling & Simmering...
+                  <span className="mt-1 flex items-center justify-center gap-1 text-[11px] font-black text-amber-400 animate-pulse">
+                    <Flame className="h-3 w-3" /> Sizzling & Simmering...
                   </span>
                 )}
               </div>
@@ -360,7 +382,7 @@ export function HeritageKitchenGame() {
                   }}
                   className="btn-tactile flex items-center gap-1.5 rounded-full border-2 border-amber-500 bg-amber-900/80 px-3 py-1 text-xs font-black text-amber-200 shadow-md hover:bg-amber-800 active:translate-y-0.5 cursor-pointer"
                 >
-                  <span>🥄 Stir with Ladle</span>
+                  <span className="flex items-center gap-1.5"><Utensils className="h-3.5 w-3.5" /> Stir with Ladle</span>
                 </button>
 
                 {currentStep && (
@@ -374,7 +396,7 @@ export function HeritageKitchenGame() {
             {/* HINT BANNER IF ACTIVE */}
             {hintActive && currentStep && (
               <div className="rounded-xl border-2 border-marigold bg-marigold-light p-3 text-center text-sm font-bold text-ink shadow-sm animate-pulse max-w-md w-full">
-                💡 Tap the {currentStep.name} ({currentStep.emoji}) to add to the pan!
+                Tap the {currentStep.name} to add to the pan!
               </div>
             )}
 
@@ -386,6 +408,7 @@ export function HeritageKitchenGame() {
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {ingredientOptions.map((item) => {
                   const isTarget = item.id === currentStep?.id;
+                  const ItemIcon = item.icon;
 
                   return (
                     <button
@@ -399,7 +422,9 @@ export function HeritageKitchenGame() {
                           : "bg-surface text-ink hover:bg-surface-muted"
                       }`}
                     >
-                      <span className="text-3xl sm:text-4xl">{item.emoji}</span>
+                      <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50">
+                        <ItemIcon className="h-5 w-5 sm:h-6 sm:w-6 text-amber-900" />
+                      </div>
                       <span className="text-xs font-black leading-tight truncate max-w-[90px]">
                         {item.name}
                       </span>

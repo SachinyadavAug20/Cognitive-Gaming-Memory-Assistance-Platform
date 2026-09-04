@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { HeartHandshake, Volume2, Sparkles, Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import { HeartHandshake, Volume2, Sparkles, Search, Image as ImageIcon } from "lucide-react";
 import { getMediaUrl } from "@/lib/api";
 
 interface MemoryItem {
@@ -35,6 +35,11 @@ export function MemorySpotlightCard({
   viewPhotoLabel,
 }: MemorySpotlightCardProps) {
   const photo = memoryOfDay ? getMediaUrl(memoryOfDay.photoUrl) : null;
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [photo]);
 
   return (
     <div className={`${CARD} bg-surface p-4 sm:p-5 text-left`}>
@@ -50,19 +55,28 @@ export function MemorySpotlightCard({
               <button
                 type="button"
                 onClick={onOpenLightbox}
-                className="btn-tactile shrink-0 overflow-hidden rounded-xl border-2 border-black bg-surface-muted cursor-pointer"
+                className="btn-tactile group shrink-0 overflow-hidden rounded-2xl border-3 border-black bg-amber-50 shadow-[3px_3px_0px_#000] cursor-pointer hover:scale-[1.02] transition-transform"
                 title="View Full Memory Photo"
               >
-                <Image
-                  src={photo}
-                  alt="Memory of the day photograph"
-                  width={128}
-                  height={128}
-                  sizes="128px"
-                  className="h-28 w-28 sm:h-32 sm:w-32 object-cover"
-                  loading="lazy"
-                />
-                <span className="block bg-ink px-3 py-1.5 text-xs font-black text-white flex items-center justify-center gap-1">
+                <div className="relative h-28 w-28 sm:h-32 sm:w-32 bg-black/5 overflow-hidden flex items-center justify-center">
+                  {!hasError ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      key={photo}
+                      src={photo}
+                      alt={title}
+                      className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      loading="eager"
+                      onError={() => setHasError(true)}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center p-2 text-ink-secondary text-center">
+                      <ImageIcon className="h-8 w-8 text-tea/60 mb-1" />
+                      <span className="text-[10px] font-bold">Memory Photo</span>
+                    </div>
+                  )}
+                </div>
+                <span className="block bg-ink px-3 py-1.5 text-xs font-black text-white flex items-center justify-center gap-1 group-hover:bg-tea transition-colors">
                   <Search className="h-3.5 w-3.5" /> {viewPhotoLabel}
                 </span>
               </button>

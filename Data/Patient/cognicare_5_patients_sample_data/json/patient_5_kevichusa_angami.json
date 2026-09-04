@@ -27,7 +27,7 @@
       "name": "Seyievinuo Angami",
       "relation": "Daughter",
       "age": 41,
-      "photo_file": "images/patient_5_kevichusa_angami/relatives/01_daughter_seyievinuo_angami.png",
+      "photo_file": "images/patient_5_kevichusa_angami/relatives/01_daughter_seyievinuo_angami.jpg",
       "notes": "Lives in Kohima with me; high school principal; takes me on daily walks and coordinates doctor visits.",
       "style": {
         "gender": "female",
@@ -36,8 +36,9 @@
           50,
           50
         ],
-        "hair_type": "long",
-        "has_specs": true
+        "hair_style": "long",
+        "has_specs": true,
+        "bg_type": "outdoor_garden"
       }
     },
     {
@@ -45,7 +46,7 @@
       "name": "Neiphrelie Angami",
       "relation": "Spouse",
       "age": 71,
-      "photo_file": "images/patient_5_kevichusa_angami/relatives/02_spouse_neiphrelie_angami.png",
+      "photo_file": "images/patient_5_kevichusa_angami/relatives/02_spouse_neiphrelie_angami.jpg",
       "notes": "Married 48 years; master weaver of traditional Angami shawls (Loramhü); cooks traditional smoked meat stew.",
       "style": {
         "gender": "female",
@@ -54,12 +55,15 @@
           40,
           40
         ],
-        "hair_type": "bun",
+        "hair_style": "bun",
         "hair_color": [
           120,
           120,
           125
-        ]
+        ],
+        "has_necklace": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     },
     {
@@ -67,7 +71,7 @@
       "name": "Kevilezo Angami",
       "relation": "Son",
       "age": 44,
-      "photo_file": "images/patient_5_kevichusa_angami/relatives/03_son_kevilezo_angami.png",
+      "photo_file": "images/patient_5_kevichusa_angami/relatives/03_son_kevilezo_angami.jpg",
       "notes": "Lives in Dimapur; works in Agriculture Directorate; visits every second weekend with farm produce.",
       "style": {
         "gender": "male",
@@ -76,7 +80,8 @@
           90,
           140
         ],
-        "hair_type": "short"
+        "hair_style": "short",
+        "bg_type": "cool_office"
       }
     },
     {
@@ -84,7 +89,7 @@
       "name": "Vimenuo Angami",
       "relation": "Grandchild",
       "age": 10,
-      "photo_file": "images/patient_5_kevichusa_angami/relatives/04_grandchild_vimenuo_angami.png",
+      "photo_file": "images/patient_5_kevichusa_angami/relatives/04_grandchild_vimenuo_angami.jpg",
       "notes": "Granddaughter; loves listening to grandfather recount Angami warrior folk legends and forest tales.",
       "style": {
         "gender": "female",
@@ -93,8 +98,9 @@
           160,
           40
         ],
-        "hair_type": "girl",
-        "is_child": true
+        "hair_style": "girl",
+        "is_child": true,
+        "bg_type": "warm_indoor"
       }
     },
     {
@@ -102,7 +108,7 @@
       "name": "Vitsore Angami",
       "relation": "Sibling",
       "age": 69,
-      "photo_file": "images/patient_5_kevichusa_angami/relatives/05_sibling_vitsore_angami.png",
+      "photo_file": "images/patient_5_kevichusa_angami/relatives/05_sibling_vitsore_angami.jpg",
       "notes": "Younger brother; village elder in Khonoma; visits Kohima monthly to talk about village council matters.",
       "style": {
         "gender": "male",
@@ -122,7 +128,9 @@
           115,
           120
         ],
-        "has_moustache": true
+        "has_moustache": true,
+        "is_elderly": true,
+        "bg_type": "traditional_home"
       }
     }
   ],
@@ -165,14 +173,15 @@
       "category": "Home",
       "short_description": "Where we live — hillside family home with terrace vegetable garden and pine trees.",
       "icon_symbol": "🏠",
-      "photo_file": "images/patient_5_kevichusa_angami/places/01_home_midland_homestead.png",
+      "photo_file": "images/patient_5_kevichusa_angami/places/01_home_midland_homestead.jpg",
       "style": {
         "type": "home",
         "roof_color": [
           50,
           100,
           65
-        ]
+        ],
+        "sky_type": "misty_hills"
       }
     },
     {
@@ -181,9 +190,10 @@
       "category": "Local Market",
       "short_description": "Local organic market where we buy fresh mountain herbs, king chillies, and wild honey.",
       "icon_symbol": "🛒",
-      "photo_file": "images/patient_5_kevichusa_angami/places/02_kohima_mao_market.png",
+      "photo_file": "images/patient_5_kevichusa_angami/places/02_kohima_mao_market.jpg",
       "style": {
-        "type": "market"
+        "type": "market",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -192,9 +202,10 @@
       "category": "Place of Worship",
       "short_description": "Place of worship — landmark cathedral on Aradurah Hill overlooking Kohima town.",
       "icon_symbol": "🛕",
-      "photo_file": "images/patient_5_kevichusa_angami/places/03_cathedral_kohima_aradurah.png",
+      "photo_file": "images/patient_5_kevichusa_angami/places/03_cathedral_kohima_aradurah.jpg",
       "style": {
-        "type": "church"
+        "type": "church",
+        "sky_type": "misty_hills"
       }
     },
     {
@@ -203,9 +214,10 @@
       "category": "Clinic",
       "short_description": "Where I get monthly health assessments and cognitive support therapy.",
       "icon_symbol": "🏥",
-      "photo_file": "images/patient_5_kevichusa_angami/places/04_naga_hospital_clinic.png",
+      "photo_file": "images/patient_5_kevichusa_angami/places/04_naga_hospital_clinic.jpg",
       "style": {
-        "type": "clinic"
+        "type": "clinic",
+        "sky_type": "blue_day"
       }
     },
     {
@@ -214,9 +226,10 @@
       "category": "Park",
       "short_description": "Where we walk — serene terraced garden with blooming roses and peaceful stone paths.",
       "icon_symbol": "🌳",
-      "photo_file": "images/patient_5_kevichusa_angami/places/05_war_cemetery_memorial_park.png",
+      "photo_file": "images/patient_5_kevichusa_angami/places/05_war_cemetery_memorial_park.jpg",
       "style": {
-        "type": "park"
+        "type": "park",
+        "sky_type": "morning_sun"
       }
     }
   ]

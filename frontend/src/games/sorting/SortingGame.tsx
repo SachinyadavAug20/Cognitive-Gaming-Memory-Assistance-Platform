@@ -3,7 +3,24 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Music, CheckCircle2, RotateCcw } from "lucide-react";
+import {
+  Music,
+  CheckCircle2,
+  RotateCcw,
+  ShoppingBag,
+  Utensils,
+  Citrus,
+  Leaf,
+  Bell,
+  Package,
+  Droplets,
+} from "lucide-react";
+import {
+  ClayKulharIcon,
+  DiyaLampIcon,
+  BambooShootIcon,
+  MugaLoomShuttleIcon,
+} from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -44,20 +61,42 @@ type Category = "kitchen" | "prayer";
 
 interface SortItem {
   key: string;
-  emoji: string;
   category: Category;
   labels: { en: string; hi: string; as: string };
 }
 
+function renderSortItemIcon(key: string, className = "h-8 w-8") {
+  switch (key) {
+    case "teacup":
+      return <ClayKulharIcon className={`${className} text-amber-800`} />;
+    case "sugar":
+      return <Droplets className={`${className} text-amber-600`} />;
+    case "lemon":
+      return <Citrus className={`${className} text-yellow-600`} />;
+    case "ginger":
+      return <Leaf className={`${className} text-amber-700`} />;
+    case "incense":
+      return <DiyaLampIcon className={`${className} text-amber-500`} />;
+    case "bell":
+      return <Bell className={`${className} text-amber-700`} />;
+    case "japi":
+      return <BambooShootIcon className={`${className} text-emerald-700`} />;
+    case "gamosa":
+      return <MugaLoomShuttleIcon className={`${className} text-red-700`} />;
+    default:
+      return <Package className={`${className} text-stone-700`} />;
+  }
+}
+
 const ITEMS: SortItem[] = [
-  { key: "teacup", emoji: "🍵", category: "kitchen", labels: { en: "Assam CTC Tea", hi: "असम कड़क चाय", as: "অসমৰ ৰঙা চাহ" } },
-  { key: "sugar", emoji: "🍯", category: "kitchen", labels: { en: "Wild Forest Honey", hi: "जंगली शहद", as: "বনৰীয়া মৌ" } },
-  { key: "lemon", emoji: "🍋", category: "kitchen", labels: { en: "Fragrant Kaji Nemu", hi: "सुगंधित काजी नेमु", as: "সুগন্ধি কাজি নেমু" } },
-  { key: "ginger", emoji: "🫚", category: "kitchen", labels: { en: "Fresh Wild Ginger", hi: "ताज़ा अदरक", as: "কেঁচা আদা" } },
-  { key: "incense", emoji: "🪔", category: "prayer", labels: { en: "Brass Diya (Chaki)", hi: "पीतल का दीया", as: "পিতলৰ চাকি" } },
-  { key: "bell", emoji: "🔔", category: "prayer", labels: { en: "Monastery Bell", hi: "प्रार्थना घंटी", as: "নামঘৰৰ কাঁহৰ ঘণ্টা" } },
-  { key: "japi", emoji: "🧢", category: "prayer", labels: { en: "Bamboo Jaapi Hat", hi: "बांस की जापी", as: "বাঁহৰ ফুলাম জাপি" } },
-  { key: "gamosa", emoji: "🧣", category: "prayer", labels: { en: "Sacred Muga Gamosa", hi: "पवित्र गमोसा", as: "মৰমৰ ফুলাম গামোচা" } },
+  { key: "teacup", category: "kitchen", labels: { en: "Assam CTC Tea", hi: "असम कड़क चाय", as: "অসমৰ ৰঙা চাহ" } },
+  { key: "sugar", category: "kitchen", labels: { en: "Wild Forest Honey", hi: "जंगली शहद", as: "বনৰীয়া মৌ" } },
+  { key: "lemon", category: "kitchen", labels: { en: "Fragrant Kaji Nemu", hi: "सुगंधित काजी नेमु", as: "সুগন্ধি কাজি নেমু" } },
+  { key: "ginger", category: "kitchen", labels: { en: "Fresh Wild Ginger", hi: "ताज़ा अदरक", as: "কেঁচা আদা" } },
+  { key: "incense", category: "prayer", labels: { en: "Brass Diya (Chaki)", hi: "पीतल का दीया", as: "পিতলৰ চাকি" } },
+  { key: "bell", category: "prayer", labels: { en: "Monastery Bell", hi: "प्रार्थना घंटी", as: "নামঘৰৰ কাঁহৰ ঘণ্টা" } },
+  { key: "japi", category: "prayer", labels: { en: "Bamboo Jaapi Hat", hi: "बांस की जापी", as: "বাঁহৰ ফুলাম জাপি" } },
+  { key: "gamosa", category: "prayer", labels: { en: "Sacred Muga Gamosa", hi: "पवित्र गमोसा", as: "মৰমৰ ফুলাম গামোচা" } },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
@@ -187,7 +226,7 @@ export function SortingGame() {
   return (
     <GameShell title={str.title} score={placed.length}>
       {done ? (
-        <Celebration emoji="🧺" title={str.celebrationTitle}>
+        <Celebration icon={ShoppingBag} title={str.celebrationTitle}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
@@ -254,14 +293,14 @@ export function SortingGame() {
                 shakeCat === "kitchen" ? "animate-shake bg-rose-200" : ""
               } ${picked ? "ring-4 ring-amber-400 animate-pulse" : ""}`}
             >
-              <span className="text-5xl">🍳</span>
+              <Utensils className="h-10 w-10 text-amber-800" />
               <span className="text-base sm:text-lg font-black text-amber-950">
                 {normLocale === "hi" ? "रसोई घर (Kitchen)" : normLocale === "as" ? "ৰান্ধনি শাল (Kitchen)" : "Kitchen Pantry"}
               </span>
               <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
                 {inBasket("kitchen").map((item) => (
-                  <span key={item.key} className="text-2xl">
-                    {item.emoji}
+                  <span key={item.key} className="inline-flex">
+                    {renderSortItemIcon(item.key, "h-6 w-6")}
                   </span>
                 ))}
               </span>
@@ -275,14 +314,14 @@ export function SortingGame() {
                 shakeCat === "prayer" ? "animate-shake bg-rose-200" : ""
               } ${picked ? "ring-4 ring-emerald-400 animate-pulse" : ""}`}
             >
-              <span className="text-5xl">🪔</span>
+              <DiyaLampIcon className="h-10 w-10 text-emerald-800" />
               <span className="text-base sm:text-lg font-black text-emerald-950">
                 {normLocale === "hi" ? "पूजा घर (Prayer)" : normLocale === "as" ? "নামঘৰ / গোসাঁই ঘৰ (Prayer)" : "Prayer & Culture"}
               </span>
               <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
                 {inBasket("prayer").map((item) => (
-                  <span key={item.key} className="text-2xl">
-                    {item.emoji}
+                  <span key={item.key} className="inline-flex">
+                    {renderSortItemIcon(item.key, "h-6 w-6")}
                   </span>
                 ))}
               </span>
@@ -291,8 +330,8 @@ export function SortingGame() {
 
           <p className="text-sm sm:text-base font-black text-ink">
             {picked
-              ? (normLocale === "hi" ? `👉 "${current?.labels[normLocale]}" को सही टोकरी पर टैप करके रखें` : normLocale === "as" ? `👉 "${current?.labels[normLocale]}" ক উপযুক্ত পাচিত ৰাখক` : `👉 Place "${current?.labels[normLocale]}" into the correct basket above`)
-              : (normLocale === "hi" ? "नीचे से कोई भी वस्तु चुनने के लिए टैप करें 👇" : normLocale === "as" ? "তলৰ পৰা বস্তু বাছি ল'বলৈ স্পৰ্শ কৰক 👇" : "Tap an item below to pick it up 👇")}
+              ? (normLocale === "hi" ? `Place "${current?.labels[normLocale]}" into the correct basket above` : normLocale === "as" ? `"${current?.labels[normLocale]}" ক উপযুক্ত পাচিত ৰাখক` : `Place "${current?.labels[normLocale]}" into the correct basket above`)
+              : (normLocale === "hi" ? "नीचे से कोई भी वस्तु चुनने के लिए टैप करें" : normLocale === "as" ? "তলৰ পৰা বস্তু বাছি ল'বলৈ স্পৰ্শ কৰক" : "Tap an item below to pick it up")}
           </p>
 
           <div className="flex w-full max-w-xl flex-wrap items-center justify-center gap-3">
@@ -315,7 +354,9 @@ export function SortingGame() {
                       : "border-black/20 bg-surface-muted opacity-40"
                   }`}
                 >
-                  <span className="text-4xl">{item.emoji}</span>
+                  <div className="flex h-10 w-10 items-center justify-center">
+                    {renderSortItemIcon(item.key, "h-8 w-8")}
+                  </div>
                   <span className="text-xs font-black text-ink text-center leading-tight">
                     {item.labels[normLocale]}
                   </span>

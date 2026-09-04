@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { GitFork, Music } from "lucide-react";
+import { GitFork, Music, Trees, Mountain, Home, Waves, Leaf } from "lucide-react";
+import { BambooShootIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -29,7 +30,7 @@ export interface RootAnchor {
   name: string;
   x: number; // percentage
   connected: boolean;
-  emoji: string;
+  iconType: "tree" | "bamboo" | "rock" | "village";
 }
 
 export function RootBridgeGame() {
@@ -78,10 +79,10 @@ export function RootBridgeGame() {
     setStartedAt(new Date().toISOString());
 
     const initialAnchors: RootAnchor[] = [
-      { id: 0, name: "Left Riverbank Fig Tree", x: 15, connected: true, emoji: "🌳" },
-      { id: 1, name: "Bamboo Guiding Frame", x: 40, connected: false, emoji: "🎋" },
-      { id: 2, name: "River Gorge Pillar", x: 65, connected: false, emoji: "🪨" },
-      { id: 3, name: "Right Village Bank", x: 88, connected: false, emoji: "🏡" },
+      { id: 0, name: "Left Riverbank Fig Tree", x: 15, connected: true, iconType: "tree" },
+      { id: 1, name: "Bamboo Guiding Frame", x: 40, connected: false, iconType: "bamboo" },
+      { id: 2, name: "River Gorge Pillar", x: 65, connected: false, iconType: "rock" },
+      { id: 3, name: "Right Village Bank", x: 88, connected: false, iconType: "village" },
     ];
     setAnchors(initialAnchors);
     setPhase("build");
@@ -185,7 +186,7 @@ export function RootBridgeGame() {
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
-            <div className="text-6xl animate-bounce">🌳</div>
+            <Trees className="h-16 w-16 text-emerald-700 animate-bounce" />
             <p className="font-serif text-3xl font-black text-ink">
               {str.introTitle}
             </p>
@@ -208,7 +209,7 @@ export function RootBridgeGame() {
             {/* BRIDGE PROGRESS HEADER */}
             <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-2 border-black bg-surface px-4 py-2 shadow-sm">
               <span className="text-sm font-black text-emerald-800 flex items-center gap-1.5">
-                <span>🌉</span> Cherrapunji Living Bridge
+                <GitFork className="h-4 w-4 text-emerald-700" /> Cherrapunji Living Bridge
               </span>
               <span className="text-xs font-bold text-ink-secondary">
                 Strands Woven: <strong className="text-tea">{currentAnchorIdx * 3} Lines</strong> ({currentAnchorIdx} / {totalAnchors - 1})
@@ -217,13 +218,15 @@ export function RootBridgeGame() {
 
             {/* MOUNTAIN GORGE & ROOT BRIDGE CANVAS */}
             <div className="relative w-full max-w-sm sm:max-w-md aspect-[16/10] rounded-3xl border-4 border-[#1E3A18] bg-[#0A1A0E] p-4 shadow-[8px_8px_0px_rgba(0,0,0,0.9)] overflow-hidden select-none flex flex-col justify-between">
-              <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80">
-                🌿 Meghalaya Botanical Engineering
+              <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80 flex items-center gap-1">
+                <Leaf className="h-3.5 w-3.5 text-emerald-400" /> Meghalaya Botanical Engineering
               </div>
 
               {/* Blue River Stream at the bottom */}
               <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-cyan-900 via-cyan-800/80 to-transparent flex items-center justify-center opacity-70">
-                <span className="text-[11px] font-black text-cyan-200">🌊 Umshiang River Rapids</span>
+                <span className="text-[11px] font-black text-cyan-200 flex items-center gap-1">
+                  <Waves className="h-3.5 w-3.5 text-cyan-300" /> Umshiang River Rapids
+                </span>
               </div>
 
               {/* MULTI-STRAND LIVING ROOT LINES (Woven botanical vines, catenary curves, leaf nodes) */}
@@ -322,7 +325,12 @@ export function RootBridgeGame() {
                           : "opacity-60"
                       }`}
                     >
-                      <span className="text-4xl sm:text-5xl">{anchor.emoji}</span>
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black/40 border border-white/20">
+                        {anchor.iconType === "tree" && <Trees className="h-8 w-8 text-emerald-400" />}
+                        {anchor.iconType === "bamboo" && <BambooShootIcon className="h-8 w-8 text-lime-400" />}
+                        {anchor.iconType === "rock" && <Mountain className="h-8 w-8 text-stone-300" />}
+                        {anchor.iconType === "village" && <Home className="h-8 w-8 text-amber-300" />}
+                      </div>
                       <span className="text-[10px] font-black text-white/90 max-w-[65px] text-center leading-tight">
                         {anchor.name}
                       </span>

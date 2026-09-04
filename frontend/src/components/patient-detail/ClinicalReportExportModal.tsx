@@ -254,7 +254,7 @@ Authorized by: Dispur PHC Telemedicine Unit // MDoNER Track
                 </span>
                 <ul className="list-disc pl-5 space-y-1 font-medium text-ink-secondary">
                   <li>Daily 15-minute bilateral motor air-drumming (Bihu Dhol / Khasi Ksing) to preserve motor kinematics.</li>
-                  <li>Daily reminiscence tea dialogue with AI Grandchild Saathi for episodic recall encouragement.</li>
+                  <li>Daily reminiscence dialogue with Saathi Voice Companion for episodic recall and orientation encouragement.</li>
                   <li>Maintain caregiver routine schedule: BP vitamin medication at 8:00 AM, hydration target 6 glasses.</li>
                   <li>Next Tele-PHC Review scheduled in 30 days.</li>
                 </ul>
@@ -267,8 +267,9 @@ Authorized by: Dispur PHC Telemedicine Unit // MDoNER Track
                   <p className="text-ink-secondary">Consultant Neurologist • Reg No: AMC-48291</p>
                 </div>
                 <div className="text-right">
-                  <div className="inline-block border-b border-black pb-1 font-serif font-black text-sm">
-                    Verified Digital Signature ✓
+                  <div className="inline-flex items-center gap-1 border-b border-black pb-1 font-serif font-black text-sm">
+                    <span>Verified Digital Signature</span>
+                    <Check className="h-4 w-4 text-emerald-700" />
                   </div>
                   <p className="text-[10px] text-ink-secondary mt-0.5">Government of Assam Health & Family Welfare</p>
                 </div>

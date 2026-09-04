@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
+import { AlertCircle, Brain } from "lucide-react";
 import { api } from "@/lib/api";
+import { useTranslations } from "next-intl";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { patientLangCode } from "@/lib/i18n";
 import { speechRate } from "@/games/config";
@@ -43,9 +45,10 @@ const CognitiveGamingProgressCard = dynamic(
 );
 
 function ChartSkeleton() {
+  const t = useTranslations("patientDetail");
   return (
     <div className="w-full h-40 rounded-2xl bg-surface-muted animate-pulse border-2 border-black/10 flex items-center justify-center text-xs font-black text-ink-secondary">
-      Loading clinical telemetry…
+      {t("loading")}
     </div>
   );
 }
@@ -78,6 +81,7 @@ function getImpairmentBadgeStyle(level?: string | null) {
 }
 
 export function CaregiverPatientDetailClient() {
+  const t = useTranslations("patientDetail");
   const params = useParams<{ id: string }>();
   const id = params.id;
 
@@ -154,12 +158,12 @@ export function CaregiverPatientDetailClient() {
             role="alert"
             className="rounded-2xl bg-brick-light border-3 border-brick p-8 text-brick font-bold text-center shadow-[4px_4px_0px_var(--color-brick)]"
           >
-            <p className="text-4xl mb-2">🙁</p>
+            <AlertCircle className="h-12 w-12 text-brick mx-auto mb-3" />
             <p className="font-[family-name:var(--font-serif)] text-2xl">
-              Patient not found.
+              {t("notFound.title")}
             </p>
             <p className="text-base mt-1 text-brick/80">
-              The patient record may have been removed, or the link is invalid.
+              {t("notFound.desc")}
             </p>
           </div>
         )}
@@ -185,15 +189,16 @@ export function CaregiverPatientDetailClient() {
             <div className="scrapbook-card">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-border-soft pb-4 mb-5">
                 <div>
-                  <h2 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink">
-                    🧠 Continuous Cognitive Biomarkers & Motor Trajectory
+                  <h2 className="flex items-center gap-2 font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink">
+                    <Brain className="h-6 w-6 text-tea" />
+                    <span>{t("biomarkers.title")}</span>
                   </h2>
                   <p className="text-sm text-ink-secondary mt-0.5">
-                    Real-time motor path curvature, micro-hesitation latencies, and 5-domain clinical competency radar
+                    {t("biomarkers.subtitle")}
                   </p>
                 </div>
                 <span className="px-3 py-1 rounded-xl bg-tea-light border-2 border-tea text-tea-dark font-bold text-sm">
-                  Active Clinical Telemetry
+                  {t("biomarkers.activeTelemetry")}
                 </span>
               </div>
 
@@ -247,9 +252,9 @@ export function CaregiverPatientDetailClient() {
           text={lightbox?.text}
           langCode={patientLangCode(patient?.preferredLanguage ?? null)}
           rate={speechRate(patient)}
-          closeLabel="Close"
-          listenLabel="Listen to memory"
-          speakingLabel="Speaking..."
+          closeLabel={t("lightbox.close")}
+          listenLabel={t("lightbox.listen")}
+          speakingLabel={t("lightbox.speaking")}
         />
       </div>
     </div>

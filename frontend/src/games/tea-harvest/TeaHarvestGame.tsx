@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import { Leaf, Music, ShoppingBag } from "lucide-react";
+import { Leaf, Music, ShoppingBag, Mountain } from "lucide-react";
+import { AssamTeaLeafIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -28,18 +29,32 @@ export interface TeaItem {
   id: string;
   isTenderShoot: boolean; // True = Two Leaves and a Bud (Target)
   label: string;
-  emoji: string;
+  itemType: "tender_shoot" | "tender_tip" | "coarse_leaf" | "dry_leaf" | "pebble";
   description: string;
 }
 
+function renderTeaItemIcon(itemType: TeaItem["itemType"], className = "h-8 w-8") {
+  switch (itemType) {
+    case "tender_shoot":
+    case "tender_tip":
+      return <AssamTeaLeafIcon className={`${className} text-emerald-400`} />;
+    case "coarse_leaf":
+      return <Leaf className={`${className} text-emerald-600`} />;
+    case "dry_leaf":
+      return <Leaf className={`${className} text-amber-600`} />;
+    case "pebble":
+      return <Mountain className={`${className} text-stone-400`} />;
+  }
+}
+
 const TEA_ITEMS_POOL: TeaItem[] = [
-  { id: "shoot-1", isTenderShoot: true, label: "Tender Two Leaves & Bud", emoji: "🌱", description: "Fresh morning golden shoot" },
-  { id: "shoot-2", isTenderShoot: true, label: "Tender Golden Tip", emoji: "🌿", description: "Young top bud with 2 leaves" },
-  { id: "shoot-3", isTenderShoot: true, label: "Fresh Green Shoot", emoji: "🌱", description: "Pristine first flush harvest" },
-  { id: "shoot-4", isTenderShoot: true, label: "Two Leaves & Bud", emoji: "🌿", description: "Crisp tea bud" },
-  { id: "coarse-1", isTenderShoot: false, label: "Mature Coarse Leaf", emoji: "🍃", description: "Tough lower branch leaf" },
-  { id: "coarse-2", isTenderShoot: false, label: "Wilted Dry Leaf", emoji: "🍂", description: "Dry fallen leaf" },
-  { id: "pebble", isTenderShoot: false, label: "Tea Garden Pebble", emoji: "🪨", description: "Garden stone" },
+  { id: "shoot-1", isTenderShoot: true, label: "Tender Two Leaves & Bud", itemType: "tender_shoot", description: "Fresh morning golden shoot" },
+  { id: "shoot-2", isTenderShoot: true, label: "Tender Golden Tip", itemType: "tender_tip", description: "Young top bud with 2 leaves" },
+  { id: "shoot-3", isTenderShoot: true, label: "Fresh Green Shoot", itemType: "tender_shoot", description: "Pristine first flush harvest" },
+  { id: "shoot-4", isTenderShoot: true, label: "Two Leaves & Bud", itemType: "tender_shoot", description: "Crisp tea bud" },
+  { id: "coarse-1", isTenderShoot: false, label: "Mature Coarse Leaf", itemType: "coarse_leaf", description: "Tough lower branch leaf" },
+  { id: "coarse-2", isTenderShoot: false, label: "Wilted Dry Leaf", itemType: "dry_leaf", description: "Dry fallen leaf" },
+  { id: "pebble", isTenderShoot: false, label: "Tea Garden Pebble", itemType: "pebble", description: "Garden stone" },
 ];
 
 function GameShell({
@@ -228,7 +243,7 @@ export function TeaHarvestGame() {
     <GameShell title={str.title} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
-          <div className="text-6xl animate-bounce">🌱</div>
+          <AssamTeaLeafIcon className="h-16 w-16 text-emerald-600 animate-bounce" />
           <p className="font-serif text-3xl font-black text-ink">
             {str.introTitle}
           </p>
@@ -242,8 +257,8 @@ export function TeaHarvestGame() {
               What to Pluck (The Golden Rule)
             </span>
             <div className="mt-2 flex items-center gap-3">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-tea-light text-3xl shadow-sm">
-                🌱
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-tea-light text-tea shadow-sm">
+                <AssamTeaLeafIcon className="h-8 w-8 text-emerald-700" />
               </div>
               <div>
                 <p className="text-sm font-black text-ink">Two Leaves and a Bud (দুটি পাত আৰু এটি কলি)</p>
@@ -268,7 +283,9 @@ export function TeaHarvestGame() {
         <div className="flex flex-col items-center gap-5 py-4">
           {/* BASKET PROGRESS & HEADER */}
           <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-2 border-black bg-surface px-4 py-2 shadow-sm">
-            <span className="text-sm font-black text-tea">🧺 Khorahi Basket</span>
+            <span className="text-sm font-black text-tea flex items-center gap-1.5">
+              <ShoppingBag className="h-4 w-4" /> Khorahi Basket
+            </span>
             <span className="text-xs font-bold text-ink-secondary">
               {basketCount} / {targetGoal} Shoots Collected
             </span>
@@ -278,14 +295,14 @@ export function TeaHarvestGame() {
           <div className="relative w-full max-w-sm sm:max-w-md rounded-3xl border-4 border-[#1E3A18] bg-[#0F230C] p-5 shadow-[8px_8px_0px_rgba(0,0,0,0.9)] overflow-hidden select-none min-h-[300px] flex flex-col justify-between">
             {/* Misty Green Tea Hills Ambient Background */}
             <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#86EFAC_1px,transparent_1px)] [background-size:14px_14px]" />
-            <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80">
-              🍃 Upper Assam Tea Garden
+            <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80 flex items-center gap-1">
+              <Leaf className="h-3.5 w-3.5 text-emerald-400" /> Upper Assam Tea Garden
             </div>
 
             {/* Instruction Callout */}
             <div className="relative z-10 text-center py-1">
               <span className="rounded-full bg-black/60 border border-white/20 px-3 py-1 text-xs font-black text-white/90 backdrop-blur-sm">
-                Tap the Tender Green Shoots 👇
+                Tap the Tender Green Shoots
               </span>
             </div>
 
@@ -309,9 +326,9 @@ export function TeaHarvestGame() {
                         : "border-black bg-[#1B3815] hover:bg-[#254D1E] shadow-[3px_3px_0px_rgba(0,0,0,1)] active:scale-95"
                     }`}
                   >
-                    <span className="text-4xl sm:text-5xl transition-transform group-hover:scale-110">
-                      {item.emoji}
-                    </span>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black/20 group-hover:scale-110 transition-transform">
+                      {renderTeaItemIcon(item.itemType, "h-8 w-8")}
+                    </div>
                     <span className="text-[10px] font-black text-white/90 truncate max-w-[80px]">
                       {item.label}
                     </span>
@@ -323,7 +340,7 @@ export function TeaHarvestGame() {
             {/* Bamboo Basket Bottom Bar */}
             <div className="relative z-10 flex items-center justify-between rounded-xl border-2 border-amber-900/60 bg-[#3D2614] px-4 py-2 text-amber-100 shadow-inner">
               <div className="flex items-center gap-2">
-                <span className="text-xl">🧺</span>
+                <ShoppingBag className="h-5 w-5 text-amber-200" />
                 <span className="text-xs font-black">Woven Bamboo Khorahi</span>
               </div>
               <div className="flex items-center gap-1">

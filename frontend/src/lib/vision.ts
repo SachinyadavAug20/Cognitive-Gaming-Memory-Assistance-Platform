@@ -172,11 +172,50 @@ export const ACTIVE_CAM_BOUNDS = {
 export function remapCamToScreen(
   camX: number,
   camY: number,
-  bounds = ACTIVE_CAM_BOUNDS
+  bounds = ACTIVE_CAM_BOUNDS,
+  reachMultiplier = 1.0
 ): { screenX: number; screenY: number } {
-  const normX = Math.max(0, Math.min(1, (camX - bounds.minX) / (bounds.maxX - bounds.minX)));
-  const normY = Math.max(0, Math.min(1, (camY - bounds.minY) / (bounds.maxY - bounds.minY)));
+  let normX = (camX - bounds.minX) / (bounds.maxX - bounds.minX);
+  let normY = (camY - bounds.minY) / (bounds.maxY - bounds.minY);
+
+  if (reachMultiplier !== 1.0) {
+    normX = (normX - 0.5) * reachMultiplier + 0.5;
+    normY = (normY - 0.5) * reachMultiplier + 0.5;
+  }
+
+  normX = Math.max(0, Math.min(1, normX));
+  normY = Math.max(0, Math.min(1, normY));
+
   return { screenX: normX, screenY: normY };
+}
+
+/**
+ * Draws mirrored camera video feed cropped to ACTIVE_CAM_BOUNDS so the camera's
+ * interactive viewport maps 1-to-1 with the screen/canvas, enabling
+ * in-camera movements to visually and kinesthetically reach all 4 corners of the game.
+ */
+export function drawCroppedCameraFeed(
+  ctx: CanvasRenderingContext2D,
+  video: HTMLVideoElement,
+  canvasWidth: number,
+  canvasHeight: number,
+  bounds = ACTIVE_CAM_BOUNDS
+) {
+  if (!video || video.readyState < 2) return;
+  const vw = video.videoWidth || 640;
+  const vh = video.videoHeight || 480;
+
+  // Active interaction crop box in video pixels
+  const sx = bounds.minX * vw;
+  const sy = bounds.minY * vh;
+  const sw = Math.max(10, (bounds.maxX - bounds.minX) * vw);
+  const sh = Math.max(10, (bounds.maxY - bounds.minY) * vh);
+
+  ctx.save();
+  ctx.translate(canvasWidth, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvasWidth, canvasHeight);
+  ctx.restore();
 }
 
 export class OpticalMotionTracker {
@@ -384,9 +423,12 @@ export class OpticalMotionTracker {
               const inDrumZone = handY > 0.38;
               const strikeForce = inDrumZone ? Math.min(1, downwardSpeed * 1.75) : 0;
 
+              // Remap hand position to 100% full screen coordinates (0..1) so hand reaches all corners!
+              const remappedHand = remapCamToScreen(handMirroredX, handY);
+
               const blob: HandBlob = {
-                x: handMirroredX,
-                y: handY,
+                x: remappedHand.screenX,
+                y: remappedHand.screenY,
                 vx: 0,
                 vy,
                 area: 0.25,
@@ -405,6 +447,9 @@ export class OpticalMotionTracker {
                 drumRightEnergy = Math.max(drumRightEnergy, strikeForce);
               }
             }
+
+            const remappedThumb = remapCamToScreen(1 - thumbTip.x, thumbTip.y);
+            const remappedIndex = remapCamToScreen(1 - indexTip.x, indexTip.y);
 
             if (this.onMotionCallback) {
               this.onMotionCallback({
@@ -433,8 +478,8 @@ export class OpticalMotionTracker {
                 quadrantEnergies: [0, 0, 0, 0, 0, 0, drumLeftEnergy, 0, drumRightEnergy],
                 isPinching,
                 pinchDistance: rawPinchDist,
-                thumbTip: { x: 1 - thumbTip.x, y: thumbTip.y },
-                indexTip: { x: 1 - indexTip.x, y: indexTip.y },
+                thumbTip: { x: remappedThumb.screenX, y: remappedThumb.screenY },
+                indexTip: { x: remappedIndex.screenX, y: remappedIndex.screenY },
                 camBounds: ACTIVE_CAM_BOUNDS,
               });
             }
@@ -562,12 +607,13 @@ export class OpticalMotionTracker {
         const maxQuadrantDiff = (w / 3) * (h / 3) * 255 * 0.1;
         const quadrantEnergies = quadrantSums.map((s) => Math.min(1, s / maxQuadrantDiff));
 
-        // Bilateral Hand Kalman Estimation
+        // Bilateral Hand Kalman Estimation (Mapped 1:1 to full viewport 0..1)
         let leftHand: HandBlob | null = null;
         if (leftHandPixels > 180) {
           const rawLX = leftHandWeightX / (leftHandPixels * w);
           const rawLY = leftHandWeightY / (leftHandPixels * h);
-          const kState = this.leftKalman.update(rawLX, rawLY);
+          const remappedL = remapCamToScreen(rawLX, rawLY);
+          const kState = this.leftKalman.update(remappedL.screenX, remappedL.screenY);
 
           const fingerCount = leftHandPixels > 2500 ? 5 : leftHandPixels > 1200 ? 2 : 1;
           leftHand = {
@@ -588,7 +634,8 @@ export class OpticalMotionTracker {
         if (rightHandPixels > 180) {
           const rawRX = rightHandWeightX / (rightHandPixels * w);
           const rawRY = rightHandWeightY / (rightHandPixels * h);
-          const kState = this.rightKalman.update(rawRX, rawRY);
+          const remappedR = remapCamToScreen(rawRX, rawRY);
+          const kState = this.rightKalman.update(remappedR.screenX, remappedR.screenY);
 
           const fingerCount = rightHandPixels > 2500 ? 5 : rightHandPixels > 1200 ? 2 : 1;
           rightHand = {
@@ -730,7 +777,12 @@ export class OpticalMotionTracker {
 export function drawOpenCvOverlay(
   canvas: HTMLCanvasElement,
   evt: MotionEvent | null,
-  options?: { showHands?: boolean; showGrid?: boolean; showMetrics?: boolean }
+  options?: {
+    showHands?: boolean;
+    showGrid?: boolean;
+    showMetrics?: boolean;
+    videoEl?: HTMLVideoElement | null;
+  }
 ) {
   const ctx = canvas.getContext("2d");
   if (!ctx || !evt) return;
@@ -738,6 +790,11 @@ export function drawOpenCvOverlay(
   const w = canvas.width;
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
+
+  // 0. Mirrored Camera Video Feed mapped 1:1 to canvas viewport
+  if (options?.videoEl && options.videoEl.readyState >= 2) {
+    drawCroppedCameraFeed(ctx, options.videoEl, w, h);
+  }
 
   // 1. 9-Quadrant Optical Flow Matrix Grid
   if (options?.showGrid) {
@@ -806,6 +863,6 @@ export function drawOpenCvOverlay(
     ctx.fillStyle = "#FDE047";
     ctx.font = "bold 11px sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText(`⚡ GESTURE: ${evt.gesture.replace(/_/g, " ")}`, 14, 25);
+    ctx.fillText(`GESTURE: ${evt.gesture.replace(/_/g, " ")}`, 14, 25);
   }
 }

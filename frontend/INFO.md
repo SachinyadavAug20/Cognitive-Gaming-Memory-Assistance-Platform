@@ -158,10 +158,8 @@ Domains: **vision-3d · reminiscence · attention · iadl · calm · spatial/adv
 | `drum` | vision-3d — 3D auditory-motor entrainment |
 | `hornbill-flight` | vision-3d — visuomotor glider physics |
 | `majuli-pottery` | vision-3d — tactile motor praxis |
-| `bamboo-dance` | vision-3d — visuomotor rhythm step |
 | `grandchild-chat` | reminiscence — AI conversational reminiscence |
 | `memory-detective` | reminiscence — face & clue spaced retrieval |
-| `memoir-scribe` | reminiscence — AI spoken memoirs & scribe |
 | `timeline` | reminiscence — chronological life milestones |
 | `jigsaw` | reminiscence — visuospatial family puzzles |
 | `radio` | reminiscence — auditory vintage reminiscence |
@@ -174,20 +172,15 @@ Domains: **vision-3d · reminiscence · attention · iadl · calm · spatial/adv
 | `storybook` | attention — AI branching life tales |
 | `daily-routine` | iadl — prospective memory & routine |
 | `heritage-kitchen` | iadl — recipe sequencing |
-| `bazaar` | iadl — AI market barter |
 | `sorting` | iadl — executive categorisation |
-| `proverb` | iadl — AI cultural cloze & wisdom |
-| `lotus-lake` | calm — sensory calming |
 | `arrow-escape` | spatial — planning & vector clearance |
 | `majuli-walk` | advanced — 3D spatial-memory navigation |
 | `tea-harvest-vision` | advanced — OpenCV motion-tracking harvest |
 | `bihu-dhol` | advanced — adaptive acoustic drum rhythm |
-| `brahmaputra-voice` | advanced — spoken-proverb recall & river-glow canvas |
 | `day-in-my-world` | advanced — 6-chapter 3D story campaign & Saathi AI (flagship) |
 | `bazaar-buddies` | advanced — IADL budget & money management |
 | `memory-garden` | advanced — multi-activity memory suite |
 | `memory-road` | advanced — road safety & visual search |
-| `memory-match` | advanced — family face recognition & working memory |
 | `daily-tasks` | advanced — IADL sequencing & daily routine |
 | `companion` | advanced — conversational reminiscence companion |
 | `rhythm-hills` | advanced — kinesthetic rhythm & tempo matching |

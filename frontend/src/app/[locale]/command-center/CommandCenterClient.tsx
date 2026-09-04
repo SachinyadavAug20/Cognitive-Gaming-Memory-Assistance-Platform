@@ -13,6 +13,7 @@ import {
   ArrowRight,
   TrendingUp,
   Clock,
+  Sparkles,
 } from "lucide-react";
 
 interface StateTelemetry {
@@ -316,8 +317,9 @@ export function CommandCenterClient() {
                 <span className="font-black text-tea-dark block">
                   Top Prescribed Therapeutic Module:
                 </span>
-                <p className="font-bold text-tea-dark">
-                  ✨ {activeState.topModule}
+                <p className="font-bold text-tea-dark inline-flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5 shrink-0 text-tea-dark" />
+                  <span>{activeState.topModule}</span>
                 </p>
               </div>
             </div>

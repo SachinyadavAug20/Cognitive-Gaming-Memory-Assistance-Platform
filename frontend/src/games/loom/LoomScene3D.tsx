@@ -224,12 +224,12 @@ export function LoomScene3D({
     scene.add(weftThreadLine);
 
     // 8. ANIMATION LOOP
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
     let animId: number;
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
+      const time = (performance.now() - startTime) * 0.001;
 
       // Smooth shuttle sliding towards shuttlePosition
       if (shuttleMeshRef.current) {

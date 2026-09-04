@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Brain, Home, HeartPulse } from "lucide-react";
 import type { ClinicalDomains, DomainMetric } from "@/types/intake";
 
 interface DomainMatrixProps {
@@ -19,26 +20,7 @@ const CATEGORY_GROUPS: Record<string, string[]> = {
   ],
 };
 
-const DOMAIN_LABELS: Record<string, string> = {
-  memory: "Memory",
-  attention: "Attention",
-  executive_function: "Executive Function",
-  orientation: "Orientation",
-  language: "Language",
-  visuospatial: "Visuospatial",
-  decision_making: "Decision Making",
-  medication_management: "Medication Mgmt",
-  financial_management: "Financial Mgmt",
-  navigation: "Navigation",
-  meal_preparation: "Meal Preparation",
-  driving: "Driving",
-  household_tasks: "Household Tasks",
-  apathy: "Apathy",
-  agitation: "Agitation",
-  social_withdrawal: "Social Withdrawal",
-};
-
-function domainStyle(item: DomainMetric) {
+function domainStyle(item: DomainMetric, tSeverity: ReturnType<typeof useTranslations>) {
   const isImpaired =
     (item as unknown as { needs_help?: boolean; needsHelp?: boolean }).needs_help ??
     (item as unknown as { needs_help?: boolean; needsHelp?: boolean }).needsHelp ??
@@ -72,19 +54,19 @@ function domainStyle(item: DomainMetric) {
   if (rawLevel.includes("severe")) {
     badgeColor = "bg-brick text-white";
     barColor = "bg-brick";
-    badgeLabel = "Severe";
+    badgeLabel = tSeverity("domainMatrix.severity.severe");
   } else if (rawLevel.includes("mod")) {
     badgeColor = "bg-terracotta text-white";
     barColor = "bg-terracotta";
-    badgeLabel = "Moderate";
+    badgeLabel = tSeverity("domainMatrix.severity.moderate");
   } else if (rawLevel.includes("mild")) {
     badgeColor = "bg-marigold text-white";
     barColor = "bg-marigold";
-    badgeLabel = "Mild";
+    badgeLabel = tSeverity("domainMatrix.severity.mild");
   } else {
     badgeColor = "bg-tea text-white";
     barColor = "bg-tea";
-    badgeLabel = "Intact";
+    badgeLabel = tSeverity("domainMatrix.severity.intact");
   }
 
   const evidenceText =
@@ -98,9 +80,28 @@ function domainStyle(item: DomainMetric) {
 }
 
 export function DomainMatrix({ domains }: DomainMatrixProps) {
-  const t = useTranslations("intake.medical");
+  const t = useTranslations("intake");
   const tCategory = (key: string) =>
-    t(key as "categoryCognitive" | "categoryIadls" | "categoryBehavioral") || key;
+    t(("medical." + key) as "medical.categoryCognitive" | "medical.categoryIadls" | "medical.categoryBehavioral") || key;
+
+  const domainLabels: Record<string, string> = {
+    memory: t("domainMatrix.domains.memory"),
+    attention: t("domainMatrix.domains.attention"),
+    executive_function: t("domainMatrix.domains.executiveFunction"),
+    orientation: t("domainMatrix.domains.orientation"),
+    language: t("domainMatrix.domains.language"),
+    visuospatial: t("domainMatrix.domains.visuospatial"),
+    decision_making: t("domainMatrix.domains.decisionMaking"),
+    medication_management: t("domainMatrix.domains.medicationManagement"),
+    financial_management: t("domainMatrix.domains.financialManagement"),
+    navigation: t("domainMatrix.domains.navigation"),
+    meal_preparation: t("domainMatrix.domains.mealPreparation"),
+    driving: t("domainMatrix.domains.driving"),
+    household_tasks: t("domainMatrix.domains.householdTasks"),
+    apathy: t("domainMatrix.domains.apathy"),
+    agitation: t("domainMatrix.domains.agitation"),
+    social_withdrawal: t("domainMatrix.domains.socialWithdrawal"),
+  };
 
   if (!domains || Object.keys(domains).length === 0) return null;
 
@@ -110,24 +111,24 @@ export function DomainMatrix({ domains }: DomainMatrixProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-border-soft pb-3 gap-2">
         <div>
           <h4 className="font-[family-name:var(--font-serif)] font-black text-xl text-ink">
-            {t("assessment") || "17-Domain Clinical Assessment"}
+            {t("domainMatrix.heading")}
           </h4>
           <p className="text-xs font-semibold text-ink-secondary">
-            {t("assessmentDesc") || "Quantified cognitive & functional breakdown extracted by local AI"}
+            {t("domainMatrix.desc")}
           </p>
         </div>
         <div className="flex items-center gap-2 text-[11px] font-bold">
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-tea" /> {t("intact") || "Intact"}
+            <span className="w-2.5 h-2.5 rounded-full bg-tea" /> {t("domainMatrix.severity.intact")}
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-marigold" /> Mild
+            <span className="w-2.5 h-2.5 rounded-full bg-marigold" /> {t("domainMatrix.severity.mild")}
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-terracotta" /> Moderate
+            <span className="w-2.5 h-2.5 rounded-full bg-terracotta" /> {t("domainMatrix.severity.moderate")}
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-brick" /> Severe
+            <span className="w-2.5 h-2.5 rounded-full bg-brick" /> {t("domainMatrix.severity.severe")}
           </span>
         </div>
       </div>
@@ -135,19 +136,21 @@ export function DomainMatrix({ domains }: DomainMatrixProps) {
       {Object.entries(CATEGORY_GROUPS).map(([categoryKey, domainKeys]) => {
         const activeKeys = domainKeys.filter((k) => domains[k]);
         if (activeKeys.length === 0) return null;
+        const CategoryIcon = categoryKey === "categoryCognitive" ? Brain : categoryKey === "categoryIadls" ? Home : HeartPulse;
 
         return (
           <div key={categoryKey} className="space-y-3">
             <h5 className="font-bold text-xs uppercase tracking-wider text-ink-secondary flex items-center gap-2">
-              <span>
-                {CATEGORY_GROUPS[categoryKey] ? "🧠" : "🏠"} {tCategory(categoryKey)}
+              <span className="inline-flex items-center gap-1.5">
+                <CategoryIcon className="h-3.5 w-3.5 text-terracotta shrink-0" />
+                <span>{tCategory(categoryKey)}</span>
               </span>
               <span className="flex-1 h-[1px] bg-border-soft" />
             </h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {activeKeys.map((key) => {
                 const item = domains[key];
-                const style = domainStyle(item);
+                const style = domainStyle(item, t);
 
                 return (
                   <div
@@ -156,7 +159,7 @@ export function DomainMatrix({ domains }: DomainMatrixProps) {
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-bold text-xs uppercase tracking-wider text-ink">
-                        {DOMAIN_LABELS[key] || key.replace(/_/g, " ")}
+                        {domainLabels[key] || key.replace(/_/g, " ")}
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${style.badgeColor}`}
@@ -179,7 +182,7 @@ export function DomainMatrix({ domains }: DomainMatrixProps) {
                       </p>
                     ) : (
                       <span className="text-[10px] text-ink-secondary/50 italic">
-                        No clinical deficit noted in report
+                        {t("domainMatrix.empty")}
                       </span>
                     )}
                   </div>

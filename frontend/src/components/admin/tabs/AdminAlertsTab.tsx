@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { HeartPulse, Check, CheckCircle2 } from "lucide-react";
+import { HeartPulse, Check, CheckCircle2, MapPin, UserCheck } from "lucide-react";
 import type { AdminClinicalAlert, AdminAshaWorker } from "@/types/admin";
 
 interface AdminAlertsTabProps {
@@ -62,8 +62,8 @@ export function AdminAlertsTab({
               <h3 className="font-serif text-base font-black text-ink">
                 {al.patientName} (#{al.patientId})
               </h3>
-              <p className="text-xs font-bold text-ink-secondary">
-                📍 {al.location}
+              <p className="text-xs font-bold text-ink-secondary inline-flex items-center gap-1">
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-ink-secondary" /> {al.location}
               </p>
 
               <p className="mt-3 text-xs font-semibold text-ink leading-relaxed border-l-3 border-black/30 pl-2">
@@ -101,8 +101,8 @@ export function AdminAlertsTab({
 
       {/* ASHA Field Worker Roster */}
       <div className="mt-6 pt-4 border-t-2 border-black/10">
-        <h3 className="font-serif text-lg font-black text-ink mb-3">
-          👩‍⚕️ Active ASHA Health Worker Roster (Field Units)
+        <h3 className="font-serif text-lg font-black text-ink mb-3 inline-flex items-center gap-2">
+          <UserCheck className="h-5 w-5 text-emerald-700" /> Active ASHA Health Worker Roster (Field Units)
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {ashaWorkers.map((w) => (

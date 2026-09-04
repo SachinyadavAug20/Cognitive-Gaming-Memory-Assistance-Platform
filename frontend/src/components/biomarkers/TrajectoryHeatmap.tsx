@@ -205,8 +205,9 @@ export function TrajectoryHeatmap() {
       </div>
 
       <div className="flex items-center justify-between pt-1 border-t border-black/10">
-        <span className="text-[11px] font-bold text-ink-secondary">
-          🟡 Yellow indicators denote micro-hesitation cognitive checkpoints (&gt;350ms).
+        <span className="text-[11px] font-bold text-ink-secondary inline-flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 border border-amber-600 inline-block shrink-0" />
+          <span>Yellow indicators denote micro-hesitation cognitive checkpoints (&gt;350ms).</span>
         </span>
         <button
           type="button"

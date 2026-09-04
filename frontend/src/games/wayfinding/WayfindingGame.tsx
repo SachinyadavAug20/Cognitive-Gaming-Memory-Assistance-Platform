@@ -3,7 +3,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Compass, Music, MapPin } from "lucide-react";
+import {
+  Compass,
+  Music,
+  MapPin,
+  Home,
+  Landmark,
+  Trees,
+  Store,
+  Footprints,
+  Check,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  ArrowUp,
+} from "lucide-react";
+import { ClayKulharIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -27,45 +42,71 @@ import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel, wayfindingRouteLength } from "@/games/config";
 import type { FamiliarPlaceItem } from "@/types";
 
+function LandmarkIcon({
+  emojiOrCategory,
+  className = "h-6 w-6 text-tea",
+}: {
+  emojiOrCategory?: string | null;
+  className?: string;
+}) {
+  const val = (emojiOrCategory || "").toLowerCase();
+  if (val.includes("home") || val.includes("cottage") || val.includes("house")) {
+    return <Home className={className} />;
+  }
+  if (val.includes("tea") || val.includes("chai")) {
+    return <ClayKulharIcon className={className} />;
+  }
+  if (val.includes("temple") || val.includes("namghar") || val.includes("church") || val.includes("prayer")) {
+    return <Landmark className={className} />;
+  }
+  if (val.includes("lake") || val.includes("pine") || val.includes("forest") || val.includes("tree")) {
+    return <Trees className={className} />;
+  }
+  if (val.includes("market") || val.includes("store") || val.includes("dispensary") || val.includes("shop")) {
+    return <Store className={className} />;
+  }
+  return <MapPin className={className} />;
+}
+
 const DEFAULT_PLACES: FamiliarPlaceItem[] = [
   {
     id: -1,
     name: "Home (Heritage Cottage)",
-    category: "🏠",
+    category: "home",
     description: "Where we live — wooden-roof cottage surrounded by pine trees and blooming orchids.",
-    emoji: "🏠",
+    emoji: "home",
     photoUrl: null,
   },
   {
     id: -2,
     name: "Village Tea Stall",
-    category: "🍵",
+    category: "tea",
     description: "Where we meet friends for hot spiced tea and morning news.",
-    emoji: "🍵",
+    emoji: "tea",
     photoUrl: null,
   },
   {
     id: -3,
     name: "Community Prayer Hall (Namghar / Church)",
-    category: "🛕",
+    category: "temple",
     description: "Place of worship with ringing chimes and peaceful gardens.",
-    emoji: "🛕",
+    emoji: "temple",
     photoUrl: null,
   },
   {
     id: -4,
     name: "Pine Lake Promenade",
-    category: "🌲",
+    category: "lake",
     description: "Scenic lakeside path with wooden bridge and gentle mountain breeze.",
-    emoji: "🌲",
+    emoji: "lake",
     photoUrl: null,
   },
   {
     id: -5,
     name: "Local Market & Dispensary",
-    category: "🏪",
+    category: "market",
     description: "Fresh fruits, vegetables, and neighborhood medical dispensary.",
-    emoji: "🏪",
+    emoji: "market",
     photoUrl: null,
   },
 ];
@@ -348,7 +389,9 @@ export function WayfindingGame() {
     <GameShell title={t("wayfinding.title")} score={score}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
-          <div className="text-6xl">🗺️</div>
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-black bg-tea-light shadow-[3px_3px_0px_#000]">
+            <Compass className="h-9 w-9 text-tea" />
+          </div>
           <p className="font-serif text-3xl font-black text-ink">
             {t("wayfinding.title")}
           </p>
@@ -403,11 +446,12 @@ export function WayfindingGame() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={src} alt={p.name} className="h-full w-full object-cover" />
                       ) : (
-                        <span className="text-2xl">{p.emoji || "📍"}</span>
+                        <LandmarkIcon emojiOrCategory={p.emoji || p.category} className="h-6 w-6 text-tea" />
                       )}
                     </div>
-                    <span className="max-w-[70px] truncate text-[11px] font-extrabold text-ink">
-                      {i === route.length - 1 ? "🏠 " : ""}{p.name}
+                    <span className="max-w-[70px] truncate text-[11px] font-extrabold text-ink inline-flex items-center justify-center gap-0.5">
+                      {i === route.length - 1 && <Home className="h-3 w-3 shrink-0 text-amber-800 inline" />}
+                      {p.name}
                     </span>
                   </div>
                 );
@@ -434,8 +478,8 @@ export function WayfindingGame() {
           <div className="relative w-full overflow-hidden rounded-3xl border-4 border-[#2A241F] bg-[#1F291E] p-4 shadow-[6px_6px_0px_rgba(0,0,0,0.9)] select-none">
             {/* Ambient Mountain Terrain Background Elements */}
             <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#4ADE80_1px,transparent_1px)] [background-size:16px_16px]" />
-            <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80">
-              🌲 Pine Hills Trail • Path Home: {Math.round((stepIndex / Math.max(1, route.length - 1)) * 100)}%
+            <div className="absolute top-2 right-4 text-xs font-black uppercase tracking-wider text-emerald-300/80 inline-flex items-center gap-1.5">
+              <Trees className="h-3.5 w-3.5 text-emerald-400" /> Pine Hills Trail • Path Home: {Math.round((stepIndex / Math.max(1, route.length - 1)) * 100)}%
             </div>
 
             {/* Stepping Trail Path Nodes */}
@@ -458,8 +502,8 @@ export function WayfindingGame() {
                           }`}
                         />
                         {idx <= stepIndex && (
-                          <span className="absolute text-[10px] animate-pulse">
-                            👣
+                          <span className="absolute animate-pulse">
+                            <Footprints className="h-3 w-3 text-amber-900" />
                           </span>
                         )}
                       </div>
@@ -481,30 +525,30 @@ export function WayfindingGame() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={src} alt={step.name} className="h-full w-full object-cover" />
                       ) : (
-                        <span className="text-2xl">{step.emoji || "📍"}</span>
+                        <LandmarkIcon emojiOrCategory={step.emoji || step.category} className="h-6 w-6 text-tea" />
                       )}
 
                       {/* Visited Checkmark */}
                       {isVisited && (
-                        <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-tea text-[10px] font-black text-white">
-                          ✓
+                        <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-tea text-white">
+                          <Check className="h-2.5 w-2.5 text-white" />
                         </span>
                       )}
 
                       {/* Current Walker Avatar Pin */}
                       {isCurrent && (
-                        <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-marigold border-2 border-black text-xs font-black text-white animate-pulse">
-                          🚶
+                        <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-marigold border-2 border-black text-white animate-pulse">
+                          <Footprints className="h-3.5 w-3.5" />
                         </span>
                       )}
                     </button>
 
                     <span
-                      className={`max-w-[80px] text-center text-xs font-black truncate leading-tight ${
+                      className={`max-w-[80px] text-center text-xs font-black truncate leading-tight inline-flex items-center justify-center gap-0.5 ${
                         isCurrent ? "text-amber-300" : isVisited ? "text-white/90" : "text-white/40"
                       }`}
                     >
-                      {idx === route.length - 1 ? "🏠 " : ""}
+                      {idx === route.length - 1 && <Home className="h-3 w-3 shrink-0 inline" />}
                       {step.name}
                     </span>
                   </div>
@@ -541,7 +585,7 @@ export function WayfindingGame() {
                 />
               ) : (
                 <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-[#181512] text-white">
-                  <span className="text-6xl">{currentPlace.emoji || "📍"}</span>
+                  <LandmarkIcon emojiOrCategory={currentPlace.emoji || currentPlace.category} className="h-16 w-16 text-white/90" />
                   <span className="text-lg font-black">{currentPlace.name}</span>
                 </div>
               )}
@@ -562,7 +606,7 @@ export function WayfindingGame() {
                 onClick={() => setLightboxPlace(currentPlace)}
                 className="absolute top-3 right-3 rounded-full border-2 border-black bg-surface/90 px-3 py-1 text-xs font-extrabold text-ink shadow-md backdrop-blur-sm hover:bg-surface cursor-pointer"
               >
-                🔍 {t("wayfinding.viewScrapbook")}
+                <span className="inline-flex items-center gap-1.5"><Search className="h-3.5 w-3.5" /> {t("wayfinding.viewScrapbook")}</span>
               </button>
             </div>
 
@@ -630,7 +674,7 @@ export function WayfindingGame() {
                               className="h-full w-full object-cover"
                             />
                           ) : (
-                            <span className="text-2xl">{choice.emoji || "📍"}</span>
+                            <LandmarkIcon emojiOrCategory={choice.emoji || choice.category} className="h-6 w-6 text-tea" />
                           )}
                         </div>
 
@@ -638,8 +682,20 @@ export function WayfindingGame() {
                           <p className="font-extrabold text-sm sm:text-base leading-tight truncate">
                             {choice.name}
                           </p>
-                          <span className="text-[11px] font-bold opacity-80">
-                            {i === 0 ? "👈 Take Left Path" : i === 1 ? "👉 Take Right Path" : "👆 Straight Path"}
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold opacity-80">
+                            {i === 0 ? (
+                              <>
+                                <ChevronLeft className="h-3 w-3" /> Take Left Path
+                              </>
+                            ) : i === 1 ? (
+                              <>
+                                <ChevronRight className="h-3 w-3" /> Take Right Path
+                              </>
+                            ) : (
+                              <>
+                                <ArrowUp className="h-3 w-3" /> Straight Path
+                              </>
+                            )}
                           </span>
                         </div>
                       </button>
@@ -657,7 +713,7 @@ export function WayfindingGame() {
                   disabled={isWalkingAnimation}
                 >
                   {isWalkingAnimation
-                    ? "Walking Along Path... 🚶"
+                    ? "Walking Along Path..."
                     : t("wayfinding.walkButton")}
                 </ChunkyButton>
               </div>
@@ -666,7 +722,7 @@ export function WayfindingGame() {
             /* Arrived Home Button */
             <div className="pt-2">
               <ChunkyButton variant="marigold" size="2xl" onClick={completeJourney}>
-                {t("wayfinding.arrive")} 🏡
+                {t("wayfinding.arrive")}
               </ChunkyButton>
             </div>
           )}

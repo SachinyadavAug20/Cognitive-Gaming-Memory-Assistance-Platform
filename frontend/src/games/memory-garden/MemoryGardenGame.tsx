@@ -9,6 +9,20 @@ import {
   ListOrdered,
   CheckCircle2,
   XCircle,
+  Flower2,
+  Sun,
+  Moon,
+  Star,
+  Heart,
+  Trees,
+  Bird,
+  Fish,
+  Cat,
+  Dog,
+  Apple,
+  CloudRain,
+  Check,
+  Leaf,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -50,25 +64,55 @@ function GameShell({
   );
 }
 
-interface EmojiItem {
+interface GardenItem {
   id: string;
-  emoji: string;
 }
 
-const EMOJI_ITEMS: EmojiItem[] = [
-  { id: "flower", emoji: "🌸" },
-  { id: "sun", emoji: "☀️" },
-  { id: "moon", emoji: "🌙" },
-  { id: "star", emoji: "⭐" },
-  { id: "heart", emoji: "❤️" },
-  { id: "tree", emoji: "🌳" },
-  { id: "bird", emoji: "🐦" },
-  { id: "fish", emoji: "🐟" },
-  { id: "cat", emoji: "🐱" },
-  { id: "dog", emoji: "🐶" },
-  { id: "apple", emoji: "🍎" },
-  { id: "rain", emoji: "🌈" },
+const GARDEN_ITEMS: GardenItem[] = [
+  { id: "flower" },
+  { id: "sun" },
+  { id: "moon" },
+  { id: "star" },
+  { id: "heart" },
+  { id: "tree" },
+  { id: "bird" },
+  { id: "fish" },
+  { id: "cat" },
+  { id: "dog" },
+  { id: "apple" },
+  { id: "rain" },
 ];
+
+function renderGardenIcon(id: string, className = "h-10 w-10") {
+  switch (id) {
+    case "flower":
+      return <Flower2 className={`${className} text-rose-500`} />;
+    case "sun":
+      return <Sun className={`${className} text-amber-500`} />;
+    case "moon":
+      return <Moon className={`${className} text-indigo-400`} />;
+    case "star":
+      return <Star className={`${className} text-yellow-500`} />;
+    case "heart":
+      return <Heart className={`${className} text-red-500`} />;
+    case "tree":
+      return <Trees className={`${className} text-emerald-600`} />;
+    case "bird":
+      return <Bird className={`${className} text-sky-500`} />;
+    case "fish":
+      return <Fish className={`${className} text-cyan-500`} />;
+    case "cat":
+      return <Cat className={`${className} text-amber-600`} />;
+    case "dog":
+      return <Dog className={`${className} text-amber-700`} />;
+    case "apple":
+      return <Apple className={`${className} text-red-600`} />;
+    case "rain":
+      return <CloudRain className={`${className} text-blue-500`} />;
+    default:
+      return <Leaf className={`${className} text-emerald-600`} />;
+  }
+}
 
 const _SUB_GAMES = ["memoryMatch", "whatChanged", "sequence"] as const;
 type SubGame = (typeof _SUB_GAMES)[number];
@@ -117,21 +161,21 @@ export function MemoryGardenGame() {
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
   // Memory Match state
-  const [cards, setCards] = useState<EmojiItem[]>([]);
+  const [cards, setCards] = useState<GardenItem[]>([]);
   const [matchFlipped, setMatchFlipped] = useState<number[]>([]);
   const [matchMatched, setMatchMatched] = useState<boolean[]>([]);
   const [matchLocked, setMatchLocked] = useState(false);
 
   // What Changed state
-  const [changeGrid, setChangeGrid] = useState<EmojiItem[]>([]);
+  const [changeGrid, setChangeGrid] = useState<GardenItem[]>([]);
   const [changeChangedIndex, setChangeChangedIndex] = useState(0);
   const [changeFeedback, setChangeFeedback] = useState<
     "idle" | "correct" | "wrong"
   >("idle");
 
   // Sequence state
-  const [sequenceItems, setSequenceItems] = useState<EmojiItem[]>([]);
-  const [sequenceOptions, setSequenceOptions] = useState<EmojiItem[]>([]);
+  const [sequenceItems, setSequenceItems] = useState<GardenItem[]>([]);
+  const [sequenceOptions, setSequenceOptions] = useState<GardenItem[]>([]);
   const [sequenceIndex, setSequenceIndex] = useState(0);
   const [sequenceFeedback, setSequenceFeedback] = useState<
     "idle" | "correct" | "wrong"
@@ -151,7 +195,7 @@ export function MemoryGardenGame() {
       stopSpeaking();
       playPress();
       const pairCount = pairsForLevel(lvl);
-      const chosen = shuffle(EMOJI_ITEMS).slice(0, pairCount);
+      const chosen = shuffle(GARDEN_ITEMS).slice(0, pairCount);
       const deck = shuffle(chosen.flatMap((item) => [item, item]));
       setCards(deck);
       setMatchFlipped([]);
@@ -170,9 +214,9 @@ export function MemoryGardenGame() {
       stopSpeaking();
       playPress();
       const count = changeItemCount(lvl);
-      const chosen = shuffle(EMOJI_ITEMS).slice(0, count);
+      const chosen = shuffle(GARDEN_ITEMS).slice(0, count);
       const changedIndex = Math.floor(Math.random() * count);
-      const others = EMOJI_ITEMS.filter(
+      const others = GARDEN_ITEMS.filter(
         (item) => !chosen.some((c) => c.id === item.id)
       );
       const replacement = shuffle(others)[0];
@@ -195,7 +239,7 @@ export function MemoryGardenGame() {
       stopSpeaking();
       playPress();
       const len = sequenceLength(lvl);
-      const chosen = shuffle(EMOJI_ITEMS).slice(0, len);
+      const chosen = shuffle(GARDEN_ITEMS).slice(0, len);
       setSequenceItems(chosen);
       setSequenceOptions(shuffle(chosen));
       setSequenceIndex(0);
@@ -577,9 +621,9 @@ export function MemoryGardenGame() {
             {cards.map((card, i) => (
               <div
                 key={i}
-                className="aspect-square flex items-center justify-center rounded-2xl border-3 border-black bg-surface text-5xl shadow-[4px_4px_0px_#000]"
+                className="aspect-square flex items-center justify-center rounded-2xl border-3 border-black bg-surface shadow-[4px_4px_0px_#000]"
               >
-                {card.emoji}
+                {renderGardenIcon(card.id, "h-12 w-12")}
               </div>
             ))}
           </div>
@@ -608,13 +652,17 @@ export function MemoryGardenGame() {
                   type="button"
                   onClick={() => onMatchFlip(i)}
                   disabled={matchMatched[i] || matchLocked}
-                  className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black text-5xl shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
+                  className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
                     flipped
                       ? "bg-tea-light border-tea"
                       : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
                   }`}
                 >
-                  {flipped ? card.emoji : "🌸"}
+                  {flipped ? (
+                    renderGardenIcon(card.id, "h-12 w-12")
+                  ) : (
+                    <Flower2 className="h-10 w-10 text-rose-300" />
+                  )}
                 </button>
               );
             })}
@@ -640,9 +688,9 @@ export function MemoryGardenGame() {
             {changeGrid.map((item, i) => (
               <div
                 key={i}
-                className="aspect-square flex items-center justify-center rounded-2xl border-3 border-black bg-surface text-6xl shadow-[4px_4px_0px_#000]"
+                className="aspect-square flex items-center justify-center rounded-2xl border-3 border-black bg-surface shadow-[4px_4px_0px_#000]"
               >
-                {item.emoji}
+                {renderGardenIcon(item.id, "h-14 w-14")}
               </div>
             ))}
           </div>
@@ -674,7 +722,7 @@ export function MemoryGardenGame() {
                   type="button"
                   onClick={() => onChangeTap(i)}
                   disabled={changeFeedback !== "idle"}
-                  className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black text-6xl shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
+                  className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
                     isChanged
                       ? "bg-tea-light border-tea"
                       : isWrong
@@ -682,7 +730,7 @@ export function MemoryGardenGame() {
                       : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
                   }`}
                 >
-                  {item.emoji}
+                  {renderGardenIcon(item.id, "h-14 w-14")}
                 </button>
               );
             })}
@@ -718,9 +766,9 @@ export function MemoryGardenGame() {
             {sequenceItems.map((item, i) => (
               <div
                 key={i}
-                className="flex flex-col items-center gap-1 rounded-2xl border-3 border-black bg-surface px-5 py-4 text-5xl shadow-[4px_4px_0px_#000]"
+                className="flex flex-col items-center gap-1 rounded-2xl border-3 border-black bg-surface px-5 py-4 shadow-[4px_4px_0px_#000]"
               >
-                {item.emoji}
+                {renderGardenIcon(item.id, "h-12 w-12")}
                 <span className="text-base font-black text-tea">{i + 1}</span>
               </div>
             ))}
@@ -745,13 +793,17 @@ export function MemoryGardenGame() {
             {sequenceItems.map((_, i) => (
               <div
                 key={i}
-                className={`flex h-16 w-16 items-center justify-center rounded-2xl border-3 border-black text-4xl shadow-[4px_4px_0px_#000] ${
+                className={`flex h-16 w-16 items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] ${
                   i < sequenceIndex
                     ? "bg-tea-light"
                     : "bg-surface text-tea"
                 }`}
               >
-                {i < sequenceIndex ? "✅" : "🌿"}
+                {i < sequenceIndex ? (
+                  <Check className="h-8 w-8 text-emerald-700" />
+                ) : (
+                  <Leaf className="h-8 w-8 text-tea" />
+                )}
               </div>
             ))}
           </div>
@@ -762,14 +814,14 @@ export function MemoryGardenGame() {
                 type="button"
                 onClick={() => onSequenceTap(i)}
                 disabled={sequenceFeedback !== "idle"}
-                className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black text-5xl shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
+                className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
                   sequenceFeedback === "wrong" &&
                   item.id === sequenceItems[sequenceIndex]?.id
                     ? "bg-tea-light border-tea ring-2 ring-tea"
                     : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
                 }`}
               >
-                {item.emoji}
+                {renderGardenIcon(item.id, "h-12 w-12")}
               </button>
             ))}
           </div>
@@ -788,7 +840,7 @@ export function MemoryGardenGame() {
 
       {/* ─── BRIEF RESULT / RETURN ─── */}
       {phase === "play2" && (
-        <Celebration emoji="🌿" title={
+        <Celebration icon={Leaf} title={
           score >= 40
             ? t("result.excellent")
             : score >= 15

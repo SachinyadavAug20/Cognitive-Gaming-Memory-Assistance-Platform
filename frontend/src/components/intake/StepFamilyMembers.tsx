@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Trash2 } from "lucide-react";
 import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";
 import { SelectChip } from "./SelectChip";
@@ -90,7 +91,7 @@ function RelativeCard({
           size="lg"
           onPick={handlePhoto}
           onClearPhoto={handleClearPhoto}
-          label={`Upload photo for ${relative.name || "family member"}`}
+          label={`${relative.name || tFamily("title")}`}
         />
 
         <div className="flex-1 space-y-2">
@@ -128,9 +129,10 @@ function RelativeCard({
       <button
         type="button"
         onClick={onRemove}
-        className="w-full min-h-[48px] rounded-lg border-2 border-brick-light bg-brick-light text-brick font-bold text-sm hover:bg-brick hover:text-white transition-colors flex items-center justify-center gap-2"
+        className="w-full min-h-[48px] rounded-lg border-2 border-brick-light bg-brick-light text-brick font-bold text-sm hover:bg-brick hover:text-white transition-colors flex items-center justify-center gap-2 cursor-pointer"
       >
-        ✕ {tFamily("remove")}
+        <Trash2 className="w-4 h-4" />
+        <span>{tFamily("remove")}</span>
       </button>
     </div>
   );

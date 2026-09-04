@@ -18,12 +18,14 @@ import {
 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { GameSessionStats } from "@/types/gameSession";
+import { useTranslations } from "next-intl";
 
 interface CognitiveGamingProgressCardProps {
   patientId: number;
 }
 
 export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgressCardProps) {
+  const t = useTranslations("patientDetail");
   const [stats, setStats] = useState<GameSessionStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -140,15 +142,15 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
         <div>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink flex items-center gap-2">
             <Brain className="h-6 w-6 text-tea" />
-            Cognitive Gaming Progress & Motor Stability
+            {t("gamingProgress.title")}
           </h2>
           <p className="text-sm text-ink-secondary mt-0.5">
-            Active telemetry tracking cognitive accuracy, motor reaction latency, and Ollama AI clinical summary
+            {t("gamingProgress.subtitle")}
           </p>
         </div>
         <span className="px-3 py-1 rounded-xl bg-tea-light border-2 border-tea text-tea-dark font-bold text-xs flex items-center gap-1.5">
           <Zap className="h-3.5 w-3.5 text-tea" />
-          Live Telemetry Loop
+          {t("gamingProgress.liveTelemetry")}
         </span>
       </div>
 
@@ -156,7 +158,7 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <div className="rounded-2xl border-2 border-black bg-emerald-50 p-3 text-center shadow-[2px_2px_0px_#000]">
           <span className="text-[10px] font-black uppercase text-emerald-900 block">
-            Avg Accuracy
+            {t("gamingProgress.avgAccuracy")}
           </span>
           <span className="font-serif text-2xl font-black text-emerald-700">
             {stats.averageAccuracy}%
@@ -165,16 +167,16 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
 
         <div className="rounded-2xl border-2 border-black bg-amber-50 p-3 text-center shadow-[2px_2px_0px_#000]">
           <span className="text-[10px] font-black uppercase text-amber-900 block">
-            Motor Latency
+            {t("gamingProgress.motorLatency")}
           </span>
           <span className="font-serif text-2xl font-black text-amber-800">
-            {stats.averageMotorLatencyMs} ms
+            {stats.averageMotorLatencyMs} {t("gamingProgress.ms")}
           </span>
         </div>
 
         <div className="rounded-2xl border-2 border-black bg-blue-50 p-3 text-center shadow-[2px_2px_0px_#000]">
           <span className="text-[10px] font-black uppercase text-blue-900 block">
-            Spatial Recall
+            {t("gamingProgress.spatialRecall")}
           </span>
           <span className="font-serif text-2xl font-black text-blue-800">
             {stats.averageSpatialRecall}%
@@ -183,7 +185,7 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
 
         <div className="rounded-2xl border-2 border-black bg-purple-50 p-3 text-center shadow-[2px_2px_0px_#000]">
           <span className="text-[10px] font-black uppercase text-purple-900 block">
-            Total Sessions
+            {t("gamingProgress.totalSessions")}
           </span>
           <span className="font-serif text-2xl font-black text-purple-800">
             {stats.totalSessions}
@@ -194,9 +196,9 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
       {/* Recharts Line Chart: Accuracy & Motor Latency Trends */}
       <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000] mb-6">
         <div className="flex items-center justify-between mb-3 text-xs font-black text-ink">
-          <span>Session-by-Session Cognitive & Motor Trajectory</span>
+          <span>{t("gamingProgress.chartTitle")}</span>
           <span className="text-[11px] text-ink-secondary font-semibold">
-            Last {chartData.length} Sessions
+            {t("gamingProgress.lastSessions", { count: chartData.length })}
           </span>
         </div>
 
@@ -222,7 +224,7 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
                 yAxisId="left"
                 type="monotone"
                 dataKey="accuracy"
-                name="Accuracy (%)"
+                name={t("gamingProgress.accuracyLine")}
                 stroke="#047857"
                 strokeWidth={3}
                 dot={{ r: 5, fill: "#047857" }}
@@ -232,7 +234,7 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
                 yAxisId="right"
                 type="monotone"
                 dataKey="latencyMs"
-                name="Motor Latency (ms)"
+                name={t("gamingProgress.latencyLine")}
                 stroke="#D97706"
                 strokeWidth={3}
                 dot={{ r: 5, fill: "#D97706" }}
@@ -248,7 +250,7 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="h-4 w-4 text-amber-800" />
             <span className="text-xs font-black uppercase tracking-wider text-amber-950">
-              Ollama AI Clinical Observation (ASHA Health Worker Report)
+              {t("gamingProgress.aiObservation")}
             </span>
           </div>
           <p className="text-xs sm:text-sm font-medium text-amber-950/90 leading-relaxed italic border-l-3 border-amber-700 pl-3">

@@ -6,6 +6,14 @@ import type { IntakeFormData } from "@/types/intake";
 import { LANGUAGE_OPTIONS } from "@/types/intake";
 import { getMediaUrl } from "@/lib/api";
 import type { ReactNode } from "react";
+import {
+  User,
+  Hospital,
+  Users,
+  BookOpen,
+  MapPin,
+  Pencil,
+} from "lucide-react";
 
 interface StepReviewProps {
   data: IntakeFormData;
@@ -22,10 +30,10 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
     <div className="space-y-6">
       <StepHeader
         title={t("title")}
-        subtitle={t("subtitle") || "Please check that everything looks right before we create the patient's profile."}
+        subtitle={t("subtitle")}
       />
 
-      <ReviewSection title={t("personal")} icon="👤" editLabel={t("edit")} onEdit={() => onEditStep(0)}>
+      <ReviewSection title={t("personal")} icon={User} editLabel={t("edit")} onEdit={() => onEditStep(0)}>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <ReviewField label={t("fieldName")} value={data.personal.fullName} />
           <ReviewField label={t("fieldDob")} value={data.personal.dateOfBirth} />
@@ -37,35 +45,43 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
         </dl>
       </ReviewSection>
 
-      <ReviewSection title={t("medical")} icon="🏥" editLabel={t("edit")} onEdit={() => onEditStep(1)}>
+      <ReviewSection title={t("medical")} icon={Hospital} editLabel={t("edit")} onEdit={() => onEditStep(1)}>
         {data.diagnostic.extractedData ? (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
             <ReviewField label={t("fieldDiagnosis")} value={data.diagnostic.extractedData.diagnosis} />
             <ReviewField label={t("fieldDate")} value={data.diagnostic.extractedData.dateOfDiagnosis} />
             <div>
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldScore")}</dt>
-              <dd className="font-bold text-ink mt-0.5">
-                {data.diagnostic.extractedData.score ?? "--"}/{data.diagnostic.extractedData.maxScore ?? 30} ({data.diagnostic.extractedData.testType || "MMSE"})
+              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldStage")}</dt>
+              <dd className="font-bold text-ink capitalize mt-0.5">
+                {data.diagnostic.extractedData.stage || t("notSpecified")}
               </dd>
             </div>
-            <ReviewField label={t("fieldPhysician")} value={data.diagnostic.extractedData.examiningPhysician} />
-            <div className="sm:col-span-2">
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldMedications")}</dt>
-              <dd className="font-bold text-ink mt-0.5">
-                {data.diagnostic.extractedData.medications && data.diagnostic.extractedData.medications.length > 0
-                  ? data.diagnostic.extractedData.medications.join(", ")
-                  : "None"}
+            <div>
+              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldSeverity")}</dt>
+              <dd className="font-bold text-ink capitalize mt-0.5">
+                {data.diagnostic.extractedData.severity || t("notSpecified")}
               </dd>
             </div>
+            {data.diagnostic.extractedData.cognitiveScores &&
+              data.diagnostic.extractedData.cognitiveScores.length > 0 && (
+                <div className="sm:col-span-2">
+                  <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldScores")}</dt>
+                  <dd className="font-bold text-ink mt-0.5">
+                    {data.diagnostic.extractedData.cognitiveScores
+                      .map((s: { testType: string; score: number; maxScore: number }) => `${s.testType}: ${s.score}/${s.maxScore}`)
+                      .join(", ")}
+                  </dd>
+                </div>
+              )}
           </dl>
         ) : (
-          <p className="text-ink-secondary italic text-sm">{t("noReport")}</p>
+          <p className="text-ink-secondary italic text-sm">{t("noMedical")}</p>
         )}
       </ReviewSection>
 
       <ReviewSection
         title={t("family")}
-        icon="👨‍👩‍👧"
+        icon={Users}
         editLabel={t("edit")}
         onEdit={() => onEditStep(2)}
         count={data.relatives.length}
@@ -84,8 +100,8 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
                       className="w-11 h-11 rounded-lg object-cover border-2 border-border shrink-0"
                     />
                   ) : (
-                    <span className="w-11 h-11 rounded-lg bg-surface border border-border-soft flex items-center justify-center text-xl shrink-0">
-                      👤
+                    <span className="w-11 h-11 rounded-lg bg-surface border border-border-soft flex items-center justify-center shrink-0">
+                      <User className="h-5 w-5 text-ink-secondary" />
                     </span>
                   )}
                   <div className="min-w-0">
@@ -101,7 +117,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
         )}
       </ReviewSection>
 
-      <ReviewSection title={t("life")} icon="📖" editLabel={t("edit")} onEdit={() => onEditStep(3)}>
+      <ReviewSection title={t("life")} icon={BookOpen} editLabel={t("edit")} onEdit={() => onEditStep(3)}>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
           <ReviewField label={t("fieldOccupation")} value={data.lifeStory.occupation} fallback={t("notSpecified")} />
           <ReviewField label={t("fieldLanguage")} value={langLabel} />
@@ -136,7 +152,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
 
       <ReviewSection
         title={t("places")}
-        icon="📍"
+        icon={MapPin}
         editLabel={t("edit")}
         onEdit={() => onEditStep(4)}
         count={data.landmarks.length}
@@ -147,7 +163,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
               key={i}
               className="inline-flex items-center gap-1.5 bg-surface-muted border border-border-soft rounded-xl px-3 py-2 font-bold text-ink text-sm"
             >
-              <span className="text-lg">{lm.emoji}</span>
+              <MapPin className="h-4 w-4 text-tea shrink-0" />
               {lm.name}
             </span>
           ))}
@@ -176,14 +192,14 @@ function ReviewField({
 
 function ReviewSection({
   title,
-  icon,
+  icon: IconComp,
   editLabel,
   onEdit,
   count,
   children,
 }: {
   title: string;
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   editLabel: string;
   onEdit: () => void;
   count?: number;
@@ -193,8 +209,8 @@ function ReviewSection({
     <div className="border-3 border-border rounded-2xl bg-surface p-5 shadow-[4px_4px_0_var(--color-border)] space-y-4">
       <div className="flex items-center justify-between border-b-2 border-border-soft pb-3">
         <div className="flex items-center gap-2.5">
-          <span className="w-8 h-8 rounded-xl bg-marigold-light border-2 border-border flex items-center justify-center text-sm shadow-[1px_1px_0_var(--color-border)] shrink-0">
-            {icon}
+          <span className="w-8 h-8 rounded-xl bg-marigold-light border-2 border-border flex items-center justify-center text-ink shadow-[1px_1px_0_var(--color-border)] shrink-0">
+            <IconComp className="h-4 w-4 text-ink" />
           </span>
           <h4 className="font-[family-name:var(--font-serif)] font-black text-lg text-ink">
             {title}
@@ -210,7 +226,8 @@ function ReviewSection({
           onClick={onEdit}
           className="inline-flex items-center gap-1 px-3 py-1 bg-surface-muted hover:bg-marigold-light text-ink hover:text-marigold border border-border-soft hover:border-marigold rounded-lg text-xs font-bold transition-all cursor-pointer"
         >
-          ✏️ {editLabel}
+          <Pencil className="h-3 w-3" />
+          <span>{editLabel}</span>
         </button>
       </div>
       <div>{children}</div>

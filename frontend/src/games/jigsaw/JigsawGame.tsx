@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Grid3X3, Volume2, Music } from "lucide-react";
+import { Grid3X3, Volume2, Music, Image as ImageIcon, Puzzle, RotateCcw } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -64,7 +64,7 @@ export interface PuzzleTarget {
   subtitle: string;
   photoUrl: string;
   notes: string;
-  emoji?: string;
+  icon?: string;
   type: "family" | "place";
 }
 
@@ -89,7 +89,7 @@ export function JigsawGame() {
           subtitle: rel ? `${m.name} • ${rel}` : m.name,
           photoUrl: m.photoUrl,
           notes: m.notes?.trim() || t("jigsaw.notesEmpty"),
-          emoji: "🧑‍🤝‍🧑",
+          icon: "family",
           type: "family",
         };
       });
@@ -106,7 +106,7 @@ export function JigsawGame() {
           subtitle: `${p.name}${cat}`,
           photoUrl: p.photoUrl,
           notes: p.description?.trim() || t("jigsaw.notesEmpty"),
-          emoji: p.emoji || "📍",
+          icon: p.emoji || "place",
           type: "place",
         };
       });
@@ -302,7 +302,7 @@ export function JigsawGame() {
     return (
       <GameShell title={t("jigsaw.title")} score={0}>
         <div className="flex flex-col items-center gap-6 py-16 text-center">
-          <div className="text-6xl">🖼️</div>
+          <ImageIcon className="w-16 h-16 text-ink-secondary" />
           <p className="max-w-xs text-lg font-semibold text-ink-secondary">
             {t("jigsaw.noPhoto")}
           </p>
@@ -324,7 +324,7 @@ export function JigsawGame() {
     <GameShell title={t("jigsaw.title")} score={index + (phase === "done" ? 1 : 0)}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-8 text-center">
-          <div className="text-6xl">🧩</div>
+          <Puzzle className="w-16 h-16 text-terracotta" />
           <p className="font-serif text-3xl font-black text-ink">{t("jigsaw.title")}</p>
           <p className="max-w-md text-lg font-semibold text-ink-secondary">
             {t("jigsaw.intro", { count: String(activeTargets.length) })}
@@ -575,7 +575,10 @@ export function JigsawGame() {
             ) : (
               <div className="flex flex-wrap items-center justify-center gap-3">
                 <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
-                  <span>{locale === "hi" ? "फिर से खेलें 🔄" : locale === "as" ? "পুনৰ খেলক 🔄" : "Play Again 🔄"}</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <RotateCcw className="w-4 h-4" />
+                    <span>{locale === "hi" ? "फिर से खेलें" : locale === "as" ? "পুনৰ খেলক" : "Play Again"}</span>
+                  </span>
                 </ChunkyButton>
                 <Link
                   href="/patient/games"

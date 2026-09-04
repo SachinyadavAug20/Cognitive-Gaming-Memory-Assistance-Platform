@@ -242,8 +242,9 @@ export function KioskScanner({ onScan, paused, isError }: KioskScannerProps) {
       )}
 
       {/* ── Security & Privacy Assurance ── */}
-      <p className="text-center text-ink-secondary/60 text-xs font-bold mt-2.5">
-        🔒 Secure & Private QR Card Authentication
+      <p className="flex items-center justify-center gap-1.5 text-center text-ink-secondary/70 text-xs font-bold mt-2.5">
+        <ShieldCheck className="h-3.5 w-3.5 text-tea" />
+        <span>Secure & Private QR Card Authentication</span>
       </p>
     </div>
   );

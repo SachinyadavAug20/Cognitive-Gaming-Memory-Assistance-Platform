@@ -1,7 +1,10 @@
+import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
+
 interface ProgressBarProps {
   currentStep: number;
   totalSteps: number;
-  steps: { label: string; icon: string }[];
+  steps: { label: string; icon?: string }[];
   onStepClick?: (step: number) => void;
 }
 
@@ -11,10 +14,11 @@ export function ProgressBar({
   steps,
   onStepClick,
 }: ProgressBarProps) {
+  const t = useTranslations("intake");
   return (
-    <nav aria-label="Form progress" className="mb-8">
+    <nav aria-label={t("progress.ariaLabel")} className="mb-8">
       <p className="text-sm font-bold text-ink-secondary mb-3 text-center">
-        Step {currentStep + 1} of {totalSteps}
+        {t("progress.step") + " "}{currentStep + 1}{" " + t("progress.of") + " "}{totalSteps}
       </p>
 
       {/* Desktop: horizontal */}
@@ -38,7 +42,7 @@ export function ProgressBar({
                 aria-current={isCurrent ? "step" : undefined}
               >
                 <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 border-current">
-                  {isCompleted ? "✓" : i + 1}
+                  {isCompleted ? <Check className="h-3.5 w-3.5 stroke-[3]" /> : i + 1}
                 </span>
                 <span className="hidden lg:inline">{step.label}</span>
               </button>

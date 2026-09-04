@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { Volume2, Volume1, VolumeX } from "lucide-react";
 import {
   getVolume,
   setVolume,
@@ -56,8 +57,18 @@ export function AudioToggle() {
         aria-label={enabled ? hub.soundOff : hub.soundOn}
         className={`${CARD} btn-tactile flex min-h-[48px] items-center gap-2 rounded-xl bg-surface px-3 text-base font-extrabold text-ink`}
       >
-        <span className="text-xl" aria-hidden="true">
-          {enabled ? (volume > 0.5 ? "🔊" : volume > 0 ? "🔉" : "🔇") : "🔇"}
+        <span className="flex items-center" aria-hidden="true">
+          {enabled ? (
+            volume > 0.5 ? (
+              <Volume2 className="h-5 w-5 text-tea" />
+            ) : volume > 0 ? (
+              <Volume1 className="h-5 w-5 text-tea" />
+            ) : (
+              <VolumeX className="h-5 w-5 text-ink-secondary" />
+            )
+          ) : (
+            <VolumeX className="h-5 w-5 text-ink-secondary" />
+          )}
         </span>
         <span className="hidden sm:inline text-sm">
           {enabled ? hub.soundOn : hub.soundOff}

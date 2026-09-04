@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, Building2 } from "lucide-react";
 import type { AdminDistrictHealth } from "@/types/admin";
 
 interface AdminRegionsTabProps {
@@ -96,8 +96,8 @@ export function AdminRegionsTab({ districts }: AdminRegionsTabProps) {
                 </div>
 
                 <h3 className="font-serif text-lg font-black text-ink">{d.district}</h3>
-                <p className="text-xs font-semibold text-ink-secondary mt-0.5">
-                  🏥 {d.primaryPhc}
+                <p className="text-xs font-semibold text-ink-secondary mt-0.5 inline-flex items-center gap-1">
+                  <Building2 className="h-3.5 w-3.5 shrink-0 text-ink-secondary" /> {d.primaryPhc}
                 </p>
 
                 <div className="mt-4 space-y-1.5 text-xs font-bold text-ink">

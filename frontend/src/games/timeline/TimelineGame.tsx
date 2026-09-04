@@ -3,6 +3,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import {
+  Calendar,
+  ScrollText,
+  Briefcase,
+  Music,
+  Puzzle,
+  RotateCcw,
+  Heart,
+  Sun,
+  Home,
+} from "lucide-react";
+import { ClayKulharIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -31,12 +43,35 @@ function shuffle<T>(list: T[]): T[] {
   return out;
 }
 
+type TimelineIconType = "heart" | "sun" | "tea" | "music" | "home" | "puzzle";
+
 interface Choice {
   key: string;
   text: string;
-  emoji: string;
+  iconType: TimelineIconType;
   isCorrect: boolean;
 }
+
+function renderTimelineIcon(type?: TimelineIconType, className = "h-8 w-8") {
+  switch (type) {
+    case "heart":
+      return <Heart className={`${className} text-rose-500`} />;
+    case "sun":
+      return <Sun className={`${className} text-amber-500`} />;
+    case "tea":
+      return <ClayKulharIcon className={`${className} text-amber-700`} />;
+    case "music":
+      return <Music className={`${className} text-indigo-500`} />;
+    case "home":
+      return <Home className={`${className} text-teal-600`} />;
+    case "puzzle":
+    default:
+      return <Puzzle className={`${className} text-terracotta`} />;
+  }
+}
+
+const GENERIC_CARD_KEYS = ["one", "two", "three", "four", "five"];
+const GENERIC_ICONS: TimelineIconType[] = ["heart", "sun", "tea", "music", "home"];
 
 function GameShell({
   title,
@@ -59,9 +94,6 @@ function GameShell({
     </section>
   );
 }
-
-const GENERIC_CARD_KEYS = ["one", "two", "three", "four", "five"];
-const GENERIC_EMOJI = ["🫶", "🌅", "🍵", "🎶", "🏡"];
 
 /**
  * Life Story Journey — an Errorless-Learning autobiographical timeline.
@@ -134,7 +166,7 @@ export function TimelineGame() {
     const pool: Choice[] = others.map((ev, i) => ({
       key: `event:${ev.event}:${i}`,
       text: ev.event,
-      emoji: GENERIC_EMOJI[i % GENERIC_EMOJI.length] ?? "🕰️",
+      iconType: GENERIC_ICONS[i % GENERIC_ICONS.length] ?? "sun",
       isCorrect: false,
     }));
     let gi = 0;
@@ -142,7 +174,7 @@ export function TimelineGame() {
       pool.push({
         key: `generic:${gi}`,
         text: t(`timeline.generic.${GENERIC_CARD_KEYS[gi % GENERIC_CARD_KEYS.length]}`),
-        emoji: GENERIC_EMOJI[gi % GENERIC_EMOJI.length] ?? "🫶",
+        iconType: GENERIC_ICONS[gi % GENERIC_ICONS.length] ?? "heart",
         isCorrect: false,
       });
       gi++;
@@ -152,7 +184,7 @@ export function TimelineGame() {
     placed.splice(insertPos, 0, {
       key: `correct:${correct.year}:${correct.event}`,
       text: correct.event,
-      emoji: "🧩",
+      iconType: "puzzle",
       isCorrect: true,
     });
     setChoices(placed);
@@ -244,7 +276,7 @@ export function TimelineGame() {
     return (
       <GameShell title={t("timeline.title")} score={0}>
         <div className="flex flex-col items-center gap-6 py-16 text-center">
-          <div className="text-6xl">📜</div>
+          <ScrollText className="h-16 w-16 text-amber-700" />
           <p className="text-2xl font-bold text-ink">{t("timeline.moreSoon")}</p>
           <p className="max-w-xs text-lg font-semibold text-ink-secondary">
             {t("timeline.moreSoonHint")}
@@ -266,19 +298,21 @@ export function TimelineGame() {
     <GameShell title={t("timeline.title")} score={step + (phase === "done" ? 1 : 0)}>
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-10 text-center">
-          <div className="text-6xl">📅</div>
+          <Calendar className="h-16 w-16 text-terracotta" />
           <p className="text-2xl font-bold text-ink">{t("timeline.title")}</p>
           <p className="max-w-md text-lg font-semibold text-ink-secondary">
             {t("timeline.intro")}
           </p>
           {occupation ? (
-            <p className="max-w-md text-base font-semibold text-ink-secondary">
-              💼 {t("timeline.occupation", { occupation })}
+            <p className="max-w-md text-base font-semibold text-ink-secondary flex items-center justify-center gap-1.5">
+              <Briefcase className="h-4 w-4 text-tea" />
+              <span>{t("timeline.occupation", { occupation })}</span>
             </p>
           ) : null}
           {favoriteMusic ? (
-            <p className="max-w-md text-base font-semibold text-ink-secondary">
-              🎵 {t("timeline.favoriteMusic", { favoriteMusic })}
+            <p className="max-w-md text-base font-semibold text-ink-secondary flex items-center justify-center gap-1.5">
+              <Music className="h-4 w-4 text-tea" />
+              <span>{t("timeline.favoriteMusic", { favoriteMusic })}</span>
             </p>
           ) : null}
           <AudioPrompt text={introSpeech} label={t("listen")} size="md" />
@@ -319,10 +353,12 @@ export function TimelineGame() {
                     className={`flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-2xl border-2 border-black bg-surface p-4 text-center shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-[opacity,transform] duration-700 ease-in-out ${
                       hidden
                         ? "pointer-events-none scale-95 opacity-0"
-                        : "active:translate-y-0.5"
+                        : "active:translate-y-0.5 cursor-pointer"
                     }`}
                   >
-                    <span className="text-4xl">{choice.emoji}</span>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black/5">
+                      {renderTimelineIcon(choice.iconType, "h-8 w-8")}
+                    </div>
                     <span className="text-lg font-extrabold leading-tight text-ink">
                       {choice.text}
                     </span>
@@ -343,8 +379,8 @@ export function TimelineGame() {
                       className="h-40 w-40 rounded-2xl border-4 border-black object-cover shadow-[3px_3px_0px_rgba(0,0,0,1)]"
                     />
                   ) : (
-                    <div className="flex h-40 w-40 items-center justify-center rounded-2xl border-4 border-black bg-terracotta-light text-6xl shadow-[3px_3px_0px_rgba(0,0,0,1)]">
-                      🧩
+                    <div className="flex h-40 w-40 items-center justify-center rounded-2xl border-4 border-black bg-terracotta-light shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+                      <Puzzle className="h-14 w-14 text-terracotta" />
                     </div>
                   );
                 })()}
@@ -363,11 +399,11 @@ export function TimelineGame() {
                 <button
                   type="button"
                   onClick={() => playLifeSong()}
-                  className="group mt-1 flex flex-col items-center gap-2"
+                  className="group mt-1 flex flex-col items-center gap-2 cursor-pointer"
                   aria-label={t("timeline.music")}
                 >
-                  <span className="float-note flex h-16 w-16 items-center justify-center rounded-full border-4 border-marigold bg-marigold-light text-3xl shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-transform group-active:translate-y-0.5">
-                    🎵
+                  <span className="float-note flex h-16 w-16 items-center justify-center rounded-full border-4 border-marigold bg-marigold-light text-ink shadow-[3px_3px_0px_rgba(0,0,0,1)] transition-transform group-active:translate-y-0.5">
+                    <Music className="h-8 w-8" />
                   </span>
                   <span className="text-base font-bold text-ink">{t("timeline.music")}</span>
                   <span className="max-w-xs text-sm font-semibold text-ink-secondary">
@@ -385,13 +421,16 @@ export function TimelineGame() {
           )}
         </div>
       ) : (
-        <Celebration emoji="📅" title={t("timeline.complete")}>
+        <Celebration icon={Calendar} title={t("timeline.complete")}>
           <p className="mx-auto max-w-lg px-4 text-lg font-semibold text-ink-secondary">
             {journey.length} {t("timeline.memoriesShared")}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
             <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
-              <span>{locale === "hi" ? "जीवन यात्रा फिर से देखें 🔄" : locale === "as" ? "জীৱন যাত্ৰা পুনৰ চাওক 🔄" : "Walk Timeline Again 🔄"}</span>
+              <span className="flex items-center gap-2">
+                <RotateCcw className="h-4 w-4" />
+                <span>{locale === "hi" ? "जीवन यात्रा फिर से देखें" : locale === "as" ? "জীৱন যাত্ৰা পুনৰ চাওক" : "Walk Timeline Again"}</span>
+              </span>
             </ChunkyButton>
             <Link
               href="/patient/games"

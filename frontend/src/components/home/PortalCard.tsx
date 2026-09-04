@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 
 interface PortalCardProps {
   headerBg: string;
-  emoji: string;
+  emoji?: string;
+  icon?: React.ComponentType<{ className?: string }>;
   title: string;
   subtitle: string;
   description: string;
@@ -15,6 +16,7 @@ interface PortalCardProps {
 export function PortalCard({
   headerBg,
   emoji,
+  icon: Icon,
   title,
   subtitle,
   description,
@@ -26,7 +28,13 @@ export function PortalCard({
     <div className="scrapbook-card !p-0 overflow-hidden hover:translate-y-[-2px] transition-transform h-full flex flex-col">
       <div className={`${headerBg} px-5 py-3 border-b-4 border-border`}>
         <div className="flex items-center gap-3">
-          <div className="text-4xl">{emoji}</div>
+          {Icon ? (
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black/20 text-ink-inverse shrink-0">
+              <Icon className="h-7 w-7 stroke-[2.2]" />
+            </div>
+          ) : emoji ? (
+            <div className="text-4xl">{emoji}</div>
+          ) : null}
           <div>
             <h2 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink-inverse leading-tight">
               {title}

@@ -550,7 +550,7 @@ export function Hero3DLandscape() {
 
     // 18. Animation Loop (60 FPS Performance)
     let animationFrameId: number;
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -558,7 +558,7 @@ export function Hero3DLandscape() {
       // Auto-Sleep check: saves 100% GPU when offscreen or in background tab
       if (!isIntersectingRef.current || !isTabVisibleRef.current) return;
 
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startTime) * 0.001;
 
       // Smooth Camera Lerping towards target preset
       camera.position.lerp(targetCamPosRef.current, 0.04);
