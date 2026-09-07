@@ -59,6 +59,11 @@ export function CaregiverSosButton({ className = "" }: CaregiverSosButtonProps) 
     } catch (err) {
       const notFound = err instanceof HttpError && err.status === 404;
       if (notFound) {
+        if (typeof window !== "undefined" && window.location.pathname.includes("demo")) {
+          setState("error");
+          window.setTimeout(() => setState("idle"), 4000);
+          return;
+        }
         // Stale/invalid patient session (e.g. DB reseeded). Reset so the
         // patient re-scans their card to get a valid id.
         logout();

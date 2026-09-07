@@ -42,6 +42,7 @@ graph TD
 |---|---|
 | `frontend/` | Next.js 16.3.3 application — patient/caregiver/admin experience, games, i18n, SEO |
 | `backend/` | Spring Boot 4.1 REST service — patient records, JWT auth, PDF clinical extraction, surveillance/SOS, admin mission-control |
+| `application/` | Native Android mobile & tablet application (Capacitor 7) — hardware camera, regional TTS, haptics, kiosk mode |
 | `omkar/` | Standalone sub-project demo games (A-Day-in-My-World, Bazaar Buddies, Memory Garden, Memory Road) |
 
 > **Detailed technical references:** `frontend/INFO.md` and `backend/INFO.md`.
