@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import {
@@ -32,12 +32,19 @@ import {
   Activity,
   CheckCircle2,
   Clock,
+  Compass,
+  HeartHandshake,
+  MessageSquareHeart,
+  Sun,
+  Sunset,
+  Coffee,
 } from "lucide-react";
 import type {
   MemoryCapsule,
   AmbientSoundType,
   MemoryHotspot,
   MemoryColorFilter,
+  CircadianPhase,
 } from "@/types/capsule";
 import {
   getAllCapsulesForPatient,
@@ -100,6 +107,16 @@ export function EchoesOfHomeClient() {
     activeCapsule?.colorFilter || "golden_hour"
   );
   const [zenMode, setZenMode] = useState(false);
+
+  // Autopilot Memory Cruise & Caregiver Co-Pilot
+  const [autopilot, setAutopilot] = useState(false);
+  const [showCoPilot, setShowCoPilot] = useState(false);
+  const [circadianFilter, setCircadianFilter] = useState<CircadianPhase | "all">("all");
+
+  const filteredCapsules = useMemo(() => {
+    if (circadianFilter === "all") return capsules;
+    return capsules.filter((c) => c.circadianPhase === circadianFilter);
+  }, [capsules, circadianFilter]);
 
   // Interactive Joy Hotspots
   const [focusedHotspot, setFocusedHotspot] = useState<MemoryHotspot | null>(null);
@@ -224,7 +241,8 @@ export function EchoesOfHomeClient() {
       timestamp: new Date().toISOString(),
       durationSeconds: duration,
       headTrackingUsed: webcamEnabled,
-      engagementScore: webcamEnabled ? 92 : 78,
+      autopilotUsed: autopilot,
+      engagementScore: webcamEnabled ? 94 : autopilot ? 88 : 80,
       caregiverObservation: obs,
     });
     setLoggedFeedback(obs);
@@ -306,10 +324,15 @@ export function EchoesOfHomeClient() {
         {!zenMode && (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border-3 border-black bg-white p-4 shadow-[4px_4px_0px_#000]">
             <div>
-              <div className="flex items-center gap-2 text-xs font-black text-tea-dark uppercase tracking-wider mb-1">
+              <div className="flex flex-wrap items-center gap-2 text-xs font-black text-tea-dark uppercase tracking-wider mb-1">
                 <span className="px-2 py-0.5 rounded-md bg-tea-light border border-tea/30">
                   Memory {selectedIndex + 1} of {capsules.length}
                 </span>
+                {activeCapsule.lifeChapter && (
+                  <span className="px-2 py-0.5 rounded-md bg-amber-100 border border-amber-300 text-amber-950 font-bold capitalize">
+                    {activeCapsule.lifeChapter.replace("_", " ")}
+                  </span>
+                )}
                 <span>•</span>
                 <span>{activeCapsule.locationName}</span>
                 <span>•</span>
@@ -322,6 +345,21 @@ export function EchoesOfHomeClient() {
 
             {/* Top Sensory Toggles Bar */}
             <div className="flex flex-wrap items-center gap-2">
+              {/* Autopilot Memory Cruise Toggle */}
+              <button
+                type="button"
+                onClick={() => setAutopilot((a) => !a)}
+                className={`btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 px-3 py-1.5 text-xs font-black cursor-pointer shadow-[2px_2px_0px_#000] ${
+                  autopilot
+                    ? "border-amber-700 bg-amber-400 text-amber-950 shadow-inner"
+                    : "border-black bg-white text-ink hover:bg-amber-50"
+                }`}
+                title="Cinematic drift navigation visiting hotspots sequentially without requiring head or hand motion"
+              >
+                <Compass className={`h-3.5 w-3.5 text-amber-900 ${autopilot ? "animate-spin" : ""}`} />
+                <span>{autopilot ? "Autopilot Cruise ON" : "Autopilot Cruise"}</span>
+              </button>
+
               {/* Neuro-Acoustic 40Hz / 10Hz Stimulation */}
               <div className="flex items-center rounded-xl border-2 border-black bg-amber-50 p-1 text-[11px] font-black">
                 <Headphones className="h-3.5 w-3.5 text-amber-900 mx-1.5" />
@@ -403,6 +441,7 @@ export function EchoesOfHomeClient() {
             capsule={activeCapsule}
             coords={lookCoords}
             colorFilter={activeFilter}
+            autopilot={autopilot}
             onPointerMove={handleCoordsChange}
             onHotspotActive={handleHotspotHover}
             onHotspotClick={(h) => {
@@ -410,6 +449,16 @@ export function EchoesOfHomeClient() {
               setFocusedHotspot(h);
             }}
           />
+
+          {/* Autopilot HUD Floating Pill */}
+          {autopilot && (
+            <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+              <span className="inline-flex items-center gap-2 rounded-full border-2 border-amber-400 bg-black/85 px-4 py-1 text-xs font-black text-amber-300 backdrop-blur-md shadow-lg animate-pulse">
+                <Compass className="h-3.5 w-3.5 animate-spin" />
+                <span>Autopilot Cruise • Ken Burns Memory Drift</span>
+              </span>
+            </div>
+          )}
 
           {/* Top Left: Atmosphere Badges & 3D Lighting Filter */}
           <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2 pointer-events-none">
@@ -579,6 +628,103 @@ export function EchoesOfHomeClient() {
           </div>
         )}
 
+        {/* Caregiver Co-Pilot (Validation Therapy In-the-Moment Guide) */}
+        {!zenMode && (
+          <div className="rounded-3xl border-3 border-black bg-gradient-to-br from-amber-50 via-orange-50/40 to-yellow-50 p-5 shadow-[5px_5px_0px_#000] space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-amber-900/15 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-amber-300 shadow-xs">
+                  <HeartHandshake className="h-5 w-5 text-amber-950" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-serif text-base sm:text-lg font-black text-ink">
+                      Caregiver Co-Pilot — In-the-Moment Guide
+                    </h3>
+                    <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-amber-200 border border-amber-800/30 text-[10px] font-black text-amber-950 uppercase">
+                      Naomi Feil Validation Therapy
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-semibold text-ink-secondary">
+                    Sit beside {patientName}. Follow these calibrated prompts to validate emotions without quizzing or testing memory.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowCoPilot((s) => !s)}
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-white px-3 py-1.5 text-xs font-black text-ink hover:bg-amber-100 cursor-pointer shadow-[2px_2px_0px_#000]"
+              >
+                <span>{showCoPilot ? "Minimize Co-Pilot" : "Open Co-Pilot Guide"}</span>
+              </button>
+            </div>
+
+            {showCoPilot && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 animate-fade-in">
+                {/* 1. Sensory Anchor */}
+                <div className="rounded-2xl border-2 border-black bg-white p-3.5 shadow-[2px_2px_0px_#000] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase tracking-wider mb-1.5">
+                      <Eye className="h-3.5 w-3.5 text-amber-700" />
+                      <span>1. Sensory Anchor</span>
+                    </div>
+                    <p className="text-xs font-semibold text-ink leading-relaxed">
+                      {activeCapsule.coPilotPrompts?.sensoryAnchor || `Notice the warm ambient ${activeCapsule.ambientSoundType} sounds and colors together.`}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-medium text-ink-secondary mt-2 block border-t border-black/10 pt-1.5">
+                    Gently point at screen or describe sound to ground their focus.
+                  </span>
+                </div>
+
+                {/* 2. Validation Prompt */}
+                <div className="rounded-2xl border-2 border-black bg-white p-3.5 shadow-[2px_2px_0px_#000] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-xs font-black text-tea-dark uppercase tracking-wider mb-1.5">
+                      <MessageSquareHeart className="h-3.5 w-3.5 text-tea" />
+                      <span>2. Validation Prompt</span>
+                    </div>
+                    <p className="font-serif text-xs font-bold text-ink leading-relaxed italic">
+                      "{activeCapsule.coPilotPrompts?.validationPrompt || `Does this peaceful light bring warmth to your day?`}"
+                    </p>
+                  </div>
+                  <div className="mt-2 pt-1.5 border-t border-black/10 flex items-center justify-between">
+                    <span className="text-[10px] font-medium text-ink-secondary">
+                      Non-judgmental & validating
+                    </span>
+                    {activeCapsule.coPilotPrompts?.validationPrompt && (
+                      <button
+                        type="button"
+                        onClick={() => speak(activeCapsule.coPilotPrompts!.validationPrompt, langCode, rate)}
+                        className="text-[10px] font-black text-tea hover:underline cursor-pointer flex items-center gap-1"
+                      >
+                        <Volume2 className="h-3 w-3" /> Speak
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* 3. Affection Bridge */}
+                <div className="rounded-2xl border-2 border-black bg-white p-3.5 shadow-[2px_2px_0px_#000] flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-xs font-black text-rose-900 uppercase tracking-wider mb-1.5">
+                      <Heart className="h-3.5 w-3.5 text-rose-600" />
+                      <span>3. Affection Bridge</span>
+                    </div>
+                    <p className="font-serif text-xs font-bold text-ink leading-relaxed">
+                      "{activeCapsule.coPilotPrompts?.affectionBridge || `${activeCapsule.familyMemberName} loves you dearly and is right here with you.`}"
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-medium text-rose-900/80 mt-2 block border-t border-black/10 pt-1.5">
+                    Warm touch: hold hand or place gentle arm around shoulder.
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Caregiver Observation & Real-Time Telemetry Bar */}
         {!zenMode && (
           <div className="rounded-2xl border-3 border-black bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 p-4 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -623,20 +769,54 @@ export function EchoesOfHomeClient() {
           </div>
         )}
 
-        {/* Carousel Thumbnails */}
+        {/* Carousel Thumbnails with Circadian Filter */}
         {!zenMode && (
-          <div className="rounded-2xl border-3 border-black bg-white p-4 shadow-[4px_4px_0px_#000]">
-            <h4 className="text-xs font-black uppercase tracking-wider text-ink-secondary mb-3">
-              Choose Another Memory Capsule
-            </h4>
+          <div className="rounded-2xl border-3 border-black bg-white p-4 shadow-[4px_4px_0px_#000] space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/10 pb-2">
+              <h4 className="text-xs font-black uppercase tracking-wider text-ink-secondary">
+                Memory Capsule Library
+              </h4>
+
+              {/* Circadian Phase Filter Tabs */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {[
+                  { key: "all", label: "All Capsules", icon: Sparkles },
+                  { key: "morning_rise", label: "Morning Light", icon: Sun },
+                  { key: "afternoon_stroll", label: "Afternoon Stroll", icon: Coffee },
+                  { key: "evening_sundown", label: "Sundown Shield", icon: Sunset },
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = circadianFilter === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      onClick={() => setCircadianFilter(tab.key as any)}
+                      className={`btn-tactile inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-black cursor-pointer shadow-2xs transition-colors ${
+                        isActive
+                          ? "border-black bg-amber-300 text-ink shadow-xs"
+                          : "border-black/20 bg-slate-50 text-ink-secondary hover:bg-amber-100 hover:text-ink"
+                      }`}
+                    >
+                      <Icon className="h-3 w-3" />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-              {capsules.map((cap, idx) => {
-                const isActive = idx === selectedIndex;
+              {filteredCapsules.map((cap) => {
+                const isActive = cap.id === activeCapsule.id;
                 return (
                   <button
                     key={cap.id}
                     type="button"
-                    onClick={() => setSelectedIndex(idx)}
+                    onClick={() => {
+                      const idx = capsules.findIndex((c) => c.id === cap.id);
+                      if (idx !== -1) setSelectedIndex(idx);
+                    }}
                     className={`group rounded-xl border-2 overflow-hidden text-left transition-all p-1.5 cursor-pointer ${
                       isActive
                         ? "border-tea bg-tea-light shadow-xs scale-102"
@@ -652,12 +832,17 @@ export function EchoesOfHomeClient() {
                       {isActive && (
                         <div className="absolute inset-0 bg-tea/30 border-2 border-tea rounded-lg pointer-events-none" />
                       )}
+                      {cap.circadianPhase && (
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/70 text-[8px] font-black text-amber-300 uppercase">
+                          {cap.circadianPhase === "morning_rise" ? "Morning" : cap.circadianPhase === "afternoon_stroll" ? "Afternoon" : "Sundown"}
+                        </span>
+                      )}
                     </div>
                     <span className="text-[11px] font-black text-ink block truncate leading-tight">
                       {cap.title}
                     </span>
                     <span className="text-[9px] font-semibold text-ink-secondary block truncate">
-                      {cap.familyMemberName}
+                      {cap.familyMemberName} • {cap.locationName}
                     </span>
                   </button>
                 );

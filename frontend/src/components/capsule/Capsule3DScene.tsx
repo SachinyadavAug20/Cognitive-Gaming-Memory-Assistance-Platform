@@ -12,6 +12,7 @@ interface Capsule3DSceneProps {
   capsule: MemoryCapsule;
   coords: { x: number; y: number };
   colorFilter?: MemoryColorFilter;
+  autopilot?: boolean;
   onPointerMove?: (coords: { x: number; y: number }) => void;
   onHotspotActive?: (hotspot: MemoryHotspot | null) => void;
   onHotspotClick?: (hotspot: MemoryHotspot) => void;
@@ -21,6 +22,7 @@ export function Capsule3DScene({
   capsule,
   coords,
   colorFilter = "natural",
+  autopilot = false,
   onPointerMove,
   onHotspotActive,
   onHotspotClick,
@@ -290,9 +292,16 @@ export function Capsule3DScene({
       const dt = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // Smooth camera interpolation towards target look coordinates
-      curX += (targetLookRef.current.x - curX) * 0.075;
-      curY += (targetLookRef.current.y - curY) * 0.075;
+      // Camera interpolation: Autopilot Ken Burns trajectory or user gaze/pointer
+      if (autopilot) {
+        const autoX = Math.sin(time * 0.28) * 0.62;
+        const autoY = Math.cos(time * 0.18) * 0.32;
+        curX += (autoX - curX) * 0.038;
+        curY += (autoY - curY) * 0.038;
+      } else {
+        curX += (targetLookRef.current.x - curX) * 0.075;
+        curY += (targetLookRef.current.y - curY) * 0.075;
+      }
 
       if (cameraRef.current) {
         cameraRef.current.position.x = curX * 0.85;

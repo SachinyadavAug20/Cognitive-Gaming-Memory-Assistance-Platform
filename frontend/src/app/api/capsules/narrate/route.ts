@@ -19,7 +19,7 @@ Remind them gently of the memory "${capsuleTitle}" at ${locationName}, shared wi
 Focus on comforting sensory details like warmth, light, or loving presence. Keep it simple, warm, and under 25 words. Do not use markdown or quotes.`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     const res = await fetch(OLLAMA_URL, {
       method: "POST",

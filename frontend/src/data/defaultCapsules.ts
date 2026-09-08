@@ -41,6 +41,13 @@ export const DEFAULT_MEMORY_CAPSULES: MemoryCapsule[] = [
         soundCue: "chime",
       },
     ],
+    lifeChapter: "family_home",
+    circadianPhase: "morning_rise",
+    coPilotPrompts: {
+      sensoryAnchor: "Gently point toward the warm brass cup on the cane table.",
+      validationPrompt: "Ask softly: 'Does the ginger tea smell fresh this morning, Biren?'",
+      affectionBridge: "Hold their hand and say: 'Pratima brewed this special for you today.'",
+    },
     guidedPrompts: {
       initialPrompt:
         "Welcome to your morning courtyard, Biren. Look around at the warm light falling on the verandah.",
@@ -84,6 +91,13 @@ export const DEFAULT_MEMORY_CAPSULES: MemoryCapsule[] = [
         soundCue: "chime",
       },
     ],
+    lifeChapter: "early_roots",
+    circadianPhase: "morning_rise",
+    coPilotPrompts: {
+      sensoryAnchor: "Trace the tall blue spires in the sky with your finger.",
+      validationPrompt: "Ask gently: 'Do you hear the bells ringing across the hill, Kong Mary?'",
+      affectionBridge: "Say: 'Daphisha and Banylla are wearing their red woollen gloves with you today.'",
+    },
     guidedPrompts: {
       initialPrompt:
         "Kong Mary, look up at the tall blue cathedral towers reaching into the cool Shillong sky.",
@@ -127,6 +141,13 @@ export const DEFAULT_MEMORY_CAPSULES: MemoryCapsule[] = [
         soundCue: "water",
       },
     ],
+    lifeChapter: "career_pride",
+    circadianPhase: "afternoon_stroll",
+    coPilotPrompts: {
+      sensoryAnchor: "Point toward the wooden ferry gliding across the broad river.",
+      validationPrompt: "Ask: 'Do you feel the cool river breeze coming off the Brahmaputra, Deuta?'",
+      affectionBridge: "Say: 'Manash is right here with you. We can sit on the ghat as long as you like.'",
+    },
     guidedPrompts: {
       initialPrompt:
         "Deuta, see how the golden twilight ripples across the calm waters.",
@@ -170,6 +191,13 @@ export const DEFAULT_MEMORY_CAPSULES: MemoryCapsule[] = [
         soundCue: "chime",
       },
     ],
+    lifeChapter: "family_home",
+    circadianPhase: "evening_sundown",
+    coPilotPrompts: {
+      sensoryAnchor: "Listen to the gentle rain tapping on the green tin roof.",
+      validationPrompt: "Ask: 'Isn't the rain cozy on Nongrim Hills today?'",
+      affectionBridge: "Wrap the woollen shawl gently around their shoulders and say: 'Banker is holding your hand.'",
+    },
     guidedPrompts: {
       initialPrompt:
         "Mary, watch the gentle raindrops slide down the wooden window panes.",
@@ -213,6 +241,13 @@ export const DEFAULT_MEMORY_CAPSULES: MemoryCapsule[] = [
         soundCue: "chime",
       },
     ],
+    lifeChapter: "grandchildren",
+    circadianPhase: "evening_sundown",
+    coPilotPrompts: {
+      sensoryAnchor: "Look at the gentle flicker of the earthen mustard oil lamps.",
+      validationPrompt: "Ask: 'Do you remember teaching Arnav this flute melody on the porch?'",
+      affectionBridge: "Say: 'Your grandson learned that rhythm from you, Koka. You taught him with love.'",
+    },
     guidedPrompts: {
       initialPrompt:
         "Koka, look at the warm flickering flames of the mustard oil lamps lighting up the prayer hall.",
@@ -256,6 +291,13 @@ export const DEFAULT_MEMORY_CAPSULES: MemoryCapsule[] = [
         soundCue: "water",
       },
     ],
+    lifeChapter: "grandchildren",
+    circadianPhase: "afternoon_stroll",
+    coPilotPrompts: {
+      sensoryAnchor: "Watch the white swans swimming near the wooden arch bridge.",
+      validationPrompt: "Ask: 'See the red cherry blossoms floating on the lake, Mei?'",
+      affectionBridge: "Smile and say: 'Banylla is holding your hand so tight. She loves walking with you.'",
+    },
     guidedPrompts: {
       initialPrompt:
         "Mei, see the wooden bridge curving gently across the sparkling green lake.",

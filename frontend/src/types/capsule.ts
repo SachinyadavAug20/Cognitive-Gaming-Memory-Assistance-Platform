@@ -35,6 +35,23 @@ export type MemoryColorFilter =
   | "kodachrome"
   | "twilight";
 
+export type LifeChapter =
+  | "early_roots"
+  | "family_home"
+  | "career_pride"
+  | "grandchildren";
+
+export type CircadianPhase =
+  | "morning_rise"
+  | "afternoon_stroll"
+  | "evening_sundown";
+
+export interface CaregiverCoPilotPrompts {
+  sensoryAnchor: string;
+  validationPrompt: string;
+  affectionBridge: string;
+}
+
 export interface MemoryCapsule {
   id: string;
   patientId: number;
@@ -50,6 +67,9 @@ export interface MemoryCapsule {
   atmosphereParticle: AtmosphereParticleType;
   colorFilter?: MemoryColorFilter;
   hotspots?: MemoryHotspot[];
+  lifeChapter?: LifeChapter;
+  circadianPhase?: CircadianPhase;
+  coPilotPrompts?: CaregiverCoPilotPrompts;
   guidedPrompts: {
     initialPrompt: string;
     sensoryPrompt: string;
@@ -77,5 +97,8 @@ export interface CapsuleSessionLog {
   durationSeconds: number;
   headTrackingUsed: boolean;
   engagementScore: number; // 0 - 100%
+  autopilotUsed?: boolean;
   caregiverObservation?: "calm" | "joyful" | "nostalgic" | "verbal" | "resting";
+  preMood?: string;
+  postMood?: string;
 }
