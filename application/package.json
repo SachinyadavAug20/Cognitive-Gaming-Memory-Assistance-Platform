@@ -6,7 +6,7 @@
   "scripts": {
     "sync": "bash scripts/sync-frontend.sh",
     "cap:sync": "cap sync",
-    "cap:open": "cap open android",
+    "cap:open": "CAPACITOR_ANDROID_STUDIO_PATH=/opt/android-studio/bin/studio.sh cap open android",
     "cap:copy": "cap copy",
     "build:apk": "bash scripts/build-apk.sh",
     "dev": "cap run android -l --external"
