@@ -34,5 +34,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaregiverPatientDetailPage({ params }: Props) {
   const { id } = await params;
-  return <CaregiverPatientDetailClient key={id} />;
+  return <CaregiverPatientDetailClient patientId={id} key={id} />;
 }

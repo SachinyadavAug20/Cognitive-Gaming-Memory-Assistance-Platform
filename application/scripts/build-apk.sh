@@ -14,8 +14,13 @@ bash "${SCRIPT_DIR}/sync-frontend.sh"
 
 # 2. Check Android SDK environment
 if [ -z "$ANDROID_HOME" ] && [ -z "$ANDROID_SDK_ROOT" ]; then
-  if [ -d "$HOME/Android/Sdk" ]; then
+  if [ -d "/opt/android-sdk" ]; then
+    export ANDROID_HOME="/opt/android-sdk"
+    export ANDROID_SDK_ROOT="/opt/android-sdk"
+    echo "Using system Android SDK: $ANDROID_HOME"
+  elif [ -d "$HOME/Android/Sdk" ]; then
     export ANDROID_HOME="$HOME/Android/Sdk"
+    export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
     echo "Using default Android SDK: $ANDROID_HOME"
   else
     echo "⚠️  ANDROID_HOME is not set."

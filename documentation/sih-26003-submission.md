@@ -115,13 +115,15 @@ Interactive games and activities spanning every area the statement demands:
 
 6. TECHNOLOGY
 
-- Frontend: a modern React-based, multilingual-first, accessibility-hardened web app.
-- AI: local on-device models for clinical extraction and conversational reminiscence.
-- Backend: a Java/Spring REST service with secure auth and media handling.
-- Data: clinic-local relational storage; multi-patient schemas with family and biomarker history.
-- Native: Capacitor-packaged Android app exposing camera, text-to-speech, haptics, and kiosk controls.
+Built to run on a basic Android tablet and a single clinic computer — no expensive hardware, no cloud bills, no internet required:
 
-The full stack builds and verifies reproducibly from source.
+- Frontend — a React web app that runs on ordinary Android tablets (no high-spec requirement), multilingual-first for the major NER languages, and accessibility-hardened (large fonts, high contrast, touch-first).
+- AI — small on-device models for clinical-record analysis and conversational reminiscence; they run on the device's CPU without internet and keep patient data local.
+- Backend — one lightweight Java/Spring REST server, installable on a single clinic PC.
+- Data — a local database on that same PC holding all patients, families, biomarkers, and history; tablets sync with it over the clinic's own Wi-Fi (LAN).
+- Native app — a Capacitor Android build that uses each tablet's camera, text-to-speech, haptics, and kiosk controls.
+
+Everything runs offline: one tablet per patient, one PC per clinic — and nothing else.
 
 
 7. WHY COGNICARE WINS

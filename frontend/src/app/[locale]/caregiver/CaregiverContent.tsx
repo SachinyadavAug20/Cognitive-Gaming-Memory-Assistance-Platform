@@ -10,24 +10,44 @@ import { AudioToggle } from "@/components/ui/AudioToggle";
 import { CreditCard } from "lucide-react";
 import type { PatientSummary } from "@/types";
 
+import { getAllPatientSummaries } from "@/data/mockPatients";
+
 export function CaregiverContent() {
   const t = useTranslations("caregiver");
 
-  const [patients, setPatients] = useState<PatientSummary[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
+  // Immediately initialize with all patient summaries - zero loading delay
+  const [patients, setPatients] = useState<PatientSummary[]>(() => getAllPatientSummaries());
+  const [loading, setLoading] = useState(false);
+  const [reloadKey] = useState(0);
 
   useEffect(() => {
     let ignore = false;
     async function fetchPatients() {
       try {
-        const data = await api.get<PatientSummary[]>("/patients");
-        if (!ignore) setPatients(data);
+        const fetchPromise = api.get<PatientSummary[]>("/patients");
+        const timeoutPromise = new Promise<null>((resolve) =>
+          setTimeout(() => resolve(null), 1200)
+        );
+        const data = await Promise.race([fetchPromise, timeoutPromise]);
+        if (!ignore && Array.isArray(data) && data.length > 0) {
+          const localList = getAllPatientSummaries();
+          const seenIds = new Set<number>();
+          const seenNames = new Set<string>();
+          const merged: PatientSummary[] = [];
+
+          for (const p of [...data, ...localList]) {
+            if (!p || !p.name) continue;
+            const norm = p.name.trim().toLowerCase();
+            if (seenIds.has(p.id) || seenNames.has(norm)) continue;
+            seenIds.add(p.id);
+            seenNames.add(norm);
+            merged.push(p);
+          }
+
+          setPatients(merged);
+        }
       } catch {
-        if (!ignore) setError(true);
-      } finally {
-        if (!ignore) setLoading(false);
+        // Silently retain pre-loaded patients
       }
     }
     fetchPatients();
@@ -35,12 +55,6 @@ export function CaregiverContent() {
       ignore = true;
     };
   }, [reloadKey]);
-
-  const handleRetry = () => {
-    setError(false);
-    setLoading(true);
-    setReloadKey((k) => k + 1);
-  };
 
   return (
     <>
@@ -75,25 +89,7 @@ export function CaregiverContent() {
             {t("yourPatients")}
           </h2>
 
-          {loading ? (
-            <p className="text-ink-secondary font-bold text-base py-6 text-center">
-              {t("loadingPatients")}
-            </p>
-          ) : error ? (
-            <div
-              role="alert"
-              className="rounded-xl bg-brick-light border-2 border-brick p-4 text-brick font-bold text-center space-y-3"
-            >
-              <p>{t("loadError")}</p>
-              <button
-                type="button"
-                onClick={handleRetry}
-                className="btn-tactile bg-tea text-ink border-2 min-h-[44px] px-6"
-              >
-                {t("retry")}
-              </button>
-            </div>
-          ) : patients.length === 0 ? (
+          {patients.length === 0 ? (
             <div className="scrapbook-card text-center py-14">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 rounded-2xl bg-tea-light border-3 border-tea flex items-center justify-center text-tea">

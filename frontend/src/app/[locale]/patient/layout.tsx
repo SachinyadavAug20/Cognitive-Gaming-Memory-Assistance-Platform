@@ -31,22 +31,18 @@ export default function PatientLayout({
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const login = useAuthStore((s) => s.login);
 
-  // Check demo from both Next.js pathname and browser window location
-  const isDemo = Boolean(
-    (pathname && pathname.includes("demo")) ||
-    (typeof window !== "undefined" && window.location.pathname.includes("demo"))
+  // Check demo or echoes-of-home from both Next.js pathname and browser window location
+  const isDirectAccess = Boolean(
+    (pathname && (pathname.includes("demo") || pathname.includes("echoes-of-home"))) ||
+    (typeof window !== "undefined" && (window.location.pathname.includes("demo") || window.location.pathname.includes("echoes-of-home")))
   );
 
   useEffect(() => {
-    // If demo route, NEVER redirect to kiosk/login
-    const isCurrentlyDemo =
-      isDemo ||
-      (typeof window !== "undefined" && window.location.pathname.includes("demo"));
-
-    if (isCurrentlyDemo) {
+    // If demo route or echoes-of-home, NEVER redirect to kiosk/login
+    if (isDirectAccess) {
       if (!isAuthenticated) {
         login("demo-patient-token-101", {
-          id: 101,
+          id: 2,
           name: "Biren Borah",
           languagePreference: "as",
         });
@@ -57,10 +53,10 @@ export default function PatientLayout({
     if (persisted && !isAuthenticated) {
       router.replace("/kiosk/login");
     }
-  }, [persisted, isAuthenticated, router, isDemo, login]);
+  }, [persisted, isAuthenticated, router, isDirectAccess, login]);
 
-  // Demo route immediately renders content with zero auth blocking or spinner delay
-  if (isDemo) {
+  // Demo or echoes-of-home route immediately renders content with zero auth blocking or spinner delay
+  if (isDirectAccess) {
     return <>{children}</>;
   }
 

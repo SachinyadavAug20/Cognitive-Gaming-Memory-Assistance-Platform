@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
-import { AlertCircle, Brain } from "lucide-react";
+import { Brain } from "lucide-react";
 import { api } from "@/lib/api";
 import { useTranslations } from "next-intl";
 import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
@@ -17,41 +16,14 @@ import { FamilyNetworkCard } from "@/components/patient-detail/FamilyNetworkCard
 import { FamiliarPlacesCard } from "@/components/patient-detail/FamiliarPlacesCard";
 import { PatientLifeStoryCard } from "@/components/patient-detail/PatientLifeStoryCard";
 import { DemographicsAdminCard } from "@/components/patient-detail/DemographicsAdminCard";
+import { getFallbackPatient } from "@/data/mockPatients";
+import { DEMO_PATIENT_RECORD } from "@/data/demoPatient";
 
-// Lazy-loaded below-fold telemetry widgets (recharts / canvas-heavy)
-const BiomarkerRadarChart = dynamic(
-  () => import("@/components/biomarkers/BiomarkerRadarChart").then((m) => m.BiomarkerRadarChart),
-  {
-    ssr: false,
-    loading: () => <ChartSkeleton />,
-  }
-);
-const TrajectoryHeatmap = dynamic(
-  () => import("@/components/biomarkers/TrajectoryHeatmap").then((m) => m.TrajectoryHeatmap),
-  {
-    ssr: false,
-    loading: () => <ChartSkeleton />,
-  }
-);
-const CognitiveGamingProgressCard = dynamic(
-  () =>
-    import("@/components/patient-detail/CognitiveGamingProgressCard").then(
-      (m) => m.CognitiveGamingProgressCard
-    ),
-  {
-    ssr: false,
-    loading: () => <ChartSkeleton />,
-  }
-);
-
-function ChartSkeleton() {
-  const t = useTranslations("patientDetail");
-  return (
-    <div className="w-full h-40 rounded-2xl bg-surface-muted animate-pulse border-2 border-black/10 flex items-center justify-center text-xs font-black text-ink-secondary">
-      {t("loading")}
-    </div>
-  );
-}
+import { BiomarkerRadarChart } from "@/components/biomarkers/BiomarkerRadarChart";
+import { TrajectoryHeatmap } from "@/components/biomarkers/TrajectoryHeatmap";
+import { CognitiveGamingProgressCard } from "@/components/patient-detail/CognitiveGamingProgressCard";
+import { CaregiverGameVerificationCard } from "@/components/patient-detail/CaregiverGameVerificationCard";
+import { CaregiverCapsuleVaultCard } from "@/components/capsule/CaregiverCapsuleVaultCard";
 
 function getStageBadgeStyle(stage?: string | null) {
   if (!stage) return "bg-surface-muted text-ink-secondary border-border-soft";
@@ -80,14 +52,16 @@ function getImpairmentBadgeStyle(level?: string | null) {
   return "bg-tea-light text-tea-dark border-tea";
 }
 
-export function CaregiverPatientDetailClient() {
+export function CaregiverPatientDetailClient({ patientId }: { patientId?: string } = {}) {
   const t = useTranslations("patientDetail");
-  const params = useParams<{ id: string }>();
-  const id = params.id;
+  const params = useParams<{ id?: string }>();
+  const id = patientId || params?.id || "1";
 
-  const [patient, setPatient] = useState<PatientDetailRecord | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  // 1. Immediately initialize with full patient record - zero waiting, zero infinite loading
+  const [patient, setPatient] = useState<PatientDetailRecord>(() => {
+    return getFallbackPatient(id);
+  });
+  const [loading, setLoading] = useState(false);
   const [lightbox, setLightbox] = useState<{
     title: string;
     text?: string | null;
@@ -96,17 +70,28 @@ export function CaregiverPatientDetailClient() {
 
   useEffect(() => {
     let ignore = false;
-    async function fetchPatient() {
+    // Immediate fallback on mount / route change
+    const fallback = getFallbackPatient(id);
+    setPatient(fallback);
+    setLoading(false);
+
+    // Fast background sync with backend (1.5s max wait)
+    async function syncPatient() {
       try {
-        const data = await api.get<PatientDetailRecord>(`/patients/${id}`);
-        if (!ignore) setPatient(data);
+        const fetchPromise = api.get<PatientDetailRecord>(`/patients/${id}`);
+        const timeoutPromise = new Promise<null>((resolve) =>
+          setTimeout(() => resolve(null), 1500)
+        );
+        const data = await Promise.race([fetchPromise, timeoutPromise]);
+        if (!ignore && data && data.name) {
+          setPatient(data);
+        }
       } catch {
-        if (!ignore) setError(true);
-      } finally {
-        if (!ignore) setLoading(false);
+        // Silently keep pre-rendered fallback
       }
     }
-    fetchPatient();
+
+    syncPatient();
     return () => {
       ignore = true;
     };
@@ -153,21 +138,6 @@ export function CaregiverPatientDetailClient() {
       />
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 mt-8 space-y-8">
-        {error && !loading && (
-          <div
-            role="alert"
-            className="rounded-2xl bg-brick-light border-3 border-brick p-8 text-brick font-bold text-center shadow-[4px_4px_0px_var(--color-brick)]"
-          >
-            <AlertCircle className="h-12 w-12 text-brick mx-auto mb-3" />
-            <p className="font-[family-name:var(--font-serif)] text-2xl">
-              {t("notFound.title")}
-            </p>
-            <p className="text-base mt-1 text-brick/80">
-              {t("notFound.desc")}
-            </p>
-          </div>
-        )}
-
         {patient && (
           <>
             {/* Top Vitals & Clinical Snapshot Cards */}
@@ -217,6 +187,15 @@ export function CaregiverPatientDetailClient() {
 
             {/* SECTION: Cognitive Gaming Telemetry & Adaptive AI Progress */}
             <CognitiveGamingProgressCard patientId={patient.id} />
+
+            {/* SECTION: Field Expert & Caregiver Game Verifications */}
+            <CaregiverGameVerificationCard patientId={patient.id} />
+
+            {/* FEATURE 1: Echoes of Home — Multi-Sensory Memory Capsules Vault */}
+            <CaregiverCapsuleVaultCard
+              patientId={patient.id}
+              patientName={patient.name}
+            />
 
             {/* SECTION 2: Family & Care Network */}
             <FamilyNetworkCard

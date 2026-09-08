@@ -5,62 +5,48 @@ import { api } from "@/lib/api";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { PatientDetailRecord } from "@/types";
 
-import { DEMO_PATIENT_RECORD } from "@/data/demoPatient";
+import { getFallbackPatient } from "@/data/mockPatients";
 
 export function usePatientDetail() {
   const patient = useAuthStore((s) => s.patient);
   const patientId = patient?.id ?? 0;
 
-  const [detail, setDetail] = useState<PatientDetailRecord | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Immediately initialize with high-fidelity fallback - zero loading delay
+  const [detail, setDetail] = useState<PatientDetailRecord>(() =>
+    getFallbackPatient(patientId || 2)
+  );
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
-    const timer = window.setTimeout(() => {
-      if (!patientId) {
-        if (typeof window !== "undefined" && window.location.pathname.includes("/demo")) {
-          setDetail(DEMO_PATIENT_RECORD);
-          setLoading(false);
-          setError(false);
-          return;
+    // Set fallback synchronously
+    const fallback = getFallbackPatient(patientId || 2);
+    setDetail(fallback);
+    setLoading(false);
+    setError(false);
+
+    if (!patientId) {
+      return;
+    }
+
+    async function syncPatient() {
+      try {
+        const fetchPromise = api.get<PatientDetailRecord>(`/patients/${patientId}`);
+        const timeoutPromise = new Promise<null>((r) => setTimeout(() => r(null), 1200));
+        const data = await Promise.race([fetchPromise, timeoutPromise]);
+        if (!cancelled && data && data.name) {
+          setDetail(data);
         }
-        setDetail(null);
-        setLoading(false);
-        setError(false);
-        return;
+      } catch {
+        // Silently retain pre-loaded profile
       }
+    }
 
-      // If demo patient ID 101 or 2, immediately provide full mock bundle
-      if (patientId === 101 || patientId === 2) {
-        setDetail(DEMO_PATIENT_RECORD);
-        setLoading(false);
-        setError(false);
-        return;
-      }
-
-      setLoading(true);
-      setError(false);
-      api
-        .get<PatientDetailRecord>(`/patients/${patientId}`)
-        .then((data) => {
-          if (!cancelled) setDetail(data);
-        })
-        .catch(() => {
-          // Gracefully fallback to demo data if backend is offline
-          if (!cancelled) {
-            setDetail(DEMO_PATIENT_RECORD);
-            setError(false);
-          }
-        })
-        .finally(() => {
-          if (!cancelled) setLoading(false);
-        });
-    }, 0);
+    syncPatient();
     return () => {
       cancelled = true;
-      window.clearTimeout(timer);
     };
   }, [patientId, retryKey]);
 

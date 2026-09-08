@@ -19,6 +19,7 @@ import {
   Sparkles,
   Waves,
   Volume2,
+  Play,
 } from "lucide-react";
 import { getGameStrings } from "@/lib/gameI18n";
 import { speakText, unlockAudio } from "@/lib/sound";
@@ -60,6 +61,42 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           <span>View All {GAMES.length} Modules</span>
           <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
+      </div>
+
+      {/* Featured Multi-Sensory Memory Capsule (Feature 1: Echoes of Home) */}
+      <div className="mt-3.5 rounded-2xl border-3 border-black bg-gradient-to-r from-teal-900 via-teal-800 to-cyan-900 p-4 sm:p-5 text-white shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-400/20 border border-teal-300/40 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-teal-200">
+            <Sparkles className="h-3 w-3 text-teal-300" />
+            <span>Echoes of Home • Multi-Sensory 3D</span>
+          </div>
+          <h3 className="font-serif text-lg sm:text-xl font-black text-white">
+            Memory Capsules & Ambient Soundscapes
+          </h3>
+          <p className="text-xs text-teal-100/90 font-medium max-w-lg leading-relaxed">
+            Step into living 3D family memories with ambient rain, river, and flute soundscapes, family voice notes, and AI-guided reminiscence.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              handleSpeak("Echoes of Home. Multi-sensory memory capsules with ambient soundscapes and family voices.");
+            }}
+            className="btn-tactile flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-teal-300 text-teal-950 hover:bg-teal-200 shadow-xs cursor-pointer"
+            title="Listen to Guide"
+          >
+            <Volume2 className="h-4 w-4" />
+          </button>
+          <Link
+            href="/patient/echoes-of-home"
+            className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-white px-4 py-2.5 text-xs font-black text-teal-950 shadow-[2px_2px_0px_#000] hover:bg-teal-50 cursor-pointer"
+          >
+            <Play className="h-3.5 w-3.5 fill-teal-950" />
+            <span>Experience Now</span>
+          </Link>
+        </div>
       </div>
 
       <div className="mt-3.5 grid gap-4 sm:grid-cols-2">

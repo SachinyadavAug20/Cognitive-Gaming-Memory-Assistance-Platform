@@ -36,8 +36,11 @@ function isProtectedPatientPath(path: string): boolean {
 
 function handleSessionExpired(): void {
   if (typeof window === "undefined") return;
-  // NEVER redirect if currently in demo mode
-  if (window.location.pathname.includes("demo")) return;
+  // NEVER redirect if currently in demo mode, caregiver portal, or admin portal
+  const path = window.location.pathname;
+  if (path.includes("demo") || path.includes("caregiver") || path.includes("admin")) {
+    return;
+  }
   try {
     localStorage.removeItem(AUTH_STORAGE_KEY);
   } catch {
@@ -61,11 +64,20 @@ export class HttpError extends Error {
 
 function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
+  // Caregiver and Admin portals access public/caregiver APIs and must not attach patient kiosk session tokens
+  const path = window.location.pathname;
+  if (path.includes("/caregiver") || path.includes("/admin")) {
+    return null;
+  }
   try {
     const raw = window.localStorage.getItem(AUTH_STORAGE_KEY);
     if (!raw) return null;
     const state = JSON.parse(raw)?.state;
     const token = typeof state?.token === "string" ? state.token : null;
+    // Mock demo tokens are client-side only and should not be passed to strict JWT interceptors
+    if (token && token.startsWith("demo-")) {
+      return null;
+    }
     return token;
   } catch {
     return null;

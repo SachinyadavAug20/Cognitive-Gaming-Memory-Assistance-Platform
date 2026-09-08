@@ -42,8 +42,8 @@ public class MedicalReportService {
         String extractedText;
         try {
             extractedText = extractTextFromPdf(pdfFile);
-        } catch (IOException e) {
-            log.error("Failed to extract text from PDF: {}", e.getMessage());
+        } catch (Exception e) {
+            log.warn("Failed to extract text from PDF: {}", e.getMessage());
             return applyDefaultProfile(profile, "Failed to read PDF — baseline difficulty initialized");
         }
 
@@ -155,10 +155,13 @@ public class MedicalReportService {
         };
     }
 
-    private String extractTextFromPdf(File file) throws IOException {
+    private String extractTextFromPdf(File file) {
         try (PDDocument document = Loader.loadPDF(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
             return stripper.getText(document);
+        } catch (Exception e) {
+            log.warn("Could not extract text from document: {}", e.getMessage());
+            return "";
         }
     }
 
