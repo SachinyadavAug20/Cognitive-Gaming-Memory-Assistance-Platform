@@ -154,3 +154,9 @@ cd backend
 - **SEO/Performance**: unique per-route metadata + canonical/hreflang for all 11 locales, centralized `SITE_URL`, cache headers (`immutable`, 1yr) for `/wasm`, `/models`, `/sample-images`, lazy-loaded Three.js/recharts via `next/dynamic`, `550` sitemap URLs.
 - **Offline-first**: AI/LLM and patient data never leave the clinic/devices; media cached for reuse.
 - *SIH 2026 — Problem Statement SIH26003.*
+
+
+chromium \
+  --unsafely-treat-insecure-origin-as-secure="http://192.168.0.101:3000" \
+  --user-data-dir=/tmp/chromium-dev
+

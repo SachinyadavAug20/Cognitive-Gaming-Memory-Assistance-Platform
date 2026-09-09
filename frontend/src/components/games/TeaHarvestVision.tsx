@@ -186,7 +186,7 @@ export function TeaHarvestVision() {
           videoRef.current.srcObject = stream;
           videoRef.current.onloadedmetadata = () => {
             if (active) {
-              videoRef.current?.play();
+              videoRef.current?.play().catch(() => {});
               setCameraActive(true);
             }
           };

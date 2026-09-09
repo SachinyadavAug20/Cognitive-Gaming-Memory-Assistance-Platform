@@ -44,6 +44,7 @@ export function KioskLoginClient() {
 
   const busyRef = useRef(false);
 
+<<<<<<< Updated upstream
   useEffect(() => {
     // Check zustand store first
     const storeState = useAuthStore.getState();
@@ -79,6 +80,8 @@ export function KioskLoginClient() {
     return () => window.removeEventListener("unhandledrejection", handleUnhandledRejection);
   }, []);
 
+=======
+>>>>>>> Stashed changes
   const completeLoginSuccess = useCallback(
     (token: string, patient: PatientProfile) => {
       playScanSuccess();

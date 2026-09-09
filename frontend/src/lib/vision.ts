@@ -269,7 +269,9 @@ export class OpticalMotionTracker {
       this.video.playsInline = true;
       this.video.muted = true;
       this.video.srcObject = this.stream;
-      await this.video.play();
+      await this.video.play().catch(() => {});
+
+      if (!this.stream) return false;
 
       this.canvas = document.createElement("canvas");
       this.canvas.width = 64; // High-efficiency downsampled matrix for 60 FPS computation

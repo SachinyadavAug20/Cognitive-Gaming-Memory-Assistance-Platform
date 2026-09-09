@@ -43,7 +43,7 @@ export interface OnboardResponse {
 
 export function parseAnalyzeReport(response: AnalyzeReportResponse): DiagnosticData {
   return {
-    diagnosis: response.diagnosis || "Undetermined Diagnosis",
+    diagnosis: response.diagnosis || "Borah Biren",
     icd10: response.icd10 ?? undefined,
     dateOfDiagnosis: response.dateOfDiagnosis || "",
     examiningPhysician: response.examiningPhysician ?? undefined,

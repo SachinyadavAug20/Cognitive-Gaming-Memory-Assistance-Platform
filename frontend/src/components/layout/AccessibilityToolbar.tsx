@@ -675,7 +675,7 @@ export function AccessibilityToolbar() {
               title="Toggle Circadian Night Mode (Zero Blue Light, Sleep-Safe)"
             >
               <Moon className="h-3.5 w-3.5" />
-              <span className="hidden lg:inline">{activeHighContrast ? "Night: ON" : "Night Mode"}</span>
+              <span className="hidden lg:inline">{activeHighContrast ? "Contrast: ON" : "Contrast Mode"}</span>
             </button>
 
             {/* Font Size Scaler */}

@@ -104,6 +104,7 @@ export default function GamesHubPage() {
         </div>
       )}
 
+<<<<<<< Updated upstream
       {/* Page Title Bar - Minimal & Accessible (No redundant card box, no duplicate back button) */}
       <div className="mb-5 flex items-center justify-between gap-4">
         <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2.5">
@@ -121,6 +122,8 @@ export default function GamesHubPage() {
           <span>{hub.listenGuide}</span>
         </button>
       </div>
+=======
+>>>>>>> Stashed changes
 
       {/* ========================================================================= */}
       {/* FEATURED SPATIAL & COMPUTER VISION EXPERIENCES HERO SHOWCASE              */}
@@ -194,7 +197,11 @@ export default function GamesHubPage() {
           </span>
         </div>
 
+<<<<<<< Updated upstream
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+=======
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+>>>>>>> Stashed changes
           {/* 1. Majuli Village Walk (3D Spatial Memory) */}
           <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#2D5A27] to-[#1E3F1A] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
             <div>
@@ -308,6 +315,7 @@ export default function GamesHubPage() {
               </button>
             </div>
           </div>
+<<<<<<< Updated upstream
 
           {/* 4. Pathways: Bamboo Arrow Labyrinth (Direction & Focus) */}
           <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#0F2B38] to-[#0A1F29] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
@@ -346,6 +354,8 @@ export default function GamesHubPage() {
               </button>
             </div>
           </div>
+=======
+>>>>>>> Stashed changes
         </div>
       </div>
 
@@ -354,11 +364,15 @@ export default function GamesHubPage() {
         <button
           type="button"
           onClick={() => setSelectedFilter("all")}
+<<<<<<< Updated upstream
           className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "all"
+=======
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${selectedFilter === "all"
+>>>>>>> Stashed changes
               ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
+            }`}
         >
           <Layers className="h-4 w-4" />
           <span>{hub.filterAll} ({GAMES.length})</span>
@@ -367,11 +381,15 @@ export default function GamesHubPage() {
         <button
           type="button"
           onClick={() => setSelectedFilter("vision-3d")}
+<<<<<<< Updated upstream
           className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "vision-3d"
+=======
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${selectedFilter === "vision-3d"
+>>>>>>> Stashed changes
               ? "border-black bg-teal-800 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
+            }`}
         >
           <Sparkles className="h-4 w-4" />
           <span>{hub.filterVision3D} ({GAMES.filter((g) => g.category === "vision-3d").length})</span>
@@ -380,11 +398,15 @@ export default function GamesHubPage() {
         <button
           type="button"
           onClick={() => setSelectedFilter("reminiscence")}
+<<<<<<< Updated upstream
           className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "reminiscence"
+=======
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${selectedFilter === "reminiscence"
+>>>>>>> Stashed changes
               ? "border-black bg-purple-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
+            }`}
         >
           <Brain className="h-4 w-4" />
           <span>{hub.filterReminiscence} ({GAMES.filter((g) => g.category === "reminiscence").length})</span>
@@ -393,11 +415,15 @@ export default function GamesHubPage() {
         <button
           type="button"
           onClick={() => setSelectedFilter("attention")}
+<<<<<<< Updated upstream
           className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "attention"
+=======
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${selectedFilter === "attention"
+>>>>>>> Stashed changes
               ? "border-black bg-emerald-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
+            }`}
         >
           <Compass className="h-4 w-4" />
           <span>{hub.filterAttention} ({GAMES.filter((g) => g.category === "attention").length})</span>
@@ -406,11 +432,15 @@ export default function GamesHubPage() {
         <button
           type="button"
           onClick={() => setSelectedFilter("iadl")}
+<<<<<<< Updated upstream
           className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "iadl"
+=======
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${selectedFilter === "iadl"
+>>>>>>> Stashed changes
               ? "border-black bg-amber-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
+            }`}
         >
           <Utensils className="h-4 w-4" />
           <span>{hub.filterIadl} ({GAMES.filter((g) => g.category === "iadl").length})</span>
@@ -419,11 +449,15 @@ export default function GamesHubPage() {
         <button
           type="button"
           onClick={() => setSelectedFilter("calm")}
+<<<<<<< Updated upstream
           className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "calm"
+=======
+          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${selectedFilter === "calm"
+>>>>>>> Stashed changes
               ? "border-black bg-teal-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
+            }`}
         >
           <Flower2 className="h-4 w-4" />
           <span>{hub.filterCalm} ({GAMES.filter((g) => g.category === "calm").length})</span>
