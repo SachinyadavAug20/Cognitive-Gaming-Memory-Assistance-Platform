@@ -276,7 +276,7 @@ export function BrahmaputraBoatGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Spatial Navigation // Module CDTx-23
+                Brahmaputra River Boat
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-sky-900" />

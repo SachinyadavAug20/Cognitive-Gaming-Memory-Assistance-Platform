@@ -154,7 +154,7 @@ export function LoomGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                3D Constructional Praxis // Module CDTx-16
+                Traditional Loom Weaving
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-amber-800" />

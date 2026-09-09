@@ -198,7 +198,7 @@ export function DzukouBotanistGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Visual Discrimination // Module CDTx-24
+                Dzukou Valley Flowers
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-emerald-900" />

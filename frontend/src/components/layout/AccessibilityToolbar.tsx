@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore, useCallback, useState } from "react";
+import { useSyncExternalStore, useCallback, useState, useEffect } from "react";
 import {
   Moon,
   Hand,
@@ -12,6 +12,7 @@ import { VirtualAirMouse } from "@/components/accessibility/VirtualAirMouse";
 import { AccessibilityModal } from "@/components/accessibility/AccessibilityModal";
 import { useListenFirst } from "@/components/accessibility/useListenFirst";
 import { playPress, unlockAudio } from "@/lib/sound";
+import { usePathname } from "@/i18n/navigation";
 
 function subscribeStorage(callback: () => void) {
   if (typeof window === "undefined") return () => {};
@@ -256,6 +257,54 @@ export function AccessibilityToolbar() {
     () => "calm"
   );
 
+  // Global interceptor for harmless aborted media fetch / audio navigation cancellations
+  useEffect(() => {
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason?.message || event.reason?.name || String(event.reason);
+      if (
+        reason.includes("AbortError") ||
+        reason.includes("aborted by the user agent") ||
+        reason.includes("media resource") ||
+        reason.includes("The play() request was interrupted") ||
+        reason.includes("interrupted by a call to pause()")
+      ) {
+        event.preventDefault();
+      }
+    };
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    // Initial Theme & Accessibility Setup on Client Mount
+    try {
+      const s = localStorage.getItem("cognicare_font_size");
+      if (s === "sm") document.documentElement.style.fontSize = "16px";
+      else if (s === "lg") document.documentElement.style.fontSize = "22px";
+      else document.documentElement.style.fontSize = "18px";
+
+      if (localStorage.getItem("cognicare_high_contrast") === "true") {
+        document.documentElement.classList.add("high-contrast-mode");
+      }
+
+      const K = ["Tab", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", " "];
+      const h = document.documentElement;
+      const off = () => h.classList.remove("keyboard-user");
+      const on = (e: KeyboardEvent) => {
+        if (K.indexOf(e.key) !== -1) h.classList.add("keyboard-user");
+      };
+      window.addEventListener("mousedown", off);
+      window.addEventListener("keydown", on);
+
+      return () => {
+        window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+        window.removeEventListener("mousedown", off);
+        window.removeEventListener("keydown", on);
+      };
+    } catch {
+      return () => {
+        window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+      };
+    }
+  }, []);
+
   // Mount listen-first narration hook
   const { speakElement } = useListenFirst(listenFirstActive);
 
@@ -414,10 +463,104 @@ export function AccessibilityToolbar() {
   const activeHighContrast = mounted ? highContrast : false;
   const activeInputMode = mounted ? inputMode : "physical";
   const activeListenFirst = mounted ? listenFirstActive : false;
+  const pathname = usePathname();
+  const isPatientRoute = pathname.startsWith("/patient") || pathname.startsWith("/kiosk");
 
   return (
     <>
       {/* ── TOP GOVERNMENT & ACCESSIBILITY COMMAND BAR ── */}
+      {isPatientRoute ? (
+        <div
+          suppressHydrationWarning
+          className="w-full border-b-2 border-black/20 bg-[#FAF6F0] px-3 sm:px-6 py-1.5 text-xs text-ink select-none"
+        >
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+            {/* Senior Label */}
+            <div className="flex items-center gap-2 font-bold shrink-0">
+              <span className="flex items-center gap-1.5 text-xs sm:text-sm font-black text-tea whitespace-nowrap">
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-tea" />
+                Senior Reading & Accessibility
+              </span>
+            </div>
+
+            {/* Clean Senior Controls */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Font Size Scaler */}
+              <div className="flex items-center gap-1 rounded-xl border-2 border-black/40 bg-surface p-1 shadow-xs shrink-0">
+                <span className="text-xs font-black px-1.5 text-ink hidden sm:inline">Text Size:</span>
+                <button
+                  type="button"
+                  onClick={() => setFontSize("sm")}
+                  className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-colors ${
+                    activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
+                  }`}
+                  title="Smaller Text"
+                  aria-label="Set smaller text"
+                >
+                  A-
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFontSize("md")}
+                  className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-colors ${
+                    activeFontSizeLevel === "md" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
+                  }`}
+                  title="Standard Text"
+                  aria-label="Set standard text"
+                >
+                  A
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFontSize("lg")}
+                  className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-colors ${
+                    activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
+                  }`}
+                  title="Large Text (Elder Assist)"
+                  aria-label="Set large text"
+                >
+                  A+
+                </button>
+              </div>
+
+              {/* Read-Aloud Audio Toggle */}
+              <button
+                type="button"
+                onClick={() => {
+                  playPress();
+                  toggleListenFirst();
+                }}
+                aria-pressed={activeListenFirst}
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
+                  activeListenFirst
+                    ? "bg-emerald-400 text-black border-black shadow-xs ring-1 ring-emerald-500"
+                    : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
+                }`}
+                title="Toggle Voice Read Aloud on Hover or Touch"
+              >
+                <Volume2 className="h-4 w-4 stroke-[2.5]" />
+                <span>{activeListenFirst ? "Audio: ON" : "Read Aloud"}</span>
+              </button>
+
+              {/* Circadian Night Mode Toggle */}
+              <button
+                type="button"
+                onClick={toggleHighContrast}
+                aria-pressed={activeHighContrast}
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
+                  activeHighContrast
+                    ? "bg-amber-400 text-black border-black shadow-xs"
+                    : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
+                }`}
+                title="Toggle High Contrast Night Mode"
+              >
+                <Moon className="h-4 w-4" />
+                <span>{activeHighContrast ? "Night: ON" : "Night Mode"}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div
         suppressHydrationWarning
         className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto"
@@ -571,6 +714,7 @@ export function AccessibilityToolbar() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── GLOBAL ACTIVE ACCESSIBILITY RUNTIMES ── */}
       {/* 1. OpenCV Virtual Air Mouse (Strict Mutual Exclusion) */}

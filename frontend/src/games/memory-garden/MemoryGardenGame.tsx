@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -186,6 +186,30 @@ export function MemoryGardenGame() {
     errors: 0,
     taps: 0,
   });
+
+  // Errorless Learning: Scaffolding hesitation timer for matching pairs
+  const [matchHesitation, setMatchHesitation] = useState(0);
+
+  useEffect(() => {
+    if (subGame !== "memoryMatch" || phase !== "play" || matchFlipped.length !== 1) {
+      setMatchHesitation(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setMatchHesitation((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [subGame, phase, matchFlipped]);
+
+  // When an elderly patient pauses > 7 seconds after flipping 1 card, locate the matching card for vanishing cue
+  const matchScaffoldIndex = useMemo(() => {
+    if (matchFlipped.length !== 1 || matchHesitation < 7) return -1;
+    const firstFlippedCard = cards[matchFlipped[0]];
+    if (!firstFlippedCard) return -1;
+    return cards.findIndex(
+      (c, idx) => idx !== matchFlipped[0] && !matchMatched[idx] && c.id === firstFlippedCard.id
+    );
+  }, [cards, matchFlipped, matchMatched, matchHesitation]);
 
   useEffect(() => stopSpeaking, []);
 
@@ -646,6 +670,7 @@ export function MemoryGardenGame() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-md">
             {cards.map((card, i) => {
               const flipped = matchFlipped.includes(i) || matchMatched[i];
+              const isScaffoldTarget = i === matchScaffoldIndex;
               return (
                 <button
                   key={i}
@@ -655,13 +680,15 @@ export function MemoryGardenGame() {
                   className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
                     flipped
                       ? "bg-tea-light border-tea"
+                      : isScaffoldTarget
+                      ? "bg-amber-100/90 border-amber-500 ring-4 ring-amber-400 shadow-[0_0_16px_rgba(251,191,36,0.7)] animate-pulse cursor-pointer"
                       : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
                   }`}
                 >
                   {flipped ? (
                     renderGardenIcon(card.id, "h-12 w-12")
                   ) : (
-                    <Flower2 className="h-10 w-10 text-rose-300" />
+                    <Flower2 className={`h-10 w-10 ${isScaffoldTarget ? "text-amber-600 animate-bounce" : "text-rose-300"}`} />
                   )}
                 </button>
               );

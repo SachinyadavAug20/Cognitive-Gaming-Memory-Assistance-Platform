@@ -363,6 +363,153 @@ export function SaathiVoiceCompanion({
           } else {
             reply = `আমি আপনার সঙ্গী হিসেবে আছি, ${patientName || "বন্ধু"}। বিশ্রাম নিন এবং সুস্থ থাকুন।`;
           }
+        } else if (selectedLang === "mr") {
+          if (q.includes("नाव") || q.includes("name") || q.includes("who are you") || q.includes("कोण")) {
+            reply = `मी तुमचा साथी (Saathi) आहे. तुमच्या आरोग्याची, औषधांची आणि दैनंदिन दिनचर्येची काळजी घेण्यासाठी मी सदैव येथे उपस्थित आहे.`;
+          } else if (q.includes("औषध") || q.includes("medicine")) {
+            reply = `तुमची सकाळची औषध घेण्याची वेळ झाली आहे. ताजे पाणी घेऊन औषधे वेळेवर घ्या.`;
+          } else if (q.includes("आरोग्य") || q.includes("तब्येत") || q.includes("health")) {
+            reply = `तुमची तब्येत अगदी स्थिर आणि उत्तम आहे. आज तुम्ही तुमचे स्मरणशक्ती व्यायाम यशस्वीपणे पूर्ण केले आहेत.`;
+          } else if (q.includes("श्वास") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `शांत ४-७-८ श्वसन करूया: ४ सेकंद नाकाने दीर्घ श्वास घ्या... ७ सेकंद हळूच रोखा... आणि तोंडाने ८ सेकंदात हळूहळू सोडा. शांतता अनुभवा.`;
+          } else if (q.includes("वार") || q.includes("day") || q.includes("तारीख")) {
+            reply = `आजचा दिवस शांत आणि सुखद असा ${today} आहे.`;
+          } else if (q.includes("कुठे") || q.includes("where") || q.includes("घर")) {
+            reply = `तुम्ही ${place} मधील तुमच्या स्वतःच्या घरात पूर्णपणे सुरक्षित आहात.`;
+          } else if (q.includes("कुटुंब") || q.includes("family")) {
+            reply = names
+              ? `तुमचे लाडके कुटुंबीय: ${names} आहेत. ते तुमच्यावर मनापासून प्रेम करतात!`
+              : `तुमचे कुटुंब तुमच्या सोबत आहे आणि तुमची काळजी घेत आहे.`;
+          } else {
+            reply = `मी तुमच्या सोबत आहे, ${patientName || "मित्र"}. विश्रांती घ्या आणि शांत राहा.`;
+          }
+        } else if (selectedLang === "ne") {
+          if (q.includes("नाम") || q.includes("name") || q.includes("who are you") || q.includes("को")) {
+            reply = `म तपाईंको साथी (Saathi) हुँ। म तपाईंको स्वास्थ्य, औषधि र दिनचर्याको हेरचाह गर्न यहाँ छु।`;
+          } else if (q.includes("औषधि") || q.includes("medicine")) {
+            reply = `तपाईंको बिहानको औषधि खाने समय भएको छ। कृपया पानीसँग आफ्नो औषधि लिनुहोस्।`;
+          } else if (q.includes("स्वास्थ्य") || q.includes("health")) {
+            reply = `तपाईंको स्वास्थ्य अवस्था स्थिर र सामान्य छ। आरामसँग बस्नुहोस्।`;
+          } else if (q.includes("श्वास") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `आउनुहोस् ४-७-८ श्वासप्रश्वास गरौं: नाकबाट ४ सेकेन्ड लामो सास फेर्नुहोस्... ७ सेकेन्ड रोक्नुहोस्... र मुखबाट ८ सेकेन्डमा बिस्तारै छोड्नुहोस्।`;
+          } else if (q.includes("दिन") || q.includes("day") || q.includes("वार")) {
+            reply = `आज एक शान्त र सुन्दर ${today} हो।`;
+          } else if (q.includes("कहाँ") || q.includes("where") || q.includes("घर")) {
+            reply = `तपाईं ${place} स्थित आफ्नै घरमा सुरक्षित र परिवारसँग हुनुहुन्छ।`;
+          } else if (q.includes("परिवार") || q.includes("family")) {
+            reply = names
+              ? `तपाईंका प्रिय परिवारजन: ${names} हुनुहुन्छ।`
+              : `तपाईंको परिवार तपाईंको साथमा छ।`;
+          } else {
+            reply = `म तपाईंको साथमा छु, ${patientName || "मित्र"}। चिन्ता नगर्नुहोस्, सबै राम्रो छ।`;
+          }
+        } else if (selectedLang === "mni") {
+          if (q.includes("মিং") || q.includes("name") || q.includes("who are you") || q.includes("কনানো")) {
+            reply = `ঐহাক নহাক্কী সাথীনি (Saathi)। হকচাংগী ফিবম অমসুং হিদাক-লাংথক য়েংশিন্নবা ঐহাক লৈরি।`;
+          } else if (q.includes("হিদাক") || q.includes("medicine")) {
+            reply = `নহাক্কী অয়ুক্কী হিদাক চাবগী মতম ওইরে। ঈশিংগা লোয়ননা হিদাক চাবিয়ু।`;
+          } else if (q.includes("হকচাং") || q.includes("health")) {
+            reply = `নহাক্কী হকচাংগী ফিবম অফবা ওইরি। নুংঙাইনা লৈবীয়ু।`;
+          } else if (q.includes("স্বাস") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `লাহেকনা নুংশিবা স্বাস লৌসি: নাকোননা ৪ সেকেন্দ স্বাস লৌবীয়ু... ৭ সেকেন্দ থম্বীয়ু... অমসুং চিন্বালনা ৮ সেকেন্দদা থাদোকপীয়ু।`;
+          } else if (q.includes("নুমিৎ") || q.includes("day")) {
+            reply = `ঙসি শান্তিময় ওইবা ${today} নি।`;
+          } else if (q.includes("কদায়দা") || q.includes("where") || q.includes("য়ুম")) {
+            reply = `নহাক ${place} তা লৈবা মশাগী য়ুমদা শেফ ওইনা লৈরি।`;
+          } else if (q.includes("ইমুং") || q.includes("family")) {
+            reply = names
+              ? `নহাক্কী নুংশিরবা ইমুংগী মীওইশিংদি: ${names} নি।`
+              : `নহাক্কী ইমুং নহাক্কী নক্ননা লৈরি।`;
+          } else {
+            reply = `ঐহাক নহাক্কী সাথীনি, ${patientName || "ইবুংঙো"}। নুংঙাইনা পোথারবীয়ু।`;
+          }
+        } else if (selectedLang === "brx") {
+          if (q.includes("मुं") || q.includes("name") || q.includes("who are you") || q.includes("सोर")) {
+            reply = `आं नोंनि साथि (Saathi)। नोंनि देहा आरो मुलिनि थाखाय आं दं।`;
+          } else if (q.includes("मुलि") || q.includes("medicine")) {
+            reply = `नोंनि फुंनि मुलि जानाय सम जाबाय। दैजों लोगोसे मुलि जादो।`;
+          } else if (q.includes("देहा") || q.includes("health")) {
+            reply = `नोंनि देहानि थासारिया मोजां दं। गोजोनै थादो।`;
+          } else if (q.includes("हाबनाय") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `गोजोन हाबनाय-हगारनाय खालामदिनि: ४ सेकेन्द हाब... ७ सेकेन्द लाखि... आरो ८ सेकेन्द हगार।`;
+          } else if (q.includes("सान") || q.includes("day")) {
+            reply = `दिनैया मोनसे गोजोन ${today}।`;
+          } else if (q.includes("दं") || q.includes("where") || q.includes("नखर")) {
+            reply = `नोंहा ${place} आव गावनि नखराव रैखाथिजों दं।`;
+          } else if (q.includes("नखर") || q.includes("family")) {
+            reply = names
+              ? `नोंनि मोजां मोनग्रा नखरनि सोद्रोमाफोरा: ${names}।`
+              : `नोंनि नखरा नोंनि खाथियावनो दं।`;
+          } else {
+            reply = `आं नोंजों लोगोसे दं, ${patientName || "लोगो"}। गोजोनै था।`;
+          }
+        } else if (selectedLang === "grt") {
+          if (q.includes("biming") || q.includes("name") || q.includes("who are you") || q.includes("sawa")) {
+            reply = `Anga nang·ni Saathi. Nang·ni an·sengbaljokaniko aro sam rangko ni·rikna anga donga.`;
+          } else if (q.includes("sam") || q.includes("medicine")) {
+            reply = `Pringni sam ring·ani somoi ong·aha. Chi chi samko ring·bo.`;
+          } else if (q.includes("an·sengani") || q.includes("health")) {
+            reply = `Nang·ni an·sengani name donga. Tom·tome dongbo.`;
+          } else if (q.includes("rang·sitani") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `Tom·tome rang·sitani: Gingtingchi 4 second rang·sitbo... 7 second chipbo... aro kuchi 8 second watbo.`;
+          } else if (q.includes("sal") || q.includes("day")) {
+            reply = `Da·alo tom·toma ${today} ong·a.`;
+          } else if (q.includes("bano") || q.includes("where") || q.includes("nok")) {
+            reply = `Na·a ${place} nokon an·senge donga.`;
+          } else if (q.includes("nokdang") || q.includes("family")) {
+            reply = names
+              ? `Nang·ni nokdangni manderang: ${names} ong·a.`
+              : `Nang·ni nokdang nang·baksa donga.`;
+          } else {
+            reply = `Anga nang·baksa donga, ${patientName || "ripeng"}. Hahdam deuhin awm rawh.`;
+          }
+        } else if (selectedLang === "kha") {
+          if (q.includes("kyrteng") || q.includes("name") || q.includes("who are you") || q.includes("mano")) {
+            reply = `Nga dei u Saathi jong phi. Ban sumar ia ka koit ka khiah bad ki dawai jong phi.`;
+          } else if (q.includes("dawai") || q.includes("medicine")) {
+            reply = `Ka por ban dih dawai mynstep ka la poi. Dih lang bad ka um.`;
+          } else if (q.includes("khiah") || q.includes("health")) {
+            reply = `Ka koit ka khiah jong phi ka long kaba biang bha. Shong suk.`;
+          } else if (q.includes("mynsiem") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `Ring mynsiem kaba jem: Na ka khmut 4 second... bat 7 second... bad pynhiar na ka shyntur 8 second.`;
+          } else if (q.includes("sngi") || q.includes("day")) {
+            reply = `Ka sngi kaba suk mynta ka dei ka ${today}.`;
+          } else if (q.includes("hangno") || q.includes("where") || q.includes("iing")) {
+            reply = `Phi don ha la iing ha ${place} kaba shngain bha.`;
+          } else if (q.includes("iing") || q.includes("family")) {
+            reply = names
+              ? `Ki bahaing hasem jong phi: ${names}.`
+              : `Ka iing jong phi ka don bad phi.`;
+          } else {
+            reply = `Nga don ryngkat bad phi, ${patientName || "lok"}. Shong thait suk.`;
+          }
+        } else if (selectedLang === "lus") {
+          if (q.includes("hming") || q.includes("name") || q.includes("who are you") || q.includes("tunge")) {
+            reply = `I thian Saathi ka ni. I hriselna leh damdawi ei hun endik turin ka awm e.`;
+          } else if (q.includes("damdawi") || q.includes("medicine")) {
+            reply = `Zing damdawi ei a hun ta. Tui nen ei la a tha ang.`;
+          } else if (q.includes("hriselna") || q.includes("health")) {
+            reply = `I hriselna a tha e. Hahdam deuhin chawl rawh.`;
+          } else if (q.includes("thawk") || q.includes("breathe")) {
+            playCalmTone();
+            reply = `Thawk lak hahdam: Hnar atangin second 4 hip lut la... second 7 chelh la... ka atangin second 8 thaw chhuak rawh.`;
+          } else if (q.includes("ni") || q.includes("day")) {
+            reply = `Vawiin hi ${today} nuam tak a ni e.`;
+          } else if (q.includes("khawiah") || q.includes("where") || q.includes("in")) {
+            reply = `${place}-ah i in ngeiah thlamuang takin i awm e.`;
+          } else if (q.includes("chhungte") || q.includes("family")) {
+            reply = names
+              ? `I chhungte duhtak: ${names} an ni e.`
+              : `I chhungten an ngaihsak reng che a ni.`;
+          } else {
+            reply = `I kiangah ka awm reng e, ${patientName || "thianpa"}. Hahdam deuhin awm rawh.`;
+          }
         } else {
           // English & default
           if (q.includes("name") || q.includes("who are you") || q.includes("your name") || q.includes("identity")) {

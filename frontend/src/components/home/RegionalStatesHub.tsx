@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sparkles,
   MapPin,
-  Globe,
   PlayCircle,
   CloudRain,
   Feather,
@@ -12,10 +11,30 @@ import {
   Mountain,
   Flower2,
   Gamepad2,
+  Volume2,
+  VolumeX,
+  Mic,
+  ArrowRight,
+  Shield,
+  Coffee,
+  Music,
+  Waves,
+  TreePine,
+  Compass,
+  CheckCircle2,
 } from "lucide-react";
 import { AssamTeaLeafIcon, BambooShootIcon } from "@/components/ui/CulturalIcons";
 import { Link } from "@/i18n/navigation";
-import { playTapFeedback } from "@/lib/sound";
+import { playTapFeedback, unlockAudio } from "@/lib/sound";
+import { playCapsuleSoundscape, stopCapsuleSoundscape } from "@/lib/capsuleSoundscapes";
+import { speak, stopSpeaking } from "@/lib/speech";
+import type { AmbientSoundType } from "@/types/capsule";
+
+interface CulturalAnchor {
+  title: string;
+  detail: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
 
 interface StateData {
   id: string;
@@ -24,9 +43,14 @@ interface StateData {
   tagline: string;
   languages: string[];
   icon: React.ComponentType<{ className?: string; size?: number | string }>;
-  bgGrad: string;
+  soundType: AmbientSoundType;
+  voiceGreeting: {
+    text: string;
+    langCode: string;
+    label: string;
+  };
+  culturalAnchors: CulturalAnchor[];
   games: { title: string; domain: string; path: string }[];
-  memoryHeritage: string;
 }
 
 const NER_STATES: StateData[] = [
@@ -34,148 +58,273 @@ const NER_STATES: StateData[] = [
     id: "assam",
     name: "Assam",
     nativeName: "অসম",
-    tagline: "Heartland of the Brahmaputra & Tea Valleys",
-    languages: ["Assamese", "Bodo", "Bengali"],
+    tagline: "Heartland of the Brahmaputra, Tea Valleys & Bihu Rhythms",
+    languages: ["Assamese (অসমীয়া)", "Bodo (বড়ো)", "Bengali (বাংলা)"],
     icon: AssamTeaLeafIcon,
-    bgGrad: "from-emerald-500 to-teal-700",
-    games: [
-      { title: "Assam Tea Leaf Harvest", domain: "Visual Attention", path: "/patient/games" },
-      { title: "Brahmaputra Boat Crossing", domain: "3D Motor Kinematics", path: "/patient/games" },
-      { title: "Majuli Mask Workshop", domain: "Shape Symmetry", path: "/patient/games" },
-      { title: "Bihu Drum Rhythm", domain: "Auditory-Motor Sync", path: "/patient/games" },
+    soundType: "birds",
+    voiceGreeting: {
+      text: "নমস্কাৰ! আপুনি কেনে আছে? আহক চাহ একাপ খাই খেলা-ধূলা কৰোঁ।",
+      langCode: "as",
+      label: "Assamese Voice Sample",
+    },
+    culturalAnchors: [
+      { title: "Kaziranga Wildlife", detail: "One-horned rhinos grazing in morning grassland mist", icon: Shield },
+      { title: "Majuli River Island", detail: "Centuries-old Vaishnavite Satras & sacred mask craftsmanship", icon: Landmark },
+      { title: "Bihu Folk Rhythms", detail: "Dhol beats, pepa horns & spring harvest joy", icon: Music },
+      { title: "CTC Morning Garden Tea", detail: "Aromatic veranda tea ritual with fresh Assam leaves", icon: Coffee },
     ],
-    memoryHeritage: "Kaziranga one-horned rhinos, Majuli river island, Bihu festivities & fresh morning CTC tea.",
+    games: [
+      { title: "Assam Tea Leaf Harvest", domain: "Visual Attention & Search", path: "/patient/games/tea-harvest" },
+      { title: "Brahmaputra Boat Crossing", domain: "3D Spatial Kinematics", path: "/patient/games/brahmaputra-boat" },
+      { title: "Majuli Pottery Craft", domain: "Tactile Motor Praxis", path: "/patient/games/majuli-pottery" },
+      { title: "Bihu Drum Rhythm", domain: "Auditory-Motor Entrainment", path: "/patient/games/drum" },
+    ],
   },
   {
     id: "meghalaya",
     name: "Meghalaya",
     nativeName: "Abode of Clouds",
-    tagline: "Sacred Groves & Bio-Engineering Wonders",
-    languages: ["Khasi", "Garo", "English"],
+    tagline: "Sacred Khasi Groves & Living Bio-Engineering Marvels",
+    languages: ["Khasi (Ka Ktien)", "Garo (A·chik)", "English"],
     icon: CloudRain,
-    bgGrad: "from-sky-500 to-blue-700",
-    games: [
-      { title: "Cherrapunji Living Root Bridges", domain: "Sequential Logic", path: "/patient/games" },
-      { title: "Cloud Valley Wayfinding", domain: "Spatial Memory", path: "/patient/games" },
+    soundType: "rain",
+    voiceGreeting: {
+      text: "Khublei shibun! Welcome to the sacred rain-kissed hills of Meghalaya.",
+      langCode: "en",
+      label: "Khasi / English Voice",
+    },
+    culturalAnchors: [
+      { title: "Living Root Bridges", detail: "Centuries-old Ficus roots woven across crystal forest streams", icon: TreePine },
+      { title: "Mawlynnong Pathways", detail: "Cleanest stone footpaths & bamboo walking trails", icon: Compass },
+      { title: "Pine-Scented Shillong", detail: "Crisp highland mountain breezes and drifting cloud mist", icon: Mountain },
+      { title: "Sacred Forest Groves", detail: "Preserved Law Kyntang woodlands with ancient medicinal lore", icon: Shield },
     ],
-    memoryHeritage: "Living Root Bridges of Nohwet, Mawlynnong clean village paths, and pine-scented Shillong peaks.",
+    games: [
+      { title: "Living Root Bridge Logic", domain: "Spatial Navigation & Planning", path: "/patient/games/root-bridge" },
+      { title: "Cloud Valley Wayfinding", domain: "Topographic Orientation", path: "/patient/games/wayfinding" },
+      { title: "Sacred Grove Butterfly Perch", domain: "Hand Stabilization Praxis", path: "/patient/games/butterfly-sanctuary" },
+    ],
   },
   {
     id: "manipur",
     name: "Manipur",
-    nativeName: "মৈতৈলোন্ / Sanaleibak",
-    tagline: "Jeweled Land of Floating Phumdis",
-    languages: ["Manipuri (Meeteilon)", "Hindi"],
+    nativeName: "মৈতৈলোন্",
+    tagline: "Jeweled Land of Floating Phumdis & Classical Raas",
+    languages: ["Manipuri (Meeteilon)", "Hindi", "English"],
     icon: Sparkles,
-    bgGrad: "from-purple-500 to-indigo-700",
-    games: [
-      { title: "Loktak Lake Floating Phumdis", domain: "Balance & Navigation", path: "/patient/games" },
-      { title: "Classical Raas Recall", domain: "Visual Sequence", path: "/patient/games" },
+    soundType: "flute",
+    voiceGreeting: {
+      text: "Khurumjari! Loktak lake welcomes you with peaceful rhythms and memories.",
+      langCode: "en",
+      label: "Manipuri Voice",
+    },
+    culturalAnchors: [
+      { title: "Loktak Lake Phumdis", detail: "Unique circular floating biomass islands on tranquil waters", icon: Waves },
+      { title: "Sangai Dancing Deer", detail: "Keibul Lamjao national sanctuary & graceful heritage", icon: Feather },
+      { title: "Classical Manipuri Raas", detail: "Gentle bamboo flutes, devotional song & rhythmic bells", icon: Music },
+      { title: "Kangla Fort Legacy", detail: "Ancient royal capital and sacred stone dragon symbols", icon: Landmark },
     ],
-    memoryHeritage: "Keibul Lamjao dancing deer (Sangai), circular floating Phumdis on Loktak Lake & Kangla heritage.",
+    games: [
+      { title: "Loktak Lake Crossing", domain: "Visuospatial Navigation", path: "/patient/games/wayfinding" },
+      { title: "Traditional Loom Weaving", domain: "3D Constructional Praxis", path: "/patient/games/loom" },
+      { title: "Heritage Kitchen Cooking", domain: "Executive Recipe Sequencing", path: "/patient/games/heritage-kitchen" },
+    ],
   },
   {
     id: "mizoram",
     name: "Mizoram",
     nativeName: "Mizo ṭawng",
-    tagline: "Land of Rolling Hills & Bamboo Rhythms",
-    languages: ["Mizo", "English"],
+    tagline: "Land of Rolling Hills, Bamboo Grooves & Cheraw Dance",
+    languages: ["Mizo (Lushai)", "English"],
     icon: BambooShootIcon,
-    bgGrad: "from-amber-500 to-orange-700",
-    games: [
-      { title: "Blue Mountain Village Route", domain: "Wayfinding", path: "/patient/games" },
+    soundType: "flute",
+    voiceGreeting: {
+      text: "Chibai! Let us enjoy the peaceful breeze of the rolling blue hills.",
+      langCode: "en",
+      label: "Mizo Voice",
+    },
+    culturalAnchors: [
+      { title: "Cheraw Bamboo Dance", detail: "Synchronized tapping poles and joyous harvest footwork", icon: Music },
+      { title: "Vibrant Puan Weaves", detail: "Intricate red, white and black geometric loom tapestries", icon: Flower2 },
+      { title: "Phawngpui Blue Mountain", detail: "Highland rhododendrons and panoramic sea of clouds", icon: Mountain },
+      { title: "Zawlbuk Community Bond", detail: "Communal fireside storytelling and generational warmth", icon: Landmark },
     ],
-    memoryHeritage: "Chapchar Kut harvest festival, vibrant woven Puan patterns, and breezy hilltop morning mist.",
+    games: [
+      { title: "Cheraw Bamboo Rhythms", domain: "Kinesthetic Tempo Matching", path: "/patient/games/rhythm-hills" },
+      { title: "Blue Mountain Village Route", domain: "Spatial Wayfinding", path: "/patient/games/wayfinding" },
+      { title: "Daily Village Care Routine", domain: "Prospective Memory Recall", path: "/patient/games/daily-routine" },
+    ],
   },
   {
     id: "nagaland",
     name: "Nagaland",
-    nativeName: "Land of Festivals",
-    tagline: "Warrior Heritage & Rich Tapestries",
-    languages: ["Nagamese", "English", "Ao", "Angami"],
+    nativeName: "Tenyidie / Ao",
+    tagline: "Land of Festivals, Great Hornbill & Living Tapestries",
+    languages: ["Nagamese", "Ao", "Angami", "English"],
     icon: Feather,
-    bgGrad: "from-rose-500 to-red-700",
-    games: [
-      { title: "Hornbill Festival Headdress", domain: "Pattern Recognition", path: "/patient/games" },
-      { title: "Dzukou Valley Lily Finder", domain: "Visual Discrimination", path: "/patient/games" },
+    soundType: "birds",
+    voiceGreeting: {
+      text: "Welcome to the land of Hornbill, vibrant hills, and brave heritage.",
+      langCode: "en",
+      label: "Nagamese Voice",
+    },
+    culturalAnchors: [
+      { title: "Hornbill at Kisama", detail: "Grand tribal unity, log drum reverberations & vibrant attire", icon: Feather },
+      { title: "Traditional Beadwork", detail: "Carnelian, glass beads and ancestral heirloom patterns", icon: Sparkles },
+      { title: "Dzukou Valley Lilies", detail: "Rare endemic lilies blooming across rolling green ridges", icon: Flower2 },
+      { title: "Stone Monolith Pillars", detail: "Ancient village memorial monoliths guarding mountain trails", icon: Landmark },
     ],
-    memoryHeritage: "Hornbill celebrations at Kisama, traditional beadwork necklaces, and rolling green Dzukou valleys.",
+    games: [
+      { title: "Hornbill Flight Navigation", domain: "Visuomotor Glider Physics", path: "/patient/games/hornbill-flight" },
+      { title: "Dzukou Flora Discrimination", domain: "Botanical Visual Search", path: "/patient/games/dzukou-botanist" },
+      { title: "Tribal Tapestry Puzzles", domain: "Visuospatial Assembly", path: "/patient/games/jigsaw" },
+    ],
   },
   {
     id: "tripura",
     name: "Tripura",
     nativeName: "ত্রিপুরা",
-    tagline: "Royal Palaces & Sacred Rock Sculptures",
-    languages: ["Bengali", "Kokborok"],
+    tagline: "Royal Water Palaces & Sacred Rock Colossi",
+    languages: ["Bengali (বাংলা)", "Kokborok (ককবরক)", "English"],
     icon: Landmark,
-    bgGrad: "from-cyan-500 to-teal-700",
-    games: [
-      { title: "Neermahal Palace Reflection", domain: "Visual Symmetry", path: "/patient/games" },
-      { title: "Unakoti Rock Relief Match", domain: "Episodic Recall", path: "/patient/games" },
+    soundType: "river",
+    voiceGreeting: {
+      text: "নমস্কার! ত্রিপুরার শান্ত নীরমহল প্রাসাদে আপনাকে স্বাগত।",
+      langCode: "bn",
+      label: "Bengali / Kokborok Voice",
+    },
+    culturalAnchors: [
+      { title: "Neermahal Water Palace", detail: "Floating palace reflecting on Rudrasagar lake at dusk", icon: Waves },
+      { title: "Unakoti Rock Sculptures", detail: "Ancient rock-carved colossi hidden in lush green jungle", icon: Mountain },
+      { title: "Ujjayanta White Palace", detail: "Grand tiled courtyards, fountain gardens and royal legacy", icon: Landmark },
+      { title: "Bamboo Craftsmanship", detail: "Intricate handwoven cane partitions & delicate basketry", icon: Compass },
     ],
-    memoryHeritage: "Neermahal water palace on Rudrasagar lake, carved stone colossus of Unakoti & Ujjayanta Palace.",
+    games: [
+      { title: "Neermahal Palace Reflection", domain: "Visual Symmetry & Air-Canvas", path: "/patient/games/alpana" },
+      { title: "Unakoti Heritage Jigsaw", domain: "Episodic Face & Detail Recall", path: "/patient/games/jigsaw" },
+      { title: "Bazaar Market Memory", domain: "IADL Everyday Math & Categorization", path: "/patient/games/bazaar-buddies" },
+    ],
   },
   {
     id: "arunachal",
     name: "Arunachal Pradesh",
-    nativeName: "Dawn-Lit Mountains",
-    tagline: "Sacred Monasteries & Orchid Sanctuaries",
-    languages: ["Monpa", "Nyishi", "Hindi", "English"],
+    nativeName: "Dawn-Lit Land",
+    tagline: "Sacred Monasteries & Orchid-Draped Highland Valleys",
+    languages: ["Monpa", "Nyishi", "Hindi (हिन्दी)", "English"],
     icon: Mountain,
-    bgGrad: "from-emerald-600 to-green-900",
-    games: [
-      { title: "Monastery Prayer Wheel", domain: "Sensory Rhythm", path: "/patient/games" },
-      { title: "Sessa Orchid Sanctuary", domain: "Botanical Matching", path: "/patient/games" },
+    soundType: "namghar",
+    voiceGreeting: {
+      text: "Tashi Delek! Welcome to the peaceful dawn-lit mountains of Arunachal.",
+      langCode: "en",
+      label: "Monpa / Hindi Voice",
+    },
+    culturalAnchors: [
+      { title: "Tawang Sacred Monastery", detail: "Golden Buddha, chanting monks and ancient parchment texts", icon: Landmark },
+      { title: "Spinning Prayer Wheels", detail: "Polished brass cylinders spun with mindful, calming breath", icon: Sparkles },
+      { title: "Sessa Orchid Sanctuary", detail: "Over 500 species of vivid mountain orchids in bloom", icon: Flower2 },
+      { title: "Namdapha Cloud Forests", detail: "Misty virgin canopies and peaceful mountain wildlife", icon: TreePine },
     ],
-    memoryHeritage: "Snow-draped Tawang monastery, spinning sacred prayer wheels, and over 500 species of wild orchids.",
+    games: [
+      { title: "Tawang Monastery Bells", domain: "Auditory Working Memory Span", path: "/patient/games/monastery-bell" },
+      { title: "Sessa Orchid Discrimination", domain: "Color & Shape Feature Match", path: "/patient/games/dzukou-botanist" },
+      { title: "Sacred Wheel Kinematics", domain: "Visuomotor Smooth Pursuit", path: "/patient/games/lotus-painter" },
+    ],
   },
   {
     id: "sikkim",
     name: "Sikkim",
-    nativeName: "নেপালী / Denzong",
-    tagline: "Valley of Rice & Sacred Kanchenjunga",
-    languages: ["Nepali", "Bhutia", "Lepcha"],
+    nativeName: "नेपाली / Denzong",
+    tagline: "Valley of Rice & Guardian Peak of Kanchenjunga",
+    languages: ["Nepali (नेपाली)", "Bhutia", "Lepcha", "English"],
     icon: Flower2,
-    bgGrad: "from-teal-500 to-emerald-800",
-    games: [
-      { title: "Kanchenjunga Trail Wayfinding", domain: "Spatial Orientation", path: "/patient/games" },
-      { title: "Rumtek Chime Harmonics", domain: "Auditory Processing", path: "/patient/games" },
+    soundType: "namghar",
+    voiceGreeting: {
+      text: "नमस्ते! कञ्चनजङ्घाको शान्त हिमालमा यहाँलाई स्वागत छ।",
+      langCode: "ne",
+      label: "Nepali / Bhutia Voice",
+    },
+    culturalAnchors: [
+      { title: "Kanchenjunga Sunrise", detail: "Third-highest sacred peak glowing in early morning amber rays", icon: Mountain },
+      { title: "Rumtek Chime Harmonics", detail: "Harmonic brass chimes resounding through monastery corridors", icon: Music },
+      { title: "Red Panda Rhododendrons", detail: "Gentle mountain wildlife sheltered in alpine flower forests", icon: TreePine },
+      { title: "Temi Highland Tea Slopes", detail: "Organic green terraced tea gardens cascading down ridges", icon: Coffee },
     ],
-    memoryHeritage: "Golden peak of Kanchenjunga, vibrant Rumtek monastery bells, and red pandas in lush rhododendron forests.",
+    games: [
+      { title: "Kanchenjunga Trail Wayfinding", domain: "Topographic Spatial Orientation", path: "/patient/games/wayfinding" },
+      { title: "Rumtek Harmonic Chimes", domain: "Auditory Frequency Processing", path: "/patient/games/monastery-bell" },
+      { title: "Alpine Flora Search", domain: "Visual Attention & Target Search", path: "/patient/games/dzukou-botanist" },
+    ],
   },
 ];
 
 export function RegionalStatesHub() {
   const [selectedStateId, setSelectedStateId] = useState<string>("assam");
+  const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
 
   const currentState = NER_STATES.find((s) => s.id === selectedStateId) || NER_STATES[0];
+
+  // Stop audio on unmount
+  useEffect(() => {
+    return () => {
+      stopCapsuleSoundscape();
+      stopSpeaking();
+    };
+  }, []);
 
   const handleSelectState = (id: string) => {
     playTapFeedback();
     setSelectedStateId(id);
+
+    const targetState = NER_STATES.find((s) => s.id === id);
+    if (soundPlaying && targetState) {
+      playCapsuleSoundscape(targetState.soundType, 0.35);
+    }
+  };
+
+  const handleToggleSoundscape = () => {
+    unlockAudio();
+    if (soundPlaying) {
+      stopCapsuleSoundscape();
+      setSoundPlaying(false);
+    } else {
+      playCapsuleSoundscape(currentState.soundType, 0.35);
+      setSoundPlaying(true);
+    }
+  };
+
+  const handleSpeakGreeting = () => {
+    unlockAudio();
+    setIsSpeaking(true);
+    speak(currentState.voiceGreeting.text, currentState.voiceGreeting.langCode, 0.85);
+    setTimeout(() => setIsSpeaking(false), 4500);
   };
 
   return (
-    <section className="w-full rounded-3xl border-3 border-black bg-surface p-4 md:p-6 shadow-[6px_6px_0px_#000]">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-black/15 pb-3">
+    <section className="w-full rounded-3xl border-3 border-black bg-surface p-5 md:p-7 shadow-[6px_6px_0px_#000]">
+      {/* Header — Clean, Authoritative, Clutter-Free */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-2 border-black/15 pb-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-marigold-light border border-marigold/30 text-marigold-dark text-xs font-black mb-1">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>MDoNER 8-State Indigenous Memory Ecosystem</span>
-          </div>
-          <h2 className="font-serif text-xl md:text-2xl font-black text-ink">
+          <h2 className="font-serif text-2xl md:text-3xl font-black text-ink tracking-tight">
             Culturally Grounded Cognitive Therapeutics
           </h2>
+          <p className="text-xs md:text-sm font-semibold text-ink-secondary mt-1 max-w-2xl leading-relaxed">
+            Clinically calibrated therapeutic gaming, nostalgic soundscapes, and native-dialect voice assistance tailored for elderly dementia care across all 8 North Eastern states.
+          </p>
         </div>
-        <div className="flex items-center gap-1 text-xs font-black text-ink-secondary bg-surface-muted px-2.5 py-1 rounded-xl border border-black/10">
-          <Globe className="h-3.5 w-3.5 text-tea" />
-          <span>8 Sister States</span>
-        </div>
+
+        <Link
+          href="/patient/games"
+          className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-tea px-4 py-2 text-xs md:text-sm font-black text-white shadow-[2px_2px_0px_#000] hover:bg-tea-dark transition-all shrink-0 cursor-pointer"
+        >
+          <Gamepad2 className="h-4 w-4" />
+          <span>Explore All 40+ Games</span>
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
 
-      {/* State Selector Tabs */}
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5">
+      {/* 8 State Selector Tabs */}
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
         {NER_STATES.map((st) => {
           const isSelected = st.id === selectedStateId;
           const StateIcon = st.icon;
@@ -186,83 +335,200 @@ export function RegionalStatesHub() {
               role="tab"
               aria-selected={isSelected}
               onClick={() => handleSelectState(st.id)}
-              className={`btn-tactile flex flex-col items-center justify-center p-2 rounded-xl border-2 border-black transition-all cursor-pointer ${
+              className={`btn-tactile flex flex-col items-center justify-center p-2.5 rounded-xl border-2 transition-all cursor-pointer ${
                 isSelected
-                  ? "bg-tea text-white shadow-[2px_2px_0px_#000] scale-[1.03]"
-                  : "bg-surface-muted hover:bg-tea-light/50 text-ink"
+                  ? "border-black bg-tea text-white shadow-[3px_3px_0px_#000] scale-[1.02]"
+                  : "border-black/25 bg-white hover:border-black hover:bg-amber-50/70 text-ink shadow-xs"
               }`}
             >
-              <div className="h-6 w-6 flex items-center justify-center mb-0.5">
-                <StateIcon className="h-5 w-5 stroke-[2.2]" />
+              <div className="h-7 w-7 flex items-center justify-center mb-1">
+                <StateIcon className="h-5 w-5 stroke-[2.3]" />
               </div>
-              <span className="text-xs font-black leading-tight text-center truncate w-full">
+              <span className="text-xs md:text-sm font-black leading-tight text-center truncate w-full">
                 {st.name}
               </span>
+              <span
+                className={`text-[10px] font-bold leading-tight text-center truncate w-full mt-0.5 ${
+                  isSelected ? "text-amber-300" : "text-ink-secondary"
+                }`}
+              >
+                {st.nativeName}
+              </span>
+              {isSelected && (
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400 mt-1" />
+              )}
             </button>
           );
         })}
       </div>
 
       {/* Selected State Showcase Hero Card */}
-      <div className="mt-4 rounded-2xl border-2 border-black bg-surface-muted p-4 md:p-5 relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-          <div className="space-y-2 max-w-xl">
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-xl border-2 border-black bg-tea/10 flex items-center justify-center text-tea shrink-0">
-                <currentState.icon className="h-5 w-5 stroke-[2.5]" />
-              </div>
-              <h3 className="font-serif font-black text-xl md:text-2xl text-ink">
-                {currentState.name} <span className="text-tea text-base font-bold font-sans">({currentState.nativeName})</span>
-              </h3>
+      <div className="mt-5 rounded-2xl border-3 border-black bg-gradient-to-br from-[#FAF6F0] via-white to-amber-50/40 p-5 md:p-6 shadow-[4px_4px_0px_#000] relative overflow-hidden">
+        {/* Top Hero Bar with State Identity and Audio Immersion Tools */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-black/10 pb-4 mb-5">
+          <div className="flex items-center gap-3.5">
+            <div className="h-12 w-12 md:h-14 md:w-14 rounded-2xl border-2 border-black bg-tea/15 text-tea flex items-center justify-center shrink-0 shadow-[2px_2px_0px_#000]">
+              <currentState.icon className="h-7 w-7 stroke-[2.4]" />
             </div>
-            <p className="text-xs md:text-sm font-bold text-ink-secondary">
-              {currentState.tagline}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[11px] font-black text-ink-secondary">Native Dialects:</span>
-              {currentState.languages.map((lang) => (
-                <span
-                  key={lang}
-                  className="px-2 py-0.5 rounded-md bg-surface border border-black/20 text-[10px] font-extrabold text-ink shadow-xs"
-                >
-                  {lang}
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-serif font-black text-xl md:text-2xl text-ink">
+                  {currentState.name}
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-md bg-amber-100 border border-amber-300 text-amber-950 text-xs font-black">
+                  {currentState.nativeName}
                 </span>
-              ))}
-            </div>
-
-            <div className="p-3 bg-surface rounded-xl border border-black/15 text-xs text-ink leading-relaxed">
-              <span className="font-black text-tea flex items-center gap-1 mb-0.5">
-                <MapPin className="h-3.5 w-3.5" /> Cultural Memory Anchors:
-              </span>
-              <p className="font-medium text-ink-secondary">{currentState.memoryHeritage}</p>
+              </div>
+              <p className="text-xs md:text-sm font-bold text-ink-secondary mt-0.5">
+                {currentState.tagline}
+              </p>
             </div>
           </div>
 
-          {/* Regional Game Module Pairing */}
-          <div className="w-full md:w-72 bg-surface rounded-xl border-2 border-black p-3.5 shadow-[3px_3px_0px_#000] shrink-0">
-            <span className="text-[10px] font-black uppercase tracking-wider text-tea flex items-center gap-1.5 mb-2">
-              <Gamepad2 className="h-3.5 w-3.5" />
-              <span>Regional Serious Games</span>
-            </span>
-            <div className="space-y-2">
-              {currentState.games.map((g) => (
-                <Link
-                  key={g.title}
-                  href="/patient/games"
-                  className="block p-2 rounded-lg bg-surface-muted hover:bg-tea-light/80 border border-black/15 transition-colors group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-black text-ink group-hover:text-tea truncate">
-                      {g.title}
-                    </span>
-                    <PlayCircle className="h-3.5 w-3.5 text-tea shrink-0 group-hover:scale-110 transition-transform" />
-                  </div>
-                  <span className="text-[10px] font-bold text-ink-secondary">
-                    {g.domain}
+          {/* Interactive Sensory Preview Audio Controls */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleToggleSoundscape}
+              className={`btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black px-3.5 py-2 text-xs font-black transition-all cursor-pointer shadow-[2px_2px_0px_#000] ${
+                soundPlaying
+                  ? "bg-emerald-600 text-white animate-pulse"
+                  : "bg-white text-ink hover:bg-emerald-50"
+              }`}
+              title="Listen to procedural regional ambient soundscape"
+            >
+              {soundPlaying ? (
+                <>
+                  <Volume2 className="h-4 w-4 text-amber-300" />
+                  <span>Ambient Audio Playing</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="h-4 w-4 text-emerald-800" />
+                  <span className="capitalize">Listen {currentState.soundType} Ambience</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSpeakGreeting}
+              disabled={isSpeaking}
+              className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 px-3.5 py-2 text-xs font-black text-ink transition-all cursor-pointer shadow-[2px_2px_0px_#000] disabled:opacity-50"
+              title="Hear text-to-speech greeting in regional dialect"
+            >
+              <Mic className={`h-4 w-4 text-amber-900 ${isSpeaking ? "animate-spin" : ""}`} />
+              <span>{isSpeaking ? "Speaking Prompt..." : currentState.voiceGreeting.label}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Content Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Left Column (7 Cols): Dialects & Cultural Memory Anchors */}
+          <div className="lg:col-span-7 space-y-4">
+            {/* Native Dialects Available */}
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-wider text-ink-secondary block mb-1.5">
+                Voice-Assisted in Native Dialects
+              </span>
+              <div className="flex flex-wrap items-center gap-1.5">
+                {currentState.languages.map((lang) => (
+                  <span
+                    key={lang}
+                    className="px-2.5 py-1 rounded-lg bg-surface border-2 border-black/20 text-xs font-black text-ink shadow-2xs"
+                  >
+                    {lang}
                   </span>
-                </Link>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Cultural Memory Anchors 2x2 Grid */}
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-wider text-tea-dark flex items-center gap-1.5 mb-2">
+                <MapPin className="h-3.5 w-3.5 text-tea" />
+                <span>Regional Memory Anchors (Sensory Reminiscence Triggers)</span>
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {currentState.culturalAnchors.map((anchor) => {
+                  const AnchorIcon = anchor.icon;
+                  return (
+                    <div
+                      key={anchor.title}
+                      className="rounded-xl border-2 border-black/15 bg-white p-3 shadow-2xs hover:border-black transition-colors"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="h-6 w-6 rounded-lg bg-tea/10 text-tea flex items-center justify-center shrink-0">
+                          <AnchorIcon className="h-3.5 w-3.5" />
+                        </div>
+                        <h4 className="font-serif text-xs font-black text-ink">
+                          {anchor.title}
+                        </h4>
+                      </div>
+                      <p className="text-[11px] font-medium text-ink-secondary leading-relaxed">
+                        {anchor.detail}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Clinical Grounding Note */}
+            <div className="rounded-xl border-2 border-tea/30 bg-tea-light/60 p-3 flex items-start gap-2.5 text-xs text-tea-dark">
+              <CheckCircle2 className="h-4 w-4 text-tea shrink-0 mt-0.5" />
+              <p className="font-semibold leading-relaxed">
+                <strong>Neurocognitive Basis:</strong> Familiar regional landscapes and sensory anchors unlock preserved episodic memories in the medial prefrontal cortex, reducing dementia agitation and sundowning confusion.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column (5 Cols): Regional Serious Games */}
+          <div className="lg:col-span-5 bg-white rounded-2xl border-2 border-black p-4 shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between border-b-2 border-black/10 pb-2.5 mb-3">
+                <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
+                  <Gamepad2 className="h-4 w-4" />
+                  <span>Regional Serious Games</span>
+                </span>
+                <span className="text-[10px] font-black text-emerald-900 bg-emerald-100 border border-emerald-300 rounded px-2 py-0.5">
+                  {currentState.games.length} Modules
+                </span>
+              </div>
+
+              <div className="space-y-2.5">
+                {currentState.games.map((g) => (
+                  <Link
+                    key={g.title}
+                    href={g.path}
+                    className="block p-3 rounded-xl bg-[#FAF6F0] hover:bg-tea-light/70 border-2 border-black/15 hover:border-black transition-all group shadow-2xs"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h5 className="text-xs sm:text-sm font-black text-ink group-hover:text-tea leading-snug">
+                          {g.title}
+                        </h5>
+                        <span className="inline-block mt-1 text-[10px] font-black text-teal-800 bg-teal-50 border border-teal-200 rounded px-2 py-0.5">
+                          {g.domain}
+                        </span>
+                      </div>
+                      <div className="h-7 w-7 rounded-lg bg-white border border-black/20 flex items-center justify-center text-tea group-hover:bg-tea group-hover:text-white transition-colors shrink-0 shadow-2xs">
+                        <PlayCircle className="h-4 w-4" />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between text-[11px] font-bold text-ink-secondary">
+              <span>100% Offline Capable</span>
+              <Link href="/patient/games" className="text-tea font-black hover:underline flex items-center gap-1">
+                <span>View Full Library</span>
+                <ArrowRight className="h-3 w-3" />
+              </Link>
             </div>
           </div>
         </div>

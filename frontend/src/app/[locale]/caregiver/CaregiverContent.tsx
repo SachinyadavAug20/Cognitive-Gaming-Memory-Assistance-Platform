@@ -7,7 +7,7 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api";
 import { AudioToggle } from "@/components/ui/AudioToggle";
-import { CreditCard } from "lucide-react";
+import { CreditCard, FileText } from "lucide-react";
 import type { PatientSummary } from "@/types";
 
 import { getAllPatientSummaries } from "@/data/mockPatients";
@@ -68,6 +68,14 @@ export function CaregiverContent() {
           </div>
           <div className="flex items-center gap-3">
             <AudioToggle />
+            <Link
+              href="/clinical-evidence"
+              className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-white/30 bg-white/10 hover:bg-white/20 px-3 py-2 text-xs font-black text-white shadow-xs"
+              title="Clinical Evidence & Neuropsychological R&D Dossier"
+            >
+              <FileText className="h-4 w-4 text-amber-300" />
+              <span className="hidden sm:inline">Clinical R&D</span>
+            </Link>
             <Link href="/caregiver/add-patient">
               <ChunkyButton variant="marigold" size="xl">
                 {t("addPatient")}

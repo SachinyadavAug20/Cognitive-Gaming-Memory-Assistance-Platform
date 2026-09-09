@@ -2,7 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { Printer } from "lucide-react";
+import { Printer, BookOpen } from "lucide-react";
 import { ClinicalDossierExport } from "@/components/clinical/ClinicalDossierExport";
 import { ClinicalReportExportModal } from "@/components/patient-detail/ClinicalReportExportModal";
 import type { PatientDetailRecord } from "@/types";
@@ -13,6 +13,7 @@ interface PatientHeroCardProps {
   stageStyle: string;
   age?: number | null;
   loading: boolean;
+  onOpenEvidenceModal?: () => void;
 }
 
 export function PatientHeroCard({
@@ -21,6 +22,7 @@ export function PatientHeroCard({
   stageStyle,
   age,
   loading,
+  onOpenEvidenceModal,
 }: PatientHeroCardProps) {
   const t = useTranslations("patientDetail");
 
@@ -70,6 +72,17 @@ export function PatientHeroCard({
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 max-w-full">
+              {onOpenEvidenceModal && (
+                <button
+                  type="button"
+                  onClick={onOpenEvidenceModal}
+                  className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-teal-300 px-3.5 py-2 text-xs font-black text-teal-950 shadow-[2px_2px_0px_#000] hover:bg-teal-200 transition-colors cursor-pointer"
+                  title="View MoCA, ACTIVE Study & W3C COGA Scientific Evidence"
+                >
+                  <BookOpen className="h-4 w-4 text-teal-950" />
+                  <span>Clinical Research Dossier</span>
+                </button>
+              )}
               <ClinicalReportExportModal patient={patient} age={age ?? null} stage={stage} />
               <ClinicalDossierExport patient={patient} age={age} />
               <Link

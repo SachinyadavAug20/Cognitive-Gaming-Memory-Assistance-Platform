@@ -39,6 +39,7 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { getGameStrings } from "@/lib/gameI18n";
+import { calculateVanishingCue, validateMoveErrorless } from "@/lib/errorlessLearning";
 
 function GameShell({
   title,
@@ -270,6 +271,8 @@ export function DailyCareRoutineGame() {
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
+  const [hesitationSeconds, setHesitationSeconds] = useState(0);
+  const [attemptCount, setAttemptCount] = useState(0);
 
   useSessionGuard({
     patientId: patientId ?? 0,
@@ -289,23 +292,39 @@ export function DailyCareRoutineGame() {
     };
   }, []);
 
+  // Track hesitation seconds for vanishing cues
+  useEffect(() => {
+    if (phase !== "play") return;
+    setHesitationSeconds(0);
+    const interval = setInterval(() => {
+      setHesitationSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [phase, taskIdx]);
+
+  const scaffold = calculateVanishingCue(hesitationSeconds, attemptCount);
+
   const startRoutineGame = useCallback(() => {
     playPress();
     setPhase("play");
     setTaskIdx(0);
     setSelectedOptionId(null);
+    setAttemptCount(0);
+    setHesitationSeconds(0);
     const nowIso = new Date().toISOString();
     setStartedAt(nowIso);
     setTaps(0);
     const firstTask = ROUTINE_TASKS[0];
     speak(firstTask.question[normLocale], locale, rate);
-  }, [locale, normLocale, rate]);
+  }, [normLocale, locale, rate]);
 
   const handleOptionSelect = (optionId: string, isCorrect: boolean) => {
     setTaps((t) => t + 1);
     setSelectedOptionId(optionId);
 
-    if (isCorrect) {
+    const validation = validateMoveErrorless(isCorrect, true);
+
+    if (validation.isCorrect) {
       playCorrect();
       if (currentTask.iconType === "hydration") {
         playWaterRipple();
@@ -317,6 +336,8 @@ export function DailyCareRoutineGame() {
         if (nextIdx < ROUTINE_TASKS.length) {
           setTaskIdx(nextIdx);
           setSelectedOptionId(null);
+          setAttemptCount(0);
+          setHesitationSeconds(0);
           speak(ROUTINE_TASKS[nextIdx].question[normLocale], locale, rate);
         } else {
           playComplete();
@@ -335,7 +356,14 @@ export function DailyCareRoutineGame() {
         }
       }, 2000);
     } else {
-      speak("Let's look for the healthiest daily choice for your routine.", locale, rate);
+      // Errorless Learning soft-blocking: gentle harmonic ripple without failure buzzers
+      playWaterRipple();
+      setAttemptCount((a) => a + 1);
+      speak(
+        validation.hintMessage || "Take your time. Notice the gentle golden guidance.",
+        locale,
+        rate
+      );
     }
   };
 
@@ -352,7 +380,7 @@ export function DailyCareRoutineGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Prospective Memory & IADL // Module CDTx-25
+                Daily Care Routine
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-amber-800" />
@@ -580,26 +608,47 @@ export function DailyCareRoutineGame() {
             {currentTask.options.map((opt) => {
               const isSelected = selectedOptionId === opt.id;
               const OptionIcon = opt.icon;
+              const isCueActive = opt.isCorrect && (scaffold.intensity !== "none" || attemptCount > 0);
+
               return (
                 <button
                   key={opt.id}
                   type="button"
                   onClick={() => handleOptionSelect(opt.id, opt.isCorrect)}
-                  className={`btn-tactile w-full flex items-center gap-4 rounded-2xl border-3 border-black p-4 text-left shadow-[3px_3px_0px_#000] transition-all cursor-pointer ${
+                  className={`btn-tactile w-full flex items-center gap-4 rounded-2xl border-3 p-4 text-left shadow-[3px_3px_0px_#000] transition-all cursor-pointer relative ${
                     isSelected
                       ? opt.isCorrect
                         ? "bg-emerald-200 border-emerald-800 text-ink ring-4 ring-emerald-300"
-                        : "bg-rose-100 border-rose-800 text-ink"
-                      : "bg-surface hover:bg-amber-50"
+                        : "bg-amber-100 border-amber-600 text-ink"
+                      : isCueActive
+                      ? "bg-amber-50 border-amber-500 ring-4 ring-amber-300/80 shadow-[0_0_20px_rgba(245,158,11,0.4)] animate-pulse"
+                      : "bg-surface border-black hover:bg-amber-50"
                   }`}
                 >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50">
-                    <OptionIcon className="h-6 w-6 text-amber-900" />
+                  <div
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 ${
+                      isCueActive
+                        ? "border-amber-500 bg-amber-100"
+                        : "border-black/20 bg-amber-50"
+                    }`}
+                  >
+                    <OptionIcon
+                      className={`h-6 w-6 ${
+                        isCueActive ? "text-amber-700" : "text-amber-900"
+                      }`}
+                    />
                   </div>
                   <div className="flex-1">
-                    <span className="font-serif text-sm sm:text-base font-black text-ink block leading-tight">
-                      {opt.label[normLocale]}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-serif text-sm sm:text-base font-black text-ink block leading-tight">
+                        {opt.label[normLocale]}
+                      </span>
+                      {isCueActive && (
+                        <span className="rounded-full bg-amber-200 text-amber-900 text-[10px] font-black px-2 py-0.5 border border-amber-400 shrink-0">
+                          Gentle Guide ✨
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {isSelected && opt.isCorrect && (
                     <CheckCircle2 className="h-6 w-6 text-emerald-800 shrink-0" />

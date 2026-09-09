@@ -94,11 +94,11 @@ const ROUTINE_I18N: Record<
     tapToggle: "Tap to toggle",
     waterOf: "{glasses} of 6 glasses today",
     glasses: "{glasses} Glasses",
-    caregiverBadge: "Caregiver Direct Connect",
-    caregiverTitle: "Need assistance? Connect with Sunita Borah (Daughter) or Dispur PHC ASHA Worker",
-    callCaregiver: "Call Family Caregiver",
+    caregiverBadge: "Family & Nurse Safety Net",
+    caregiverTitle: "Need a hand or want to chat? Connect anytime with Sunita Borah (Daughter) or Dispur PHC Nurse",
+    callCaregiver: "Call Sunita (Daughter)",
     caregiverAlertSent: "Caregiver Alert Sent",
-    sosSpeech: "Connecting you with your primary caregiver Sunita and your local ASHA health worker. Please rest comfortably.",
+    sosSpeech: "Connecting you with your daughter Sunita and your local nurse. Please rest comfortably.",
   },
   hi: {
     listen: "सुनें",
@@ -107,9 +107,9 @@ const ROUTINE_I18N: Record<
     tapToggle: "टैप करें",
     waterOf: "आज 6 में से {glasses} गिलास",
     glasses: "{glasses} गिलास",
-    caregiverBadge: "देखभालकर्ता सीधा संपर्क",
-    caregiverTitle: "सहायता चाहिए? सुनीता बोरा (बेटी) या आशा कार्यकर्ता से संपर्क करें",
-    callCaregiver: "परिवार को कॉल करें",
+    caregiverBadge: "परिवार और स्वास्थ्य सहायता",
+    caregiverTitle: "सहायता चाहिए या बात करनी है? बेटी सुनीता बोरा या आशा नर्स से कभी भी जुड़ें",
+    callCaregiver: "सुनीता (बेटी) को कॉल करें",
     caregiverAlertSent: "संदेश भेजा गया",
     sosSpeech: "आपकी देखभालकर्ता सुनीता और आशा कार्यकर्ता से संपर्क किया जा रहा है। कृपया शांत रहें।",
   },
@@ -120,11 +120,11 @@ const ROUTINE_I18N: Record<
     tapToggle: "স্পৰ্শ কৰক",
     waterOf: "আজি ৬ গিলাচৰ {glasses} গিলাচ",
     glasses: "{glasses} গিলাচ",
-    caregiverBadge: "পৰিচৰ্যাকাৰীৰ সৈতে যোগাযোগ",
-    caregiverTitle: "সহায়ৰ প্ৰয়োজন নেকি? সুনীতা বৰা (জীয়াৰী) বা আশা কৰ্মীৰ সৈতে যোগাযোগ কৰক",
-    callCaregiver: "পৰিয়ালক ফোন কৰক",
+    caregiverBadge: "পৰিচৰ্যা আৰু পৰিয়ালৰ সহায়",
+    caregiverTitle: "সহায়ৰ প্ৰয়োজন নেকি? জীয়াৰী সুনীতা বৰা বা দিছপুৰ স্বাস্থ্য কৰ্মীৰ সৈতে কথা পাতক",
+    callCaregiver: "সুনীতা (জীয়াৰী)ক ফোন কৰক",
     caregiverAlertSent: "খবৰ পঠোৱা হ'ল",
-    sosSpeech: "আপোনাৰ পৰিচৰ্যাকাৰী সুনীতা আৰু আশা কৰ্মীৰ সৈতে যোগাযোগ কৰা হৈছে। অনুগ্ৰহ কৰি বিশ্ৰাম লওক।",
+    sosSpeech: "আপোনাৰ জীয়াৰী সুনীতা আৰু আশা কৰ্মীৰ সৈতে যোগাযোগ কৰা হৈছে। অনুগ্ৰহ কৰি বিশ্ৰাম লওক।",
   },
   bn: {
     listen: "শুনুন",
@@ -133,9 +133,9 @@ const ROUTINE_I18N: Record<
     tapToggle: "ট্যাপ করুন",
     waterOf: "আজ ৬ গ্লাসের {glasses} গ্লাস",
     glasses: "{glasses} গ্লাস",
-    caregiverBadge: "পরিচর্যাকারীর সাথে যোগাযোগ",
-    caregiverTitle: "সহায়তা প্রয়োজন? সুনীতা বোরা (মেয়ে) বা আশা কর্মীর সাথে যোগাযোগ করুন",
-    callCaregiver: "পরিবারকে কল করুন",
+    caregiverBadge: "পরিবার ও নার্স সহায়তা",
+    caregiverTitle: "সহায়তা প্রয়োজন? মেয়ে সুনীতা বোরা বা স্বাস্থ্য কর্মীর সাথে কথা বলুন",
+    callCaregiver: "সুনীতা (মেয়ে)কে কল করুন",
     caregiverAlertSent: "বার্তা পাঠানো হয়েছে",
     sosSpeech: "আপনার পরিচর্যাকারী সুনীতা ও আশা কর্মীর সাথে যোগাযোগ করা হচ্ছে। অনুগ্রহ করে বিশ্রাম নিন।",
   },
@@ -325,25 +325,25 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
   return (
     <section aria-labelledby="routine-title" className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between border-b-2 border-black/15 pb-2">
-        <div className="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-tea" />
-          <h2 id="routine-title" className="font-serif text-xl font-black text-ink">
+      <div className="flex items-center justify-between border-b-2 border-black/15 pb-2.5">
+        <div className="flex items-center gap-2.5">
+          <Clock className="h-6 w-6 text-tea" />
+          <h2 id="routine-title" className="font-serif text-2xl sm:text-3xl font-black text-ink">
             {t.has("title") ? t("title") : t.has("label") ? t("label") : "Today's Daily Routine & Care Reminders"}
           </h2>
         </div>
         <button
           type="button"
           onClick={speakRoutine}
-          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted cursor-pointer"
+          className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-4 py-2 text-sm font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted cursor-pointer"
         >
-          <Volume2 className="h-3.5 w-3.5 text-tea" />
+          <Volume2 className="h-4 w-4 text-tea" />
           <span>{locStrings.listen}</span>
         </button>
       </div>
 
       {/* Routine Cards Grid (4 Essential Reminders) */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {tasks.map((task) => {
           const title = taskTitle(task);
           const time = taskTime(task);
@@ -352,96 +352,119 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
             <div
               key={task.id}
               onClick={() => toggleTask(task.id)}
-              className={`${CARD} btn-tactile flex flex-col justify-between p-3.5 transition-all cursor-pointer select-none ${
+              className={`${CARD} btn-tactile flex flex-col justify-between p-4 sm:p-5 transition-all cursor-pointer select-none ${
                 task.defaultDone
                   ? "bg-tea-light/80 border-tea text-ink"
                   : "bg-surface text-ink hover:bg-surface-muted"
               }`}
             >
               <div className="flex items-start justify-between gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-surface shadow-sm">
-                  {task.icon === "pill" && <Pill className="h-5 w-5 text-terracotta" />}
-                  {task.icon === "water" && <Droplets className="h-5 w-5 text-teal-600" />}
-                  {task.icon === "appointment" && <CalendarCheck className="h-5 w-5 text-purple-700" />}
-                  {task.icon === "photo" && <ImageIcon className="h-5 w-5 text-marigold" />}
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-black bg-surface shadow-sm">
+                  {task.icon === "pill" && <Pill className="h-6 w-6 text-terracotta" />}
+                  {task.icon === "water" && <Droplets className="h-6 w-6 text-teal-600" />}
+                  {task.icon === "appointment" && <CalendarCheck className="h-6 w-6 text-purple-700" />}
+                  {task.icon === "photo" && <ImageIcon className="h-6 w-6 text-marigold" />}
                 </div>
 
                 <button
                   type="button"
-                  className={`flex h-7 w-7 items-center justify-center rounded-lg border-2 border-black font-black transition-colors ${
+                  className={`flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border-2 border-black font-black transition-colors ${
                     task.defaultDone ? "bg-tea text-white" : "bg-white text-transparent"
                   }`}
                   aria-label={task.defaultDone ? locStrings.completed : locStrings.scheduled}
                 >
-                  <CheckCircle2 className="h-4 w-4" />
+                  <CheckCircle2 className="h-5 w-5" />
                 </button>
               </div>
 
-              <div className="mt-3">
-                <h3 className="font-bold text-sm text-ink leading-tight">{title}</h3>
-                <p className="text-xs text-ink-secondary mt-0.5 font-semibold">{time}</p>
+              <div className="mt-3.5">
+                <h3 className="font-bold text-base sm:text-lg text-ink leading-tight">{title}</h3>
+                <p className="text-xs sm:text-sm text-ink-secondary mt-1 font-bold">{time}</p>
               </div>
 
-              {/* Special Interactive Water Counter */}
+              {/* Special Interactive Water Counter with 6 Visual Cups */}
               {task.id === "water_reminder" && (
-                <div className="mt-2.5 flex items-center justify-between bg-white/70 rounded-xl p-1 border border-black/20">
-                  <button
-                    type="button"
-                    onClick={removeWater}
-                    className="h-6 w-6 rounded-lg bg-surface border border-black flex items-center justify-center text-xs font-black hover:bg-surface-muted cursor-pointer"
-                    aria-label="Decrease water"
-                  >
-                    <Minus className="h-3 w-3" />
-                  </button>
-                  <span className="flex items-center gap-1 text-[11px] font-black text-teal-800">
-                    <Droplets className="h-3.5 w-3.5 text-sky-600 shrink-0" />
-                    <span>{locStrings.glasses.replace("{glasses}", String(glasses))}</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={addWater}
-                    className="h-6 w-6 rounded-lg bg-teal-600 text-white border border-black flex items-center justify-center text-xs font-black hover:bg-teal-700 cursor-pointer"
-                    aria-label="Drink a glass of water"
-                  >
-                    <Plus className="h-3 w-3" />
-                  </button>
+                <div className="mt-3 space-y-2.5">
+                  {/* Visual 6-Cup Hydration Progress Indicator */}
+                  <div className="flex items-center justify-between gap-1 rounded-2xl bg-sky-50 p-2 border-2 border-sky-200">
+                    {[1, 2, 3, 4, 5, 6].map((cup) => (
+                      <div
+                        key={cup}
+                        className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border-2 transition-all ${
+                          cup <= glasses
+                            ? "border-sky-700 bg-sky-500 text-white shadow-xs scale-105"
+                            : "border-black/20 bg-white text-black/25"
+                        }`}
+                        title={`Glass ${cup} of 6`}
+                      >
+                        <Droplets className={`h-4 w-4 sm:h-4.5 sm:w-4.5 ${cup <= glasses ? "fill-white" : ""}`} />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Elder-Sized +/- Buttons */}
+                  <div className="flex items-center justify-between bg-white rounded-2xl p-1.5 border-2 border-black/20">
+                    <button
+                      type="button"
+                      onClick={removeWater}
+                      className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-surface border-2 border-black flex items-center justify-center text-sm font-black hover:bg-surface-muted cursor-pointer shadow-xs active:scale-95 transition-transform"
+                      aria-label="Decrease water"
+                    >
+                      <Minus className="h-5 w-5 stroke-[2.5]" />
+                    </button>
+                    <span className="flex items-center gap-1.5 text-xs sm:text-sm font-black text-sky-950">
+                      <Droplets className="h-4 w-4 text-sky-600 shrink-0" />
+                      <span>{locStrings.glasses.replace("{glasses}", String(glasses))}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={addWater}
+                      className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-sky-600 text-white border-2 border-black flex items-center justify-center text-sm font-black hover:bg-sky-700 cursor-pointer shadow-xs active:scale-95 transition-transform"
+                      aria-label="Drink a glass of water"
+                    >
+                      <Plus className="h-5 w-5 stroke-[2.5]" />
+                    </button>
+                  </div>
                 </div>
               )}
 
-              <div className="mt-2.5 pt-2 border-t border-black/10 flex items-center justify-between text-[11px] font-black">
-                <span className={`inline-flex items-center gap-1 ${task.defaultDone ? "text-tea" : "text-marigold-dark"}`}>
+              <div className="mt-3 pt-2.5 border-t border-black/10 flex items-center justify-between text-xs sm:text-sm font-black">
+                <span className={`inline-flex items-center gap-1.5 ${task.defaultDone ? "text-emerald-800" : "text-amber-800"}`}>
                   {task.defaultDone ? (
                     <>
-                      <CheckCircle2 className="h-3 w-3 shrink-0" />
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                       <span>{locStrings.completed}</span>
                     </>
                   ) : (
                     <>
-                      <Clock className="h-3 w-3 shrink-0" />
+                      <Clock className="h-4 w-4 shrink-0 text-amber-600" />
                       <span>{locStrings.scheduled}</span>
                     </>
                   )}
                 </span>
-                <span className="text-[10px] text-ink-secondary/70">{locStrings.tapToggle}</span>
+                <span className="text-[11px] font-bold text-ink-secondary">
+                  {task.defaultDone ? "✓ Completed" : "Tap to complete"}
+                </span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Emergency Caregiver & ASHA Worker Quick-Connect SOS */}
-      <div className="rounded-2xl border-3 border-black bg-gradient-to-r from-red-50 via-amber-50 to-orange-50 p-4 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 border-black bg-brick text-white shadow-xs">
-            <PhoneCall className="h-5 w-5" />
+      {/* Reassuring Family Caregiver & PHC Nurse Connect */}
+      <div className="rounded-3xl border-3 border-black bg-[#FFF9EE] p-5 sm:p-6 shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-black bg-amber-400 text-ink shadow-xs">
+            <PhoneCall className="h-7 w-7 stroke-[2.2]" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-black uppercase tracking-wider text-brick flex items-center gap-1">
-                <AlertCircle className="h-3.5 w-3.5" /> {locStrings.caregiverBadge}
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 border border-emerald-800/40 px-3 py-0.5 text-xs font-black text-emerald-950 uppercase tracking-wider">
+                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                {locStrings.caregiverBadge}
               </span>
             </div>
-            <h3 className="font-serif text-sm sm:text-base font-black text-ink">
+            <h3 className="font-serif text-base sm:text-lg font-black text-ink mt-1">
               {locStrings.caregiverTitle}
             </h3>
           </div>
@@ -450,11 +473,11 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
         <button
           type="button"
           onClick={handleSos}
-          className={`btn-tactile w-full sm:w-auto px-4 py-2.5 rounded-xl border-2 border-black font-black text-xs shadow-[2px_2px_0px_#000] cursor-pointer flex items-center justify-center gap-2 ${
-            sosActive ? "bg-emerald-700 text-white" : "bg-brick text-white hover:bg-red-700"
+          className={`btn-tactile w-full sm:w-auto px-7 py-3.5 rounded-2xl border-3 border-black font-black text-sm sm:text-base shadow-[3px_3px_0px_#000] cursor-pointer flex items-center justify-center gap-2.5 transition-all active:scale-95 ${
+            sosActive ? "bg-emerald-600 text-white" : "bg-tea text-white hover:bg-emerald-800"
           }`}
         >
-          {sosActive ? <CheckCircle2 className="h-4 w-4" /> : <PhoneCall className="h-4 w-4" />}
+          {sosActive ? <CheckCircle2 className="h-5 w-5" /> : <PhoneCall className="h-5 w-5" />}
           <span>{sosActive ? locStrings.caregiverAlertSent : locStrings.callCaregiver}</span>
         </button>
       </div>

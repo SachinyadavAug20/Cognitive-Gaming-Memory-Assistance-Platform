@@ -10,10 +10,10 @@ export function ClinicalImpactBadges() {
             <Activity className="h-5 w-5 stroke-[2.5]" />
           </div>
           <h3 className="font-serif font-black text-base text-ink leading-tight">
-            18 Serious CDTx Games
+            18 Daily Brain Games
           </h3>
           <p className="text-xs text-ink-secondary mt-1 font-medium leading-relaxed">
-            Clinically calibrated across 5 cognitive domains, 3D motor kinematics, and daily memory recall.
+            Culturally calibrated across 5 cognitive domains, gentle hand movements, and daily memory recall.
           </p>
         </div>
         <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-tea uppercase tracking-wider flex items-center gap-1">

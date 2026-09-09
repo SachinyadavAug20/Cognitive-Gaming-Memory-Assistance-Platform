@@ -1,21 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 
-export const IDLE_TIMEOUT_MS = 3 * 60 * 1000;
+// 30 days (1 month) session duration in milliseconds
+export const IDLE_TIMEOUT_MS = 30 * 24 * 60 * 60 * 1000;
 
 const ACTIVITY_EVENTS: (keyof WindowEventMap)[] = [
   "mousemove",
   "keydown",
   "touchstart",
   "scroll",
+  "click",
 ];
 
 export function useIdleTimeout(timeoutMs: number = IDLE_TIMEOUT_MS) {
   const router = useRouter();
   const logout = useAuthStore((s) => s.logout);
+  const touchSession = useAuthStore((s) => s.touchSession);
+  const lastTouchRef = useRef(Date.now());
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -28,22 +32,30 @@ export function useIdleTimeout(timeoutMs: number = IDLE_TIMEOUT_MS) {
       router.push("/kiosk/login");
     };
 
-    const resetTimer = () => {
+    const handleActivity = () => {
+      // Throttle session renewal to at most once every 5 minutes on active usage
+      const now = Date.now();
+      if (now - lastTouchRef.current > 5 * 60 * 1000) {
+        lastTouchRef.current = now;
+        touchSession();
+      }
+
       if (timer) clearTimeout(timer);
       timer = setTimeout(logoutAndRedirect, timeoutMs);
     };
 
     ACTIVITY_EVENTS.forEach((event) =>
-      window.addEventListener(event, resetTimer, { passive: true })
+      window.addEventListener(event, handleActivity, { passive: true })
     );
 
-    resetTimer();
+    // Initial timeout (30 days)
+    timer = setTimeout(logoutAndRedirect, timeoutMs);
 
     return () => {
       ACTIVITY_EVENTS.forEach((event) =>
-        window.removeEventListener(event, resetTimer)
+        window.removeEventListener(event, handleActivity)
       );
       if (timer) clearTimeout(timer);
     };
-  }, [timeoutMs, logout, router]);
+  }, [timeoutMs, logout, touchSession, router]);
 }

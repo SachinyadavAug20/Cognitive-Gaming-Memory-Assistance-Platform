@@ -85,7 +85,7 @@ export function CaregiverSosButton({ className = "" }: CaregiverSosButtonProps) 
     <button
       onClick={state === "onTheWay" ? reset : handleCall}
       disabled={state === "sending"}
-      className={`fixed bottom-5 left-5 z-50 inline-flex max-w-[calc(100vw-2.5rem)] items-center gap-2 rounded-full px-5 py-3 text-sm font-black shadow-xl border-3 border-black transition-transform active:scale-95 ${
+      className={`fixed bottom-5 left-14 sm:left-6 z-50 inline-flex max-w-[calc(100vw-4rem)] items-center gap-2.5 rounded-full px-5 py-3 text-sm sm:text-base font-black shadow-[4px_4px_0px_#000] border-3 border-black transition-transform active:scale-95 ${
         state === "sent"
           ? "bg-emerald-600 text-white"
           : state === "onTheWay"

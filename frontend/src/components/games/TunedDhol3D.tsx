@@ -187,11 +187,13 @@ export function TunedDhol3D({ leftStrike, rightStrike, running }: TunedDhol3DPro
 
     const spinRequest = { value: true };
     let animationFrameId = 0;
-    const clock = new THREE.Clock();
+    let lastTime = performance.now();
 
     const animate = () => {
       if (!spinRequest.value) return;
-      const dt = clock.getDelta();
+      const now = performance.now();
+      const dt = Math.min((now - lastTime) * 0.001, 0.1);
+      lastTime = now;
 
       const group = drumGroupRef.current;
       if (group) {

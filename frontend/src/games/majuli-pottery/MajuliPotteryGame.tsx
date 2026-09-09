@@ -292,7 +292,7 @@ export function MajuliPotteryGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Tactile Motor Praxis // Module CDTx-20
+                Majuli Pottery Craft
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-amber-900" />

@@ -284,13 +284,16 @@ export function Capsule3DScene({
     scene.add(bgStars);
 
     // 8. Animation Loop with Parallax Smoothing & Hotspot Hover Raycast
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
+    let lastTime = startTime;
     let curX = 0;
     let curY = 0;
 
     const animate = () => {
-      const dt = clock.getDelta();
-      const time = clock.getElapsedTime();
+      const now = performance.now();
+      const dt = Math.min((now - lastTime) * 0.001, 0.1);
+      lastTime = now;
+      const time = (now - startTime) * 0.001;
 
       // Camera interpolation: Autopilot Ken Burns trajectory or user gaze/pointer
       if (autopilot) {

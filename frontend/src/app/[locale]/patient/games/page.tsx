@@ -30,13 +30,11 @@ import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
 import { ArrowEscape } from "@/components/games/ArrowEscape";
 import { BihuDholBeats } from "@/components/games/BihuDholBeats";
 import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
-import { VerifiedStampBadge } from "@/components/games/VerifiedStampBadge";
-import { CaregiverModeToggle } from "@/components/games/CaregiverModeToggle";
-import { useGameVerificationStore } from "@/store/useGameVerificationStore";
 import { speakText, unlockAudio } from "@/lib/sound";
 import { getGameStrings, getHubStrings } from "@/lib/gameI18n";
+import { PatientBottomLogout } from "@/components/patient/PatientBottomLogout";
 
-type FilterKey = "all" | "verified" | ClinicalDomain;
+type FilterKey = "all" | ClinicalDomain;
 type ActiveModalGame =
   | "day-in-my-world"
   | "majuli-walk"
@@ -50,13 +48,11 @@ export default function GamesHubPage() {
   const t = useTranslations("games");
   const hub = getHubStrings(locale);
   const { detail, loading, error, reload } = usePatientDetail();
-  const { isGameVerified } = useGameVerificationStore();
   const [selectedFilter, setSelectedFilter] = useState<FilterKey>("all");
   const [activeModalGame, setActiveModalGame] = useState<ActiveModalGame>(null);
 
   const filteredGames = GAMES.filter((g) => {
     if (selectedFilter === "all") return true;
-    if (selectedFilter === "verified") return isGameVerified(g.id);
     return g.category === selectedFilter;
   });
 
@@ -83,6 +79,7 @@ export default function GamesHubPage() {
                 {activeModalGame === "day-in-my-world" && dayInWorld.title}
                 {activeModalGame === "majuli-walk" && majuliWalk.title}
                 {activeModalGame === "tea-harvest-vision" && teaHarvest.title}
+                {activeModalGame === "arrow-escape" && arrowEscape.title}
                 {activeModalGame === "bihu-dhol" && bihuDhol.title}
               </span>
             </div>
@@ -107,63 +104,22 @@ export default function GamesHubPage() {
         </div>
       )}
 
-      {/* Header */}
-      <div className="mb-6 rounded-3xl border-4 border-black bg-surface p-5 sm:p-6 shadow-[6px_6px_0px_#000]">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-1.5 max-w-2xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-black bg-amber-200 px-3 py-0.5 text-[11px] font-black uppercase tracking-wider text-amber-950 shadow-xs">
-                <ShieldCheck className="h-3.5 w-3.5 text-teal-800" />
-                {hub.headerSub}
-              </span>
-              <span className="rounded-full bg-emerald-100 border border-emerald-800/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-900">
-                Clinical CDTx Protocol
-              </span>
-            </div>
-
-            <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2.5 pt-1">
-              <Brain className="h-8 w-8 text-tea shrink-0" /> {hub.headerTitle}
-            </h1>
-            <p className="text-xs sm:text-sm font-semibold text-ink-secondary leading-relaxed">
-              {hub.headerDesc}
-            </p>
-
-            {/* Clinical Highlights Pill Strip */}
-            <div className="flex flex-wrap items-center gap-3 pt-2 text-[11px] font-bold text-ink-secondary">
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> 4 Flagship Interactive Modules
-              </span>
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> 25+ Clinically Calibrated Therapies
-              </span>
-              <span className="flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" /> 11 Regional Dialects
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <CaregiverModeToggle />
-
-            <button
-              type="button"
-              onClick={() => handleSpeak(`${hub.headerTitle}. ${hub.headerDesc}`)}
-              className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-100 px-3 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
-              title={hub.listenGuide}
-            >
-              <Volume2 className="h-4 w-4 text-amber-900" />
-              <span className="hidden sm:inline">{hub.listenGuide}</span>
-            </button>
-
-            <Link
-              href="/patient"
-              className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-4 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Back to Routine</span>
-            </Link>
-          </div>
-        </div>
+      {/* Page Title Bar - Minimal & Accessible (No redundant card box, no duplicate back button) */}
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2.5">
+          <Brain className="h-7 w-7 sm:h-8 sm:w-8 text-tea shrink-0" />
+          <span>{hub.headerTitle}</span>
+        </h1>
+        <button
+          type="button"
+          onClick={() => handleSpeak(hub.headerTitle)}
+          className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 px-3.5 py-2 text-xs sm:text-sm font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
+          title={hub.listenGuide}
+          aria-label={hub.listenGuide}
+        >
+          <Volume2 className="h-4 w-4 text-amber-900" />
+          <span>{hub.listenGuide}</span>
+        </button>
       </div>
 
       {/* ========================================================================= */}
@@ -173,33 +129,19 @@ export default function GamesHubPage() {
         {/* Flagship: A Day in My World 3D Story Campaign Banner */}
         <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5 text-amber-200" />
-              <span>{hub.flagshipBadge}</span>
-            </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
               {dayInWorld.introTitle || dayInWorld.title}
             </h2>
-            <p className="text-xs sm:text-sm font-medium text-amber-100 max-w-xl leading-relaxed">
+            <p className="text-sm sm:text-base font-semibold text-amber-100 max-w-xl leading-relaxed">
               {dayInWorld.introSubtitle}
             </p>
-
-            {/* Chapter progress preview pills */}
-            <div className="hidden sm:flex flex-wrap items-center gap-1.5 pt-1 text-[10px] font-black uppercase tracking-wider text-amber-100">
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 1: Morning</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 2: Tea Essentials</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 3: Majuli Walk</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 4: Market Barter</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 5: Courtyard</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 6: Evening Calm</span>
-            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
             <button
               type="button"
               onClick={() => handleSpeak(`${dayInWorld.title}. ${dayInWorld.audioPrompt}`)}
-              className="btn-tactile rounded-2xl border-3 border-black bg-amber-200 p-3.5 text-black shadow-[4px_4px_0px_#000] hover:bg-amber-300 cursor-pointer"
+              className="btn-tactile rounded-2xl border-3 border-black bg-amber-200 p-3.5 text-black shadow-[3px_3px_0px_#000] hover:bg-amber-300 cursor-pointer"
               title={hub.listenGuide}
             >
               <Volume2 className="h-5 w-5" />
@@ -207,56 +149,39 @@ export default function GamesHubPage() {
             <button
               type="button"
               onClick={() => setActiveModalGame("day-in-my-world")}
-              className="btn-tactile rounded-2xl border-3 border-black bg-white px-5 py-3 text-sm font-black text-amber-950 shadow-[4px_4px_0px_#000] hover:bg-amber-100 flex items-center gap-2 cursor-pointer"
+              className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm sm:text-base font-black text-amber-950 shadow-[4px_4px_0px_#000] hover:bg-amber-100 flex items-center gap-2.5 cursor-pointer"
             >
-              <Play className="h-4 w-4 fill-amber-950" />
+              <Play className="h-5 w-5 fill-amber-950" />
               <span>{hub.flagshipCta}</span>
             </button>
-            <VerifiedStampBadge
-              gameId="day-in-my-world"
-              gameTitle={dayInWorld.title}
-              gameDomain="Reminiscence & IADL"
-              size="lg"
-            />
           </div>
         </div>
 
-        {/* Flagship Feature 1: Echoes of Home — Multi-Sensory Memory Capsule */}
+        {/* Feature 1: Echoes of Home — Multi-Sensory Memory Capsule */}
         <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-900 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-300/25 border border-teal-300/40 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm text-teal-200">
-              <Sparkles className="h-3.5 w-3.5 text-teal-300" />
-              <span>Multi-Sensory Memory Capsule</span>
-            </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
-              Echoes of Home (3D & Soundscape)
+              Echoes of Home (Sound & Memories)
             </h2>
-            <p className="text-xs sm:text-sm font-medium text-teal-100 max-w-xl leading-relaxed">
-              Step inside personal photos transformed into living 3D spatial scenes. Listen to procedural rain, river waves, namghar bells, and family voice notes with webcam head-tracking and Ollama AI guided narration.
+            <p className="text-sm sm:text-base font-semibold text-teal-100 max-w-xl leading-relaxed">
+              Step inside family photos brought gently to life. Listen to soothing sounds of rain, rivers, temple bells, and loving family voices.
             </p>
-
-            <div className="hidden sm:flex flex-wrap items-center gap-1.5 pt-1 text-[10px] font-black uppercase tracking-wider text-teal-200">
-              <span className="rounded-md bg-black/30 px-2 py-0.5">3D Spatial Mesh</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Webcam Head-Tracking</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Procedural Soundscapes</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ollama AI Variation</span>
-            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
             <button
               type="button"
-              onClick={() => handleSpeak("Echoes of Home. Reconnect with memories in 3D with sounds of rain, rivers, temple bells, and family voices.")}
-              className="btn-tactile rounded-2xl border-3 border-black bg-teal-300 p-3.5 text-black shadow-[4px_4px_0px_#000] hover:bg-teal-200 cursor-pointer"
+              onClick={() => handleSpeak("Echoes of Home. Reconnect with memories with sounds of rain, rivers, temple bells, and family voices.")}
+              className="btn-tactile rounded-2xl border-3 border-black bg-teal-300 p-3.5 text-black shadow-[3px_3px_0px_#000] hover:bg-teal-200 cursor-pointer"
               title={hub.listenGuide}
             >
               <Volume2 className="h-5 w-5" />
             </button>
             <Link
               href="/patient/echoes-of-home"
-              className="btn-tactile rounded-2xl border-3 border-black bg-white px-5 py-3 text-sm font-black text-teal-950 shadow-[4px_4px_0px_#000] hover:bg-teal-50 flex items-center gap-2 cursor-pointer"
+              className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm sm:text-base font-black text-teal-950 shadow-[4px_4px_0px_#000] hover:bg-teal-50 flex items-center gap-2.5 cursor-pointer"
             >
-              <Play className="h-4 w-4 fill-teal-950" />
+              <Play className="h-5 w-5 fill-teal-950" />
               <span>Open Capsule Vault</span>
             </Link>
           </div>
@@ -269,13 +194,13 @@ export default function GamesHubPage() {
           </span>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {/* 1. Majuli Village Walk (3D Spatial Memory) */}
           <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#2D5A27] to-[#1E3F1A] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="rounded-full bg-amber-400 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm flex items-center gap-1">
-                  <Footprints className="h-3.5 w-3.5" /> 3D Spatial
+                  <Footprints className="h-3.5 w-3.5" /> Walk & Explore
                 </span>
                 <button
                   type="button"
@@ -296,32 +221,24 @@ export default function GamesHubPage() {
             </div>
 
             <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-[11px] font-bold text-white/80">GSAP Camera</span>
-              <div className="flex items-center gap-2.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setActiveModalGame("majuli-walk")}
-                  className="btn-tactile rounded-xl border-2 border-black bg-amber-400 px-4 py-2 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-300 flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Play className="h-3.5 w-3.5 fill-black" />
-                  <span>{hub.play3D}</span>
-                </button>
-                <VerifiedStampBadge
-                  gameId="majuli-walk"
-                  gameTitle={majuliWalk.title}
-                  gameDomain="3D Spatial Memory"
-                  size="md"
-                />
-              </div>
+              <span className="text-xs font-bold text-white/90">Peaceful Stroll</span>
+              <button
+                type="button"
+                onClick={() => setActiveModalGame("majuli-walk")}
+                className="btn-tactile rounded-xl border-2 border-black bg-amber-400 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-300 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Play className="h-4 w-4 fill-black" />
+                <span>{hub.play3D}</span>
+              </button>
             </div>
           </div>
 
-          {/* 2. Tea Garden Harvest (Webcam Motion Tracking) */}
+          {/* 2. Tea Garden Harvest (Motion Tracking) */}
           <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#14532D] to-[#064E3B] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="rounded-full bg-emerald-400 px-3 py-1 text-[10px] font-black uppercase text-emerald-950 shadow-sm flex items-center gap-1">
-                  <Camera className="h-3.5 w-3.5" /> Motion Vision
+                  <Camera className="h-3.5 w-3.5" /> Hand Motion
                 </span>
                 <button
                   type="button"
@@ -342,32 +259,24 @@ export default function GamesHubPage() {
             </div>
 
             <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-[11px] font-bold text-white/80">Webcam Flow</span>
-              <div className="flex items-center gap-2.5 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setActiveModalGame("tea-harvest-vision")}
-                  className="btn-tactile rounded-xl border-2 border-black bg-emerald-400 px-4 py-2 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-emerald-300 flex items-center gap-1.5 cursor-pointer"
-                >
-                  <Play className="h-3.5 w-3.5 fill-black" />
-                  <span>{hub.playVision}</span>
-                </button>
-                <VerifiedStampBadge
-                  gameId="tea-harvest"
-                  gameTitle={teaHarvest.title}
-                  gameDomain="Webcam Kinematics"
-                  size="md"
-                />
-              </div>
+              <span className="text-xs font-bold text-white/90">Gentle Plucking</span>
+              <button
+                type="button"
+                onClick={() => setActiveModalGame("tea-harvest-vision")}
+                className="btn-tactile rounded-xl border-2 border-black bg-emerald-400 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-emerald-300 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Play className="h-4 w-4 fill-black" />
+                <span>{hub.playVision}</span>
+              </button>
             </div>
           </div>
 
-          {/* 3. Bihu Dhol Beats & Grounding (Rhythm & Auditory-Motor) */}
+          {/* 3. Bihu Dhol Beats & Grounding (Rhythm & Music) */}
           <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#78350F] to-[#451A03] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="rounded-full bg-amber-300 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm flex items-center gap-1">
-                  <Activity className="h-3.5 w-3.5" /> Web Audio Drum
+                  <Activity className="h-3.5 w-3.5" /> Folk Beats
                 </span>
                 <button
                   type="button"
@@ -388,119 +297,135 @@ export default function GamesHubPage() {
             </div>
 
             <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-[11px] font-bold text-amber-200">Adaptive BPM</span>
-              <div className="flex items-center gap-2.5 shrink-0">
+              <span className="text-xs font-bold text-amber-200">Gentle Rhythm</span>
+              <button
+                type="button"
+                onClick={() => setActiveModalGame("bihu-dhol")}
+                className="btn-tactile rounded-xl border-2 border-black bg-amber-300 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-200 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Play className="h-4 w-4 fill-black" />
+                <span>{hub.playDrum}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 4. Pathways: Bamboo Arrow Labyrinth (Direction & Focus) */}
+          <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#0F2B38] to-[#0A1F29] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <span className="rounded-full bg-cyan-300 px-3 py-1 text-[10px] font-black uppercase text-cyan-950 shadow-sm flex items-center gap-1">
+                  <Compass className="h-3.5 w-3.5" /> Arrow Paths
+                </span>
                 <button
                   type="button"
-                  onClick={() => setActiveModalGame("bihu-dhol")}
-                  className="btn-tactile rounded-xl border-2 border-black bg-amber-300 px-4 py-2 text-xs font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-200 flex items-center gap-1.5 cursor-pointer"
+                  onClick={() => handleSpeak(`${arrowEscape.title}. ${arrowEscape.audioPrompt}`)}
+                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
+                  title={hub.listenGuide}
                 >
-                  <Play className="h-3.5 w-3.5 fill-black" />
-                  <span>{hub.playDrum}</span>
+                  <Volume2 className="h-3.5 w-3.5" />
                 </button>
-                <VerifiedStampBadge
-                  gameId="bihu-dhol"
-                  gameTitle={bihuDhol.title}
-                  gameDomain="Auditory-Motor Drum"
-                  size="md"
-                />
               </div>
+
+              <h2 className="font-serif text-lg sm:text-xl font-black text-white">
+                {arrowEscape.title}
+              </h2>
+              <p className="text-xs sm:text-sm font-medium text-white/85 mt-1.5 leading-relaxed">
+                {arrowEscape.introSubtitle}
+              </p>
+            </div>
+
+            <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
+              <span className="text-xs font-bold text-cyan-200">Clear Paths</span>
+              <button
+                type="button"
+                onClick={() => setActiveModalGame("arrow-escape")}
+                className="btn-tactile rounded-xl border-2 border-black bg-cyan-300 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-cyan-200 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Play className="h-4 w-4 fill-black" />
+                <span>Play Game</span>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-
-      {/* 5 Evidence-Based Clinical Domain Filter Tabs + Field Expert Verified */}
+      {/* Friendly Domain Filter Tabs */}
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={() => setSelectedFilter("all")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "all"
               ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Layers className="h-3.5 w-3.5" />
+          <Layers className="h-4 w-4" />
           <span>{hub.filterAll} ({GAMES.length})</span>
         </button>
 
         <button
           type="button"
-          onClick={() => setSelectedFilter("verified")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "verified"
-              ? "border-black bg-emerald-800 text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-          }`}
-        >
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-          <span>Field Expert Verified ({GAMES.filter((g) => isGameVerified(g.id)).length})</span>
-        </button>
-
-        <button
-          type="button"
           onClick={() => setSelectedFilter("vision-3d")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "vision-3d"
               ? "border-black bg-teal-800 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Sparkles className="h-3.5 w-3.5" />
+          <Sparkles className="h-4 w-4" />
           <span>{hub.filterVision3D} ({GAMES.filter((g) => g.category === "vision-3d").length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setSelectedFilter("reminiscence")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "reminiscence"
               ? "border-black bg-purple-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Brain className="h-3.5 w-3.5" />
+          <Brain className="h-4 w-4" />
           <span>{hub.filterReminiscence} ({GAMES.filter((g) => g.category === "reminiscence").length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setSelectedFilter("attention")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "attention"
               ? "border-black bg-emerald-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Compass className="h-3.5 w-3.5" />
+          <Compass className="h-4 w-4" />
           <span>{hub.filterAttention} ({GAMES.filter((g) => g.category === "attention").length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setSelectedFilter("iadl")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "iadl"
               ? "border-black bg-amber-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Utensils className="h-3.5 w-3.5" />
+          <Utensils className="h-4 w-4" />
           <span>{hub.filterIadl} ({GAMES.filter((g) => g.category === "iadl").length})</span>
         </button>
 
         <button
           type="button"
           onClick={() => setSelectedFilter("calm")}
-          className={`rounded-xl border-2 px-3.5 py-1.5 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
             selectedFilter === "calm"
               ? "border-black bg-teal-700 text-white shadow-[2px_2px_0px_#000]"
               : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
           }`}
         >
-          <Flower2 className="h-3.5 w-3.5" />
+          <Flower2 className="h-4 w-4" />
           <span>{hub.filterCalm} ({GAMES.filter((g) => g.category === "calm").length})</span>
         </button>
       </div>
@@ -522,26 +447,19 @@ export default function GamesHubPage() {
                 key={game.id}
                 href={`/patient/games/${game.id}`}
                 data-voice-desc={voiceText}
-                className="game-card btn-tactile group flex flex-col justify-between gap-3 rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000] transition-transform hover:scale-[1.02] cursor-pointer relative"
+                className="game-card btn-tactile group flex flex-col justify-between gap-4 rounded-3xl border-3 border-black bg-surface p-5 shadow-[4px_4px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative"
               >
-                <div className="flex items-start gap-3.5">
+                <div className="flex items-start gap-4">
                   <div
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-3 border-black text-white shadow-[3px_3px_0px_#000] ${game.accent}`}
+                    className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-3 border-black text-white shadow-[3px_3px_0px_#000] ${game.accent}`}
                   >
-                    <Icon className="h-7 w-7 text-white stroke-[2.5]" />
+                    <Icon className="h-8 w-8 text-white stroke-[2.5]" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center justify-between gap-1.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-black text-ink leading-tight">
-                          {cardTitle}
-                        </span>
-                        {game.recommended && (
-                          <span className="rounded-full bg-marigold px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-white shadow-sm flex items-center gap-1">
-                            <ShieldCheck className="h-2.5 w-2.5" /> CDTx
-                          </span>
-                        )}
-                      </div>
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-lg sm:text-xl font-black text-ink leading-snug">
+                        {cardTitle}
+                      </span>
 
                       {/* Quick Audio Preview Button */}
                       <button
@@ -551,36 +469,27 @@ export default function GamesHubPage() {
                           e.stopPropagation();
                           handleSpeak(voiceText);
                         }}
-                        className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-black/30 bg-amber-100 text-ink hover:bg-amber-300 hover:border-black cursor-pointer shadow-xs"
+                        className="btn-tactile flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-ink hover:bg-amber-200 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
                         title={hub.listenGuide}
                         aria-label={`Listen to description of ${cardTitle}`}
                       >
-                        <Volume2 className="h-3.5 w-3.5" />
+                        <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-amber-900" />
                       </button>
                     </div>
 
-                    <span className="inline-flex items-center gap-1 mt-1 rounded bg-tea-light px-2 py-0.5 text-[10px] font-extrabold text-tea border border-tea/30">
-                      <Activity className="h-3 w-3" /> {game.domain}
-                    </span>
-                    <p className="mt-1.5 text-xs font-semibold text-ink-secondary line-clamp-2 leading-relaxed">
+                    <p className="mt-2 text-sm sm:text-base font-semibold text-ink-secondary line-clamp-2 leading-relaxed">
                       {cardDesc}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between border-t-2 border-black/10 pt-2 text-[11px] font-bold text-ink-secondary">
-                  <span>{levelLabel}</span>
+                <div className="flex items-center justify-between border-t-2 border-black/15 pt-3 text-xs sm:text-sm font-bold text-ink-secondary">
+                  <span className="text-tea font-black">{levelLabel}</span>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="rounded-lg bg-tea px-2.5 py-1 text-xs font-black text-white group-hover:bg-emerald-800 flex items-center gap-1">
+                    <span className="btn-tactile rounded-xl bg-tea px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-black text-white group-hover:bg-emerald-800 border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-2">
                       <span>{hub.startSession}</span>
-                      <ArrowRight className="h-3 w-3" />
+                      <ArrowRight className="h-4 w-4" />
                     </span>
-                    <VerifiedStampBadge
-                      gameId={game.id}
-                      gameTitle={cardTitle}
-                      gameDomain={game.domain}
-                      size="sm"
-                    />
                   </div>
                 </div>
               </Link>
@@ -588,6 +497,9 @@ export default function GamesHubPage() {
           })}
         </div>
       )}
+
+      {/* Discreet bottom caregiver / user-switch logout with confirmation */}
+      <PatientBottomLogout />
     </div>
   );
 }

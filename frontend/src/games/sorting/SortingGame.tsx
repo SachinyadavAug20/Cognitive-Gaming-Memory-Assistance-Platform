@@ -26,7 +26,7 @@ import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
-import { playCorrect, playIncorrect, playComplete, playPress, playLifeSong } from "@/lib/sound";
+import { playCorrect, playComplete, playPress, playLifeSong, playWaterRipple } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 import { recordGameSession } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
@@ -34,6 +34,7 @@ import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { resolveAdaptiveLevel } from "@/lib/telemetry";
 import { getGameStrings } from "@/lib/gameI18n";
+import { calculateVanishingCue } from "@/lib/errorlessLearning";
 
 function GameShell({
   title,
@@ -123,7 +124,20 @@ export function SortingGame() {
   const [done, setDone] = useState(false);
   const [taps, setTaps] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
+  const [hesitationSeconds, setHesitationSeconds] = useState(0);
+  const [attemptCount, setAttemptCount] = useState(0);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
+
+  // Track hesitation for errorless vanishing cues
+  useEffect(() => {
+    if (done) return;
+    const timer = setInterval(() => {
+      setHesitationSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [done, index, picked]);
+
+  const scaffold = calculateVanishingCue(hesitationSeconds, attemptCount);
 
   function resetGame() {
     setQueue(shuffle(ITEMS));
@@ -134,6 +148,8 @@ export function SortingGame() {
     setDone(false);
     setTaps(0);
     setErrorCount(0);
+    setHesitationSeconds(0);
+    setAttemptCount(0);
     setStartedAt(new Date().toISOString());
   }
 
@@ -174,6 +190,8 @@ export function SortingGame() {
       const items = [...placed, current];
       setPlaced(items);
       setPicked(false);
+      setAttemptCount(0);
+      setHesitationSeconds(0);
       speak(
         `${itemName} ${normLocale === "hi" ? "सही टोकरी में रखा गया!" : normLocale === "as" ? "সঠিক পাচিত ৰখা হ'ল!" : "placed correctly!"}`,
         locale,
@@ -185,11 +203,12 @@ export function SortingGame() {
         setIndex((i) => i + 1);
       }
     } else {
-      playIncorrect();
+      playWaterRipple();
       setErrorCount((v) => v + 1);
+      setAttemptCount((a) => a + 1);
       setShakeCat(category);
       speak(
-        `${itemName} ${normLocale === "hi" ? "दूसरी टोकरी में आता है। आराम से सोचें।" : normLocale === "as" ? "অন্য পাচিতহে থাকিব। মন দি চাওক।" : "belongs in the other basket. Take your time."}`,
+        `${itemName} ${normLocale === "hi" ? "चमकती हुई टोकरी में आता है। आराम से देखें।" : normLocale === "as" ? "পোহৰ হৈ থকা পাচিতহে থাকিব। মন দি চাওক।" : "belongs in the highlighted basket. Notice the golden beacon."}`,
         locale,
         rate
       );
@@ -284,49 +303,70 @@ export function SortingGame() {
           />
 
           {/* TWO TRADITIONAL BASKET TARGET TRAYS */}
-          <div className="grid w-full max-w-xl grid-cols-2 gap-3 sm:gap-4">
-            <button
-              type="button"
-              onClick={() => placeIn("kitchen")}
-              aria-label="Kitchen Tray"
-              className={`flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-3xl border-[3px] border-black bg-amber-50 p-4 shadow-[4px_4px_0px_#000] transition-transform cursor-pointer hover:bg-amber-100 ${
-                shakeCat === "kitchen" ? "animate-shake bg-rose-200" : ""
-              } ${picked ? "ring-4 ring-amber-400 animate-pulse" : ""}`}
-            >
-              <Utensils className="h-10 w-10 text-amber-800" />
-              <span className="text-base sm:text-lg font-black text-amber-950">
-                {normLocale === "hi" ? "रसोई घर (Kitchen)" : normLocale === "as" ? "ৰান্ধনি শাল (Kitchen)" : "Kitchen Pantry"}
-              </span>
-              <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
-                {inBasket("kitchen").map((item) => (
-                  <span key={item.key} className="inline-flex">
-                    {renderSortItemIcon(item.key, "h-6 w-6")}
-                  </span>
-                ))}
-              </span>
-            </button>
+          {(() => {
+            const isTargetKitchen = current?.category === "kitchen";
+            const isTargetPrayer = current?.category === "prayer";
+            const showKitchenCue = picked && isTargetKitchen && (scaffold.intensity !== "none" || attemptCount > 0);
+            const showPrayerCue = picked && isTargetPrayer && (scaffold.intensity !== "none" || attemptCount > 0);
 
-            <button
-              type="button"
-              onClick={() => placeIn("prayer")}
-              aria-label="Prayer Tray"
-              className={`flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-3xl border-[3px] border-black bg-emerald-50 p-4 shadow-[4px_4px_0px_#000] transition-transform cursor-pointer hover:bg-emerald-100 ${
-                shakeCat === "prayer" ? "animate-shake bg-rose-200" : ""
-              } ${picked ? "ring-4 ring-emerald-400 animate-pulse" : ""}`}
-            >
-              <DiyaLampIcon className="h-10 w-10 text-emerald-800" />
-              <span className="text-base sm:text-lg font-black text-emerald-950">
-                {normLocale === "hi" ? "पूजा घर (Prayer)" : normLocale === "as" ? "নামঘৰ / গোসাঁই ঘৰ (Prayer)" : "Prayer & Culture"}
-              </span>
-              <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
-                {inBasket("prayer").map((item) => (
-                  <span key={item.key} className="inline-flex">
-                    {renderSortItemIcon(item.key, "h-6 w-6")}
+            return (
+              <div className="grid w-full max-w-xl grid-cols-2 gap-3 sm:gap-4">
+                <button
+                  type="button"
+                  onClick={() => placeIn("kitchen")}
+                  aria-label="Kitchen Tray"
+                  className={`flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-3xl border-[3px] border-black bg-amber-50 p-4 shadow-[4px_4px_0px_#000] transition-all cursor-pointer hover:bg-amber-100 ${
+                    shakeCat === "kitchen" ? "animate-shake bg-amber-100" : ""
+                  } ${
+                    showKitchenCue
+                      ? "ring-4 ring-amber-500 bg-amber-100 scale-105 animate-pulse shadow-lg"
+                      : picked
+                      ? "border-amber-700/60"
+                      : ""
+                  }`}
+                >
+                  <Utensils className="h-10 w-10 text-amber-800" />
+                  <span className="text-base sm:text-lg font-black text-amber-950">
+                    {normLocale === "hi" ? "रसोई घर (Kitchen)" : normLocale === "as" ? "ৰান্ধনি শাল (Kitchen)" : "Kitchen Pantry"}
                   </span>
-                ))}
-              </span>
-            </button>
-          </div>
+                  <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
+                    {inBasket("kitchen").map((item) => (
+                      <span key={item.key} className="inline-flex">
+                        {renderSortItemIcon(item.key, "h-6 w-6")}
+                      </span>
+                    ))}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => placeIn("prayer")}
+                  aria-label="Prayer Tray"
+                  className={`flex min-h-[160px] flex-col items-center justify-center gap-2 rounded-3xl border-[3px] border-black bg-emerald-50 p-4 shadow-[4px_4px_0px_#000] transition-all cursor-pointer hover:bg-emerald-100 ${
+                    shakeCat === "prayer" ? "animate-shake bg-emerald-100" : ""
+                  } ${
+                    showPrayerCue
+                      ? "ring-4 ring-emerald-500 bg-emerald-100 scale-105 animate-pulse shadow-lg"
+                      : picked
+                      ? "border-emerald-700/60"
+                      : ""
+                  }`}
+                >
+                  <DiyaLampIcon className="h-10 w-10 text-emerald-800" />
+                  <span className="text-base sm:text-lg font-black text-emerald-950">
+                    {normLocale === "hi" ? "पूजा घर (Prayer)" : normLocale === "as" ? "নামঘৰ / গোসাঁই ঘৰ (Prayer)" : "Prayer & Culture"}
+                  </span>
+                  <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
+                    {inBasket("prayer").map((item) => (
+                      <span key={item.key} className="inline-flex">
+                        {renderSortItemIcon(item.key, "h-6 w-6")}
+                      </span>
+                    ))}
+                  </span>
+                </button>
+              </div>
+            );
+          })()}
 
           <p className="text-sm sm:text-base font-black text-ink">
             {picked
@@ -348,6 +388,8 @@ export function SortingGame() {
                     isCurrent
                       ? picked
                         ? "scale-105 border-tea bg-tea-light shadow-[4px_4px_0px_#000] ring-4 ring-tea"
+                        : hesitationSeconds >= 6
+                        ? "scale-102 border-amber-600 bg-amber-50 shadow-[4px_4px_0px_#000] ring-4 ring-amber-400 animate-pulse"
                         : "border-black bg-white shadow-[3px_3px_0px_#000] hover:bg-amber-50"
                       : isDone
                       ? "border-emerald-700 bg-emerald-100 opacity-80"

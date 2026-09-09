@@ -174,10 +174,16 @@ export default function PatientDemoPage() {
                   <span className="rounded-full border border-black bg-amber-200 px-2.5 py-0.5 text-[10px] font-black uppercase text-amber-950">
                     Patient #101
                   </span>
-                  <span className="rounded-full bg-emerald-100 border border-emerald-800/30 px-2.5 py-0.5 text-[10px] font-black uppercase text-emerald-900">
-                    Diagnosis: MCI (CDR 0.5)
+                  <span
+                    suppressHydrationWarning
+                    className="rounded-full bg-emerald-100 border border-emerald-800/30 px-2.5 py-0.5 text-[10px] font-black uppercase text-emerald-900"
+                  >
+                    Mild Memory Support
                   </span>
-                  <span className="hidden sm:inline-flex rounded-full bg-purple-100 border border-purple-800/30 px-2.5 py-0.5 text-[10px] font-black uppercase text-purple-900">
+                  <span
+                    suppressHydrationWarning
+                    className="hidden sm:inline-flex rounded-full bg-purple-100 border border-purple-800/30 px-2.5 py-0.5 text-[10px] font-black uppercase text-purple-900"
+                  >
                     Bilingual: As / En / Hi
                   </span>
                 </div>
@@ -190,7 +196,7 @@ export default function PatientDemoPage() {
                 </p>
 
                 <div className="flex items-center gap-2 pt-1 text-[11px] font-bold text-ink-secondary">
-                  <span className="flex items-center gap-1">
+                  <span suppressHydrationWarning className="flex items-center gap-1">
                     <Calendar className="h-3.5 w-3.5 text-teal-800" /> {todayDateStr}
                   </span>
                   <span>•</span>
@@ -244,7 +250,7 @@ export default function PatientDemoPage() {
           <div className="space-y-2 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm">
               <Sparkles className="h-3.5 w-3.5 text-amber-200" />
-              <span>Flagship 3D Story Campaign • Saathi Companion</span>
+              <span>Interactive Story • Saathi Companion</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
               A Day in My World
@@ -275,7 +281,7 @@ export default function PatientDemoPage() {
             <VerifiedStampBadge
               gameId="day-in-my-world"
               gameTitle="A Day in My World"
-              gameDomain="Reminiscence & IADL"
+              gameDomain="Memories & Daily Life"
               size="lg"
             />
           </div>
@@ -286,20 +292,20 @@ export default function PatientDemoPage() {
           <div className="space-y-2 text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-300/25 border border-teal-300/40 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm text-teal-200">
               <Sparkles className="h-3.5 w-3.5 text-teal-300" />
-              <span>Feature 1 • Multi-Sensory Memory Capsule</span>
+              <span>Family Memory Capsule</span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
-              Echoes of Home (3D & Soundscape)
+              Echoes of Home (Sound & Memories)
             </h2>
             <p className="text-xs sm:text-sm font-medium text-teal-100 max-w-xl leading-relaxed">
-              Step inside personal photos transformed into subtle 3D living scenes. Listen to procedural rain, river waves, namghar bells, and family voice notes with webcam head-tracking and Ollama AI guided narration.
+              Step inside personal photos transformed into subtle 3D living scenes. Listen to soothing sounds of rain, rivers, temple bells, and family voice notes.
             </p>
 
             <div className="hidden sm:flex flex-wrap items-center gap-1.5 pt-1 text-[10px] font-black uppercase tracking-wider text-teal-200">
-              <span className="rounded-md bg-black/30 px-2 py-0.5">3D Spatial Mesh</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Webcam Head-Tracking</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Procedural Soundscapes</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ollama AI Variation</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Living Photos</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Look Around</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Nature Sounds</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Family Voice</span>
             </div>
           </div>
 
@@ -328,7 +334,7 @@ export default function PatientDemoPage() {
             <div className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-teal-800" />
               <h2 className="font-serif text-xl font-black text-ink">
-                Featured Cognitive Therapy Modules
+                Featured Daily Brain Games
               </h2>
             </div>
             <Link

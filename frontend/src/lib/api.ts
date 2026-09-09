@@ -10,6 +10,7 @@ import type {
   SurveillanceDemoResult,
   SurveillanceReading,
 } from "@/types/admin";
+import { getSessionCookie, clearSessionCookie } from "@/lib/authCookie";
 
 const AUTH_STORAGE_KEY = "cognicare-auth";
 
@@ -42,7 +43,20 @@ function handleSessionExpired(): void {
     return;
   }
   try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (raw) {
+      const state = JSON.parse(raw)?.state;
+      // If within 30-day client session validity, preserve session
+      if (state?.expiresAt && Date.now() < state.expiresAt) {
+        return;
+      }
+    }
+    const cookieData = getSessionCookie();
+    if (cookieData?.expiresAt && Date.now() < cookieData.expiresAt) {
+      return;
+    }
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    clearSessionCookie();
   } catch {
     // ignore storage failures
   }
@@ -70,10 +84,16 @@ function getAuthToken(): string | null {
     return null;
   }
   try {
+    let token: string | null = null;
     const raw = window.localStorage.getItem(AUTH_STORAGE_KEY);
-    if (!raw) return null;
-    const state = JSON.parse(raw)?.state;
-    const token = typeof state?.token === "string" ? state.token : null;
+    if (raw) {
+      const state = JSON.parse(raw)?.state;
+      token = typeof state?.token === "string" ? state.token : null;
+    }
+    if (!token) {
+      const cookieData = getSessionCookie();
+      token = cookieData?.token ?? null;
+    }
     // Mock demo tokens are client-side only and should not be passed to strict JWT interceptors
     if (token && token.startsWith("demo-")) {
       return null;

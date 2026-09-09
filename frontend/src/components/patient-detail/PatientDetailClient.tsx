@@ -24,6 +24,9 @@ import { TrajectoryHeatmap } from "@/components/biomarkers/TrajectoryHeatmap";
 import { CognitiveGamingProgressCard } from "@/components/patient-detail/CognitiveGamingProgressCard";
 import { CaregiverGameVerificationCard } from "@/components/patient-detail/CaregiverGameVerificationCard";
 import { CaregiverCapsuleVaultCard } from "@/components/capsule/CaregiverCapsuleVaultCard";
+import { ZaritBurdenCard } from "@/components/caregiver/ZaritBurdenCard";
+import { MultidomainLifestyleCard } from "@/components/caregiver/MultidomainLifestyleCard";
+import { ClinicalEvidenceModal } from "@/components/clinical/ClinicalEvidenceModal";
 
 function getStageBadgeStyle(stage?: string | null) {
   if (!stage) return "bg-surface-muted text-ink-secondary border-border-soft";
@@ -62,6 +65,7 @@ export function CaregiverPatientDetailClient({ patientId }: { patientId?: string
     return getFallbackPatient(id);
   });
   const [loading, setLoading] = useState(false);
+  const [showEvidenceModal, setShowEvidenceModal] = useState(false);
   const [lightbox, setLightbox] = useState<{
     title: string;
     text?: string | null;
@@ -135,6 +139,7 @@ export function CaregiverPatientDetailClient({ patientId }: { patientId?: string
         stageStyle={stageStyle}
         age={age}
         loading={loading}
+        onOpenEvidenceModal={() => setShowEvidenceModal(true)}
       />
 
       <div className="max-w-6xl mx-auto px-4 md:px-8 mt-8 space-y-8">
@@ -188,6 +193,12 @@ export function CaregiverPatientDetailClient({ patientId }: { patientId?: string
             {/* SECTION: Cognitive Gaming Telemetry & Adaptive AI Progress */}
             <CognitiveGamingProgressCard patientId={patient.id} />
 
+            {/* SECTION: Multidomain Lifestyle & ACTIVE Longitudinal Booster Protocol */}
+            <MultidomainLifestyleCard patientName={patient.name} />
+
+            {/* SECTION: Zarit Burden Interview (ZBI-12) Caregiver Strain & Resilience */}
+            <ZaritBurdenCard patientId={patient.id} patientName={patient.name} />
+
             {/* SECTION: Field Expert & Caregiver Game Verifications */}
             <CaregiverGameVerificationCard patientId={patient.id} />
 
@@ -234,6 +245,11 @@ export function CaregiverPatientDetailClient({ patientId }: { patientId?: string
           closeLabel={t("lightbox.close")}
           listenLabel={t("lightbox.listen")}
           speakingLabel={t("lightbox.speaking")}
+        />
+
+        <ClinicalEvidenceModal
+          isOpen={showEvidenceModal}
+          onClose={() => setShowEvidenceModal(false)}
         />
       </div>
     </div>

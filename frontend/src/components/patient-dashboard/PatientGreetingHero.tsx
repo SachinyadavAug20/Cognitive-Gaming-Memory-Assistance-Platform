@@ -51,9 +51,9 @@ export function PatientGreetingHero({
           </div>
           <div>
             <div className="flex items-center gap-1.5 mb-0.5">
-              <Paperclip className="h-3.5 w-3.5 text-tea" />
-              <span className="text-[10px] font-black uppercase tracking-wider text-tea">
-                MDoNER Cognitive Therapy Session
+              <Sparkles className="h-3.5 w-3.5 text-tea" />
+              <span className="text-xs font-black text-tea">
+                Daily Morning Care
               </span>
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink">
@@ -76,7 +76,7 @@ export function PatientGreetingHero({
           </button>
           <AudioToggle />
           <span className="inline-flex items-center gap-1 text-[11px] font-black uppercase text-tea bg-tea-light px-2.5 py-1 rounded-xl border border-tea/30">
-            <ShieldCheck className="h-3.5 w-3.5" /> Caregiver Synced
+            <ShieldCheck className="h-3.5 w-3.5" /> Family Connected
           </span>
         </div>
       </div>

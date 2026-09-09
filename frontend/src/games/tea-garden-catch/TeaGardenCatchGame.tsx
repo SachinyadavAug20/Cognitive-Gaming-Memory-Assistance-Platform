@@ -347,7 +347,7 @@ export function TeaGardenCatchGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Advanced OpenCV Kinesthetic // Module CDTx-20
+                Hand Movement & Harvest
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-teal-900" />

@@ -208,7 +208,7 @@ export function StorybookGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Heritage Reminiscence // Module CDTx-03
+                Heritage Storybook
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-tea" />

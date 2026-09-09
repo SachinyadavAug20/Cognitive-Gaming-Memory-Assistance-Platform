@@ -29,13 +29,13 @@ export function DailyMoodTracker({
   moodLabels,
 }: DailyMoodTrackerProps) {
   return (
-    <div className={`${CARD} bg-surface p-4 flex flex-col justify-between text-left min-h-[220px]`}>
+    <div className={`${CARD} bg-surface p-5 sm:p-6 flex flex-col justify-between text-left min-h-[250px]`}>
       <div>
-        <div className="flex items-center gap-2">
-          <Smile className="h-4 w-4 text-tea" />
-          <h3 className="font-serif text-lg font-black text-ink">{title}</h3>
+        <div className="flex items-center gap-2.5 border-b-2 border-black/10 pb-2.5">
+          <Smile className="h-5 w-5 text-tea" />
+          <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">{title}</h3>
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-4 grid grid-cols-3 gap-3">
           {MOODS.map((mood) => {
             const IconComponent = mood.icon;
             const isSelected = lastMood === mood.key;
@@ -45,12 +45,12 @@ export function DailyMoodTracker({
                 type="button"
                 onClick={() => onChooseMood(mood.key)}
                 aria-label={moodLabels[mood.key]}
-                className={`btn-tactile flex min-h-[82px] flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-black p-2 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all ${
+                className={`btn-tactile flex min-h-[110px] sm:min-h-[125px] flex-col items-center justify-center gap-2 rounded-2xl border-3 border-black p-3 text-sm font-black shadow-[3px_3px_0px_#000] cursor-pointer transition-all ${
                   mood.color
-                } ${isSelected ? "ring-3 ring-black scale-105" : ""}`}
+                } ${isSelected ? "ring-4 ring-black scale-105" : "hover:scale-[1.02]"}`}
               >
-                <IconComponent className="h-6 w-6 shrink-0" />
-                <span className="leading-tight text-center text-[11px] font-black">
+                <IconComponent className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 stroke-[2.2]" />
+                <span className="leading-tight text-center text-xs sm:text-sm font-black">
                   {moodLabels[mood.key]}
                 </span>
               </button>
@@ -59,7 +59,7 @@ export function DailyMoodTracker({
         </div>
       </div>
       {lastMood && thanksMessage && (
-        <p className="mt-3 text-center text-xs font-black text-ink border-t border-black/10 pt-2">
+        <p className="mt-4 text-center text-sm sm:text-base font-black text-tea-dark border-t-2 border-black/10 pt-3">
           {thanksMessage}
         </p>
       )}

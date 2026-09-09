@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
@@ -147,6 +147,21 @@ export function MemoryDetectiveGame() {
     }
   };
 
+  // Errorless Learning: Automated vanishing cue progression if patient hesitates > 8.5 seconds
+  useEffect(() => {
+    if (phase !== "play") return;
+    const timer = setTimeout(() => {
+      if (clueLevel === 1 && cluesData) {
+        setClueLevel(2);
+        speak(cluesData.specificClue2, locale, rate);
+      } else if (clueLevel === 2 && cluesData) {
+        setClueLevel(3);
+        speak(cluesData.directClue3, locale, rate);
+      }
+    }, 8500);
+    return () => clearTimeout(timer);
+  }, [phase, clueLevel, currentTargetIndex, cluesData, locale, rate]);
+
   const handleCardSelection = (candidate: FamilyMemberItem) => {
     setTaps((t) => t + 1);
     stopSpeaking();
@@ -234,7 +249,7 @@ export function MemoryDetectiveGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Spaced Retrieval // Module CDTx-15
+                Memory Detective
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-tea" />
