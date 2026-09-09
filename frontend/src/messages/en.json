@@ -633,8 +633,8 @@
     }
   },
   "games": {
-    "title": "Games Hub",
-    "subtitle": "Gentle games to keep your mind and daily routine strong.",
+    "title": "Daily Brain Games",
+    "subtitle": "Simple, calming activities to enjoy and practice memory.",
     "backToRoutine": "← Back to Daily Routine",
     "backToHub": "← Games Hub",
     "listen": "Listen",
@@ -807,8 +807,8 @@
       }
     },
     "sorting": {
-      "title": "Namghar & Kitchen Sorting",
-      "desc": "Categorize traditional household & prayer items to activate executive function",
+      "title": "Sorting Household Items",
+      "desc": "Sort everyday items into the kitchen basket or the prayer room basket.",
       "intro": "Let us sort the things in the house. Tap an item, then tap the basket where it belongs.",
       "pickItem": "Tap the item to pick it up.",
       "pickBasket": "Which basket does this belong in?",
@@ -827,8 +827,8 @@
       }
     },
     "companion": {
-      "title": "My Companion",
-      "desc": "Say hello and chat",
+      "title": "Friendly Chat with Saathi",
+      "desc": "Say hello and talk with your friendly helper.",
       "hello": "Hello {name}! Tap me and say hello!",
       "wave": "Say hello anytime",
       "tapMe": "Tap me to chat",
@@ -842,12 +842,12 @@
       ]
     },
     "weaving": {
-      "title": "The Loom of Memories",
-      "desc": "Weave traditional silk patterns with rhythmic wooden shuttle taps"
+      "title": "Weaving Flower Patterns",
+      "desc": "Put the pretty pattern pieces in place to finish weaving the cloth."
     },
     "teaHarvest": {
-      "title": "Tea Garden Harvest (Webcam Motion Tracking)",
-      "subtitle": "Wave your hand in the air to pluck fresh tea buds into your traditional Khorahi basket.",
+      "title": "Picking Tea Leaves with Hands",
+      "subtitle": "Wave your hand in the air or tap to pick fresh tea leaves into your basket.",
       "cameraPermission": "Camera tracking active. Move your hand gently across the screen.",
       "waveToPluck": "Wave hand or tap to pluck fresh shoots",
       "leavesPlucked": "Shoots Harvested",
@@ -859,80 +859,80 @@
       "welcomeSpeech": "Welcome to Tea Garden Harvest. Wave your hand in the air or touch the fresh two leaves and a bud to harvest them."
     },
     "radio": {
-      "title": "The Nostalgia Tuner",
-      "desc": "Tune into vintage Akashvani broadcasts & timeless memories"
+      "title": "Listening to the Radio",
+      "desc": "Turn the radio dial to listen to sweet old songs and melodies from the past."
     },
     "kitchen": {
-      "title": "Grandmother's Heritage Kitchen",
-      "desc": "Cook traditional recipes step-by-step with authentic native spices"
+      "title": "Cooking in the Kitchen",
+      "desc": "Cook simple home recipes step by step with familiar ingredients."
     },
     "rhythmHills": {
-      "title": "Rhythm of the Hills",
-      "desc": "Play traditional Bihu Dhol & Khasi Ksing percussion in rhythm"
+      "title": "Gentle Drum Songs",
+      "desc": "Tap the drum in time with sweet folk songs from the hills."
     },
     "rootBridge": {
-      "title": "Living Root Bridge Builder",
-      "desc": "Guide living rubber fig roots across a scenic mountain river gorge"
+      "title": "Crossing the Root Bridge",
+      "desc": "Connect the tree branches across the stream to make a safe footbridge."
     },
     "grandchildChat": {
-      "title": "The Grandchild's Teatime Chat",
-      "desc": "Sit down for morning tea, reminisce with your loving grandchild & share warm stories"
+      "title": "Morning Tea with Grandchild",
+      "desc": "Sit down for warm tea, talk with your loving grandchild, and share happy stories."
     },
     "memoryDetective": {
-      "title": "The Memory Detective",
-      "desc": "Listen to affectionate clues from your life story and recognize beloved family members"
+      "title": "Remembering Family & Friends",
+      "desc": "Listen to loving clues and pick out your family members and friends."
     },
     "storybook": {
-      "title": "The Living Heritage Storybook",
-      "desc": "Step into living nostalgic tales woven from North Eastern landscapes and memories"
+      "title": "Grandmother's Storybook",
+      "desc": "Listen to warm village tales and pick what happens next in the story."
     },
     "riverLanterns": {
-      "title": "The 3D Living River of Memories",
-      "desc": "Wave your hand across 3D water ripples to guide floating family memory lanterns on the sunlit Brahmaputra"
+      "title": "Floating River Lanterns",
+      "desc": "Gently release glowing lanterns into the peaceful river at night."
     },
     "loom": {
-      "title": "The 3D Heritage Loom: Rhythm of Muga Silk",
-      "desc": "Slide the 3D wooden shuttle to procedurally weave traditional Assamese Muga silk patterns with bi-manual rhythm"
+      "title": "Weaving on the Loom",
+      "desc": "Slide the wooden shuttle side to side to weave pretty silk patterns."
     },
     "drum": {
-      "title": "The 3D Folk Rhythm Drummer: Dhol & Ksing",
-      "desc": "Play traditional Bihu Dhol and Khasi Ksing beats with real-time 3D spring deformation and acoustic feedback"
+      "title": "Playing the Drum",
+      "desc": "Tap the drum in time with the gentle rhythm and music."
     },
     "tunedDrum": {
-      "title": "Auto-Tuned Dhol Circle",
-      "desc": "Drum with the webcam or your fingers — an auto-tuner snaps every strike onto the beat so it always sounds in tune"
+      "title": "Music Drum Circle",
+      "desc": "Tap the drum with your hands or fingers. Every beat will sound pleasant and in tune."
     },
     "alpana": {
-      "title": "Sacred Alpana Sand Drawing",
-      "desc": "Trace sacred festive floor motifs using in-browser webcam air motion or touch"
+      "title": "Drawing Rangoli Patterns",
+      "desc": "Trace pretty festive floor patterns with your finger or hand."
     },
     "hornbill": {
-      "title": "Hornbill Mountain Glider",
-      "desc": "Soar above pine valleys steering the Great Indian Hornbill to collect golden mountain figs"
+      "title": "Bird Flying in the Hills",
+      "desc": "Guide the friendly bird as it flies through the hills to gather sweet fruits."
     },
     "pottery": {
-      "title": "Majuli River Pottery Lathe",
-      "desc": "Shape traditional Assamese terracotta pottery on the spinning lathe with tactile touch precision"
+      "title": "Making Clay Pots",
+      "desc": "Touch the spinning clay gently to shape smooth bowls and pots."
     },
     "monasteryBell": {
-      "title": "Tawang Sacred Chimes",
-      "desc": "Listen to sacred singing bowls and bells of Tawang Monastery and repeat melodic sequences"
+      "title": "Temple Bell Sounds",
+      "desc": "Listen to the peaceful temple bells and tap them in the same order."
     },
     "boat": {
-      "title": "Brahmaputra Boat Navigator",
-      "desc": "Steer a traditional wooden riverboat across flowing river tides gathering pink lotuses"
+      "title": "River Boat Ride",
+      "desc": "Gently steer the little wooden boat down the river and collect floating flowers."
     },
     "botanist": {
-      "title": "Dzukou Valley Botanist",
-      "desc": "Search mist-laden alpine meadows to discover rare Himalayan orchids and the sacred Dzukou Lily"
+      "title": "Finding Valley Flowers",
+      "desc": "Look for colorful flowers blooming in the green meadow and tap on them."
     },
     "dailyRoutine": {
-      "title": "Daily Care Routine & Wellness Clock",
-      "desc": "Practice essential daily health routines including medicine timing, hydration glasses, and clinic visits"
+      "title": "My Daily Routine",
+      "desc": "Check off your daily tasks like drinking water, taking medicine, and having a nice walk."
     },
     "majuli": {
-      "title": "Majuli Village Walk (3D Spatial Memory)",
-      "subtitle": "Stroll along the sunrise path on Majuli Island and recall sacred cultural landmarks.",
+      "title": "Walking Through the Village",
+      "subtitle": "Take a peaceful walk down the village road and look at familiar houses and trees.",
       "walkingPrompt": "Step Forward Along Sunrise Path",
       "walking": "Walking Along Path...",
       "lookAround": "Look around using the angle controls to spot landmarks.",
@@ -955,8 +955,8 @@
       "speakPromptRiverGhat": "You have reached the serene Kamalabari River Ghat overlooking the sunlit Brahmaputra River."
     },
     "bihuDhol": {
-      "title": "Bihu Dhol Beats (Rhythm & Grounding)",
-      "subtitle": "Tap the traditional Assamese dhol in rhythm to calm agitation and practice motor coordination.",
+      "title": "Bihu Drum Beats",
+      "subtitle": "Tap the drum in time with festive music to feel calm and happy.",
       "tapPrompt": "Tap in Rhythm with the Drum",
       "bpmText": "Tempo: {bpm} BPM",
       "goodRhythm": "Good Rhythm",
@@ -968,8 +968,8 @@
       "backToHub": "← Back to Therapy Suite"
     },
     "dayInMyWorld": {
-      "title": "A Day in My World (3D Story Campaign)",
-      "subtitle": "Join Saathi on a 6-chapter morning-to-evening journey to find the missing pieces of your day.",
+      "title": "A Day in My Village",
+      "subtitle": "Spend a peaceful morning in your village with your friendly companion Saathi.",
       "welcomeTitle": "A Morning to Remember",
       "welcomeDesc": "The morning sun fills the room with gentle warmth. Saathi is here to walk with you through every moment of the day.",
       "beginDayButton": "Begin Morning Journey",
@@ -1020,8 +1020,8 @@
       "reliveDayButton": "Relive the Day Again"
     },
     "bazaarBuddies": {
-      "title": "Bazaar Buddies (Budget & Money Management)",
-      "desc": "Shop for everyday groceries within a ₹500 budget and verify your cashier change.",
+      "title": "Going to the Market",
+      "desc": "Pick fresh vegetables at the market stall and check your coins.",
       "welcome": "Village Bazaar",
       "instruction": "Select items for your basket without exceeding ₹500, then verify your change at the cashier.",
       "shopNow": "Enter Bazaar",
@@ -1043,8 +1043,8 @@
       "backToHub": "Back to Therapy Suite"
     },
     "memoryGarden": {
-      "title": "Memory Garden (Multi-Activity Suite)",
-      "desc": "Play memory matching, spot what changed, and replay auditory sequences in a serene garden.",
+      "title": "Flower Garden Memories",
+      "desc": "Water the flowers, match plant pairs, and watch your garden bloom.",
       "subgames": {
         "memoryMatch": {
           "name": "Memory Match",
@@ -1093,8 +1093,8 @@
       "backToHub": "Back to Therapy Suite"
     },
     "memoryRoad": {
-      "title": "Memory Road (Visual Search & Safety)",
-      "desc": "Locate key road safety signs, zebra crossings, and landmarks amid city distractors.",
+      "title": "Finding Signs on the Road",
+      "desc": "Look along the road and spot friendly signs, crossings, and familiar spots.",
       "welcome": "Road Safety Search",
       "instruction": "Find all instances of:",
       "startBtn": "Start Road Search",

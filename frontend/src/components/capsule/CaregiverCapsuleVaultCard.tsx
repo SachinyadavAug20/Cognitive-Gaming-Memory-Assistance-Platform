@@ -88,10 +88,10 @@ export function CaregiverCapsuleVaultCard({
         <div>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-amber-600" />
-            <span>Echoes of Home — Multi-Sensory Memory Vault</span>
+            <span>Echoes of Home — Memories & Soundscapes</span>
           </h2>
           <p className="text-sm text-ink-secondary mt-0.5">
-            Living 3D spatial scenes, procedural regional soundscapes, and sealed Future Time Capsules
+            Living 3D spatial scenes, peaceful regional soundscapes, and sealed future messages
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export function CaregiverCapsuleVaultCard({
               className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea px-3.5 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-tea-dark cursor-pointer"
             >
               <Plus className="h-4 w-4" />
-              <span>New 3D Capsule</span>
+              <span>New 3D Scene</span>
             </button>
           ) : (
             <button

@@ -182,7 +182,7 @@ export default function GamesHubPage() {
               className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm sm:text-base font-black text-teal-950 shadow-[4px_4px_0px_#000] hover:bg-teal-50 flex items-center gap-2.5 cursor-pointer"
             >
               <Play className="h-5 w-5 fill-teal-950" />
-              <span>Open Capsule Vault</span>
+              <span>Open Memory Box</span>
             </Link>
           </div>
         </div>

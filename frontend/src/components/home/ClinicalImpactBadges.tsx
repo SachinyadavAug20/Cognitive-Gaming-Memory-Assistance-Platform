@@ -51,12 +51,12 @@ export function ClinicalImpactBadges() {
             11 Indigenous Languages
           </h3>
           <p className="text-xs text-ink-secondary mt-1 font-medium leading-relaxed">
-            Native voice & visual support across all 8 North Eastern states with zero-flicker language transitions.
+            Native voice & visual support across all 8 North Eastern states with seamless language transitions.
           </p>
         </div>
         <div className="mt-3 pt-2 border-t border-black/10 text-[10px] font-black text-sky-800 uppercase tracking-wider flex items-center gap-1">
           <Check className="h-3 w-3 stroke-[3]" />
-          <span>8 NES States • Zero-Flicker</span>
+          <span>8 NES States • Seamless Audio</span>
         </div>
       </div>
 

@@ -287,13 +287,9 @@ export default function PatientDemoPage() {
           </div>
         </div>
 
-        {/* FEATURE 1: ECHOES OF HOME — MULTI-SENSORY MEMORY CAPSULE */}
+        {/* FEATURE 1: ECHOES OF HOME — LIVING MEMORIES */}
         <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-900 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-300/25 border border-teal-300/40 px-3 py-1 text-xs font-black uppercase tracking-wider backdrop-blur-sm text-teal-200">
-              <Sparkles className="h-3.5 w-3.5 text-teal-300" />
-              <span>Family Memory Capsule</span>
-            </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
               Echoes of Home (Sound & Memories)
             </h2>
@@ -323,7 +319,7 @@ export default function PatientDemoPage() {
               className="btn-tactile rounded-2xl border-3 border-black bg-white px-5 py-3 text-sm font-black text-teal-950 shadow-[4px_4px_0px_#000] hover:bg-teal-50 flex items-center gap-2 cursor-pointer"
             >
               <Play className="h-4 w-4 fill-teal-950" />
-              <span>Launch Echoes of Home</span>
+              <span>Open Memories</span>
             </Link>
           </div>
         </div>

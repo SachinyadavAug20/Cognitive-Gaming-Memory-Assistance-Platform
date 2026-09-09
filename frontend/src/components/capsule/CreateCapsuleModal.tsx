@@ -238,10 +238,10 @@ export function CreateCapsuleModal({
             </div>
             <div>
               <h2 className="font-serif text-xl font-black text-ink">
-                Create Multi-Sensory Memory Capsule
+                Create 3D Memory Scene
               </h2>
               <p className="text-xs font-semibold text-ink-secondary">
-                Blend photos, ambient sounds & voice recordings for multi-sensory reminiscing
+                Add photos, ambient sounds, and voice recordings for gentle reminiscing
               </p>
             </div>
           </div>
