@@ -584,7 +584,11 @@
       "fieldLifeEvents": "জীবন ঘটনা",
       "fieldJoy": "কী আনন্দ দেয়",
       "noneSelected": "কিছু নির্বাচিত হয়নি",
-      "notSpecified": "নির্ধারিত নয়"
+      "notSpecified": "নির্ধারিত নয়",
+      "fieldStage": "ক্লিনিক্যাল পর্যায়",
+      "fieldSeverity": "তীব্রতা",
+      "fieldScores": "জ্ঞানীয় স্কোর",
+      "noMedical": "কোনো মেডিকেল রিপোর্ট আপলোড করা হয়নি — প্রাথমিক প্রোফাইল তৈরি"
     }
   },
   "options": {

@@ -53,14 +53,23 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
         </Link>
       </div>
 
-      {/* Featured Multi-Sensory Memory Capsule */}
+      {/* Featured Multi-Sensory Memory & Time Capsule */}
       <div className="mt-4 rounded-2xl border-3 border-black bg-gradient-to-r from-teal-900 via-teal-800 to-cyan-900 p-5 text-white shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1 rounded-full border border-teal-300/40 bg-teal-400/20 px-2.5 py-0.5 text-xs font-black text-teal-200">
+              <Sparkles className="h-3 w-3" />
+              <span>Multi-Sensory & Time Capsule</span>
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-full border border-teal-300/40 bg-teal-400/20 px-2.5 py-0.5 text-xs font-bold text-teal-200">
+              <span>Flicker-Free Calm Audio</span>
+            </span>
+          </div>
           <h3 className="font-serif text-xl sm:text-2xl font-black text-white">
-            Memory Capsules & Ambient Soundscapes
+            Echoes of Home — Memory & Time Capsules
           </h3>
           <p className="text-sm sm:text-base text-teal-100/95 font-medium max-w-lg leading-relaxed">
-            Step into living 3D family memories with ambient rain, river, and flute soundscapes, family voice notes, and guided reminiscence.
+            Step into living 3D family memories with serene ambient nature soundscapes, family voice notes, and seal loving Time Capsules for future days.
           </p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
@@ -68,7 +77,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
             type="button"
             onClick={(e) => {
               e.preventDefault();
-              handleSpeak("Memory Capsules and Ambient Soundscapes. Relive warm family memories with calming nature sounds and family voices.");
+              handleSpeak("Echoes of Home. Memory and Time Capsules. Relive warm family memories with calming nature sounds, and leave sealed messages for your future days.");
             }}
             className="btn-tactile flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-teal-300 text-teal-950 hover:bg-teal-200 shadow-xs cursor-pointer"
             title="Listen to Guide"

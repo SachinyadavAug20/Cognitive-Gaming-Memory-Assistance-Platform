@@ -22,6 +22,14 @@ interface StepReviewProps {
 
 export function StepReview({ data, onEditStep }: StepReviewProps) {
   const t = useTranslations("intake.review");
+  const getT = (key: string, fallback: string) => {
+    try {
+      const val = t(key as any);
+      return val || fallback;
+    } catch {
+      return fallback;
+    }
+  };
   const langLabel =
     LANGUAGE_OPTIONS.find((l) => l.code === data.lifeStory.preferredLanguage)
       ?.label || data.lifeStory.preferredLanguage;
@@ -29,43 +37,43 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
   return (
     <div className="space-y-6">
       <StepHeader
-        title={t("title")}
-        subtitle={t("subtitle")}
+        title={getT("title", "Review & Submit")}
+        subtitle={getT("subtitle", "Please check that everything looks right before we create the patient's profile.")}
       />
 
-      <ReviewSection title={t("personal")} icon={User} editLabel={t("edit")} onEdit={() => onEditStep(0)}>
+      <ReviewSection title={getT("personal", "Personal Information")} icon={User} editLabel={getT("edit", "Edit")} onEdit={() => onEditStep(0)}>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
-          <ReviewField label={t("fieldName")} value={data.personal.fullName} />
-          <ReviewField label={t("fieldDob")} value={data.personal.dateOfBirth} />
-          <ReviewField label={t("fieldGender")} value={data.personal.gender} />
-          <ReviewField label={t("fieldPhone")} value={data.personal.phone} />
+          <ReviewField label={getT("fieldName", "Name")} value={data.personal.fullName} />
+          <ReviewField label={getT("fieldDob", "Date of Birth")} value={data.personal.dateOfBirth} />
+          <ReviewField label={getT("fieldGender", "Gender")} value={data.personal.gender} />
+          <ReviewField label={getT("fieldPhone", "Phone")} value={data.personal.phone} />
           <div className="sm:col-span-2">
-            <ReviewField label={t("fieldRelationship")} value={data.personal.relationship} />
+            <ReviewField label={getT("fieldRelationship", "Relationship")} value={data.personal.relationship} />
           </div>
         </dl>
       </ReviewSection>
 
-      <ReviewSection title={t("medical")} icon={Hospital} editLabel={t("edit")} onEdit={() => onEditStep(1)}>
+      <ReviewSection title={getT("medical", "Medical Report")} icon={Hospital} editLabel={getT("edit", "Edit")} onEdit={() => onEditStep(1)}>
         {data.diagnostic.extractedData ? (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm">
-            <ReviewField label={t("fieldDiagnosis")} value={data.diagnostic.extractedData.diagnosis} />
-            <ReviewField label={t("fieldDate")} value={data.diagnostic.extractedData.dateOfDiagnosis} />
+            <ReviewField label={getT("fieldDiagnosis", "Diagnosis")} value={data.diagnostic.extractedData.diagnosis} />
+            <ReviewField label={getT("fieldDate", "Date")} value={data.diagnostic.extractedData.dateOfDiagnosis} />
             <div>
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldStage")}</dt>
+              <dt className="text-xs font-black uppercase text-ink-secondary/70">{getT("fieldStage", "Clinical Stage")}</dt>
               <dd className="font-bold text-ink capitalize mt-0.5">
-                {data.diagnostic.extractedData.stage || t("notSpecified")}
+                {data.diagnostic.extractedData.stage || getT("notSpecified", "Not specified")}
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldSeverity")}</dt>
+              <dt className="text-xs font-black uppercase text-ink-secondary/70">{getT("fieldSeverity", "Severity")}</dt>
               <dd className="font-bold text-ink capitalize mt-0.5">
-                {data.diagnostic.extractedData.severity || t("notSpecified")}
+                {data.diagnostic.extractedData.severity || getT("notSpecified", "Not specified")}
               </dd>
             </div>
             {data.diagnostic.extractedData.cognitiveScores &&
               data.diagnostic.extractedData.cognitiveScores.length > 0 && (
                 <div className="sm:col-span-2">
-                  <dt className="text-xs font-black uppercase text-ink-secondary/70">{t("fieldScores")}</dt>
+                  <dt className="text-xs font-black uppercase text-ink-secondary/70">{getT("fieldScores", "Cognitive Scores")}</dt>
                   <dd className="font-bold text-ink mt-0.5">
                     {data.diagnostic.extractedData.cognitiveScores
                       .map((s: { testType: string; score: number; maxScore: number }) => `${s.testType}: ${s.score}/${s.maxScore}`)
@@ -75,7 +83,7 @@ export function StepReview({ data, onEditStep }: StepReviewProps) {
               )}
           </dl>
         ) : (
-          <p className="text-ink-secondary italic text-sm">{t("noMedical")}</p>
+          <p className="text-ink-secondary italic text-sm">{getT("noMedical", getT("noReport", "No report uploaded — skipped"))}</p>
         )}
       </ReviewSection>
 

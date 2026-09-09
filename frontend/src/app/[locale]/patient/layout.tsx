@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
+import { getSessionCookie } from "@/lib/authCookie";
 import { Spinner } from "@/components/ui/Spinner";
 import { CaregiverSosButton } from "@/components/patient/CaregiverSosButton";
 
 /**
- * Rehydration is synchronous for localStorage, so `hasHydrated()` is already
- * `true` on the client's first render and `false` during SSR. Gating the
- * children on this prevents a hydration mismatch flicker (server renders the
- * spinner, client matches it, then swaps in the protected UI).
+ * Auth gate for /patient routes.
+ *
+ * Priority order:
+ *   1. Demo / echoes-of-home routes → always allowed
+ *   2. Zustand says authenticated → render children
+ *   3. Cookie has valid session → restore into zustand, wait for next render
+ *   4. None of the above → redirect to /kiosk/login
  */
-function usePersisted(): boolean {
-  return useSyncExternalStore(
-    () => () => {},
-    () => useAuthStore.persist.hasHydrated(),
-    () => false
-  );
-}
-
 export default function PatientLayout({
   children,
 }: {
@@ -27,40 +23,63 @@ export default function PatientLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const persisted = usePersisted();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const login = useAuthStore((s) => s.login);
 
-  // Check demo or echoes-of-home from both Next.js pathname and browser window location
+  const [mounted, setMounted] = useState(false);
+
   const isDirectAccess = Boolean(
-    (pathname && (pathname.includes("demo") || pathname.includes("echoes-of-home"))) ||
-    (typeof window !== "undefined" && (window.location.pathname.includes("demo") || window.location.pathname.includes("echoes-of-home")))
+    pathname?.includes("demo") || pathname?.includes("echoes-of-home")
   );
 
+  // Mark as mounted after first render
   useEffect(() => {
-    // If demo route or echoes-of-home, NEVER redirect to kiosk/login
-    if (isDirectAccess) {
-      if (!isAuthenticated) {
-        login("demo-patient-token-101", {
-          id: 2,
-          name: "Biren Borah",
-          languagePreference: "as",
-        });
-      }
+    setMounted(true);
+  }, []);
+
+  // On mount: if not authenticated and not direct access, try cookie or storage restore
+  useEffect(() => {
+    if (!mounted || isDirectAccess || isAuthenticated) return;
+
+    // 1. Try 30-day session cookie
+    const cookieData = getSessionCookie();
+    if (cookieData && cookieData.token && cookieData.patient) {
+      login(cookieData.token, cookieData.patient as any);
       return;
     }
 
-    if (persisted && !isAuthenticated) {
-      router.replace("/kiosk/login");
+    // 2. Try localStorage directly (handles cases where cookie was blocked or partitioned)
+    try {
+      const raw = localStorage.getItem("cognicare-auth");
+      if (raw) {
+        const stored = JSON.parse(raw)?.state;
+        if (stored?.token && stored?.patient) {
+          login(stored.token, stored.patient);
+          return;
+        }
+      }
+    } catch {
+      // ignore JSON parse failures
     }
-  }, [persisted, isAuthenticated, router, isDirectAccess, login]);
 
-  // Demo or echoes-of-home route immediately renders content with zero auth blocking or spinner delay
+    // 3. Fallback: check Zustand store snapshot
+    const currentStore = useAuthStore.getState();
+    if (currentStore.patient && currentStore.token) {
+      login(currentStore.token, currentStore.patient);
+      return;
+    }
+
+    // No valid session anywhere — redirect to kiosk
+    router.replace("/kiosk/login");
+  }, [mounted, isAuthenticated, isDirectAccess, login, router]);
+
+  // Demo routes: bypass auth entirely
   if (isDirectAccess) {
     return <>{children}</>;
   }
 
-  if (!persisted || !isAuthenticated) {
+  // Not ready yet: show spinner (prevents flash of redirect)
+  if (!mounted || !isAuthenticated) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-canvas">
         <Spinner />

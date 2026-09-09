@@ -495,7 +495,11 @@
       "fieldLifeEvents": "Jingim",
       "fieldJoy": "Sngewbha",
       "noneSelected": "A awm lo",
-      "notSpecified": "A tarlan lo"
+      "notSpecified": "A tarlan lo",
+      "fieldStage": "Kyrdan Pang",
+      "fieldSeverity": "Jingjur",
+      "fieldScores": "Kiba dei jingkhein",
+      "noMedical": "Ym don medical report — pynkhreh standard profile"
     },
     "validation": {
       "nameMinLength": "Kyrteng kum 2 a ngai tawngah",

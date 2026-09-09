@@ -381,7 +381,11 @@
       "fieldLifeEvents": "आयुष्य घटना",
       "fieldJoy": "काय आनंद देते",
       "noneSelected": "काहीही निवडलेले नाही",
-      "notSpecified": "निर्दिष्ट केलेले नाही"
+      "notSpecified": "निर्दिष्ट केलेले नाही",
+      "fieldStage": "वैद्यकीय टप्पा",
+      "fieldSeverity": "तीव्रता",
+      "fieldScores": "संज्ञानात्मक गुण",
+      "noMedical": "कोणताही वैद्यकीय अहवाल नाही — मूळ प्रोफाइल सेट केले"
     },
     "validation": {
       "nameMinLength": "नाव किमान २ अक्षरांचे असावे",

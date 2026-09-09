@@ -37,9 +37,9 @@ function isProtectedPatientPath(path: string): boolean {
 
 function handleSessionExpired(): void {
   if (typeof window === "undefined") return;
-  // NEVER redirect if currently in demo mode, caregiver portal, or admin portal
+  // NEVER redirect if currently in patient portal, demo mode, caregiver portal, or admin portal
   const path = window.location.pathname;
-  if (path.includes("demo") || path.includes("caregiver") || path.includes("admin")) {
+  if (path.includes("/patient") || path.includes("demo") || path.includes("caregiver") || path.includes("admin")) {
     return;
   }
   try {
@@ -104,40 +104,56 @@ function getAuthToken(): string | null {
   }
 }
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
+async function request<T>(path: string, options?: RequestInit, timeoutMs = 5000): Promise<T> {
   const headers = new Headers(options?.headers);
   headers.set("Content-Type", "application/json");
   const token = getAuthToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const apiBase = getApiBase();
-  const res = await fetch(`${apiBase}${path}`, {
-    ...options,
-    headers,
-  });
-  if (res.status === 401 && token && isProtectedPatientPath(path)) {
-    handleSessionExpired();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(`${apiBase}${path}`, {
+      ...options,
+      headers,
+      signal: options?.signal || controller.signal,
+    });
+    if (res.status === 401 && token && isProtectedPatientPath(path)) {
+      handleSessionExpired();
+    }
+    if (!res.ok) throw new HttpError(res.status, `API error: ${res.status}`);
+    return res.json();
+  } finally {
+    clearTimeout(timeoutId);
   }
-  if (!res.ok) throw new HttpError(res.status, `API error: ${res.status}`);
-  return res.json();
 }
 
-async function requestMultipart<T>(path: string, formData: FormData): Promise<T> {
+async function requestMultipart<T>(path: string, formData: FormData, timeoutMs = 4000): Promise<T> {
   const headers = new Headers();
   const token = getAuthToken();
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
   const apiBase = getApiBase();
-  const res = await fetch(`${apiBase}${path}`, {
-    method: "POST",
-    body: formData,
-    headers,
-  });
-  if (res.status === 401 && token && isProtectedPatientPath(path)) {
-    handleSessionExpired();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(`${apiBase}${path}`, {
+      method: "POST",
+      body: formData,
+      headers,
+      signal: controller.signal,
+    });
+    if (res.status === 401 && token && isProtectedPatientPath(path)) {
+      handleSessionExpired();
+    }
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    return res.json();
+  } finally {
+    clearTimeout(timeoutId);
   }
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
-  return res.json();
 }
 
 export function getMediaUrl(path?: string | null): string | null {

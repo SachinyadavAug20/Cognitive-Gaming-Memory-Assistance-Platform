@@ -495,7 +495,11 @@
       "fieldLifeEvents": "Chanchin",
       "fieldJoy": "Hlimna",
       "noneSelected": "A awm lo",
-      "notSpecified": "A tarlan lo"
+      "notSpecified": "A tarlan lo",
+      "fieldStage": "Damdawi dinhmun",
+      "fieldSeverity": "Hliam nat zawng",
+      "fieldScores": "Hriatna mark",
+      "noMedical": "Medical report awm lo — standard profile siam a ni"
     },
     "validation": {
       "nameMinLength": "Hming kum 2 a ngai tawngah",

@@ -15,23 +15,11 @@ const ACTIVITY_EVENTS: (keyof WindowEventMap)[] = [
   "click",
 ];
 
-export function useIdleTimeout(timeoutMs: number = IDLE_TIMEOUT_MS) {
-  const router = useRouter();
-  const logout = useAuthStore((s) => s.logout);
+export function useIdleTimeout() {
   const touchSession = useAuthStore((s) => s.touchSession);
   const lastTouchRef = useRef(Date.now());
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    const logoutAndRedirect = () => {
-      if (typeof window !== "undefined" && window.location.pathname.includes("demo")) {
-        return;
-      }
-      logout();
-      router.push("/kiosk/login");
-    };
-
     const handleActivity = () => {
       // Throttle session renewal to at most once every 5 minutes on active usage
       const now = Date.now();
@@ -39,23 +27,16 @@ export function useIdleTimeout(timeoutMs: number = IDLE_TIMEOUT_MS) {
         lastTouchRef.current = now;
         touchSession();
       }
-
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(logoutAndRedirect, timeoutMs);
     };
 
     ACTIVITY_EVENTS.forEach((event) =>
       window.addEventListener(event, handleActivity, { passive: true })
     );
 
-    // Initial timeout (30 days)
-    timer = setTimeout(logoutAndRedirect, timeoutMs);
-
     return () => {
       ACTIVITY_EVENTS.forEach((event) =>
         window.removeEventListener(event, handleActivity)
       );
-      if (timer) clearTimeout(timer);
     };
-  }, [timeoutMs, logout, touchSession, router]);
+  }, [touchSession]);
 }

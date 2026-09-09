@@ -19,7 +19,8 @@ public class JwtService {
 
     private static final String ALGORITHM = "HmacSHA256";
     private static final String SECRET = "cognicare-kiosk-secret-key-change-me";
-    private static final long TOKEN_TTL_SECONDS = 12 * 60 * 60;
+    // 30 days (1 month) session TTL in seconds
+    private static final long TOKEN_TTL_SECONDS = 30L * 24 * 60 * 60;
 
     public String generateToken(Long subject) {
         long nowSeconds = System.currentTimeMillis() / 1000;

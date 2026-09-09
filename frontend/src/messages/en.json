@@ -334,7 +334,11 @@
       "fieldLifeEvents": "Life Events",
       "fieldJoy": "What brings joy",
       "noneSelected": "None selected",
-      "notSpecified": "Not specified"
+      "notSpecified": "Not specified",
+      "fieldStage": "Clinical Stage",
+      "fieldSeverity": "Severity",
+      "fieldScores": "Cognitive Scores",
+      "noMedical": "No medical report uploaded — baseline profile initialized"
     },
     "validation": {
       "nameMinLength": "Name must be at least 2 characters",

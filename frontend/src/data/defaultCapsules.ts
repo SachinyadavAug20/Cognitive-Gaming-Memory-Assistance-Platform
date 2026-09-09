@@ -387,3 +387,100 @@ export function saveCapsuleSessionLog(log: CapsuleSessionLog): CapsuleSessionLog
     return [log];
   }
 }
+
+// ---------------------------------------------------------------------------
+// Future Time Capsules (Patient & Family Messages for Tomorrow)
+// ---------------------------------------------------------------------------
+import type { FutureTimeCapsule } from "@/types/capsule";
+
+const TIME_CAPSULES_STORAGE_KEY = "cognicare_future_time_capsules";
+
+export const DEFAULT_FUTURE_TIME_CAPSULES: FutureTimeCapsule[] = [
+  {
+    id: "time-capsule-biren-01",
+    patientId: 2,
+    authorName: "Biren Borah",
+    authorRole: "patient",
+    title: "To My Future Self on Foggy Days",
+    recipient: "future_self",
+    messageText:
+      "Dear Biren, if today feels confusing or the names slip away, listen to this: You are Biren Borah, retired headmaster, beloved father of Manash and Ananya, husband to Pratima. You built this home in Silpukhuri with honest hands. You are safe. Look out the verandah at the mango tree. Everything is going to be okay.",
+    photoUrl: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
+    theme: "identity",
+    milestone: "confused_days",
+    milestoneLabel: "When I Feel Foggy or Anxious",
+    sealedAt: "2026-09-01T10:00:00Z",
+    unlockDate: null,
+    isSealed: true,
+  },
+  {
+    id: "time-capsule-biren-02",
+    patientId: 2,
+    authorName: "Biren Borah",
+    authorRole: "patient",
+    title: "Blessing for Manash & Little Arnav",
+    recipient: "family",
+    messageText:
+      "Manash and my dear grandchild Arnav, watching you grow and care for me fills my heart with peaceful joy. Never forget to sit together for morning tea, stay truthful in all you do, and listen to the birds at Silpukhuri. My blessings walk with you every step.",
+    photoUrl: "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
+    theme: "family_love",
+    milestone: "next_bihu",
+    milestoneLabel: "Rongali Bihu Gathering",
+    sealedAt: "2026-09-02T16:30:00Z",
+    unlockDate: "2027-04-14",
+    isSealed: true,
+  },
+  {
+    id: "time-capsule-biren-03",
+    patientId: 2,
+    authorName: "Biren Borah",
+    authorRole: "patient",
+    title: "My Eternal Gratitude for Pratima",
+    recipient: "family",
+    messageText:
+      "Pratima, forty-six years of marriage have been my greatest fortune. Even when my memory wanders, my heart always recognizes your warm tea, your footsteps, and your gentle voice. Thank you for holding my hand every single day.",
+    photoUrl: "/sample-images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.jpg",
+    theme: "gratitude",
+    milestone: "anytime",
+    milestoneLabel: "Cherished Words Forever",
+    sealedAt: "2026-09-05T11:15:00Z",
+    unlockDate: null,
+    isSealed: true,
+  },
+];
+
+export function getFutureTimeCapsules(patientId?: number): FutureTimeCapsule[] {
+  if (typeof window === "undefined") {
+    return patientId ? DEFAULT_FUTURE_TIME_CAPSULES.filter((c) => c.patientId === patientId) : DEFAULT_FUTURE_TIME_CAPSULES;
+  }
+  try {
+    const raw = window.localStorage.getItem(TIME_CAPSULES_STORAGE_KEY);
+    const custom: FutureTimeCapsule[] = raw ? JSON.parse(raw) : [];
+    const all = [...custom, ...DEFAULT_FUTURE_TIME_CAPSULES];
+    const map = new Map<string, FutureTimeCapsule>();
+    all.forEach((c) => {
+      if (!map.has(c.id)) map.set(c.id, c);
+    });
+    const merged = Array.from(map.values());
+    if (!patientId) return merged;
+    const filtered = merged.filter((c) => c.patientId === patientId);
+    return filtered.length > 0 ? filtered : merged;
+  } catch {
+    return DEFAULT_FUTURE_TIME_CAPSULES;
+  }
+}
+
+export function saveFutureTimeCapsule(capsule: FutureTimeCapsule): FutureTimeCapsule[] {
+  if (typeof window === "undefined") return [capsule];
+  try {
+    const raw = window.localStorage.getItem(TIME_CAPSULES_STORAGE_KEY);
+    const existing: FutureTimeCapsule[] = raw ? JSON.parse(raw) : [];
+    const updated = [capsule, ...existing.filter((c) => c.id !== capsule.id)];
+    window.localStorage.setItem(TIME_CAPSULES_STORAGE_KEY, JSON.stringify(updated));
+    return getFutureTimeCapsules(capsule.patientId);
+  } catch (err) {
+    console.warn("Could not save future time capsule:", err);
+    return [capsule];
+  }
+}
+

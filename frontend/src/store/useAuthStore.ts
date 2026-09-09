@@ -68,17 +68,20 @@ export const useAuthStore = create<AuthState>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
-        // Expire only if 30 days have elapsed
-        if (state.expiresAt && Date.now() > state.expiresAt) {
-          state.logout();
-        } else if (state.isAuthenticated && state.token && state.patient) {
-          // Re-sync cookie with existing active session
-          setSessionCookie(state.token, state.patient, state.expiresAt || undefined);
-        } else if (!state.isAuthenticated) {
-          // Check if a 30-day cookie exists to restore session
-          const cookieData = getSessionCookie();
-          if (cookieData && cookieData.token && cookieData.patient) {
-            state.login(cookieData.token, cookieData.patient as PatientProfile);
+        // CRITICAL: Never call login() or logout() here — doing so triggers
+        // a state update that fights with the active session and causes
+        // redirect loops (dashboard flashes then kicks back to kiosk).
+        //
+        // Only sync the cookie in one direction: store → cookie.
+        // Actual session restoration from cookie is handled by the
+        // patient layout and kiosk client on mount.
+        if (state.isAuthenticated && state.token && state.patient) {
+          if (state.expiresAt && Date.now() > state.expiresAt) {
+            // Session expired — clear cookie but do NOT mutate zustand state
+            // during rehydration. The layout guard will handle the redirect.
+            clearSessionCookie();
+          } else {
+            setSessionCookie(state.token, state.patient, state.expiresAt || undefined);
           }
         }
       },

@@ -307,25 +307,42 @@ export function IntakeWizard({ prefill }: { prefill?: IntakeFormData }) {
     // Generate unique demo patient ID if backend is offline or errors
     let patientId = Math.floor(Date.now() % 9000) + 100;
     try {
-      const payload = buildOnboardPayload(formData);
-      const response = await api.postMultipart<{ patientId: number }>("/patients/onboard", payload);
-      if (response?.patientId) {
-        patientId = response.patientId;
+      // 1. Persist demo patient immediately into local mock store for instant zero-lag card generation
+      try {
+        saveDemoPatientFromIntake(patientId, formData);
+      } catch (storageErr) {
+        console.warn("Could not write to local patient store:", storageErr);
       }
-    } catch (err) {
-      console.warn("Backend onboard skipped or errored; creating resilient demo patient profile:", err);
-    }
 
-    // Persist new demo patient into local mock store so caretaker panel & card view load it immediately
-    saveDemoPatientFromIntake(patientId, formData);
+      // 2. Attempt backend onboard with a fast 1800ms race timeout so form never hangs indefinitely
+      try {
+        const payload = buildOnboardPayload(formData);
+        const timeoutPromise = new Promise<null>((resolve) =>
+          setTimeout(() => resolve(null), 600)
+        );
+        const response = await Promise.race([
+          api.postMultipart<{ patientId: number }>("/patients/onboard", payload),
+          timeoutPromise,
+        ]);
+        if (response && typeof response === "object" && "patientId" in response && response.patientId) {
+          patientId = response.patientId;
+          saveDemoPatientFromIntake(patientId, formData);
+        }
+      } catch (err) {
+        console.warn("Backend onboard skipped or errored; continuing with resilient patient profile:", err);
+      }
 
-    setIsSubmitting(false);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // ignore storage errors
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // ignore storage errors
+      }
+
+      // 3. Navigate directly to patient ID card
+      router.replace(`/caregiver/patients/${patientId}/card`);
+    } finally {
+      setIsSubmitting(false);
     }
-    router.replace(`/caregiver/patients/${patientId}/card`);
   }, [formData, router]);
 
   /* ── Main render ── */

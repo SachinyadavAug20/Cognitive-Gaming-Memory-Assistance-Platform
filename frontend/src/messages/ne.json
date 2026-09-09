@@ -600,7 +600,11 @@
       "fieldLifeEvents": "जीवन घटनाहरू",
       "fieldJoy": "के ले खुसी दिन्छ",
       "noneSelected": "केही छानिएन",
-      "notSpecified": "निर्धारित छैन"
+      "notSpecified": "निर्धारित छैन",
+      "fieldStage": "क्लिनिकल चरण",
+      "fieldSeverity": "गम्भीरता",
+      "fieldScores": "संज्ञानात्मक प्राप्ताङ्क",
+      "noMedical": "कुनै मेडिकल रिपोर्ट छैन — प्रारम्भिक प्रोफाइल तयार"
     },
     "validation": {
       "nameMinLength": "नाम कम्तिमा २ अक्षरको हुनुपर्छ",

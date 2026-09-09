@@ -384,7 +384,11 @@
       "fieldLifeEvents": "जीवन घटनाएँ",
       "fieldJoy": "क्या खुशी देता है",
       "noneSelected": "कोई नहीं चुना",
-      "notSpecified": "निर्दिष्ट नहीं"
+      "notSpecified": "निर्दिष्ट नहीं",
+      "fieldStage": "नैदानिक चरण",
+      "fieldSeverity": "गंभीरता",
+      "fieldScores": "संज्ञानात्मक स्कोर",
+      "noMedical": "कोई मेडिकल रिपोर्ट अपलोड नहीं — प्रारंभिक प्रोफ़ाइल सेट"
     },
     "validation": {
       "nameMinLength": "नाम कम से कम 2 अक्षरों का होना चाहिए",

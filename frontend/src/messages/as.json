@@ -383,7 +383,11 @@
       "fieldLifeEvents": "জীৱন ঘটনা",
       "fieldJoy": "কি আনন্দ দিয়ে",
       "noneSelected": "কোনোটো নিৰ্বাচন কৰা হোৱা নাই",
-      "notSpecified": "নিৰ্দিষ্ট কৰা হোৱা নাই"
+      "notSpecified": "নিৰ্দিষ্ট কৰা হোৱা নাই",
+      "fieldStage": "ক্লিনিকেল পৰ্যায়",
+      "fieldSeverity": "তীব্ৰতা",
+      "fieldScores": "সংজ্ঞানাত্মক স্কোৰ",
+      "noMedical": "কোনো মেডিকেল ৰিপোৰ্ট নাই — প্ৰাথমিক প্ৰফাইল তৈয়াৰ কৰা হ'ল"
     },
     "validation": {
       "nameMinLength": "নাম কমেও 2 আখৰৰ হ'ব লাগিব",

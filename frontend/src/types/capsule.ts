@@ -102,3 +102,36 @@ export interface CapsuleSessionLog {
   preMood?: string;
   postMood?: string;
 }
+
+export type TimeCapsuleMilestone =
+  | "confused_days"
+  | "next_bihu"
+  | "six_months"
+  | "one_year"
+  | "anytime";
+
+export type TimeCapsuleTheme =
+  | "identity"
+  | "family_love"
+  | "gratitude"
+  | "peace"
+  | "wisdom";
+
+export interface FutureTimeCapsule {
+  id: string;
+  patientId: number;
+  authorName: string;
+  authorRole: "patient" | "caregiver" | "family";
+  title: string;
+  recipient: "future_self" | "family" | "children";
+  messageText: string;
+  photoUrl?: string | null;
+  audioUrl?: string | null;
+  theme: TimeCapsuleTheme;
+  milestone: TimeCapsuleMilestone;
+  milestoneLabel: string;
+  sealedAt: string;
+  unlockDate?: string | null;
+  isSealed: boolean;
+}
+

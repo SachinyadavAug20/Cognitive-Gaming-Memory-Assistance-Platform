@@ -46,7 +46,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
 
   const online = forcedOnline !== undefined ? forcedOnline : isOnlineLive;
 
-  const isPatientRoute = pathname.startsWith("/patient");
+  const isPatientRoute = pathname ? pathname.startsWith("/patient") : false;
   const navLinks = isPatientRoute
     ? [
         { href: "/patient", label: "My Routine", icon: Home, exact: true },
@@ -85,6 +85,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
 
         {/* Center: Quick Primary Page Navigation */}
         <div
+          suppressHydrationWarning
           className={`${
             isPatientRoute ? "flex" : "hidden 2xl:flex"
           } items-center gap-1.5 sm:gap-2 font-sans`}
@@ -133,6 +134,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
           {!isPatientRoute && (
             <Link
               href="/caregiver"
+              suppressHydrationWarning
               className="flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-surface hover:bg-tea-light hover:border-tea px-2 sm:px-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] shrink-0"
               title="Caregiver & Healthcare Worker Portal"
             >

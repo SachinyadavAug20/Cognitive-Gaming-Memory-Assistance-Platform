@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Paperclip,
   CheckCircle2,
@@ -15,17 +15,17 @@ import {
 } from "lucide-react";
 import { KioskScanner } from "@/components/kiosk/KioskScanner";
 import { useAuthStore } from "@/store/useAuthStore";
-import { api, HttpError } from "@/lib/api";
-import { playScanSuccess, playError, playTapFeedback } from "@/lib/sound";
-import type { KioskScanResponse, PatientProfile } from "@/types/auth";
-import { getCustomOnboardedPatients } from "@/data/mockPatients";
+import { playScanSuccess, playTapFeedback } from "@/lib/sound";
+import type { PatientProfile } from "@/types/auth";
 import { getSessionCookie } from "@/lib/authCookie";
+import { getCustomOnboardedPatients } from "@/data/mockPatients";
 
 type ScanStatus = "scanning" | "loading" | "success" | "error";
 
 export function KioskLoginClient() {
-  const t = useTranslations("kiosk");
   const router = useRouter();
+  const t = useTranslations("kiosk");
+  const locale = useLocale();
   const login = useAuthStore((s) => s.login);
 
   const [status, setStatus] = useState<ScanStatus>("scanning");
@@ -44,7 +44,6 @@ export function KioskLoginClient() {
 
   const busyRef = useRef(false);
 
-<<<<<<< Updated upstream
   useEffect(() => {
     // Check zustand store first
     const storeState = useAuthStore.getState();
@@ -80,8 +79,6 @@ export function KioskLoginClient() {
     return () => window.removeEventListener("unhandledrejection", handleUnhandledRejection);
   }, []);
 
-=======
->>>>>>> Stashed changes
   const completeLoginSuccess = useCallback(
     (token: string, patient: PatientProfile) => {
       playScanSuccess();
@@ -94,18 +91,27 @@ export function KioskLoginClient() {
 
       login(token, patient);
 
-      // Smooth auto-redirect after celebration
+      // Smooth auto-redirect after celebration card animation
       setTimeout(() => {
         router.push("/patient");
-      }, 1500);
+      }, 1100);
     },
     [login, router]
   );
 
   const handleScannerClickToAutoLogin = useCallback(() => {
-    if (!existingSession || busyRef.current || status !== "scanning") return;
+    if (busyRef.current || status === "loading" || status === "success") return;
     busyRef.current = true;
-    completeLoginSuccess(existingSession.token, existingSession.patient);
+    if (existingSession) {
+      completeLoginSuccess(existingSession.token, existingSession.patient);
+    } else {
+      // 1-tap demo auto-login as Biren Borah
+      completeLoginSuccess("demo-jwt-token-biren", {
+        id: 2,
+        name: "Biren Borah",
+        languagePreference: "as",
+      });
+    }
   }, [existingSession, status, completeLoginSuccess]);
 
   const handleScan = useCallback(
@@ -115,49 +121,30 @@ export function KioskLoginClient() {
       setStatus("loading");
       playTapFeedback();
 
-      api
-        .post<KioskScanResponse>("/auth/kiosk/scan", { qrData: text.trim() })
-        .then((res) => {
-          completeLoginSuccess(res.token, res.patient);
-        })
-        .catch((err) => {
-          // Demo fallback: check local onboarded patients
-          const custom = getCustomOnboardedPatients();
-          const found = custom.find(
-            (p) =>
-              p.card?.secureToken === text.trim() ||
-              String(p.id) === text.trim() ||
-              `demo-token-${p.id}` === text.trim()
-          );
-          if (found) {
-            completeLoginSuccess("demo-jwt-token-custom", {
-              id: found.id,
-              name: found.name,
-              languagePreference: found.preferredLanguage || "en",
-            });
-            return;
-          }
-
-          // Fallback to demo patient if QR data is demo-tagged or server offline
-          if (text.includes("demo-") || text.includes("token") || text.length > 5) {
-            completeLoginSuccess("demo-jwt-token-demo", {
-              id: 2,
-              name: "Biren Borah",
-              languagePreference: "as",
-            });
-            return;
-          }
-
-          busyRef.current = false;
-          playError();
-          const unauthorized = err instanceof HttpError && err.status === 401;
-          setErrorMsg(
-            unauthorized
-              ? "Unrecognized Health Card. Please show a valid CogniCare Health Card QR code."
-              : "Could not connect to health server. Please try again."
-          );
-          setStatus("error");
+      const trimmed = text.trim();
+      // Check custom onboarded patients
+      const custom = getCustomOnboardedPatients();
+      const found = custom.find(
+        (p) =>
+          p.card?.secureToken === trimmed ||
+          String(p.id) === trimmed ||
+          `demo-token-${p.id}` === trimmed
+      );
+      if (found) {
+        completeLoginSuccess("demo-jwt-token-custom", {
+          id: found.id,
+          name: found.name,
+          languagePreference: found.preferredLanguage || "en",
         });
+        return;
+      }
+
+      // Default demo login as Biren Borah
+      completeLoginSuccess("demo-jwt-token-biren", {
+        id: 2,
+        name: "Biren Borah",
+        languagePreference: "as",
+      });
     },
     [completeLoginSuccess]
   );
@@ -228,16 +215,16 @@ export function KioskLoginClient() {
 
         {/* Scanner Container with Overlay States */}
         <div
-          onClick={existingSession && status === "scanning" ? handleScannerClickToAutoLogin : undefined}
+          onClick={status === "scanning" ? handleScannerClickToAutoLogin : undefined}
           className={`relative w-full max-w-[420px] mx-auto ${
-            existingSession && status === "scanning"
+            status === "scanning"
               ? "cursor-pointer group hover:scale-[1.01] transition-transform"
               : ""
           }`}
           title={
             existingSession && status === "scanning"
               ? `Click scanner to auto-login as ${existingSession.patient.name}`
-              : undefined
+              : "Click scanner to quick-login as Biren Borah (Demo)"
           }
         >
           <KioskScanner

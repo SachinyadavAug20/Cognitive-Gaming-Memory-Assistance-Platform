@@ -33,6 +33,8 @@ export function updateSpatialPan(panX: number): void {
   } catch {}
 }
 
+let _currentSoundType: AmbientSoundType | null = null;
+
 export function setSoundscapeVolume(volume: number): void {
   if (!_ambientMasterGain || !_audioCtx) return;
   try {
@@ -42,13 +44,20 @@ export function setSoundscapeVolume(volume: number): void {
 }
 
 export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): void {
+  // If already playing this exact soundscape, smoothly update volume without restarting
+  if (_currentSoundType === type && _ambientMasterGain && _activeSoundSource) {
+    setSoundscapeVolume(volume);
+    return;
+  }
+
   stopCapsuleSoundscape();
+  _currentSoundType = type;
 
   const ctx = getAudioContext();
   if (!ctx) return;
 
   const master = ctx.createGain();
-  master.gain.setValueAtTime(0.001, ctx.currentTime);
+  master.gain.setValueAtTime(0.0001, ctx.currentTime);
   master.gain.exponentialRampToValueAtTime(Math.max(0.01, volume), ctx.currentTime + 1.2);
   master.connect(ctx.destination);
   _ambientMasterGain = master;
@@ -67,7 +76,7 @@ export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): vo
 
   switch (type) {
     case "rain": {
-      // 1. Continuous rain noise (pink-filtered)
+      // 1. Continuous soothing rain noise (pink-filtered)
       const bufferSize = ctx.sampleRate * 3;
       const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const output = noiseBuffer.getChannelData(0);
@@ -77,7 +86,7 @@ export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): vo
         b0 = 0.99886 * b0 + white * 0.0555179;
         b1 = 0.99332 * b1 + white * 0.0750759;
         b2 = 0.96900 * b2 + white * 0.1538520;
-        output[i] = (b0 + b1 + b2) * 0.3;
+        output[i] = (b0 + b1 + b2) * 0.25;
       }
 
       const noiseSrc = ctx.createBufferSource();
@@ -86,10 +95,10 @@ export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): vo
 
       const rainFilter = ctx.createBiquadFilter();
       rainFilter.type = "lowpass";
-      rainFilter.frequency.value = 850;
+      rainFilter.frequency.value = 750;
 
       const rainGain = ctx.createGain();
-      rainGain.gain.value = 0.22;
+      rainGain.gain.value = 0.20;
 
       noiseSrc.connect(rainFilter);
       rainFilter.connect(rainGain);
@@ -99,7 +108,7 @@ export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): vo
         try { noiseSrc.stop(); } catch {}
       });
 
-      // 2. Individual roof raindrop clicks
+      // 2. Gentle veranda raindrop clicks (spaced and click-free with linear attack)
       const dropTimer = setInterval(() => {
         if (isCancelled || !ctx) return;
         try {
@@ -107,16 +116,18 @@ export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): vo
           const gain = ctx.createGain();
           const now = ctx.currentTime;
           osc.type = "sine";
-          osc.frequency.setValueAtTime(1400 + Math.random() * 800, now);
-          osc.frequency.exponentialRampToValueAtTime(400, now + 0.04);
-          gain.gain.setValueAtTime(0.04 + Math.random() * 0.03, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+          osc.frequency.setValueAtTime(1100 + Math.random() * 400, now);
+          osc.frequency.exponentialRampToValueAtTime(350, now + 0.06);
+          // Soft attack prevents audio pops
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.linearRampToValueAtTime(0.03 + Math.random() * 0.02, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
           osc.connect(gain);
           gain.connect(soundDestination);
           osc.start(now);
-          osc.stop(now + 0.05);
+          osc.stop(now + 0.07);
         } catch {}
-      }, 180);
+      }, 420);
       cleanupTasks.push(() => clearInterval(dropTimer));
       break;
     }
@@ -313,22 +324,26 @@ export function playCapsuleSoundscape(type: AmbientSoundType, volume = 0.35): vo
 }
 
 export function stopCapsuleSoundscape(): void {
+  _currentSoundType = null;
   if (_activeSoundSource) {
     _activeSoundSource.stop();
     _activeSoundSource = null;
   }
   if (_ambientMasterGain && _audioCtx) {
+    const gainToFade = _ambientMasterGain;
+    _ambientMasterGain = null;
     try {
       const now = _audioCtx.currentTime;
-      _ambientMasterGain.gain.setTargetAtTime(0.001, now, 0.4);
+      gainToFade.gain.setTargetAtTime(0.0001, now, 0.25);
       setTimeout(() => {
         try {
-          _ambientMasterGain?.disconnect();
-          _ambientMasterGain = null;
+          gainToFade.disconnect();
         } catch {}
-      }, 800);
+      }, 500);
     } catch {
-      _ambientMasterGain = null;
+      try {
+        gainToFade.disconnect();
+      } catch {}
     }
   }
 }

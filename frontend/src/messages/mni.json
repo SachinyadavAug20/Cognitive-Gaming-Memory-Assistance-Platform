@@ -495,7 +495,11 @@
       "fieldLifeEvents": "জিবনগী ঘটনা",
       "fieldJoy": "কোন লাগি খুসী",
       "noneSelected": "কোনো খনওদ্রে",
-      "notSpecified": "দিয়ে দিদ্রে"
+      "notSpecified": "দিয়ে দিদ্রে",
+      "fieldStage": "ক্লিনিক্যাল তাঙ্কাক",
+      "fieldSeverity": "লুরুবা",
+      "fieldScores": "জ্ঞানগী স্কোর",
+      "noMedical": "মেডিকেল রিপোর্ট য়াওদে — স্তান্দার্দ প্রোফাইল শেম্লে"
     },
     "validation": {
       "nameMinLength": "মীং কম হৈদনা ২ অক্ষৰ ওইবা লাগিবা",

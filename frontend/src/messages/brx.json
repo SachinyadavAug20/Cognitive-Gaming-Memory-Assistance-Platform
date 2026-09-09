@@ -495,7 +495,11 @@
       "fieldLifeEvents": "घटना",
       "fieldJoy": "खासी",
       "noneSelected": "गैया",
-      "notSpecified": "दिंनो गैया"
+      "notSpecified": "दिंनो गैया",
+      "fieldStage": "क्लिनिकल बाहागो",
+      "fieldSeverity": "गोब्राबथि",
+      "fieldScores": "सोंनाय नम्बर",
+      "noMedical": "जेबो मेडिकल रिपोर्ट गैया — साधारण प्रोफाइल बानायबाय"
     },
     "validation": {
       "nameMinLength": "मुं बेसेन २ अक्षर जाबिलाय",
