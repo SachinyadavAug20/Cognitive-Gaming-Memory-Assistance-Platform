@@ -31,7 +31,13 @@ export const ALL_LANGUAGES: LanguageDef[] = [
   { code: "mr", label: "मराठी", native: "मराठी", full: "Marathi", region: "Western India", isNES: false },
 ];
 
-export function LanguageSelector({ className = "" }: { className?: string }) {
+export function LanguageSelector({
+  className = "",
+  size = "default",
+}: {
+  className?: string;
+  size?: "default" | "large";
+}) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -62,6 +68,8 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
   const nesLangs = ALL_LANGUAGES.filter((l) => l.isNES);
   const otherLangs = ALL_LANGUAGES.filter((l) => !l.isNES);
 
+  const isLarge = size === "large";
+
   return (
     <div ref={containerRef} className={`relative inline-flex items-center gap-1.5 ${className}`}>
       {/* NES Region Language Hub Dropdown Button */}
@@ -70,18 +78,22 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-label="Select North East State or National Language"
-        className={`flex items-center gap-1.5 rounded-xl border-2 border-black px-2.5 sm:px-3 py-1.5 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+        className={`flex items-center rounded-xl border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer ${
+          isLarge
+            ? "gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 text-xs sm:text-sm font-black"
+            : "gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs font-black"
+        } ${
           currentLang.isNES
             ? "bg-marigold text-white hover:bg-amber-600"
             : "bg-surface text-ink hover:bg-surface-muted"
         }`}
       >
-        <Globe className="h-3.5 w-3.5 shrink-0" />
+        <Globe className={`${isLarge ? "h-4 w-4" : "h-3.5 w-3.5"} shrink-0`} />
         <span className="hidden sm:inline">
           {currentLang.native} {currentLang.isNES ? "(NES)" : ""}
         </span>
         <span className="sm:hidden font-extrabold">{currentLang.label}</span>
-        <ChevronDown className={`h-3 w-3 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`${isLarge ? "h-3.5 w-3.5" : "h-3 w-3"} ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {/* DROPDOWN MENU */}

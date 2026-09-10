@@ -222,10 +222,10 @@ export function RootBridgeGame() {
                 <Leaf className="h-3.5 w-3.5 text-emerald-400" /> Meghalaya Botanical Engineering
               </div>
 
-              {/* Blue River Stream at the bottom */}
-              <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-cyan-900 via-cyan-800/80 to-transparent flex items-center justify-center opacity-70">
-                <span className="text-[11px] font-black text-cyan-200 flex items-center gap-1">
-                  <Waves className="h-3.5 w-3.5 text-cyan-300" /> Umshiang River Rapids
+              {/* Living Emerald River Rapids at the bottom */}
+              <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-emerald-950 via-emerald-900/80 to-transparent flex items-center justify-center opacity-70">
+                <span className="text-[11px] font-black text-emerald-200 flex items-center gap-1">
+                  <Waves className="h-3.5 w-3.5 text-emerald-300" /> Umshiang River Rapids
                 </span>
               </div>
 

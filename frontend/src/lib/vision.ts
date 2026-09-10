@@ -218,6 +218,24 @@ export function drawCroppedCameraFeed(
   ctx.restore();
 }
 
+let _cachedVisionResolverPromise: Promise<any> | null = null;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getVisionResolver(FilesetResolver: any): Promise<any> {
+  if (!_cachedVisionResolverPromise) {
+    _cachedVisionResolverPromise = (async () => {
+      try {
+        return await FilesetResolver.forVisionTasks("/wasm");
+      } catch {
+        return await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+        );
+      }
+    })();
+  }
+  return _cachedVisionResolverPromise;
+}
+
 export class OpticalMotionTracker {
   private video: HTMLVideoElement | null = null;
   private canvas: HTMLCanvasElement | null = null;
@@ -285,14 +303,7 @@ export class OpticalMotionTracker {
       // Initialize MediaPipe HandLandmarker for 21-point hand tracking & pinch detection
       try {
         const { FilesetResolver, HandLandmarker } = await import("@mediapipe/tasks-vision");
-        let vision;
-        try {
-          vision = await FilesetResolver.forVisionTasks("/wasm");
-        } catch {
-          vision = await FilesetResolver.forVisionTasks(
-            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
-          );
-        }
+        const vision = await getVisionResolver(FilesetResolver);
 
         this.landmarker = await HandLandmarker.createFromOptions(vision, {
           baseOptions: {

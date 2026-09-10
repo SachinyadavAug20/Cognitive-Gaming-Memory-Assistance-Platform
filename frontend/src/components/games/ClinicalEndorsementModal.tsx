@@ -46,7 +46,7 @@ export function ClinicalEndorsementModal({
       case "occupational_therapist":
         return {
           label: "Occupational Therapist",
-          color: "bg-blue-100 text-blue-900 border-blue-500",
+          color: "bg-amber-100 text-amber-900 border-amber-500",
           icon: Award,
         };
       case "asha_worker":

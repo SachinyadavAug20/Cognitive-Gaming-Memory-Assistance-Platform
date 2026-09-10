@@ -39,7 +39,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
@@ -148,14 +148,14 @@ export function HornbillFlightGame() {
 
       // 2. Clear Sky Background (Highland Twilight / Morning Horizon)
       const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
-      skyGrad.addColorStop(0, "#FDE68A");
-      skyGrad.addColorStop(0.4, "#FDBA74");
-      skyGrad.addColorStop(1, "#38BDF8");
+      skyGrad.addColorStop(0, "#FEF08A");
+      skyGrad.addColorStop(0.5, "#FDBA74");
+      skyGrad.addColorStop(1, "#FB923C");
       ctx.fillStyle = skyGrad;
       ctx.fillRect(0, 0, w, h);
 
       // 3. Parallax Misty Himalayan Pine Ridges (Immediate Mode Layers)
-      // Layer 1: Distant blue ridges
+      // Layer 1: Distant twilight ridges
       ctx.fillStyle = "#334155";
       ctx.beginPath();
       ctx.moveTo(0, h * 0.65);

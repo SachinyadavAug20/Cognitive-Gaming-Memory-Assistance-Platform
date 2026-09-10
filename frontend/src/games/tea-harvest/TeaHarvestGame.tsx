@@ -67,7 +67,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 bg-[#FAF6F0] min-h-screen">
+    <section className="pb-12 bg-canvas min-h-screen">
       <GameHeader
         title={title}
         score={score}

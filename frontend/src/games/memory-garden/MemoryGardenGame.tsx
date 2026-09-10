@@ -52,7 +52,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
@@ -90,7 +90,7 @@ function renderGardenIcon(id: string, className = "h-10 w-10") {
     case "sun":
       return <Sun className={`${className} text-amber-500`} />;
     case "moon":
-      return <Moon className={`${className} text-indigo-400`} />;
+      return <Moon className={`${className} text-purple-400`} />;
     case "star":
       return <Star className={`${className} text-yellow-500`} />;
     case "heart":
@@ -98,9 +98,9 @@ function renderGardenIcon(id: string, className = "h-10 w-10") {
     case "tree":
       return <Trees className={`${className} text-emerald-600`} />;
     case "bird":
-      return <Bird className={`${className} text-sky-500`} />;
+      return <Bird className={`${className} text-amber-600`} />;
     case "fish":
-      return <Fish className={`${className} text-cyan-500`} />;
+      return <Fish className={`${className} text-emerald-600`} />;
     case "cat":
       return <Cat className={`${className} text-amber-600`} />;
     case "dog":
@@ -108,7 +108,7 @@ function renderGardenIcon(id: string, className = "h-10 w-10") {
     case "apple":
       return <Apple className={`${className} text-red-600`} />;
     case "rain":
-      return <CloudRain className={`${className} text-blue-500`} />;
+      return <CloudRain className={`${className} text-teal-600`} />;
     default:
       return <Leaf className={`${className} text-emerald-600`} />;
   }

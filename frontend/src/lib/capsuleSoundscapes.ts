@@ -1,7 +1,6 @@
 import type { AmbientSoundType } from "@/types/capsule";
-import { pickVoice } from "./sound";
+import { pickVoice, ensureAudioContext } from "./sound";
 
-let _audioCtx: AudioContext | null = null;
 let _ambientMasterGain: GainNode | null = null;
 let _spatialPanner: StereoPannerNode | null = null;
 let _binauralGain: GainNode | null = null;
@@ -13,33 +12,26 @@ let _activeSoundSource: {
 let _activeVoiceAudio: HTMLAudioElement | null = null;
 
 function getAudioContext(): AudioContext | null {
-  if (typeof window === "undefined") return null;
-  const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-  if (!AudioCtx) return null;
-  if (!_audioCtx || _audioCtx.state === "closed") {
-    _audioCtx = new AudioCtx();
-  }
-  if (_audioCtx.state === "suspended") {
-    _audioCtx.resume().catch(() => {});
-  }
-  return _audioCtx;
+  return ensureAudioContext();
 }
 
 export function updateSpatialPan(panX: number): void {
-  if (!_spatialPanner || !_audioCtx) return;
+  const ctx = ensureAudioContext();
+  if (!_spatialPanner || !ctx) return;
   try {
     const clamped = Math.max(-0.85, Math.min(0.85, panX * 0.75));
-    _spatialPanner.pan.setTargetAtTime(clamped, _audioCtx.currentTime, 0.06);
+    _spatialPanner.pan.setTargetAtTime(clamped, ctx.currentTime, 0.06);
   } catch {}
 }
 
 let _currentSoundType: AmbientSoundType | null = null;
 
 export function setSoundscapeVolume(volume: number): void {
-  if (!_ambientMasterGain || !_audioCtx) return;
+  const ctx = ensureAudioContext();
+  if (!_ambientMasterGain || !ctx) return;
   try {
     const target = Math.max(0, Math.min(1, volume));
-    _ambientMasterGain.gain.setTargetAtTime(target, _audioCtx.currentTime, 0.1);
+    _ambientMasterGain.gain.setTargetAtTime(target, ctx.currentTime, 0.1);
   } catch {}
 }
 
@@ -329,11 +321,12 @@ export function stopCapsuleSoundscape(): void {
     _activeSoundSource.stop();
     _activeSoundSource = null;
   }
-  if (_ambientMasterGain && _audioCtx) {
+  if (_ambientMasterGain) {
     const gainToFade = _ambientMasterGain;
     _ambientMasterGain = null;
+    const ctx = ensureAudioContext();
     try {
-      const now = _audioCtx.currentTime;
+      const now = ctx ? ctx.currentTime : 0;
       gainToFade.gain.setTargetAtTime(0.0001, now, 0.25);
       setTimeout(() => {
         try {

@@ -35,8 +35,8 @@ interface CaregiverCapsuleVaultCardProps {
 }
 
 function SoundIcon({ type }: { type: AmbientSoundType }) {
-  if (type === "rain") return <CloudRain className="h-3.5 w-3.5 text-blue-700" />;
-  if (type === "river") return <Waves className="h-3.5 w-3.5 text-cyan-700" />;
+  if (type === "rain") return <CloudRain className="h-3.5 w-3.5 text-emerald-700" />;
+  if (type === "river") return <Waves className="h-3.5 w-3.5 text-teal-700" />;
   if (type === "namghar") return <Bell className="h-3.5 w-3.5 text-amber-700" />;
   if (type === "flute") return <Music className="h-3.5 w-3.5 text-teal-700" />;
   if (type === "bazaar") return <Store className="h-3.5 w-3.5 text-orange-700" />;

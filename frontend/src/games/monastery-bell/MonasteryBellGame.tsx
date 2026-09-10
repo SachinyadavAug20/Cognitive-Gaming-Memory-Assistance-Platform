@@ -39,7 +39,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
@@ -86,8 +86,8 @@ const SACRED_BELLS: BellInstrument[] = [
     name: "Tawang Wind Chime",
     subname: "High Shimmer",
     iconType: "chime",
-    color: "bg-sky-100 border-sky-600 text-sky-950",
-    activeColor: "bg-sky-400 border-sky-800 text-black ring-4 ring-sky-300 scale-105",
+    color: "bg-amber-100 border-amber-600 text-amber-950",
+    activeColor: "bg-amber-400 border-amber-800 text-black ring-4 ring-amber-300 scale-105",
     frequency: 440,
   },
   {

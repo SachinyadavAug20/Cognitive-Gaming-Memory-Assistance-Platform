@@ -24,6 +24,11 @@ export function LoomScene3D({
   const clothMeshRef = useRef<THREE.Mesh | null>(null);
   const clothCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const clothTextureRef = useRef<THREE.CanvasTexture | null>(null);
+  const shuttlePositionRef = useRef(shuttlePosition);
+
+  useEffect(() => {
+    shuttlePositionRef.current = shuttlePosition;
+  }, [shuttlePosition]);
 
   // Redraw procedural cloth canvas
   const updateClothTexture = useCallback(
@@ -233,7 +238,7 @@ export function LoomScene3D({
 
       // Smooth shuttle sliding towards shuttlePosition
       if (shuttleMeshRef.current) {
-        const targetX = shuttlePosition * 2.3;
+        const targetX = shuttlePositionRef.current * 2.3;
         shuttleMeshRef.current.position.x += (targetX - shuttleMeshRef.current.position.x) * 0.14;
         shuttleMeshRef.current.rotation.x = Math.sin(time * 3) * 0.08;
 
@@ -275,10 +280,19 @@ export function LoomScene3D({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", handleResize);
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          const m = Array.isArray(obj.material) ? obj.material : [obj.material];
+          m.forEach((mm) => mm.dispose());
+        }
+      });
       renderer.dispose();
-      container.innerHTML = "";
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
     };
-  }, [shuttlePosition]);
+  }, []);
 
   return (
     <div

@@ -51,7 +51,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-amber-800" />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
@@ -417,8 +417,8 @@ export function DailyCareRoutineGame() {
                 <Pill className="h-4 w-4 text-amber-800" />
                 <span>Medicine Timing</span>
               </div>
-              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-sky-50 border border-sky-200">
-                <Droplets className="h-4 w-4 text-sky-800" />
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-teal-50 border border-teal-200">
+                <Droplets className="h-4 w-4 text-teal-800" />
                 <span>Water Hydration</span>
               </div>
               <div className="flex items-center gap-1.5 p-2 rounded-lg bg-emerald-50 border border-emerald-200">
@@ -460,7 +460,7 @@ export function DailyCareRoutineGame() {
               ) : currentTask.timePeriod === "evening" ? (
                 <Sunset className="h-5 w-5 text-rose-500" />
               ) : (
-                <Moon className="h-5 w-5 text-indigo-500" />
+                <Moon className="h-5 w-5 text-purple-600" />
               )}
               <span className="font-serif text-sm font-black text-ink">
                 {currentTask.timeLabel}
@@ -511,7 +511,7 @@ export function DailyCareRoutineGame() {
                   <CloudSun className="h-6 w-6 text-amber-600 mx-auto" />
                   <span className="text-[10px] uppercase text-ink-secondary mt-1 block">Noon</span>
                   <span className="text-[10px] flex items-center justify-center gap-1 text-ink-secondary mt-1">
-                    Water <Droplets className="h-3 w-3 text-sky-600" />
+                    Water <Droplets className="h-3 w-3 text-teal-600" />
                   </span>
                 </div>
                 <div className="p-2.5 rounded-xl border-2 border-black/30 bg-white/70 text-center font-bold text-xs opacity-75">
@@ -522,10 +522,10 @@ export function DailyCareRoutineGame() {
                   </span>
                 </div>
                 <div className="p-2.5 rounded-xl border-2 border-black/30 bg-white/70 text-center font-bold text-xs opacity-75">
-                  <Moon className="h-6 w-6 text-indigo-700 mx-auto" />
+                  <Moon className="h-6 w-6 text-purple-700 mx-auto" />
                   <span className="text-[10px] uppercase text-ink-secondary mt-1 block">Night</span>
                   <span className="text-[10px] flex items-center justify-center gap-1 text-ink-secondary mt-1">
-                    Rest <Bed className="h-3 w-3 text-indigo-700" />
+                    Rest <Bed className="h-3 w-3 text-purple-700" />
                   </span>
                 </div>
               </div>
@@ -533,24 +533,24 @@ export function DailyCareRoutineGame() {
           )}
 
           {currentTask.id === "morning-water" && (
-            <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#EFF6FF] p-4 shadow-[4px_4px_0px_#000]">
-              <span className="text-[11px] font-black uppercase tracking-wider text-sky-900 flex items-center gap-1.5 mb-2 text-left">
-                <Droplets className="h-4 w-4 text-sky-700" /> Himalayan Spring Hydration Tracker:
+            <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#F0FDF4] p-4 shadow-[4px_4px_0px_#000]">
+              <span className="text-[11px] font-black uppercase tracking-wider text-teal-900 flex items-center gap-1.5 mb-2 text-left">
+                <Droplets className="h-4 w-4 text-teal-700" /> Himalayan Spring Hydration Tracker:
               </span>
               <div className="flex items-center justify-center gap-4 py-2">
-                <div className="relative h-28 w-16 rounded-b-2xl border-3 border-sky-900 bg-white overflow-hidden shadow-inner flex flex-col justify-end p-1">
+                <div className="relative h-28 w-16 rounded-b-2xl border-3 border-teal-900 bg-white overflow-hidden shadow-inner flex flex-col justify-end p-1">
                   <div
-                    className="w-full bg-gradient-to-t from-sky-500 to-sky-300 rounded-b-xl transition-all duration-700 relative overflow-hidden"
+                    className="w-full bg-gradient-to-t from-emerald-500 to-teal-400 rounded-b-xl transition-all duration-700 relative overflow-hidden"
                     style={{ height: selectedOptionId === "glass-full" ? "92%" : "30%" }}
                   >
                     <div className="absolute inset-0 bg-white/20 animate-pulse" />
                   </div>
-                  <span className="absolute top-1 left-0 right-0 text-[10px] font-black text-sky-900 text-center">
+                  <span className="absolute top-1 left-0 right-0 text-[10px] font-black text-teal-900 text-center">
                     {selectedOptionId === "glass-full" ? "250 ml (Full)" : "Low"}
                   </span>
                 </div>
-                <div className="text-left text-xs font-bold text-sky-950 space-y-1">
-                  <p className="font-serif font-black text-sm text-sky-900">Optimal Hydration</p>
+                <div className="text-left text-xs font-bold text-teal-950 space-y-1">
+                  <p className="font-serif font-black text-sm text-teal-900">Optimal Hydration</p>
                   <p className="text-ink-secondary">1. Boosts neuro-cognition</p>
                   <p className="text-ink-secondary">2. Prevents midday fatigue</p>
                 </div>

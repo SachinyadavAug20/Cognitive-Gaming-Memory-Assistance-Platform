@@ -22,17 +22,35 @@ import {
   Layers,
   CheckCircle2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { DEMO_PATIENT_RECORD } from "@/data/demoPatient";
 import { useAuthStore } from "@/store/useAuthStore";
 import { speakText, unlockAudio } from "@/lib/sound";
-import { MajuliWalk3D } from "@/components/games/MajuliWalk3D";
-import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
-import { BihuDholBeats } from "@/components/games/BihuDholBeats";
-import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
-import { ArrowEscape } from "@/components/games/ArrowEscape";
+import { GameLoading } from "@/components/games/GameState";
 import { SaathiVoiceCompanion } from "@/components/patient-dashboard/SaathiVoiceCompanion";
 import { DailyMoodTracker, type MoodKey } from "@/components/patient-dashboard/DailyMoodTracker";
 import { VerifiedStampBadge } from "@/components/games/VerifiedStampBadge";
+
+const DayInMyWorld3D = dynamic(
+  () => import("@/components/games/DayInMyWorld3D").then((m) => m.DayInMyWorld3D),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const MajuliWalk3D = dynamic(
+  () => import("@/components/games/MajuliWalk3D").then((m) => m.MajuliWalk3D),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const TeaHarvestVision = dynamic(
+  () => import("@/components/games/TeaHarvestVision").then((m) => m.TeaHarvestVision),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const ArrowEscape = dynamic(
+  () => import("@/components/games/ArrowEscape").then((m) => m.ArrowEscape),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const BihuDholBeats = dynamic(
+  () => import("@/components/games/BihuDholBeats").then((m) => m.BihuDholBeats),
+  { loading: () => <GameLoading />, ssr: false }
+);
 
 type ActiveModalGame =
   | "day-in-my-world"
@@ -288,7 +306,7 @@ export default function PatientDemoPage() {
         </div>
 
         {/* FEATURE 1: ECHOES OF HOME — LIVING MEMORIES */}
-        <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-900 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
+        <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-900 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-2 text-center md:text-left">
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
               Echoes of Home (Sound & Memories)

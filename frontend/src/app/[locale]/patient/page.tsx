@@ -20,11 +20,11 @@ import { playEncourage, playCalmTone, playGammaStimulation, playTapFeedback, unl
 import { speak } from "@/lib/speech";
 import { speechRate } from "@/games/config";
 import { AudioToggle } from "@/components/ui/AudioToggle";
-import { TherapySuiteGrid } from "@/components/patient-dashboard/TherapySuiteGrid";
 import { MemorySpotlightCard } from "@/components/patient-dashboard/MemorySpotlightCard";
 import { SensoryCalmCard } from "@/components/patient-dashboard/SensoryCalmCard";
 import { DailyMoodTracker, type MoodKey } from "@/components/patient-dashboard/DailyMoodTracker";
 import { DailyRoutineSchedule } from "@/components/patient-dashboard/DailyRoutineSchedule";
+import { TherapySuiteGrid } from "@/components/patient-dashboard/TherapySuiteGrid";
 import { SaathiVoiceCompanion } from "@/components/patient-dashboard/SaathiVoiceCompanion";
 import { PatientBottomLogout } from "@/components/patient/PatientBottomLogout";
 
@@ -166,7 +166,7 @@ export default function PatientHome() {
     REGIONAL_TIME_GREETINGS.en[timeOfDay];
 
   const localizedPatientName =
-    (rawPatientName && LOCALIZED_NAMES[rawPatientName]?.[normLoc]) || rawPatientName;
+    (rawPatientName && LOCALIZED_NAMES[rawPatientName]?.[normLoc]) || rawPatientName || "Biren";
   const patientName = localizedPatientName;
 
   const greeting = patientName
@@ -174,8 +174,10 @@ export default function PatientHome() {
     : `${timeGreeting}!`;
 
   const heroText = `${greeting} ${t("orientation")} ${t("heroPrompt")}`;
-  const avatarPhoto = detail ? getMediaUrl(detail.photoUrl) : null;
-  const avatarInitials = rawPatientName ? initialsFrom(rawPatientName) : "";
+  const avatarPhoto = detail?.photoUrl
+    ? getMediaUrl(detail.photoUrl)
+    : "/sample-images/patient_1_biren_borah/00_biren_borah.svg";
+  const avatarInitials = rawPatientName ? initialsFrom(rawPatientName) : "B";
 
   const joyTriggers =
     detail?.joyTriggers?.trim() || t("wellbeing.calmFallbackTriggers");
@@ -249,21 +251,28 @@ export default function PatientHome() {
     speak(t(MOOD_LABEL_KEY[key]), langCode, rate);
   };
 
-  const moodLabels: Record<MoodKey, string> = {
-    peaceful: t("wellbeing.moodPeaceful"),
-    okay: t("wellbeing.moodOkay"),
-    caretaker: t("wellbeing.moodCare"),
-  };
+  const moodLabels: Record<MoodKey, string> = useMemo(
+    () => ({
+      peaceful: t("wellbeing.moodPeaceful"),
+      okay: t("wellbeing.moodOkay"),
+      caretaker: t("wellbeing.moodCare"),
+    }),
+    [t]
+  );
 
-  // Formatted date string
-  const todayDateStr = new Date().toLocaleDateString(locale, {
-    weekday: "long",
-    day: "numeric",
-    month: "short",
-  });
+  // Formatted date string memoized per locale
+  const todayDateStr = useMemo(
+    () =>
+      new Date().toLocaleDateString(locale, {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }),
+    [locale]
+  );
 
   return (
-    <div className="min-h-[100vh] pb-32 flex flex-col bg-[#FAF6F0]">
+    <div className="min-h-[100vh] pb-32 flex flex-col bg-canvas">
       {/* Patient Header Banner */}
       <div className="bg-tea border-b-4 border-black px-4 pt-6 pb-6 md:px-8 text-white shadow-sm">
         <div className="max-w-3xl mx-auto flex flex-col gap-4">
@@ -308,7 +317,7 @@ export default function PatientHome() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 flex-wrap pt-2">
+          <div className="flex items-center gap-3.5 flex-wrap pt-2">
             <button
               type="button"
               onClick={() => {
@@ -316,18 +325,18 @@ export default function PatientHome() {
                 unlockAudio();
                 speak(heroText, locale || langCode, rate);
               }}
-              className="btn-tactile inline-flex items-center gap-2.5 rounded-2xl border-2 border-black bg-white px-5 py-2.5 text-sm font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-amber-100 cursor-pointer"
+              className="btn-tactile inline-flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-black bg-white px-6 sm:px-7 py-3 sm:py-3.5 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-amber-100 cursor-pointer active:scale-95 transition-all"
             >
-              <Volume2 className="h-5 w-5 text-tea" />
+              <Volume2 className="h-6 w-6 sm:h-7 sm:w-7 text-tea shrink-0 stroke-[2.5]" />
               <span>{t("listen")}</span>
             </button>
-            <AudioToggle />
+            <AudioToggle size="lg" />
           </div>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 flex-1 w-full">
-        {/* 1. THERAPY SUITE SECTION */}
+        {/* 1. DAILY BRAIN ACTIVITIES & THERAPY SUITE */}
         <TherapySuiteGrid gamesTitle={t("gamesTitle")} />
 
         {/* 2. TODAY'S ROUTINE & MEDICATION SCHEDULE */}
@@ -362,6 +371,8 @@ export default function PatientHome() {
                 title={t("wellbeing.calmTitle")}
                 hint={t("wellbeing.calmHint")}
                 comfortText={comfortText}
+                favoriteMusic={favoriteMusic}
+                joyTriggers={joyTriggers}
                 playLabel={t("wellbeing.calmPlay")}
                 listenLabel={t("wellbeing.calmListen")}
                 onPlayTone={playCalmTone}
@@ -380,6 +391,11 @@ export default function PatientHome() {
                     ? t("wellbeing.moodThanks", {
                         name: patientName || t("wellbeing.moodDear"),
                       })
+                    : undefined
+                }
+                feedbackMessage={
+                  lastMood && t.has(`wellbeing.moodFeedback.${lastMood}`)
+                    ? t(`wellbeing.moodFeedback.${lastMood}`)
                     : undefined
                 }
               />
@@ -408,9 +424,9 @@ export default function PatientHome() {
         text={memoryOfDay?.text}
         langCode={langCode}
         rate={rate}
-        closeLabel="Close"
-        listenLabel="Listen"
-        speakingLabel="Speaking..."
+        closeLabel={t("audio.close")}
+        listenLabel={t("listen")}
+        speakingLabel={t("speaking")}
       />
 
       {/* Interactive Saathi Voice Companion */}

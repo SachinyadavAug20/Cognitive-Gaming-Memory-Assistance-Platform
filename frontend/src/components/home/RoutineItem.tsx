@@ -19,7 +19,7 @@ export function RoutineItem({ item }: RoutineItemProps) {
       return <Pill className="w-5 h-5 text-terracotta" />;
     }
     if (item.key === "water_reminder" || item.emoji === "water") {
-      return <Droplets className="w-5 h-5 text-blue-600" />;
+      return <Droplets className="w-5 h-5 text-emerald-600" />;
     }
     if (item.key === "family_photos" || item.emoji === "family") {
       return <Users className="w-5 h-5 text-emerald-600" />;

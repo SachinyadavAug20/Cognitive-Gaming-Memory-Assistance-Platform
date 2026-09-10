@@ -38,7 +38,7 @@ interface Particle {
 const PARTICLE_COLORS = [
   "#1B4D3E", // Deep Tea
   "#D97706", // Marigold
-  "#2563EB", // Blue
+  "#EA580C", // Terracotta
   "#059669", // Emerald
   "#DC2626", // Brick
   "#F59E0B", // Gold

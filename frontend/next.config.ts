@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const LONG_CACHE = 'public, max-age=31536000, immutable';
 
 const nextConfig: NextConfig = {
+  devIndicators: false,
   allowedDevOrigins: ["192.168.0.103", "192.168.0.101", "192.168.1.5", "localhost", "127.0.0.1"],
   async headers() {
     return [

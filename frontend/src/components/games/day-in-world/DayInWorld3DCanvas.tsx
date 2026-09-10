@@ -28,7 +28,7 @@ export function DayInWorld3DCanvas({ currentChapter }: DayInWorld3DCanvasProps) 
     const skyColors: Record<number, string> = {
       1: "#FED7AA", // Morning warm golden sunrise
       2: "#FEF08A", // Bright sunlit room
-      3: "#BAE6FD", // Midday sky over river
+      3: "#FDE68A", // Midday warm golden sunlight over river
       4: "#FEF08A", // Lively market square
       5: "#FDBA74", // Late afternoon golden hour
       6: "#FB923C", // Sunset twilight
@@ -83,9 +83,9 @@ export function DayInWorld3DCanvas({ currentChapter }: DayInWorld3DCanvasProps) 
       windowFrame.position.set(0, 4.5, -3.9);
       scene.add(windowFrame);
 
-      // Windowpane Sky
+      // Windowpane Sunlight
       const paneGeo = new THREE.PlaneGeometry(3.6, 2.6);
-      const paneMat = new THREE.MeshBasicMaterial({ color: "#7DD3FC" });
+      const paneMat = new THREE.MeshBasicMaterial({ color: "#FEF3C7" });
       const pane = new THREE.Mesh(paneGeo, paneMat);
       pane.position.set(0, 4.5, -3.8);
       scene.add(pane);
@@ -224,8 +224,18 @@ export function DayInWorld3DCanvas({ currentChapter }: DayInWorld3DCanvasProps) 
     return () => {
       window.removeEventListener("resize", handleResize);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      if (rendererRef.current && container) {
-        container.innerHTML = "";
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          const m = Array.isArray(obj.material) ? obj.material : [obj.material];
+          m.forEach((mm) => mm.dispose());
+        }
+      });
+      if (rendererRef.current) {
+        rendererRef.current.dispose();
+        if (rendererRef.current.domElement.parentNode) {
+          rendererRef.current.domElement.parentNode.removeChild(rendererRef.current.domElement);
+        }
       }
     };
   }, [currentChapter]);

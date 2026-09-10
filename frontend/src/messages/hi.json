@@ -51,7 +51,7 @@
     "greetingName": "सुप्रभात, {name}!",
     "date": "बुधवार, 26 अगस्त",
     "schedule": "आज का कार्यक्रम",
-    "listen": "सुनें",
+    "listen": "मुझे पढ़कर सुनाएं",
     "waterToday": "आज पानी",
     "moreGames": {
       "label": "और खेल",
@@ -67,7 +67,7 @@
       "close": "बंद करें"
     },
     "orientation": "आप आज अपने परिवार के साथ घर पर सुरक्षित हैं।",
-    "gamesTitle": "दैनिक मस्तिष्क खेल",
+    "gamesTitle": "दैनिक मस्तिष्क गतिविधियां",
     "speaking": "बोल रहे हैं...",
     "heroPrompt": "नीचे कोई भी खेल दबाकर शुरू करें।",
     "cards": {
@@ -99,7 +99,7 @@
       "familyTitle": "परिवार की यादें",
       "familyEmpty": "आपके परिवार की तस्वीरें यहाँ जल्द दिखेंगी।",
       "memoryTitle": "आज की याद",
-      "memoryListen": "याद सुनें",
+      "memoryListen": "मुझे याद पढ़कर सुनाएं",
       "memoryAnother": "दूसरी याद दिखाएँ",
       "memoryView": "याद देखें",
       "memoryEmpty": "जल्द ही यहाँ एक कोमल याद दिखेगी।",
@@ -109,7 +109,7 @@
       "calmMusic": "आपके पसंदीदा गीत: {music}।",
       "calmFallbackTriggers": "सुबह की गर्म चाय",
       "calmPlay": "शांत धुन बजाएँ",
-      "calmListen": "आराम की बात सुनें",
+      "calmListen": "मुझे शांत बात सुनाएं",
       "moodTitle": "आज आप कैसा महसूस कर रहे हैं?",
       "moodPeaceful": "शांत",
       "moodOkay": "ठीक",
@@ -232,7 +232,8 @@
   },
   "game": {
     "back": "वापस",
-    "score": "स्कोर: {score}"
+    "score": "स्कोर: {score}",
+    "listen": "मुझे पढ़कर सुनाएं"
   },
   "intake": {
     "step": "चरण {current} / {total}",
@@ -483,7 +484,7 @@
     "imagesOnly": "केवल चित्र"
   },
   "audio": {
-    "listen": "सुनें",
+    "listen": "मुझे पढ़कर सुनाएं",
     "howToPlay": "कैसे खेलें",
     "listenToStory": "कहानी सुनें",
     "listenToDirections": "निर्देश सुनें"
@@ -550,7 +551,7 @@
     },
     "lightbox": {
       "close": "बंद करें",
-      "listen": "याद सुनें",
+      "listen": "मुझे याद पढ़कर सुनाएं",
       "speaking": "बोल रहे हैं…"
     },
     "clinicalSummary": {
@@ -637,7 +638,7 @@
     "subtitle": "स्मृति, एकाग्रता और मानसिक शांति के लिए सरल एवं आनंददायक खेल।",
     "backToRoutine": "← दैनिक दिनचर्या पर वापस",
     "backToHub": "← खेल हब",
-    "listen": "सुनें",
+    "listen": "मुझे पढ़कर सुनाएं",
     "listening": "बोल रहे हैं...",
     "recommended": "अनुशंसित",
     "level": "स्तर {level}",
@@ -645,7 +646,7 @@
     "score": "स्कोर: {score}",
     "lightbox": {
       "close": "बंद करें",
-      "listen": "याद सुनें"
+      "listen": "मुझे याद पढ़कर सुनाएं"
     },
     "loading": "आपका खेल तैयार हो रहा है...",
     "loadError": "आपका विवरण लाने में कुछ गड़बड़ हुई।",

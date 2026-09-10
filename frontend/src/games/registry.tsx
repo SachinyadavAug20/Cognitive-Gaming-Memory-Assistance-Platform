@@ -25,45 +25,57 @@ import {
   Sun,
   Brain,
   Wand2,
+  Users,
 } from "lucide-react";
 
-import { AlpanaGame } from "./alpana/AlpanaGame";
-import { RiverLanternsGame } from "./river-lanterns/RiverLanternsGame";
-import { LoomGame } from "./loom/LoomGame";
-import { DrumGame } from "./drum/DrumGame";
-import { TunedDrumGame } from "./tuned-drum/TunedDrumGame";
-import { HornbillFlightGame } from "./hornbill-flight/HornbillFlightGame";
-import { MajuliPotteryGame } from "./majuli-pottery/MajuliPotteryGame";
-import { BrahmaputraBoatGame } from "./brahmaputra-boat/BrahmaputraBoatGame";
-import { DzukouBotanistGame } from "./dzukou-botanist/DzukouBotanistGame";
-import { GrandchildChatGame } from "./grandchild-chat/GrandchildChatGame";
-import { MemoryDetectiveGame } from "./memory-detective/MemoryDetectiveGame";
-import { StorybookGame } from "./storybook/StorybookGame";
-import { JigsawGame } from "./jigsaw/JigsawGame";
-import { WayfindingGame } from "./wayfinding/WayfindingGame";
-import { TeaHarvestGame } from "./tea-harvest/TeaHarvestGame";
-import { MonasteryBellGame } from "./monastery-bell/MonasteryBellGame";
-import { NostalgiaRadioGame } from "./radio/NostalgiaRadioGame";
-import { HeritageKitchenGame } from "./heritage-kitchen/HeritageKitchenGame";
-import { RootBridgeGame } from "./root-bridge/RootBridgeGame";
-import { DailyCareRoutineGame } from "./daily-routine/DailyCareRoutineGame";
-import { TimelineGame } from "./timeline/TimelineGame";
-import { SortingGame } from "./sorting/SortingGame";
-import { ArrowEscape } from "@/components/games/ArrowEscape";
-import { MajuliWalk3D } from "@/components/games/MajuliWalk3D";
-import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
-import { BihuDholBeats } from "@/components/games/BihuDholBeats";
-import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
-import { BazaarBuddiesGame } from "./bazaar-buddies/BazaarBuddiesGame";
-import { MemoryGardenGame } from "./memory-garden/MemoryGardenGame";
-import { MemoryRoadGame } from "./memory-road/MemoryRoadGame";
-import { TeaGardenCatchGame } from "./tea-garden-catch/TeaGardenCatchGame";
-import { ButterflySanctuaryGame } from "./butterfly-sanctuary/ButterflySanctuaryGame";
-import { LotusPainterGame } from "./lotus-painter/LotusPainterGame";
-import { MakeMyTeaGame } from "./daily-tasks/MakeMyTeaGame";
-import { CompanionGame } from "./companion/CompanionGame";
-import { RhythmHillsGame } from "./rhythm-hills/RhythmHillsGame";
-import { WeavingGame } from "./weaving/WeavingGame";
+import dynamic from "next/dynamic";
+
+function GameLoaderFallback() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+      <div className="h-14 w-14 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
+      <p className="text-base font-semibold text-ink-secondary">Loading activity...</p>
+    </div>
+  );
+}
+
+const AlpanaGame = dynamic(() => import("./alpana/AlpanaGame").then((m) => m.AlpanaGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const RiverLanternsGame = dynamic(() => import("./river-lanterns/RiverLanternsGame").then((m) => m.RiverLanternsGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const LoomGame = dynamic(() => import("./loom/LoomGame").then((m) => m.LoomGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const DrumGame = dynamic(() => import("./drum/DrumGame").then((m) => m.DrumGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const TunedDrumGame = dynamic(() => import("./tuned-drum/TunedDrumGame").then((m) => m.TunedDrumGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const HornbillFlightGame = dynamic(() => import("./hornbill-flight/HornbillFlightGame").then((m) => m.HornbillFlightGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const MajuliPotteryGame = dynamic(() => import("./majuli-pottery/MajuliPotteryGame").then((m) => m.MajuliPotteryGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const BrahmaputraBoatGame = dynamic(() => import("./brahmaputra-boat/BrahmaputraBoatGame").then((m) => m.BrahmaputraBoatGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const DzukouBotanistGame = dynamic(() => import("./dzukou-botanist/DzukouBotanistGame").then((m) => m.DzukouBotanistGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const GrandchildChatGame = dynamic(() => import("./grandchild-chat/GrandchildChatGame").then((m) => m.GrandchildChatGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const MemoryDetectiveGame = dynamic(() => import("./memory-detective/MemoryDetectiveGame").then((m) => m.MemoryDetectiveGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const StorybookGame = dynamic(() => import("./storybook/StorybookGame").then((m) => m.StorybookGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const JigsawGame = dynamic(() => import("./jigsaw/JigsawGame").then((m) => m.JigsawGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const WayfindingGame = dynamic(() => import("./wayfinding/WayfindingGame").then((m) => m.WayfindingGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const TeaHarvestGame = dynamic(() => import("./tea-harvest/TeaHarvestGame").then((m) => m.TeaHarvestGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const MonasteryBellGame = dynamic(() => import("./monastery-bell/MonasteryBellGame").then((m) => m.MonasteryBellGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const NostalgiaRadioGame = dynamic(() => import("./radio/NostalgiaRadioGame").then((m) => m.NostalgiaRadioGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const HeritageKitchenGame = dynamic(() => import("./heritage-kitchen/HeritageKitchenGame").then((m) => m.HeritageKitchenGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const RootBridgeGame = dynamic(() => import("./root-bridge/RootBridgeGame").then((m) => m.RootBridgeGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const DailyCareRoutineGame = dynamic(() => import("./daily-routine/DailyCareRoutineGame").then((m) => m.DailyCareRoutineGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const TimelineGame = dynamic(() => import("./timeline/TimelineGame").then((m) => m.TimelineGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const SortingGame = dynamic(() => import("./sorting/SortingGame").then((m) => m.SortingGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const ArrowEscape = dynamic(() => import("@/components/games/ArrowEscape").then((m) => m.ArrowEscape), { loading: () => <GameLoaderFallback />, ssr: false });
+const MajuliWalk3D = dynamic(() => import("@/components/games/MajuliWalk3D").then((m) => m.MajuliWalk3D), { loading: () => <GameLoaderFallback />, ssr: false });
+const TeaHarvestVision = dynamic(() => import("@/components/games/TeaHarvestVision").then((m) => m.TeaHarvestVision), { loading: () => <GameLoaderFallback />, ssr: false });
+const BihuDholBeats = dynamic(() => import("@/components/games/BihuDholBeats").then((m) => m.BihuDholBeats), { loading: () => <GameLoaderFallback />, ssr: false });
+const DayInMyWorld3D = dynamic(() => import("@/components/games/DayInMyWorld3D").then((m) => m.DayInMyWorld3D), { loading: () => <GameLoaderFallback />, ssr: false });
+const BazaarBuddiesGame = dynamic(() => import("./bazaar-buddies/BazaarBuddiesGame").then((m) => m.BazaarBuddiesGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const MemoryGardenGame = dynamic(() => import("./memory-garden/MemoryGardenGame").then((m) => m.MemoryGardenGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const MemoryRoadGame = dynamic(() => import("./memory-road/MemoryRoadGame").then((m) => m.MemoryRoadGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const TeaGardenCatchGame = dynamic(() => import("./tea-garden-catch/TeaGardenCatchGame").then((m) => m.TeaGardenCatchGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const ButterflySanctuaryGame = dynamic(() => import("./butterfly-sanctuary/ButterflySanctuaryGame").then((m) => m.ButterflySanctuaryGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const LotusPainterGame = dynamic(() => import("./lotus-painter/LotusPainterGame").then((m) => m.LotusPainterGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const MakeMyTeaGame = dynamic(() => import("./daily-tasks/MakeMyTeaGame").then((m) => m.MakeMyTeaGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const CompanionGame = dynamic(() => import("./companion/CompanionGame").then((m) => m.CompanionGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const RhythmHillsGame = dynamic(() => import("./rhythm-hills/RhythmHillsGame").then((m) => m.RhythmHillsGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const WeavingGame = dynamic(() => import("./weaving/WeavingGame").then((m) => m.WeavingGame), { loading: () => <GameLoaderFallback />, ssr: false });
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -163,7 +175,7 @@ export const GAMES: GameDef[] = [
     icon: Wand2,
     titleKey: "tunedDrum.title",
     descKey: "tunedDrum.desc",
-    accent: "bg-indigo-700",
+    accent: "bg-amber-800",
     domain: "Music Drum Circle",
     category: "vision-3d",
     recommended: true,
@@ -206,7 +218,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "memory-detective",
-    icon: Search,
+    icon: Users,
     titleKey: "memoryDetective.title",
     descKey: "memoryDetective.desc",
     accent: "bg-amber-800",
@@ -277,7 +289,7 @@ export const GAMES: GameDef[] = [
     icon: Compass,
     titleKey: "boat.title",
     descKey: "boat.desc",
-    accent: "bg-sky-900",
+    accent: "bg-emerald-900",
     domain: "River Boat Ride",
     category: "attention",
     recommended: true,
@@ -451,7 +463,7 @@ export const GAMES: GameDef[] = [
     icon: Compass,
     titleKey: "memoryRoad.title",
     descKey: "memoryRoad.desc",
-    accent: "bg-[#2563EB]",
+    accent: "bg-[#C2410C]",
     domain: "Finding Signs on the Road",
     category: "attention",
     recommended: true,

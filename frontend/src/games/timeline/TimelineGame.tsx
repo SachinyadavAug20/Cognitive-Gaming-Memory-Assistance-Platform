@@ -61,7 +61,7 @@ function renderTimelineIcon(type?: TimelineIconType, className = "h-8 w-8") {
     case "tea":
       return <ClayKulharIcon className={`${className} text-amber-700`} />;
     case "music":
-      return <Music className={`${className} text-indigo-500`} />;
+      return <Music className={`${className} text-purple-600`} />;
     case "home":
       return <Home className={`${className} text-teal-600`} />;
     case "puzzle":

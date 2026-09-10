@@ -17,7 +17,7 @@
     }
   },
   "patient": {
-    "listen": "রিংবা",
+    "listen": "Pule ia nga",
     "speaking": "হংনা...",
     "greeting": "য়োং ফগ্গা, দাদু!",
     "greetingName": "য়োং ফগ্গা, {name}!",
@@ -36,7 +36,9 @@
         "peaceful": "মমা য়াম অমানি দিং মনন দু!",
         "okay": "ঠিক। অমানি মমাসি দিং, গম খোদ খোন।",
         "caretaker": "নখোত হং সূচিত দিং। মমা সিং দিং খং।"
-      }
+      },
+      "memoryListen": "Pule ia nga ka jingkynmaw",
+      "calmListen": "Pule ia nga ka jingsuk"
     }
   },
   "games": {
@@ -278,7 +280,8 @@
       "gameComplete": "Nongialam ba tbit: Baroh ki lynti la dep!",
       "playAgain": "Wad lynti biang",
       "backToHub": "Wanphai sha Therapy Hub"
-    }
+    },
+    "listen": "Pule ia nga"
   },
   "nav": {
     "online": "Online",
@@ -308,7 +311,7 @@
     "playAgain": "Ialeh Biang",
     "soundOn": "Sur On",
     "soundOff": "Sur Off",
-    "listen": "Sngap"
+    "listen": "Pule ia nga"
   },
   "puzzle": {
     "title": "Jingialehkai Dur",
@@ -631,7 +634,7 @@
   "audio": {
     "welcome": "Pdiang sngewbha sha CogniCare.",
     "guide": "Shong suk bad sdang ia ka jingpynkhlain jingmut.",
-    "listen": "Sngap",
+    "listen": "Pule ia nga",
     "howToPlay": "Engtia Khel Tur",
     "listenToStory": "Jingim Sngap",
     "listenToDirections": "Damdawi hnenah thuhna sngap"
@@ -688,7 +691,7 @@
     },
     "lightbox": {
       "close": "Khad",
-      "listen": "Jingkynmaw sngap",
+      "listen": "Pule ia nga ka jingkynmaw",
       "speaking": "Kren mek..."
     },
     "clinicalSummary": {

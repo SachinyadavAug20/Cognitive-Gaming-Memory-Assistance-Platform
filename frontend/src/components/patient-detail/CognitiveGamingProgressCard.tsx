@@ -173,11 +173,11 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
           </span>
         </div>
 
-        <div className="rounded-2xl border-2 border-black bg-blue-50 p-3 text-center shadow-[2px_2px_0px_#000]">
-          <span className="text-[10px] font-black uppercase text-blue-900 block">
+        <div className="rounded-2xl border-2 border-black bg-teal-50 p-3 text-center shadow-[2px_2px_0px_#000]">
+          <span className="text-[10px] font-black uppercase text-teal-900 block">
             {t("gamingProgress.spatialRecall")}
           </span>
-          <span className="font-serif text-2xl font-black text-blue-800">
+          <span className="font-serif text-2xl font-black text-teal-800">
             {stats.averageSpatialRecall}%
           </span>
         </div>

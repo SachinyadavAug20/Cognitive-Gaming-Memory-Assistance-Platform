@@ -213,12 +213,12 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
         backHref="/patient/games"
-        bgColor="bg-indigo-700"
+        bgColor="bg-amber-800"
         gameId="tuned-drum"
       />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
@@ -523,10 +523,10 @@ export function TunedDrumGame() {
                 Folk Rhythm Beats
               </span>
             </div>
-            <ShieldCheck className="h-4 w-4 text-indigo-700" />
+            <ShieldCheck className="h-4 w-4 text-amber-800" />
           </div>
 
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-indigo-700 text-white shadow-[4px_4px_0px_#000]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-amber-800 text-white shadow-[4px_4px_0px_#000]">
             <Music className="h-10 w-10 stroke-[2.5]" />
           </div>
 
@@ -538,12 +538,12 @@ export function TunedDrumGame() {
           </div>
 
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
-            <span className="text-xs font-black uppercase tracking-wider text-indigo-700 block mb-2">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-800 block mb-2">
               Clinical Benefits:
             </span>
             <div className="space-y-2 text-xs font-bold text-ink">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-indigo-600" />
+                <span className="h-2 w-2 rounded-full bg-amber-600" />
                 <span>OpenCV left/right hand drum-strike tracking with face-motion filtering</span>
               </div>
               <div className="flex items-center gap-2">
@@ -567,7 +567,7 @@ export function TunedDrumGame() {
         <div className="flex flex-col items-center gap-3 py-1">
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-black uppercase tracking-wider text-indigo-700 flex items-center gap-1.5">
+              <span className="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
                 <Activity className="h-4 w-4" /> {str.hudProgress}: {hitsCount} / {TARGET_HITS}
               </span>
               <span className="hidden sm:inline-block text-[10px] font-bold text-ink-secondary bg-surface-muted px-1.5 py-0.5 rounded border border-black/20">
@@ -591,7 +591,7 @@ export function TunedDrumGame() {
                 type="button"
                 onClick={toggleVisionMode}
                 className={`btn-tactile inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border-2 border-black text-xs font-black shadow-xs transition-all cursor-pointer ${
-                  isVisionActive ? "bg-indigo-700 text-white animate-pulse" : "bg-surface-muted text-ink hover:bg-surface"
+                  isVisionActive ? "bg-amber-800 text-white animate-pulse" : "bg-surface-muted text-ink hover:bg-surface"
                 }`}
               >
                 <Camera className="h-3.5 w-3.5" />
@@ -604,7 +604,7 @@ export function TunedDrumGame() {
             <div className="w-full max-w-md rounded-2xl border-2 border-black bg-amber-50 p-3.5 shadow-[2px_2px_0px_#000] text-xs space-y-2.5 animate-fade-in">
               <div className="flex items-center justify-between font-black text-amber-950">
                 <span className="flex items-center gap-1.5">
-                  <Sliders className="h-3.5 w-3.5 text-indigo-700" />
+                  <Sliders className="h-3.5 w-3.5 text-amber-800" />
                   Air-Drum Strike Calibration
                 </span>
                 <span className="text-[10px] text-amber-800">Face Filter: Active</span>
@@ -625,7 +625,7 @@ export function TunedDrumGame() {
                       type="button"
                       onClick={() => setStrikeThreshold(p.val)}
                       className={`py-1 rounded-lg border text-[11px] font-black cursor-pointer transition-all ${
-                        strikeThreshold === p.val ? "bg-indigo-700 text-white border-black shadow-xs" : "bg-white text-ink border-black/30 hover:border-black"
+                        strikeThreshold === p.val ? "bg-amber-800 text-white border-black shadow-xs" : "bg-white text-ink border-black/30 hover:border-black"
                       }`}
                     >
                       {p.label}
@@ -663,8 +663,8 @@ export function TunedDrumGame() {
           {/* AUTO-TUNER STATUS + BEAT GRID */}
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-3 shadow-[3px_3px_0px_#000] space-y-2">
             <div className="flex items-center justify-between text-[11px] font-black uppercase">
-              <span className="flex items-center gap-1.5 text-indigo-900">
-                <Wand2 className="h-3.5 w-3.5 text-indigo-600" />
+              <span className="flex items-center gap-1.5 text-amber-900">
+                <Wand2 className="h-3.5 w-3.5 text-amber-700" />
                 Auto-Tuner: {autoTuneOn ? "ON" : "OFF"}
               </span>
               <button
@@ -688,7 +688,7 @@ export function TunedDrumGame() {
                 <div
                   key={b}
                   className={`h-2.5 rounded-full border border-black transition-all ${
-                    beatPos === b ? "bg-indigo-600 scale-110 shadow-xs" : "bg-black/15"
+                    beatPos === b ? "bg-amber-600 scale-110 shadow-xs" : "bg-black/15"
                   }`}
                 />
               ))}
@@ -767,7 +767,7 @@ export function TunedDrumGame() {
             <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-3 shadow-[4px_4px_0px_#000] space-y-2 animate-fade-in">
               <div className="flex items-center justify-between text-xs font-black text-ink">
                 <span className="flex items-center gap-1.5">
-                  <Camera className="h-3.5 w-3.5 text-indigo-700" />
+                  <Camera className="h-3.5 w-3.5 text-amber-800" />
                   Live Camera Guide &amp; Force Meters
                 </span>
                 <span className="inline-flex items-center gap-1 text-[10px] text-tea bg-tea-light px-2 py-0.5 rounded border border-tea/30">
@@ -834,7 +834,7 @@ export function TunedDrumGame() {
                 </div>
               </div>
               <p className="text-[11px] font-medium text-ink-secondary text-center flex items-center justify-center gap-1.5">
-                <Wand2 className="h-3.5 w-3.5 text-indigo-500 shrink-0" />
+                <Wand2 className="h-3.5 w-3.5 text-amber-700 shrink-0" />
                 <span>
                   <strong>OpenCV drums:</strong> wave your hand down into a zone. The auto-tuner snaps each hit to the beat.
                 </span>
@@ -883,7 +883,7 @@ export function TunedDrumGame() {
               <button
                 type="button"
                 onClick={startGame}
-                className="btn-tactile rounded-xl border-2 border-black bg-indigo-700 px-5 py-2.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] cursor-pointer"
+                className="btn-tactile rounded-xl border-2 border-black bg-amber-800 px-5 py-2.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] cursor-pointer"
               >
                 {str.playAgainButton}
               </button>

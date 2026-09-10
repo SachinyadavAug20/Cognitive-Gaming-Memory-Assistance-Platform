@@ -14,7 +14,7 @@ import {
   Moon,
   Camera,
 } from "lucide-react";
-import { playTapFeedback } from "@/lib/sound";
+import { playTapFeedback, ensureAudioContext } from "@/lib/sound";
 
 type TimeOfDay = "morning" | "golden" | "night";
 type CameraPreset = "panoramic" | "river" | "tea";
@@ -86,8 +86,8 @@ export function Hero3DLandscape() {
   const [isRotating, setIsRotating] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Audio Context & Interval Refs
-  const audioContextRef = useRef<AudioContext | null>(null);
+  // Audio Gain Node & Interval Refs
+  const heroGainRef = useRef<GainNode | null>(null);
   const audioTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Mutable references for live scene mutation without rebuild
@@ -616,20 +616,47 @@ export function Hero3DLandscape() {
       container.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          const m = Array.isArray(obj.material) ? obj.material : [obj.material];
+          m.forEach((mm) => mm.dispose());
+        }
+      });
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      if (audioTimerRef.current) {
+        clearInterval(audioTimerRef.current);
+        audioTimerRef.current = null;
+      }
+      if (heroGainRef.current) {
+        try {
+          heroGainRef.current.disconnect();
+        } catch {}
+        heroGainRef.current = null;
+      }
     };
   }, []);
 
-  // Ambient Nature Audio Synthesizer
+  // Ambient Nature Audio Synthesizer (Shared AudioContext)
   const toggleAmbientAudio = useCallback(() => {
     playTapFeedback();
     if (isPlayingAudio) {
-      if (audioContextRef.current) {
-        audioContextRef.current.close().catch(() => {});
-        audioContextRef.current = null;
+      if (heroGainRef.current) {
+        try {
+          const ctx = ensureAudioContext();
+          if (ctx) {
+            heroGainRef.current.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.1);
+            setTimeout(() => {
+              try {
+                heroGainRef.current?.disconnect();
+              } catch {}
+              heroGainRef.current = null;
+            }, 200);
+          }
+        } catch {}
       }
       if (audioTimerRef.current) {
         clearInterval(audioTimerRef.current);
@@ -640,18 +667,14 @@ export function Hero3DLandscape() {
     }
 
     try {
-      const AudioCtx =
-        window.AudioContext ||
-        (
-          window as unknown as {
-            webkitAudioContext: typeof AudioContext;
-          }
-        ).webkitAudioContext;
-      const ctx = new AudioCtx();
-      if (ctx.state === "suspended") {
-        void ctx.resume();
-      }
-      audioContextRef.current = ctx;
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+
+      const heroGain = ctx.createGain();
+      heroGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      heroGain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 0.5);
+      heroGain.connect(ctx.destination);
+      heroGainRef.current = heroGain;
 
       // 1. Water Ripples (Filtered Noise)
       const bufferSize = ctx.sampleRate * 2;
@@ -675,7 +698,7 @@ export function Hero3DLandscape() {
 
       whiteNoise.connect(bandpass);
       bandpass.connect(waterGain);
-      waterGain.connect(ctx.destination);
+      waterGain.connect(heroGain);
       whiteNoise.start();
 
       // 2. Pentatonic Bamboo Flute Notes
@@ -683,11 +706,7 @@ export function Hero3DLandscape() {
       let noteIndex = 0;
 
       const playFluteNote = () => {
-        if (
-          !audioContextRef.current ||
-          audioContextRef.current.state === "closed"
-        )
-          return;
+        if (!heroGainRef.current) return;
         const noteFreq = pentatonicNotes[noteIndex % pentatonicNotes.length];
         noteIndex =
           (noteIndex + 1 + Math.floor(Math.random() * 2)) %
@@ -707,7 +726,7 @@ export function Hero3DLandscape() {
         );
 
         osc.connect(fluteGain);
-        fluteGain.connect(ctx.destination);
+        fluteGain.connect(heroGain);
 
         osc.start();
         osc.stop(ctx.currentTime + 3.3);

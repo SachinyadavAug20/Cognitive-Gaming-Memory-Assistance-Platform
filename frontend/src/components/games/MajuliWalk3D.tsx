@@ -277,6 +277,13 @@ export function MajuliWalk3D() {
       window.removeEventListener("resize", handleResize);
       stopVoice();
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          const m = Array.isArray(obj.material) ? obj.material : [obj.material];
+          m.forEach((mm) => mm.dispose());
+        }
+      });
       if (rendererRef.current && rendererRef.current.domElement) {
         rendererRef.current.domElement.remove();
         rendererRef.current.dispose();
@@ -440,7 +447,7 @@ export function MajuliWalk3D() {
                       ) : lm.category === "stilt_house" ? (
                         <Home className="w-4 h-4 text-emerald-700 shrink-0" />
                       ) : (
-                        <Ship className="w-4 h-4 text-blue-700 shrink-0" />
+                        <Ship className="w-4 h-4 text-amber-700 shrink-0" />
                       )}
                       <span>{lm.name}</span>
                     </div>
@@ -546,24 +553,35 @@ export function MajuliWalk3D() {
 
               {/* Landmark Pop-up Question Overlay */}
               {activeLandmark && !solvedLandmarks.includes(activeLandmark.id) && (
-                <div className="absolute inset-x-4 bottom-4 rounded-2xl border-3 border-black bg-surface/95 p-4 backdrop-blur-md shadow-[4px_4px_0px_#000] animate-fade-in">
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl">{activeLandmark.emoji}</span>
+                <div className="absolute inset-x-3 sm:inset-x-6 bottom-3 sm:bottom-4 rounded-3xl border-3 border-black bg-surface/95 p-4 sm:p-5 backdrop-blur-md shadow-[6px_6px_0px_#000] animate-fade-in z-20">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <span className="text-3xl sm:text-4xl shrink-0">{activeLandmark.emoji}</span>
                     <div className="flex-1 text-left">
-                      <div className="flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase">
-                        <MapPin className="h-3.5 w-3.5" /> {t("spatialPrompt")}
+                      <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-2">
+                        <div className="flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase">
+                          <MapPin className="h-4 w-4 text-emerald-700" /> {t("spatialPrompt")}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => speakVoice(activeLandmark.question)}
+                          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-3 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-amber-300 active:scale-95"
+                          title="Read for Me"
+                        >
+                          <Volume2 className="h-4 w-4" />
+                          <span>Read for Me</span>
+                        </button>
                       </div>
-                      <p className="font-serif text-sm sm:text-base font-black text-ink mt-0.5">
+                      <p className="font-serif text-base sm:text-lg font-black text-ink leading-snug">
                         {activeLandmark.question}
                       </p>
 
-                      <div className="mt-3 flex flex-wrap gap-2">
+                      <div className="mt-3.5 grid gap-2.5 sm:grid-cols-3">
                         {activeLandmark.options.map((opt) => (
                           <button
                             key={opt}
                             type="button"
                             onClick={() => handleAnswerLandmark(opt)}
-                            className="btn-tactile rounded-xl border-2 border-black bg-amber-100 px-3.5 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer active:translate-y-0.5"
+                            className="btn-tactile rounded-2xl border-2 border-black bg-amber-100 p-3 sm:p-3.5 text-xs sm:text-sm font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-amber-300 cursor-pointer active:translate-y-0.5 text-center leading-snug transition-colors"
                           >
                             {opt}
                           </button>

@@ -205,8 +205,17 @@ export function DrumScene3D({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", handleResize);
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          const m = Array.isArray(obj.material) ? obj.material : [obj.material];
+          m.forEach((mm) => mm.dispose());
+        }
+      });
       renderer.dispose();
-      container.innerHTML = "";
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
     };
   }, []);
 

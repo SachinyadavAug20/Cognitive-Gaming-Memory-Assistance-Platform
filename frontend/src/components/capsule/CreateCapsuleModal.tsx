@@ -68,8 +68,8 @@ const PRESET_PLACES = [
 
 const SOUNDSCAPES: { type: AmbientSoundType; label: string; icon: React.ReactNode; desc: string }[] = [
   { type: "birds", label: "Morning Birds", icon: <Bird className="h-4 w-4 text-emerald-700" />, desc: "Singing Himalayan birds in bamboo grove" },
-  { type: "rain", label: "Monsoon Rain", icon: <CloudRain className="h-4 w-4 text-blue-700" />, desc: "Gentle rain patter on cottage tin roof" },
-  { type: "river", label: "River Waters", icon: <Waves className="h-4 w-4 text-cyan-700" />, desc: "Brahmaputra water waves & evening breeze" },
+  { type: "rain", label: "Monsoon Rain", icon: <CloudRain className="h-4 w-4 text-emerald-700" />, desc: "Gentle rain patter on cottage tin roof" },
+  { type: "river", label: "River Waters", icon: <Waves className="h-4 w-4 text-teal-700" />, desc: "Brahmaputra water waves & evening breeze" },
   { type: "namghar", label: "Sacred Bells", icon: <Bell className="h-4 w-4 text-amber-700" />, desc: "Bronze bell chimes & evening prayer resonance" },
   { type: "flute", label: "Bamboo Flute", icon: <Music className="h-4 w-4 text-teal-700" />, desc: "Peaceful pentatonic raga flute notes" },
   { type: "bazaar", label: "Village Bazaar", icon: <Store className="h-4 w-4 text-orange-700" />, desc: "Distant friendly market chatter" },

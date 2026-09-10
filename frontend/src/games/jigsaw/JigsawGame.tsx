@@ -68,6 +68,45 @@ export interface PuzzleTarget {
   type: "family" | "place";
 }
 
+const DEFAULT_CULTURAL_TARGETS: PuzzleTarget[] = [
+  {
+    id: "cultural-1",
+    name: "Dighalipukhuri Lake & Heritage Trees",
+    subtitle: "Historic Guwahati Lake • Calming Waters",
+    photoUrl: "/sample-images/patient_1_biren_borah/places/05_dighalipukhuri_lake_park.jpg",
+    notes: "Ancient historic lake in Assam, surrounded by centuries-old rain trees and pleasant evening walks.",
+    icon: "place",
+    type: "place",
+  },
+  {
+    id: "cultural-2",
+    name: "Silpukhuri Hari Namghar",
+    subtitle: "Community Prayer Hall • Sacred Chimes",
+    photoUrl: "/sample-images/patient_1_biren_borah/places/03_silpukhuri_hari_namghar.jpg",
+    notes: "Traditional Assam prayer sanctuary where devotional songs and Borgeet echo every morning.",
+    icon: "place",
+    type: "place",
+  },
+  {
+    id: "cultural-3",
+    name: "Family Courtyard & Morning Sun",
+    subtitle: "Peaceful Homestead • Memories of Home",
+    photoUrl: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
+    notes: "Warm homestead garden where family gathers under the morning sun with sweet Assam tea.",
+    icon: "place",
+    type: "place",
+  },
+  {
+    id: "cultural-4",
+    name: "Ward's Lake Shillong",
+    subtitle: "Pine Grove & Lake • North East Nature",
+    photoUrl: "/sample-images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.jpg",
+    notes: "Lush green lake surrounded by blooming orchids, swans, and cool breeze from the Khasi hills.",
+    icon: "place",
+    type: "place",
+  },
+];
+
 export function JigsawGame() {
   const t = useTranslations("games");
   const relT = useTranslations("options.relativeRelationship");
@@ -114,12 +153,13 @@ export function JigsawGame() {
 
   const [category, setCategory] = useState<"family" | "places">("family");
 
-  // Fallback if selected category is empty
+  // Fallback if selected category is empty, always falling back to curated North East cultural targets
   const activeTargets = useMemo(() => {
     if (category === "places" && placeTargets.length > 0) return placeTargets;
+    if (category === "family" && familyTargets.length > 0) return familyTargets;
     if (familyTargets.length > 0) return familyTargets;
     if (placeTargets.length > 0) return placeTargets;
-    return [];
+    return DEFAULT_CULTURAL_TARGETS;
   }, [category, familyTargets, placeTargets]);
 
   const defaultGridSize: GridDimension = level === 1 ? 2 : level === 2 ? 3 : 4;

@@ -17,7 +17,7 @@
     }
   },
   "patient": {
-    "listen": "Chiklak",
+    "listen": "Angna porie knatimatbo",
     "speaking": "Katha nikla...",
     "greeting": "Nana sisikrak, Dadu!",
     "greetingName": "Nana sisikrak, {name}!",
@@ -36,7 +36,9 @@
         "peaceful": "Nana angan nikla si kan ngaita!",
         "okay": "Chiklo. Mi apa galginni, te game chiklak.",
         "caretaker": "Enkawl phi u chiklikna. Mitanchi ngaita."
-      }
+      },
+      "memoryListen": "Angna gisik ra·ani porie knatimatbo",
+      "calmListen": "Angna tom·tomaniko porie knatimatbo"
     }
   },
   "games": {
@@ -278,7 +280,8 @@
       "gameComplete": "Seng·gipa Re·gipa: Pilak ramako matchotaha!",
       "playAgain": "Rama sanditapbo",
       "backToHub": "Therapy nokona re·bapilbo"
-    }
+    },
+    "listen": "Angna porie knatimatbo"
   },
   "nav": {
     "online": "Online",
@@ -308,7 +311,7 @@
     "playAgain": "Kal·taibo",
     "soundOn": "Sound On",
     "soundOff": "Sound Off",
-    "listen": "Knatimbo"
+    "listen": "Angna porie knatimatbo"
   },
   "puzzle": {
     "title": "Gisik Puzzle",
@@ -631,7 +634,7 @@
   "audio": {
     "welcome": "CogniCare-ona namchapbeona.",
     "guide": "Tom·tome gisik kal·aniko a·bachengbo.",
-    "listen": "Knatimbo",
+    "listen": "Angna porie knatimatbo",
     "howToPlay": "Mai Kho·chi Game",
     "listenToStory": "Golpo Knatimbo",
     "listenToDirections": "Damdawi ni chinko knatimbo"
@@ -688,7 +691,7 @@
     },
     "lightbox": {
       "close": "Chipbo",
-      "listen": "Gisik Ra·ani Knatimbo",
+      "listen": "Angna gisik ra·ani porie knatimatbo",
       "speaking": "Aganme..."
     },
     "clinicalSummary": {

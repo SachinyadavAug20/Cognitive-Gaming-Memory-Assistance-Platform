@@ -60,6 +60,20 @@ const GREETINGS_BY_LANG: Record<string, string> = {
   lus: "Chibai! I thian Saathi ka ni. I thian tha tak ka ni e. Vawiin enge i an le?",
 };
 
+export const SAATHI_TRIGGER_LABELS: Record<string, string> = {
+  en: "Talk with Saathi",
+  hi: "साथी से बात करें",
+  as: "সাথীৰ সৈতে কথা পাতক",
+  bn: "সাথীর সাথে কথা বলুন",
+  mr: "साथीशी बोला",
+  ne: "साथीसँग कुरा गर्नुहोस्",
+  mni: "সাথীগা ৱারী শানবীয়ু",
+  brx: "साथीजों बाथ्रा बुं",
+  grt: "Saathi baksa agangrikbo",
+  kha: "Kren bad u Saathi",
+  lus: "Saathi be rawh",
+};
+
 const PROMPT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   what_day: CalendarDays,
   where_am_i: MapPin,
@@ -625,9 +639,9 @@ export function SaathiVoiceCompanion({
             <Bot className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
           <div className="text-left hidden sm:block">
-
             <span className="flex items-center gap-1.5 font-serif text-sm font-black text-ink">
-              Talk to Doctor <Speech className="h-4 w-4 text-tea inline" />
+              {SAATHI_TRIGGER_LABELS[selectedLang] || SAATHI_TRIGGER_LABELS[currentLocale] || SAATHI_TRIGGER_LABELS.en}{" "}
+              <Speech className="h-4 w-4 text-tea inline" />
             </span>
           </div>
           <span className="sm:hidden flex items-center gap-1 font-serif text-xs font-black text-ink">

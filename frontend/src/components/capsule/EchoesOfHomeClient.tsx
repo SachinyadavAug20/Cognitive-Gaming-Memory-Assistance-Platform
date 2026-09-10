@@ -95,8 +95,7 @@ export function EchoesOfHomeClient() {
 
   const activeCapsule = capsules[selectedIndex] || capsules[0];
 
-  // Motion Tracking Coordinates
-  const [lookCoords, setLookCoords] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  // Motion Tracking Sensitivity
   const [webcamEnabled, setWebcamEnabled] = useState(false);
   const [sensitivity, setSensitivity] = useState<"gentle" | "normal" | "high">("normal");
 
@@ -143,9 +142,8 @@ export function EchoesOfHomeClient() {
   const [sessionStartTime] = useState<number>(() => Date.now());
   const [loggedFeedback, setLoggedFeedback] = useState<string | null>(null);
 
-  // Stable coordinate change handler
+  // Stable coordinate change handler for spatial audio pan (avoids React re-renders)
   const handleCoordsChange = useCallback((coords: { x: number; y: number }) => {
-    setLookCoords(coords);
     updateSpatialPan(coords.x);
   }, []);
 
@@ -281,8 +279,8 @@ export function EchoesOfHomeClient() {
   };
 
   const soundLabelMap: Record<AmbientSoundType, { name: string; icon: React.ReactNode }> = {
-    rain: { name: "Monsoon Rain on Tin Roof", icon: <CloudRain className="h-4 w-4 text-blue-600" /> },
-    river: { name: "Brahmaputra River Swell", icon: <Waves className="h-4 w-4 text-cyan-600" /> },
+    rain: { name: "Monsoon Rain on Tin Roof", icon: <CloudRain className="h-4 w-4 text-emerald-600" /> },
+    river: { name: "Brahmaputra River Swell", icon: <Waves className="h-4 w-4 text-teal-600" /> },
     birds: { name: "Morning Bamboo Birds", icon: <Bird className="h-4 w-4 text-emerald-600" /> },
     namghar: { name: "Sacred Temple Chimes", icon: <Bell className="h-4 w-4 text-amber-600" /> },
     flute: { name: "Bamboo Flute (Raga Bhupali)", icon: <Music className="h-4 w-4 text-teal-600" /> },
@@ -290,7 +288,7 @@ export function EchoesOfHomeClient() {
   };
 
   return (
-    <div className={`min-h-screen pb-16 bg-[#FAF6F0] flex flex-col transition-all ${zenMode ? "fixed inset-0 z-50 overflow-hidden pb-0 bg-black" : ""}`}>
+    <div className={`min-h-screen pb-16 bg-canvas flex flex-col transition-all ${zenMode ? "fixed inset-0 z-50 overflow-hidden pb-0 bg-black" : ""}`}>
       {/* Top Header */}
       {!zenMode && (
         <header className="bg-white border-b-3 border-black px-4 py-3 text-ink shadow-xs">
@@ -424,11 +422,10 @@ export function EchoesOfHomeClient() {
           </div>
         )}
 
-        {/* 3D Spatial Memory Canvas Stage (Completely Flicker-Free) */}
+        {/* 3D Spatial Memory Canvas Stage (Completely Flicker-Free & 60fps) */}
         <div className={`relative rounded-3xl border-4 border-black bg-slate-950 overflow-hidden shadow-[8px_8px_0px_#000] ${zenMode ? "flex-1 rounded-2xl h-full border-2" : ""}`}>
           <Capsule3DScene
             capsule={activeCapsule}
-            coords={lookCoords}
             colorFilter={activeFilter}
             autopilot={autopilot}
             onPointerMove={handleCoordsChange}

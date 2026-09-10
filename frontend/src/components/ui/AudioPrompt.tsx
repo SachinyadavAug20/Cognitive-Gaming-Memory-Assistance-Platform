@@ -14,12 +14,13 @@ interface AudioPromptProps {
 export function AudioPrompt({
   text,
   lang,
-  label = "Speak",
+  label,
   size = "lg",
 }: AudioPromptProps) {
   const locale = useLocale();
   const t = useTranslations("games");
   const [speaking, setSpeaking] = useState(false);
+  const displayLabel = !label || label === "Speak" || label === "Listen" ? t("listen") : label;
 
   const speak = useCallback(() => {
     unlockAudio();
@@ -46,7 +47,7 @@ export function AudioPrompt({
           ? "ring-4 ring-marigold/70 animate-pulse border-2 border-marigold"
           : ""
       }`}
-      aria-label={label}
+      aria-label={displayLabel}
     >
       <span className="flex items-center gap-0.5">
         <svg
@@ -73,7 +74,7 @@ export function AudioPrompt({
           </span>
         )}
       </span>
-      {speaking ? t("listening") : label}
+      {speaking ? t("listening") : displayLabel}
     </button>
   );
 }

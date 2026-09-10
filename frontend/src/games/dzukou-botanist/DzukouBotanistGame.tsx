@@ -38,7 +38,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
@@ -88,7 +88,7 @@ const BOTANICAL_PLANTS: FloraSpecimen[] = [
     name: "Sacred Blue Vanda Orchid",
     latinName: "Vanda coerulea",
     iconType: "vanda",
-    color: "bg-indigo-100 border-indigo-500 text-indigo-950",
+    color: "bg-purple-100 border-purple-500 text-purple-950",
     description: "A rare, protected blue-violet wild orchid flourishing in the mist-laden subtropical canopies.",
     isTarget: true,
     discovered: false,
@@ -108,7 +108,7 @@ const BOTANICAL_PLANTS: FloraSpecimen[] = [
 function renderFloraIcon(iconType: FloraSpecimen["iconType"], className = "w-10 h-10") {
   if (iconType === "lily") return <Flower2 className={`${className} text-pink-600`} />;
   if (iconType === "rhododendron") return <Flower2 className={`${className} text-rose-600`} />;
-  if (iconType === "vanda") return <Flower2 className={`${className} text-indigo-600`} />;
+  if (iconType === "vanda") return <Flower2 className={`${className} text-purple-600`} />;
   return <Leaf className={`${className} text-amber-700`} />;
 }
 

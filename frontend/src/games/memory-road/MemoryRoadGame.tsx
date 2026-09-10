@@ -23,12 +23,14 @@ import {
   Clock,
   Check,
   Sparkles,
+  Volume2,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { AudioPrompt } from "@/components/ui/AudioPrompt";
+import { RoadSignIllustration } from "@/components/ui/ActivityIllustrations";
 import {
   playPress,
   playCorrect,
@@ -52,7 +54,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
@@ -83,17 +85,17 @@ function renderRoadObjectIcon(id: string, className = "h-8 w-8") {
     case "home":
       return <Home className={`${className} text-amber-700`} />;
     case "hospital":
-      return <Building2 className={`${className} text-blue-700`} />;
+      return <Building2 className={`${className} text-rose-700`} />;
     case "person":
       return <User className={`${className} text-teal-700`} />;
     case "shop":
       return <Store className={`${className} text-emerald-700`} />;
     case "car":
-      return <Car className={`${className} text-indigo-600`} />;
+      return <Car className={`${className} text-amber-700`} />;
     case "bus":
       return <Bus className={`${className} text-yellow-600`} />;
     case "bicycle":
-      return <Bike className={`${className} text-cyan-700`} />;
+      return <Bike className={`${className} text-emerald-700`} />;
     case "tree":
       return <Trees className={`${className} text-emerald-700`} />;
     case "clock":
@@ -543,8 +545,8 @@ export function MemoryRoadGame() {
       {/* ─── INTRO ─── */}
       {phase === "intro" && (
         <div className="flex flex-col items-center gap-6 py-6 text-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-tea text-white shadow-[4px_4px_0px_#000]">
-            <Route className="h-10 w-10 stroke-[2.5]" />
+          <div className="flex h-24 w-24 items-center justify-center rounded-3xl border-3 border-black bg-[#FED7AA] shadow-[4px_4px_0px_#000] p-2">
+            <RoadSignIllustration className="h-16 w-16" />
           </div>
 
           <div className="space-y-1">
@@ -559,20 +561,20 @@ export function MemoryRoadGame() {
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
             <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
               <span className="text-base font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                <Eye className="h-3.5 w-3.5" /> {t("welcome")}
+                <Eye className="h-4 w-4" /> {t("welcome")}
               </span>
-              <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
+              <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2.5 py-1 border border-black shadow-[1px_1px_0px_#000]">
                 Level {levelConfig.level} of {LEVELS.length}
               </span>
             </div>
             <p className="text-base font-bold text-ink-secondary leading-relaxed">
-              {t("instruction")} <strong>{localizedName(targetObj)}</strong>
+              {t("instruction")} <strong className="text-ink text-lg">{localizedName(targetObj)}</strong>
             </p>
           </div>
 
           <AudioPrompt
             text={`${t("instruction")} ${localizedName(targetObj)}`}
-            label={t("welcome")}
+            label="Read for Me"
             size="md"
           />
 
@@ -585,18 +587,38 @@ export function MemoryRoadGame() {
       {/* ─── PLAYING ─── */}
       {phase === "playing" && (
         <div className="flex flex-col items-center gap-4 py-2">
-          <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-4 py-2.5 shadow-[2px_2px_0px_#000]">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black/5">
-                {renderRoadObjectIcon(targetObj.id, "h-5 w-5")}
+          <div className="w-full max-w-md flex items-center justify-between rounded-2xl border-3 border-black bg-surface px-4 py-3 shadow-[3px_3px_0px_#000]">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 border-2 border-black shadow-[2px_2px_0px_#000]">
+                {renderRoadObjectIcon(targetObj.id, "h-6 w-6")}
               </div>
-              <span className="text-base font-black text-ink">
-                Find: <strong className="text-tea">{localizedName(targetObj)}</strong>
+              <div className="text-left">
+                <span className="text-[10px] font-black uppercase tracking-wider text-ink-secondary block">
+                  Find Target:
+                </span>
+                <span className="text-base sm:text-lg font-black text-ink leading-tight">
+                  {localizedName(targetObj)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  stopSpeaking();
+                  speak(`${t("instruction")} ${localizedName(targetObj)}`, locale, rate);
+                }}
+                className="btn-tactile flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-amber-200 text-amber-950 hover:bg-amber-300 shadow-[2px_2px_0px_#000] cursor-pointer"
+                title="Read for Me"
+                aria-label="Read for Me"
+              >
+                <Volume2 className="h-5 w-5 stroke-[2.5]" />
+              </button>
+              <span className="rounded-xl border-2 border-black bg-tea px-3 py-1.5 text-sm font-black text-white shadow-[2px_2px_0px_#000]">
+                {foundCount} / {levelConfig.count}
               </span>
             </div>
-            <span className="text-base font-black text-ink">
-              {foundCount} / {levelConfig.count}
-            </span>
           </div>
 
           <div

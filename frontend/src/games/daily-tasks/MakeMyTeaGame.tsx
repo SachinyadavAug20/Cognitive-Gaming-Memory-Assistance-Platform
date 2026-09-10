@@ -25,7 +25,7 @@ import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 
 const ALL_STEPS = [
-  { key: "water", icon: Droplets, color: "text-sky-600" },
+  { key: "water", icon: Droplets, color: "text-emerald-700" },
   { key: "leaves", icon: AssamTeaLeafIcon, color: "text-emerald-700" },
   { key: "milk", icon: Milk, color: "text-amber-800" },
   { key: "sugar", icon: Sparkles, color: "text-amber-500" },

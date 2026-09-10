@@ -21,18 +21,36 @@ import {
   Camera,
   Volume2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { GAMES, type ClinicalDomain } from "@/games/registry";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { startLevel } from "@/games/config";
 import { GameLoading } from "@/components/games/GameState";
-import { MajuliWalk3D } from "@/components/games/MajuliWalk3D";
-import { TeaHarvestVision } from "@/components/games/TeaHarvestVision";
-import { ArrowEscape } from "@/components/games/ArrowEscape";
-import { BihuDholBeats } from "@/components/games/BihuDholBeats";
-import { DayInMyWorld3D } from "@/components/games/DayInMyWorld3D";
 import { speakText, unlockAudio } from "@/lib/sound";
 import { getGameStrings, getHubStrings } from "@/lib/gameI18n";
 import { PatientBottomLogout } from "@/components/patient/PatientBottomLogout";
+import { ActivityIllustration } from "@/components/ui/ActivityIllustrations";
+
+const DayInMyWorld3D = dynamic(
+  () => import("@/components/games/DayInMyWorld3D").then((m) => m.DayInMyWorld3D),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const MajuliWalk3D = dynamic(
+  () => import("@/components/games/MajuliWalk3D").then((m) => m.MajuliWalk3D),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const TeaHarvestVision = dynamic(
+  () => import("@/components/games/TeaHarvestVision").then((m) => m.TeaHarvestVision),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const ArrowEscape = dynamic(
+  () => import("@/components/games/ArrowEscape").then((m) => m.ArrowEscape),
+  { loading: () => <GameLoading />, ssr: false }
+);
+const BihuDholBeats = dynamic(
+  () => import("@/components/games/BihuDholBeats").then((m) => m.BihuDholBeats),
+  { loading: () => <GameLoading />, ssr: false }
+);
 
 type FilterKey = "all" | ClinicalDomain;
 type ActiveModalGame =
@@ -42,6 +60,66 @@ type ActiveModalGame =
   | "arrow-escape"
   | "bihu-dhol"
   | null;
+
+function getGameCardBg(id: string): string {
+  switch (id) {
+    case "jigsaw":
+      return "bg-[#FDBA74]"; // solid light peach / apricot (warm, sleep-safe)
+    case "majuli-walk":
+    case "wayfinding":
+      return "bg-[#6EE7B7]"; // solid light mint green
+    case "loom":
+      return "bg-[#FCD34D]"; // solid light amber gold
+    case "memory-road":
+      return "bg-[#FED7AA]"; // solid light apricot / terracotta
+    case "grandchild-chat":
+      return "bg-[#A7F3D0]"; // solid light soft mint green
+    case "memory-detective":
+      return "bg-[#FDE047]"; // solid light yellow
+    case "drum":
+    case "bihu-dhol":
+    case "tuned-drum":
+      return "bg-[#FDBA74]"; // solid light orange/apricot
+    case "alpana":
+      return "bg-[#E9D5FF]"; // solid light warm lilac
+    case "lotus-painter":
+      return "bg-[#86EFAC]"; // solid light meadow green
+    case "butterfly-sanctuary":
+      return "bg-[#FDE047]"; // solid light sunshine yellow
+    case "tea-harvest":
+    case "tea-harvest-vision":
+    case "tea-garden-catch":
+      return "bg-[#6EE7B7]"; // solid light tea leaf green
+    case "river-lanterns":
+      return "bg-[#FED7AA]"; // solid light twilight warm amber
+    case "monastery-bell":
+      return "bg-[#FCD34D]"; // solid light brass amber
+    case "brahmaputra-boat":
+      return "bg-[#A7F3D0]"; // solid light jade/meadow green
+    case "hornbill-flight":
+      return "bg-[#FDBA74]"; // solid light sunset peach
+    case "majuli-pottery":
+      return "bg-[#FED7AA]"; // solid light terracotta peach
+    case "daily-routine":
+      return "bg-[#FDE047]"; // solid light morning gold
+    case "storybook":
+      return "bg-[#FED7AA]"; // solid light parchment amber
+    case "radio":
+      return "bg-[#FDBA74]"; // solid light retro orange
+    case "heritage-kitchen":
+      return "bg-[#FECDD3]"; // solid light warm rose
+    case "bazaar-buddies":
+    case "sorting":
+      return "bg-[#86EFAC]"; // solid light market green
+    case "arrow-escape":
+      return "bg-[#FCD34D]"; // solid light golden amber
+    case "dzukou-botanist":
+    case "memory-garden":
+      return "bg-[#86EFAC]"; // solid light botanical green
+    default:
+      return "bg-[#FCD34D]";
+  }
+}
 
 export default function GamesHubPage() {
   const locale = useLocale();
@@ -104,243 +182,58 @@ export default function GamesHubPage() {
         </div>
       )}
 
-      {/* Page Title Bar - Minimal & Accessible (No redundant card box, no duplicate back button) */}
-      <div className="mb-5 flex items-center justify-between gap-4">
-        <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2.5">
-          <Brain className="h-7 w-7 sm:h-8 sm:w-8 text-tea shrink-0" />
-          <span>{hub.headerTitle}</span>
-        </h1>
-        <button
-          type="button"
-          onClick={() => handleSpeak(hub.headerTitle)}
-          className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 px-3.5 py-2 text-xs sm:text-sm font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
-          title={hub.listenGuide}
-          aria-label={hub.listenGuide}
-        >
-          <Volume2 className="h-4 w-4 text-amber-900" />
-          <span>{hub.listenGuide}</span>
-        </button>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* FEATURED SPATIAL & COMPUTER VISION EXPERIENCES HERO SHOWCASE              */}
-      {/* ========================================================================= */}
-      {/* Featured Experiences: A Day in My Village & Echoes of Home */}
-      <div className="mb-6 grid gap-4 md:grid-cols-2">
-        {/* Flagship: A Day in My Village 3D Story Campaign */}
-        <div className="relative overflow-hidden rounded-3xl border-3 border-black bg-gradient-to-br from-amber-600 to-amber-700 p-5 sm:p-6 text-white shadow-[5px_5px_0px_#000] flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="rounded-full bg-amber-300 px-3 py-1 text-[11px] font-black uppercase text-amber-950">
-                ⭐ Featured Story
-              </span>
-              <button
-                type="button"
-                onClick={() => handleSpeak(`${dayInWorld.title}. ${dayInWorld.audioPrompt}`)}
-                className="btn-tactile flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white/20 text-white hover:bg-white/30 cursor-pointer shadow-xs"
-                title={hub.listenGuide}
-              >
-                <Volume2 className="h-4 w-4" />
-              </button>
-            </div>
-            <h2 className="font-serif text-xl sm:text-2xl font-black text-white leading-tight">
-              {dayInWorld.introTitle || dayInWorld.title}
-            </h2>
-            <p className="text-xs sm:text-sm font-semibold text-amber-100 leading-relaxed">
-              {dayInWorld.introSubtitle}
-            </p>
-          </div>
-
-          <div className="mt-5 pt-3 border-t border-white/20 flex items-center justify-end">
-            <button
-              type="button"
-              onClick={() => setActiveModalGame("day-in-my-world")}
-              className="btn-tactile rounded-2xl border-2 border-black bg-white px-5 py-2.5 text-xs sm:text-sm font-black text-amber-950 shadow-[3px_3px_0px_#000] hover:bg-amber-100 flex items-center gap-2 cursor-pointer"
-            >
-              <Play className="h-4 w-4 fill-amber-950" />
-              <span>{hub.flagshipCta}</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Feature 2: Echoes of Home — Peaceful Sounds & Memories */}
-        <div className="relative overflow-hidden rounded-3xl border-3 border-black bg-gradient-to-br from-teal-800 to-cyan-900 p-5 sm:p-6 text-white shadow-[5px_5px_0px_#000] flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="rounded-full bg-teal-300 px-3 py-1 text-[11px] font-black uppercase text-teal-950">
-                🌿 Calming Memories
-              </span>
-              <button
-                type="button"
-                onClick={() => handleSpeak("Echoes of Home. Reconnect with memories with sounds of rain, rivers, temple bells, and family voices.")}
-                className="btn-tactile flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white/20 text-white hover:bg-white/30 cursor-pointer shadow-xs"
-                title={hub.listenGuide}
-              >
-                <Volume2 className="h-4 w-4" />
-              </button>
-            </div>
-            <h2 className="font-serif text-xl sm:text-2xl font-black text-white leading-tight">
-              Echoes of Home
-            </h2>
-            <p className="text-xs sm:text-sm font-semibold text-teal-100 leading-relaxed">
-              Step inside family photos brought gently to life. Listen to soothing sounds of rain, rivers, temple bells, and loving family voices.
-            </p>
-          </div>
-
-          <div className="mt-5 pt-3 border-t border-white/20 flex items-center justify-end">
-            <Link
-              href="/patient/echoes-of-home"
-              className="btn-tactile rounded-2xl border-2 border-black bg-white px-5 py-2.5 text-xs sm:text-sm font-black text-teal-950 shadow-[3px_3px_0px_#000] hover:bg-teal-50 flex items-center gap-2 cursor-pointer"
-            >
-              <Play className="h-4 w-4 fill-teal-950" />
-              <span>Open Memories</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Friendly Domain Filter Tabs */}
-      <div className="mb-5 flex flex-wrap items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setSelectedFilter("all")}
-          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "all"
-              ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-            }`}
-        >
-          <Layers className="h-4 w-4" />
-          <span>{hub.filterAll} ({GAMES.length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setSelectedFilter("vision-3d")}
-          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "vision-3d"
-              ? "border-black bg-teal-800 text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-            }`}
-        >
-          <Sparkles className="h-4 w-4" />
-          <span>{hub.filterVision3D} ({GAMES.filter((g) => g.category === "vision-3d").length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setSelectedFilter("reminiscence")}
-          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "reminiscence"
-              ? "border-black bg-purple-700 text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-            }`}
-        >
-          <Brain className="h-4 w-4" />
-          <span>{hub.filterReminiscence} ({GAMES.filter((g) => g.category === "reminiscence").length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setSelectedFilter("attention")}
-          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "attention"
-              ? "border-black bg-emerald-700 text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-            }`}
-        >
-          <Compass className="h-4 w-4" />
-          <span>{hub.filterAttention} ({GAMES.filter((g) => g.category === "attention").length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setSelectedFilter("iadl")}
-          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "iadl"
-              ? "border-black bg-amber-700 text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-            }`}
-        >
-          <Utensils className="h-4 w-4" />
-          <span>{hub.filterIadl} ({GAMES.filter((g) => g.category === "iadl").length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setSelectedFilter("calm")}
-          className={`rounded-xl border-2 px-4 py-2 text-xs sm:text-sm font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-            selectedFilter === "calm"
-              ? "border-black bg-teal-700 text-white shadow-[2px_2px_0px_#000]"
-              : "border-black bg-surface text-ink hover:bg-surface-muted shadow-[1px_1px_0px_#000]"
-            }`}
-        >
-          <Flower2 className="h-4 w-4" />
-          <span>{hub.filterCalm} ({GAMES.filter((g) => g.category === "calm").length})</span>
-        </button>
-      </div>
-
       {loading ? (
         <GameLoading />
       ) : (
-        <div className="grid gap-3.5 sm:grid-cols-2">
-          {filteredGames.map((game) => {
+        <div className="grid gap-4 sm:grid-cols-2 pt-2">
+          {GAMES.map((game) => {
             const Icon = game.icon || Brain;
             const gameStrings = getGameStrings(game.id, locale);
             const cardTitle = gameStrings.title || (t.has(game.titleKey) ? t(game.titleKey) : game.domain);
             const cardDesc = gameStrings.introSubtitle || (t.has(game.descKey) ? t(game.descKey) : "");
             const voiceText = `${cardTitle}. ${gameStrings.audioPrompt || cardDesc}`;
             const levelLabel = hub.levelAdaptive.replace("{level}", String(startLevel(detail)));
+            const cardBg = getGameCardBg(game.id);
 
             return (
               <Link
                 key={game.id}
                 href={`/patient/games/${game.id}`}
                 data-voice-desc={voiceText}
-                className="game-card btn-tactile group flex flex-col justify-between gap-4 rounded-3xl border-3 border-black bg-surface p-5 shadow-[4px_4px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative"
+                className={`game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 rounded-3xl border-3 border-black ${cardBg} p-5 shadow-[5px_5px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative`}
               >
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-3 border-black text-white shadow-[3px_3px_0px_#000] ${game.accent}`}
+                {/* Header: Title, Icon & Voice Preview */}
+                <div className="w-full flex items-center justify-between gap-2.5 border-b-2 border-black/20 pb-2.5">
+                  <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wider uppercase truncate">
+                    <Icon className="h-7 w-7 text-black stroke-[2.5] shrink-0" />
+                    <span className="truncate">{cardTitle}</span>
+                  </div>
+
+                  {/* Quick Audio Preview Button - Large Accessible Touch Target */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleSpeak(voiceText);
+                    }}
+                    className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-200 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
+                    title={hub.listenGuide}
+                    aria-label={`${hub.listenGuide}: ${cardTitle}`}
                   >
-                    <Icon className="h-8 w-8 text-white stroke-[2.5]" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-lg sm:text-xl font-black text-ink leading-snug">
-                        {cardTitle}
-                      </span>
-
-                      {/* Quick Audio Preview Button */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleSpeak(voiceText);
-                        }}
-                        className="btn-tactile flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border-2 border-black bg-amber-100 text-ink hover:bg-amber-200 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
-                        title={hub.listenGuide}
-                        aria-label={`Listen to description of ${cardTitle}`}
-                      >
-                        <Volume2 className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-amber-900" />
-                      </button>
-                    </div>
-
-                    <p className="mt-2 text-sm sm:text-base font-semibold text-ink-secondary line-clamp-2 leading-relaxed">
-                      {cardDesc}
-                    </p>
-                  </div>
+                    <Volume2 className="h-6 w-6 stroke-[2.5]" />
+                  </button>
                 </div>
 
-                <div className="flex items-center justify-between border-t-2 border-black/15 pt-3 text-xs sm:text-sm font-bold text-ink-secondary">
-                  <span className="text-tea font-black">{levelLabel}</span>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="btn-tactile rounded-xl bg-tea px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-black text-white group-hover:bg-emerald-800 border-2 border-black shadow-[2px_2px_0px_#000] flex items-center gap-2">
-                      <span>{hub.startSession}</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </span>
-                  </div>
+                {/* Center Visual: Thematic Visual Illustration in crisp white framed box */}
+                <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
+                  <ActivityIllustration gameId={game.id} className="h-12 w-12 sm:h-14 sm:w-14" />
+                </div>
+
+                {/* Full-width Tactical Button matching user mockup */}
+                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] uppercase tracking-wide flex items-center justify-center gap-2 group-hover:bg-black group-hover:text-white transition-all">
+                  <span>{hub.startSession || "PLAY NOW"}</span>
+                  <span>➔</span>
                 </div>
               </Link>
             );

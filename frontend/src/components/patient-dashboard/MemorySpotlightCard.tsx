@@ -64,47 +64,49 @@ export function MemorySpotlightCard({
   const parsed = memoryOfDay ? parseMemory(memoryOfDay.text) : null;
 
   return (
-    <div className={`${CARD} bg-surface p-5 sm:p-7 text-left`}>
+    <div className={`${CARD} bg-[#FFFDF9] p-5 sm:p-7 text-left`}>
+      {/* Header */}
       <div className="flex items-center justify-between border-b-2 border-black/10 pb-3">
         <div className="flex items-center gap-2.5">
           <HeartHandshake className="h-6 w-6 text-tea" />
           <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">{title}</h3>
         </div>
-        <span className="hidden sm:inline-block text-xs font-bold text-ink-secondary bg-amber-100 px-3 py-1 rounded-full border border-black/20">
-          Cherished Family Memory
+        <span className="text-xs font-black text-amber-900 bg-amber-100/90 px-3 py-1 rounded-full border border-amber-300 shadow-2xs">
+          Family Keepsake
         </span>
       </div>
 
       {memoryOfDay ? (
         <>
-          <div className="mt-5 flex flex-col sm:flex-row items-start gap-5">
+          <div className="mt-5 flex flex-col sm:flex-row items-start gap-5 sm:gap-6">
             {photo && (
               <button
                 type="button"
                 onClick={onOpenLightbox}
-                className="btn-tactile group shrink-0 overflow-hidden rounded-3xl border-3 border-black bg-amber-100/70 p-2 shadow-[4px_4px_0px_#000] cursor-pointer hover:scale-[1.02] transition-transform text-left"
+                className="group relative shrink-0 h-36 w-36 sm:h-44 sm:w-44 rounded-2xl overflow-hidden border-2 border-black bg-amber-50 shadow-[3px_3px_0px_#000] cursor-pointer hover:scale-[1.02] active:scale-95 transition-all text-left"
                 title="Tap to see larger photo"
+                aria-label={viewPhotoLabel}
               >
-                <div key={photo || "none"} className="relative h-36 w-36 sm:h-44 sm:w-44 rounded-2xl overflow-hidden bg-white border-2 border-black/20 flex items-center justify-center">
-                  {!hasError ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      src={photo || ""}
-                      alt={parsed?.title || title}
-                      className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
-                      loading="eager"
-                      onError={() => setHasError(true)}
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center p-3 text-ink-secondary text-center">
-                      <ImageIcon className="h-10 w-10 text-tea/60 mb-1" />
-                      <span className="text-xs font-bold">Family Photo</span>
-                    </div>
-                  )}
-                </div>
-                <div className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-ink px-3 py-1.5 text-xs font-black text-white group-hover:bg-tea transition-colors shadow-xs">
-                  <Search className="h-3.5 w-3.5" />
-                  <span>{viewPhotoLabel}</span>
+                {!hasError ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={photo || ""}
+                    alt={parsed?.title || title}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="eager"
+                    onError={() => setHasError(true)}
+                  />
+                ) : (
+                  <div className="flex h-full w-full flex-col items-center justify-center p-3 text-ink-secondary text-center">
+                    <ImageIcon className="h-10 w-10 text-tea/60 mb-1" />
+                    <span className="text-xs font-bold">Family Photo</span>
+                  </div>
+                )}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-center">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-black text-white">
+                    <Search className="h-3 w-3" />
+                    <span>{viewPhotoLabel}</span>
+                  </span>
                 </div>
               </button>
             )}
@@ -112,14 +114,16 @@ export function MemorySpotlightCard({
             <div className="flex-1 min-w-0">
               {parsed && parsed.title ? (
                 <div>
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-200 border-2 border-amber-900/40 px-3 py-1 text-xs sm:text-sm font-black text-amber-950 uppercase tracking-wider shadow-xs">
-                    <Users className="h-3.5 w-3.5 text-amber-900" />
-                    <span>{parsed.badge}</span>
-                  </div>
-                  <h4 className="font-serif text-2xl sm:text-3xl font-black text-ink leading-tight mt-2">
+                  {parsed.badge && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 border border-amber-300 px-3 py-0.5 text-xs font-black text-amber-900 shadow-2xs">
+                      <Users className="h-3.5 w-3.5 text-amber-800" />
+                      <span>{parsed.badge}</span>
+                    </span>
+                  )}
+                  <h4 className="font-serif text-2xl sm:text-3xl font-black text-ink leading-tight mt-1.5">
                     {parsed.title}
                   </h4>
-                  <p className="text-base sm:text-xl font-medium text-ink leading-relaxed mt-2.5">
+                  <p className="text-base sm:text-lg font-medium text-ink-secondary leading-relaxed mt-2">
                     {parsed.narrative}
                   </p>
                 </div>
@@ -135,7 +139,7 @@ export function MemorySpotlightCard({
             <button
               type="button"
               onClick={() => onListen(memoryOfDay.text)}
-              className="btn-tactile inline-flex items-center gap-2.5 rounded-2xl border-3 border-black bg-tea px-6 py-3.5 text-sm sm:text-base font-black text-white shadow-[3px_3px_0px_#000] hover:bg-emerald-800 cursor-pointer active:scale-95 transition-all"
+              className="btn-tactile inline-flex items-center gap-2.5 rounded-2xl border-2 border-black bg-tea px-6 py-3 text-sm sm:text-base font-black text-white shadow-[3px_3px_0px_#000] hover:bg-emerald-800 cursor-pointer active:scale-95 transition-all"
             >
               <Volume2 className="h-5 w-5 stroke-[2.5]" />
               <span>{listenLabel}</span>
@@ -143,7 +147,7 @@ export function MemorySpotlightCard({
             <button
               type="button"
               onClick={onShuffle}
-              className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-3 border-black bg-surface px-6 py-3.5 text-sm sm:text-base font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-amber-100 cursor-pointer active:scale-95 transition-all"
+              className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-black bg-white px-5 py-3 text-sm sm:text-base font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-amber-100 cursor-pointer active:scale-95 transition-all"
             >
               <Sparkles className="h-5 w-5 text-amber-600" />
               <span>{anotherLabel}</span>

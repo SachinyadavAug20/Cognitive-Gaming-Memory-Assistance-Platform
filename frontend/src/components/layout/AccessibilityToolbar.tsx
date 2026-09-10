@@ -281,7 +281,7 @@ export function AccessibilityToolbar() {
       else document.documentElement.style.fontSize = "18px";
 
       if (localStorage.getItem("cognicare_high_contrast") === "true") {
-        document.documentElement.classList.add("high-contrast-mode");
+        document.documentElement.classList.add("high-contrast-mode", "dark");
       }
 
       const K = ["Tab", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", "Escape", " "];
@@ -352,9 +352,9 @@ export function AccessibilityToolbar() {
       const next = !getHighContrastSnapshot();
       localStorage.setItem("cognicare_high_contrast", String(next));
       if (next) {
-        document.documentElement.classList.add("high-contrast-mode");
+        document.documentElement.classList.add("high-contrast-mode", "dark");
       } else {
-        document.documentElement.classList.remove("high-contrast-mode");
+        document.documentElement.classList.remove("high-contrast-mode", "dark");
       }
       window.dispatchEvent(new Event("cognicare_accessibility_change"));
     } catch {
@@ -472,26 +472,26 @@ export function AccessibilityToolbar() {
       {isPatientRoute ? (
         <div
           suppressHydrationWarning
-          className="w-full border-b-2 border-black/20 bg-[#FAF6F0] px-3 sm:px-6 py-1.5 text-xs text-ink select-none"
+          className="w-full border-b-2 border-black/20 bg-surface px-3 sm:px-6 py-2 text-xs sm:text-sm text-ink select-none"
         >
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
             {/* Senior Label */}
             <div className="flex items-center gap-2 font-bold shrink-0">
-              <span className="flex items-center gap-1.5 text-xs sm:text-sm font-black text-tea whitespace-nowrap">
+              <span className="flex items-center gap-2 text-sm sm:text-base font-black text-tea whitespace-nowrap">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-tea" />
                 Senior Reading & Accessibility
               </span>
             </div>
 
             {/* Clean Senior Controls */}
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2.5 shrink-0">
               {/* Font Size Scaler */}
               <div className="flex items-center gap-1 rounded-xl border-2 border-black/40 bg-surface p-1 shadow-xs shrink-0">
-                <span className="text-xs font-black px-1.5 text-ink hidden sm:inline">Text Size:</span>
+                <span className="text-xs sm:text-sm font-black px-2 text-ink hidden sm:inline">Text Size:</span>
                 <button
                   type="button"
                   onClick={() => setFontSize("sm")}
-                  className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-colors ${
+                  className={`px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-colors ${
                     activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                   }`}
                   title="Smaller Text"
@@ -502,7 +502,7 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("md")}
-                  className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-colors ${
+                  className={`px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-colors ${
                     activeFontSizeLevel === "md" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                   }`}
                   title="Standard Text"
@@ -513,7 +513,7 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("lg")}
-                  className={`px-3 py-1 text-xs font-black rounded-lg cursor-pointer transition-colors ${
+                  className={`px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-colors ${
                     activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                   }`}
                   title="Large Text (Elder Assist)"
@@ -531,14 +531,14 @@ export function AccessibilityToolbar() {
                   toggleListenFirst();
                 }}
                 aria-pressed={activeListenFirst}
-                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-black border-2 transition-all cursor-pointer shrink-0 ${
                   activeListenFirst
                     ? "bg-emerald-400 text-black border-black shadow-xs ring-1 ring-emerald-500"
                     : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
                 }`}
                 title="Toggle Voice Read Aloud on Hover or Touch"
               >
-                <Volume2 className="h-4 w-4 stroke-[2.5]" />
+                <Volume2 className="h-4.5 w-4.5 stroke-[2.5]" />
                 <span>{activeListenFirst ? "Audio: ON" : "Read Aloud"}</span>
               </button>
 
@@ -547,14 +547,14 @@ export function AccessibilityToolbar() {
                 type="button"
                 onClick={toggleHighContrast}
                 aria-pressed={activeHighContrast}
-                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black border-2 transition-all cursor-pointer shrink-0 ${
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-black border-2 transition-all cursor-pointer shrink-0 ${
                   activeHighContrast
                     ? "bg-amber-400 text-black border-black shadow-xs"
                     : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
                 }`}
                 title="Toggle High Contrast Night Mode"
               >
-                <Moon className="h-4 w-4" />
+                <Moon className="h-4.5 w-4.5" />
                 <span>{activeHighContrast ? "Night: ON" : "Night Mode"}</span>
               </button>
             </div>
@@ -563,7 +563,7 @@ export function AccessibilityToolbar() {
       ) : (
       <div
         suppressHydrationWarning
-        className="w-full border-b border-black/15 bg-[#F5EFE6] px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto"
+        className="w-full border-b border-black/15 bg-surface px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-2 flex-nowrap">
           {/* Government of India / MDoNER Mandate Badge */}

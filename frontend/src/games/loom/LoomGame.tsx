@@ -39,7 +39,7 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
@@ -55,7 +55,7 @@ function GameShell({
 const THREAD_COLORS = [
   { id: "red", name: "Crimson Red", hex: "#DC2626" },
   { id: "gold", name: "Muga Gold", hex: "#D97706" },
-  { id: "blue", name: "Peacock Blue", hex: "#2563EB" },
+  { id: "emerald", name: "Assam Emerald", hex: "#059669" },
 ];
 
 export function LoomGame() {
@@ -116,6 +116,7 @@ export function LoomGame() {
     } else {
       if (nextRows % 2 === 0) {
         playCorrect();
+        speak(`${nextRows} of ${TARGET_ROWS} rows woven. Wonderful rhythm!`, locale, rate);
       }
     }
   };
@@ -246,21 +247,24 @@ export function LoomGame() {
           {/* INTERACTIVE CONTROLS */}
           <div className="w-full max-w-md flex flex-col items-center gap-3 pt-1">
             <div className="w-full flex items-center justify-between px-1 text-xs font-black text-ink">
-              <span className="flex items-center gap-1">
-                <span className="h-2.5 w-2.5 rounded-full bg-tea" /> Muga Silk Ready
+              <span className="flex items-center gap-1.5 font-bold">
+                <span className="h-3 w-3 rounded-full bg-tea" /> Muga Silk Ready
               </span>
               <button
                 type="button"
-                onClick={() => speak("Slide the wooden shuttle from one side to the other to pass the weft thread.", locale, rate)}
-                className="flex items-center gap-1 text-tea hover:underline cursor-pointer"
+                onClick={() => speak(str.audioPrompt || "Slide the wooden shuttle from one side to the other to pass the weft thread.", locale, rate)}
+                className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-3 py-1 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer"
               >
-                <Volume2 className="h-3.5 w-3.5" /> Hear Guide
+                <Volume2 className="h-4 w-4" /> {str.listenLabel || "Read for Me"}
               </button>
             </div>
 
-            <ChunkyButton variant="marigold" size="xl" onClick={handleShuttlePass}>
-              <span className="flex items-center gap-2">
-                <ArrowLeftRight className="h-5 w-5" /> {str.hudAction} ({shuttleSide === -1 ? "→" : "←"})
+            <ChunkyButton variant="marigold" size="2xl" onClick={handleShuttlePass}>
+              <span className="flex items-center gap-3 text-base sm:text-lg font-black tracking-wide">
+                <ArrowLeftRight className="h-6 w-6" />
+                <span>
+                  {shuttleSide === -1 ? `${str.hudAction} ➔` : `⬅ ${str.hudAction}`}
+                </span>
               </span>
             </ChunkyButton>
           </div>

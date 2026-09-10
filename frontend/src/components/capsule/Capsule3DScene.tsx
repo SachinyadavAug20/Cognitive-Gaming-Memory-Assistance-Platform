@@ -10,7 +10,7 @@ import type {
 
 interface Capsule3DSceneProps {
   capsule: MemoryCapsule;
-  coords: { x: number; y: number };
+  coords?: { x: number; y: number };
   colorFilter?: MemoryColorFilter;
   autopilot?: boolean;
   onPointerMove?: (coords: { x: number; y: number }) => void;
@@ -83,9 +83,11 @@ export function Capsule3DScene({
     capsuleRef.current = capsule;
   });
 
-  // Update target coordinates smoothly
+  // Update target coordinates smoothly if external coords provided
   useEffect(() => {
-    targetLookRef.current = coords;
+    if (coords) {
+      targetLookRef.current = coords;
+    }
   }, [coords]);
 
   // Update atmosphere lighting when colorFilter changes
@@ -439,13 +441,16 @@ export function Capsule3DScene({
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
       const rect = container.getBoundingClientRect();
-      const normX = ((clientX - rect.left) / rect.width) * 2 - 1;
-      const normY = ((clientY - rect.top) / rect.height) * 2 - 1;
+      const normX = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width) * 2 - 1));
+      const normY = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height) * 2 - 1));
+
+      // Direct in-engine update for jitter-free 60fps/120fps WebGL rendering
+      targetLookRef.current = { x: normX, y: normY };
 
       if (onPointerMoveRef.current) {
         onPointerMoveRef.current({
-          x: Math.max(-1, Math.min(1, normX)),
-          y: Math.max(-1, Math.min(1, normY)),
+          x: normX,
+          y: normY,
         });
       }
     };

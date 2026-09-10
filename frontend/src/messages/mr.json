@@ -54,7 +54,7 @@
       "close": "बंद करा"
     },
     "orientation": "आज तुम्ही कुटुंबासोबत घरी सुरक्षित आहात.",
-    "gamesTitle": "रोजचे मेंदूचे खेळ",
+    "gamesTitle": "रोजच्या मेंदूच्या कृती",
     "speaking": "बोलत आहोत...",
     "heroPrompt": "खाली कोणताही खेळ दाबून सुरू करा.",
     "cards": {
@@ -86,7 +86,7 @@
       "familyTitle": "कुटुंबाच्या आठवणी",
       "familyEmpty": "तुमच्या कुटुंबाचे फोटो लवकरच इथे दिसतील.",
       "memoryTitle": "आजची आठवण",
-      "memoryListen": "आठवण ऐका",
+      "memoryListen": "मला आठवण वाचून दाखवा",
       "memoryAnother": "दुसरी आठवण दाखवा",
       "memoryView": "आठवण बघा",
       "memoryEmpty": "लवकरच इथे एक कोमल आठवण दिसेल.",
@@ -96,7 +96,7 @@
       "calmMusic": "तुमची आवडती गाणी: {music}.",
       "calmFallbackTriggers": "सकाळचा गरम चहा",
       "calmPlay": "शांत चाल वाजवा",
-      "calmListen": "आरामाचे बोल ऐका",
+      "calmListen": "मला आरामाचे बोल ऐकवा",
       "moodTitle": "आज तुम्हाला कसे वाटत आहे?",
       "moodPeaceful": "शांत",
       "moodOkay": "ठीक आहे",
@@ -110,7 +110,7 @@
       }
     },
     "schedule": "आजचे वेळापत्रक",
-    "listen": "ऐका",
+    "listen": "मला वाचून दाखवा",
     "waterToday": "आजचे पाणी",
     "moreGames": {
       "label": "आणखी खेळ",
@@ -229,7 +229,8 @@
   },
   "game": {
     "back": "मागे",
-    "score": "गुण: {score}"
+    "score": "गुण: {score}",
+    "listen": "मला वाचून दाखवा"
   },
   "intake": {
     "step": "पायरी {current} / {total}",
@@ -480,7 +481,7 @@
     "imagesOnly": "फक्त प्रतिमा"
   },
   "audio": {
-    "listen": "ऐका",
+    "listen": "मला वाचून दाखवा",
     "howToPlay": "कसे खेळायचे",
     "listenToStory": "कथा ऐका",
     "listenToDirections": "सूचना ऐका"
@@ -547,7 +548,7 @@
     },
     "lightbox": {
       "close": "बंद करा",
-      "listen": "आठवण ऐका",
+      "listen": "मला आठवण वाचून दाखवा",
       "speaking": "बोलत आहोत…"
     },
     "clinicalSummary": {
@@ -634,7 +635,7 @@
     "subtitle": "सौम्य खेळ जे मन आणि दैनंदिन दिनचर्या सशक्त ठेवतात.",
     "backToRoutine": "← दैनंदिन दिनचर्येवर परत",
     "backToHub": "← खेळ केंद्र",
-    "listen": "ऐका",
+    "listen": "मला वाचून दाखवा",
     "listening": "बोलत आहोत...",
     "recommended": "शिफारसीत",
     "level": "पातळी {level}",
@@ -642,7 +643,7 @@
     "score": "गुण: {score}",
     "lightbox": {
       "close": "बंद करा",
-      "listen": "आठवण ऐका"
+      "listen": "मला आठवण वाचून दाखवा"
     },
     "loading": "तुमचा खेळ तयार होत आहे...",
     "loadError": "तुमचा तपशील आणताना काहीतरी चूक झाली.",

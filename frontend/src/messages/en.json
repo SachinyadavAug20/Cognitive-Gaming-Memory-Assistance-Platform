@@ -51,7 +51,7 @@
     "greetingName": "Good Morning, {name}!",
     "date": "Wednesday, 26 August",
     "schedule": "Today's Schedule",
-    "listen": "Listen",
+    "listen": "Read for Me",
     "waterToday": "Water Today",
     "moreGames": {
       "label": "More Games",
@@ -67,7 +67,7 @@
       "close": "Close"
     },
     "orientation": "You are safe at home with your family today.",
-    "gamesTitle": "Daily Brain Games",
+    "gamesTitle": "Daily Brain Activities",
     "speaking": "Speaking...",
     "heroPrompt": "Tap any game below to start.",
     "cards": {
@@ -99,7 +99,7 @@
       "familyTitle": "Family Memories",
       "familyEmpty": "Your family's photos will appear here soon.",
       "memoryTitle": "Memory of the Day",
-      "memoryListen": "Listen to memory",
+      "memoryListen": "Read memory for me",
       "memoryAnother": "Show another memory",
       "memoryView": "View memory",
       "memoryEmpty": "A gentle memory will appear here soon.",
@@ -109,7 +109,7 @@
       "calmMusic": "Your favourite tunes: {music}.",
       "calmFallbackTriggers": "warm tea in the morning",
       "calmPlay": "Play soothing tune",
-      "calmListen": "Listen to comfort",
+      "calmListen": "Read comfort for me",
       "moodTitle": "How are you feeling today?",
       "moodPeaceful": "Peaceful",
       "moodOkay": "Okay",
@@ -464,7 +464,8 @@
   },
   "game": {
     "back": "Back",
-    "score": "Score: {score}"
+    "score": "Score: {score}",
+    "listen": "Read for Me"
   },
   "common": {
     "required": "*",
@@ -483,7 +484,7 @@
     "imagesOnly": "Images only"
   },
   "audio": {
-    "listen": "Listen",
+    "listen": "Read for Me",
     "howToPlay": "How to Play",
     "listenToStory": "Listen to Story",
     "listenToDirections": "Listen to directions"
@@ -550,7 +551,7 @@
     },
     "lightbox": {
       "close": "Close",
-      "listen": "Listen to memory",
+      "listen": "Read memory for me",
       "speaking": "Speaking…"
     },
     "clinicalSummary": {
@@ -637,7 +638,7 @@
     "subtitle": "Simple, calming activities to enjoy and practice memory.",
     "backToRoutine": "← Back to Daily Routine",
     "backToHub": "← Games Hub",
-    "listen": "Listen",
+    "listen": "Read for Me",
     "listening": "Speaking...",
     "recommended": "Recommended",
     "level": "Level {level}",
@@ -645,7 +646,7 @@
     "score": "Score: {score}",
     "lightbox": {
       "close": "Close",
-      "listen": "Listen to memory"
+      "listen": "Read memory for me"
     },
     "loading": "Preparing your game...",
     "loadError": "Something went wrong while getting your details.",

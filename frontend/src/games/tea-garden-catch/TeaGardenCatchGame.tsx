@@ -53,7 +53,7 @@ function renderFallingItemIcon(type: FallingItem["type"], className = "h-8 w-8")
     case "tea_leaf":
       return <AssamTeaLeafIcon className={`${className} text-emerald-400`} />;
     case "butterfly":
-      return <KazirangaButterflyIcon className={`${className} text-cyan-300`} />;
+      return <KazirangaButterflyIcon className={`${className} text-amber-300`} />;
     case "orange":
       return <Citrus className={`${className} text-amber-400`} />;
     case "flower":

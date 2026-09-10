@@ -17,6 +17,7 @@ import {
   useGameVerificationStore,
   type GameVerification,
 } from "@/store/useGameVerificationStore";
+import { ensureAudioContext } from "@/lib/sound";
 
 interface CaregiverVerifyModalProps {
   isOpen: boolean;
@@ -37,8 +38,8 @@ const COMMON_SAFETY_ASSURANCES = [
 
 function playTactileStampSound() {
   try {
-    const audioCtx = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const audioCtx = ensureAudioContext();
+    if (!audioCtx) return;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
 

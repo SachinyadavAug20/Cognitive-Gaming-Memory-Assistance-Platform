@@ -36,12 +36,12 @@ function GameShell({
   children: React.ReactNode;
 }) {
   return (
-    <section className="pb-12 min-h-screen bg-[#FAF6F0]">
+    <section className="pb-12 min-h-screen bg-canvas">
       <GameHeader
         title={title}
         score={score}
         backHref="/patient/games"
-        bgColor="bg-sky-900"
+        bgColor="bg-emerald-900"
         gameId="brahmaputra-boat"
       />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
@@ -122,18 +122,18 @@ export function BrahmaputraBoatGame() {
       boatPosRef.current.vx *= 0.9;
       boatPosRef.current.x = Math.max(0.12, Math.min(0.88, boatPosRef.current.x));
 
-      // 2. Flowing Brahmaputra River Water
+      // 2. Flowing Brahmaputra River Water (Rich Assam Emerald/Jade River)
       const waterGrad = ctx.createLinearGradient(0, 0, 0, h);
-      waterGrad.addColorStop(0, "#0284C7");
-      waterGrad.addColorStop(0.5, "#0369A1");
-      waterGrad.addColorStop(1, "#075985");
+      waterGrad.addColorStop(0, "#047857");
+      waterGrad.addColorStop(0.5, "#065F46");
+      waterGrad.addColorStop(1, "#064E3B");
       ctx.fillStyle = waterGrad;
       ctx.fillRect(0, 0, w, h);
 
       // River currents / flowing stream lines (Brahmaputra hydro-currents)
       for (let i = 0; i < 12; i++) {
         const ry = ((tick * 1.8 + i * 45) % h);
-        ctx.strokeStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.25)" : "rgba(147, 197, 253, 0.3)";
+        ctx.strokeStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.25)" : "rgba(167, 243, 208, 0.3)";
         ctx.lineWidth = i % 3 === 0 ? 3 : 1.5;
         ctx.beginPath();
         ctx.moveTo(0, ry);
@@ -279,10 +279,10 @@ export function BrahmaputraBoatGame() {
                 Brahmaputra River Boat
               </span>
             </div>
-            <ShieldCheck className="h-4 w-4 text-sky-900" />
+            <ShieldCheck className="h-4 w-4 text-emerald-900" />
           </div>
 
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-sky-900 text-white shadow-[4px_4px_0px_#000]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-emerald-900 text-white shadow-[4px_4px_0px_#000]">
             <Compass className="h-10 w-10 stroke-[2.5]" />
           </div>
 
@@ -297,12 +297,12 @@ export function BrahmaputraBoatGame() {
 
           {/* Clinical Benefits */}
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
-            <span className="text-xs font-black uppercase tracking-wider text-sky-900 block mb-2">
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-900 block mb-2">
               Clinical Benefits:
             </span>
             <div className="space-y-2 text-xs font-bold text-ink">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-sky-800" />
+                <span className="h-2 w-2 rounded-full bg-emerald-800" />
                 <span>Visuospatial continuous orientation & hand-eye steering</span>
               </div>
               <div className="flex items-center gap-2">
@@ -330,10 +330,10 @@ export function BrahmaputraBoatGame() {
         <div className="flex flex-col items-center gap-3.5 py-1">
           {/* SAILING STATUS HUD */}
           <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
-            <span className="text-xs font-black uppercase tracking-wider text-sky-950 flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4 text-sky-700" /> {str.hudProgress}: {score} / {TARGET_LOTUSES}
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-950 flex items-center gap-1.5">
+              <Sparkles className="h-4 w-4 text-emerald-700" /> {str.hudProgress}: {score} / {TARGET_LOTUSES}
             </span>
-            <span className="text-xs font-black px-2 py-0.5 rounded bg-sky-100 text-sky-900 border border-sky-300">
+            <span className="text-xs font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300">
               River Current: Calm
             </span>
           </div>
@@ -358,9 +358,9 @@ export function BrahmaputraBoatGame() {
               type="button"
               onPointerDown={() => { keysPressedRef.current.left = true; setTaps((t) => t + 1); }}
               onPointerUp={() => { keysPressedRef.current.left = false; }}
-              className="btn-tactile flex items-center justify-center gap-2 rounded-2xl border-3 border-black bg-sky-100 p-4 font-black text-ink shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-sky-200 cursor-pointer"
+              className="btn-tactile flex items-center justify-center gap-2 rounded-2xl border-3 border-black bg-emerald-100 p-4 font-black text-ink shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-emerald-200 cursor-pointer"
             >
-              <ArrowLeft className="h-5 w-5 text-sky-900" />
+              <ArrowLeft className="h-5 w-5 text-emerald-900" />
               <span>STEER LEFT</span>
             </button>
 
@@ -368,10 +368,10 @@ export function BrahmaputraBoatGame() {
               type="button"
               onPointerDown={() => { keysPressedRef.current.right = true; setTaps((t) => t + 1); }}
               onPointerUp={() => { keysPressedRef.current.right = false; }}
-              className="btn-tactile flex items-center justify-center gap-2 rounded-2xl border-3 border-black bg-sky-100 p-4 font-black text-ink shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-sky-200 cursor-pointer"
+              className="btn-tactile flex items-center justify-center gap-2 rounded-2xl border-3 border-black bg-emerald-100 p-4 font-black text-ink shadow-[4px_4px_0px_#000] active:translate-y-1 hover:bg-emerald-200 cursor-pointer"
             >
               <span>STEER RIGHT</span>
-              <ArrowRight className="h-5 w-5 text-sky-900" />
+              <ArrowRight className="h-5 w-5 text-emerald-900" />
             </button>
           </div>
         </div>
@@ -386,10 +386,10 @@ export function BrahmaputraBoatGame() {
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-                <span className="text-xs font-black uppercase tracking-wider text-sky-900 flex items-center gap-1.5">
+                <span className="text-xs font-black uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
                   <CheckCircle2 className="h-4 w-4" /> River Haven Reached
                 </span>
-                <span className="text-[10px] font-black uppercase rounded bg-sky-900 text-white px-2 py-0.5">
+                <span className="text-[10px] font-black uppercase rounded bg-emerald-900 text-white px-2 py-0.5">
                   {TARGET_LOTUSES} Lotuses Gathered
                 </span>
               </div>
@@ -405,9 +405,9 @@ export function BrahmaputraBoatGame() {
                 <button
                   type="button"
                   onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-sky-100 px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
+                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-emerald-100 px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
-                  <Waves className="h-4 w-4 text-sky-900" />
+                  <Waves className="h-4 w-4 text-emerald-900" />
                   <span className="text-xs font-black">Play Brahmaputra Boatman Tune</span>
                 </button>
               </div>

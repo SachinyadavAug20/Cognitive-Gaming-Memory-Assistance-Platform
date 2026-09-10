@@ -39,6 +39,11 @@ export function RiverScene3D({
   const ripplesRef = useRef<{ x: number; z: number; radius: number; maxRadius: number; strength: number }[]>([]);
   const waterMeshRef = useRef<THREE.Mesh | null>(null);
   const origPositionsRef = useRef<Float32Array | null>(null);
+  const activeTargetIndexRef = useRef(activeTargetIndex);
+
+  useEffect(() => {
+    activeTargetIndexRef.current = activeTargetIndex;
+  }, [activeTargetIndex]);
 
   // Helper to create a dynamic texture with high-contrast photo and name
   const createLanternTexture = useCallback((target: RiverTarget) => {
@@ -309,7 +314,7 @@ export function RiverScene3D({
 
       // Bobbing & Swirling Lanterns
       lanternsRef.current.forEach((l, idx) => {
-        const isActive = idx === activeTargetIndex;
+        const isActive = idx === activeTargetIndexRef.current;
         const bob = Math.sin(time * 1.9 + idx * 1.4) * (isActive ? 0.18 : 0.12);
         l.mesh.position.y = l.baseY + bob;
         l.mesh.rotation.y = Math.sin(time * 0.6 + idx) * 0.2;
@@ -363,10 +368,19 @@ export function RiverScene3D({
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", handleResize);
+      scene.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          const m = Array.isArray(obj.material) ? obj.material : [obj.material];
+          m.forEach((mm) => mm.dispose());
+        }
+      });
       renderer.dispose();
-      container.innerHTML = "";
+      if (renderer.domElement.parentNode) {
+        renderer.domElement.parentNode.removeChild(renderer.domElement);
+      }
     };
-  }, [targets, activeTargetIndex, createLanternTexture]);
+  }, [targets, createLanternTexture]);
 
   // Click & Touch Handler with Ultra-Forgiving Hitbox
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {

@@ -50,7 +50,7 @@
     "greetingName": "শুভ পুৱা, {name}!",
     "date": "বুধবাৰ, ২৬ আগষ্ট",
     "schedule": "আজিৰ কাৰ্যসূচী",
-    "listen": "শুনক",
+    "listen": "মোক পঢ়ি শুনাওক",
     "waterToday": "আজিৰ পানী",
     "moreGames": {
       "label": "আৰু খেল",
@@ -66,7 +66,7 @@
       "close": "বন্ধ কৰক"
     },
     "orientation": "আজি আপুনি পৰিয়ালৰ সৈতে ঘৰত নিৰাপদে আছে।",
-    "gamesTitle": "দৈনিক মগজুৰ খেল",
+    "gamesTitle": "দৈনিক মগজুৰ কাৰ্যকলাপ",
     "speaking": "কৈ আছোঁ...",
     "heroPrompt": "তলত যিকোনো খেলত টিপ দি আৰম্ভ কৰক।",
     "cards": {
@@ -98,7 +98,7 @@
       "familyTitle": "পৰিয়ালৰ স্মৃতি",
       "familyEmpty": "আপোনাৰ পৰিয়ালৰ ফটোবোৰ ইয়াত সোনকালে দেখিব।",
       "memoryTitle": "আজিৰ স্মৃতি",
-      "memoryListen": "স্মৃতি শুনক",
+      "memoryListen": "মোক স্মৃতি পঢ়ি শুনাওক",
       "memoryAnother": "আন এটা স্মৃতি দেখুৱাওক",
       "memoryView": "স্মৃতি চাওক",
       "memoryEmpty": "ইয়াত সোনকালে এটা মমতাময়ী স্মৃতি দেখিব।",
@@ -108,7 +108,7 @@
       "calmMusic": "আপোনাৰ প্ৰিয় সুৰ: {music}।",
       "calmFallbackTriggers": "পুৱাৰ উমাহ চাহ",
       "calmPlay": "শান্ত সুৰ বজাওক",
-      "calmListen": "আৰামৰ কথা শুনক",
+      "calmListen": "মোক শান্ত বানী শুনোৱাওক",
       "moodTitle": "আজি আপুনি কেনে অনুভৱ কৰিছে?",
       "moodPeaceful": "শান্ত",
       "moodOkay": "ঠিক আছে",
@@ -231,7 +231,8 @@
   },
   "game": {
     "back": "পিছলৈ",
-    "score": "স্কোৰ: {score}"
+    "score": "স্কোৰ: {score}",
+    "listen": "মোক পঢ়ি শুনাওক"
   },
   "intake": {
     "step": "পদক্ষেপ {current} / {total}",
@@ -482,7 +483,7 @@
     "imagesOnly": "কেৱল ছবি"
   },
   "audio": {
-    "listen": "শুনক",
+    "listen": "মোক পঢ়ি শুনাওক",
     "howToPlay": "কেনেকৈ খেলিব",
     "listenToStory": "কাহিনী শুনক",
     "listenToDirections": "নিৰ্দেশনা শুনক"
@@ -549,7 +550,7 @@
     },
     "lightbox": {
       "close": "বন্ধ কৰক",
-      "listen": "স্মৃতি শুনক",
+      "listen": "মোক স্মৃতি পঢ়ি শুনাওক",
       "speaking": "কৈ আছোঁ…"
     },
     "clinicalSummary": {
@@ -636,7 +637,7 @@
     "subtitle": "স্মৃতিশক্তি, মনোযোগ আৰু মানসিক প্ৰশান্তিৰ বাবে সহজ আৰু আনন্দময় খেল।",
     "backToRoutine": "← দৈনিক দিনচৰ্যালৈ উভক",
     "backToHub": "← খেল হাব",
-    "listen": "শুনক",
+    "listen": "মোক পঢ়ি শুনাওক",
     "listening": "কৈ আছোঁ...",
     "recommended": "পৰামৰ্শিত",
     "level": "স্তৰ {level}",
@@ -644,7 +645,7 @@
     "score": "স্কোৰ: {score}",
     "lightbox": {
       "close": "বন্ধ কৰক",
-      "listen": "স্মৃতি শুনক"
+      "listen": "মোক স্মৃতি পঢ়ি শুনাওক"
     },
     "loading": "আপোনাৰ খেল সাজি আছে...",
     "loadError": "আপোনাৰ বিৱৰণ ল'ড কৰোঁতে অসুবিধা হ'ল।",

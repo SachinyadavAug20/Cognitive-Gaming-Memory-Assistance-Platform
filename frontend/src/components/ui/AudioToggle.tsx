@@ -16,7 +16,11 @@ import { getHubStrings } from "@/lib/gameI18n";
 const CARD =
   "border-2 border-black rounded-2xl shadow-[3px_3px_0px_rgba(0,0,0,1)]";
 
-export function AudioToggle() {
+interface AudioToggleProps {
+  size?: "md" | "lg";
+}
+
+export function AudioToggle({ size = "md" }: AudioToggleProps = {}) {
   const locale = useLocale();
   const hub = getHubStrings(locale);
   const [volume, setVol] = useState(() => getVolume());
@@ -55,22 +59,26 @@ export function AudioToggle() {
         type="button"
         onClick={toggle}
         aria-label={enabled ? hub.soundOff : hub.soundOn}
-        className={`${CARD} btn-tactile flex min-h-[48px] items-center gap-2 rounded-xl bg-surface px-3 text-base font-extrabold text-ink`}
+        className={
+          size === "lg"
+            ? "btn-tactile flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-black bg-white px-5 sm:px-6 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-amber-100 cursor-pointer"
+            : `${CARD} btn-tactile flex min-h-[48px] items-center gap-2 rounded-xl bg-surface px-3 text-base font-extrabold text-ink`
+        }
       >
         <span className="flex items-center" aria-hidden="true">
           {enabled ? (
             volume > 0.5 ? (
-              <Volume2 className="h-5 w-5 text-tea" />
+              <Volume2 className={size === "lg" ? "h-6 w-6 sm:h-7 sm:w-7 text-tea stroke-[2.5]" : "h-5 w-5 text-tea"} />
             ) : volume > 0 ? (
-              <Volume1 className="h-5 w-5 text-tea" />
+              <Volume1 className={size === "lg" ? "h-6 w-6 sm:h-7 sm:w-7 text-tea stroke-[2.5]" : "h-5 w-5 text-tea"} />
             ) : (
-              <VolumeX className="h-5 w-5 text-ink-secondary" />
+              <VolumeX className={size === "lg" ? "h-6 w-6 sm:h-7 sm:w-7 text-ink-secondary stroke-[2.5]" : "h-5 w-5 text-ink-secondary"} />
             )
           ) : (
-            <VolumeX className="h-5 w-5 text-ink-secondary" />
+            <VolumeX className={size === "lg" ? "h-6 w-6 sm:h-7 sm:w-7 text-ink-secondary stroke-[2.5]" : "h-5 w-5 text-ink-secondary"} />
           )}
         </span>
-        <span className="hidden sm:inline text-sm">
+        <span className={size === "lg" ? "inline text-base sm:text-lg font-black" : "hidden sm:inline text-sm"}>
           {enabled ? hub.soundOn : hub.soundOff}
         </span>
       </button>
