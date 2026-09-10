@@ -43,7 +43,7 @@ const INITIAL_ROUTINE: RoutineTask[] = [
   {
     id: "water_reminder",
     titleKey: "water_reminder",
-    defaultTitle: "Hydration Check-In",
+    defaultTitle: "Drink Fresh Water",
     timeKey: "water_count",
     defaultTime: "4 of 6 glasses today",
     icon: "water",
@@ -52,7 +52,7 @@ const INITIAL_ROUTINE: RoutineTask[] = [
   {
     id: "doctor_appointment",
     titleKey: "doctor_appointment",
-    defaultTitle: "PHC Medical Check-Up",
+    defaultTitle: "Doctor's Visit",
     timeKey: "appointment_time",
     defaultTime: "Dr. B. K. Sarma • Dispur PHC",
     icon: "appointment",
@@ -61,7 +61,7 @@ const INITIAL_ROUTINE: RoutineTask[] = [
   {
     id: "family_photos",
     titleKey: "family_photos",
-    defaultTitle: "Family Memory Recall",
+    defaultTitle: "Family Photos & Memories",
     timeKey: "memories_count",
     defaultTime: "12 memories with Sunita",
     icon: "photo",

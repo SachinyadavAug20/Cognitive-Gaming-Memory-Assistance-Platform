@@ -4,30 +4,18 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   X,
   Sparkles,
-  Clock,
   Heart,
-  Camera,
   Mic,
-  MicOff,
-  Play,
   Square,
   Volume2,
-  Lock,
-  Unlock,
+  VolumeX,
   CheckCircle2,
-  Shield,
-  Smile,
-  Calendar,
-  Layers,
-  ArrowRight,
-  RotateCcw,
-  Sun,
-  User,
-  Image as ImageIcon,
+  ArrowLeft,
+  MessageCircle,
 } from "lucide-react";
 import type { FutureTimeCapsule, TimeCapsuleMilestone, TimeCapsuleTheme } from "@/types/capsule";
 import { getFutureTimeCapsules, saveFutureTimeCapsule } from "@/data/defaultCapsules";
-import { playCorrect, playTapFeedback, playEncourage } from "@/lib/sound";
+import { playTapFeedback, playEncourage, unlockAudio } from "@/lib/sound";
 import { speak, stopSpeaking } from "@/lib/speech";
 
 interface FutureTimeCapsuleModalProps {
@@ -38,40 +26,37 @@ interface FutureTimeCapsuleModalProps {
   langCode?: string;
 }
 
-const PRESET_IDENTITY_PROMPTS = [
+const PRESET_IDEAS = [
   {
     theme: "identity" as TimeCapsuleTheme,
-    label: "My Identity & Home Anchor",
+    icon: "🏡",
     title: "To Myself When Days Feel Foggy",
-    text: "Dear Biren, if today feels confusing or the names slip away: Remember you are Biren Borah, retired headmaster, beloved father and grandfather. You built your home at Silpukhuri with honest hands. You are safe. Look out the verandah at the mango tree. Everything is alright.",
-    milestone: "confused_days" as TimeCapsuleMilestone,
-    milestoneLabel: "When I Feel Foggy or Lost",
-    icon: "🛡️",
+    label: "Remind Me Who I Am",
+    text: "Dear Biren, if today feels confusing: Remember you are Biren Borah, retired headmaster, beloved father and grandfather. You built your home at Silpukhuri with honest hands. You are safe, loved, and at home.",
+    photoUrl: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
   },
   {
     theme: "family_love" as TimeCapsuleTheme,
-    label: "Blessing for Children & Grandkids",
-    title: "Blessing for My Family",
-    text: "To Manash, Ananya, and dear grandchild Arnav: Watching you grow and care for me fills my heart with joy. Never forget to sit together for morning tea, stay truthful in all you do, and listen to the birds at Silpukhuri. My blessings walk with you every step.",
-    milestone: "next_bihu" as TimeCapsuleMilestone,
-    milestoneLabel: "Next Festive Gathering (Rongali Bihu)",
     icon: "🌸",
+    title: "Blessing for My Family",
+    label: "Blessing for My Children & Grandkids",
+    text: "To my dear children and grandchild: Watching you care for me fills my heart with joy. Never forget to sit together for morning tea, stay truthful in all you do, and remember I love you always.",
+    photoUrl: "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
   },
   {
     theme: "gratitude" as TimeCapsuleTheme,
-    label: "Gratitude for Pratima",
-    title: "Words of Love for Pratima",
-    text: "Pratima, forty-six years together have been my greatest fortune. Even when my memory wanders, my heart always recognizes your warm tea, your footsteps, and your gentle voice. Thank you for holding my hand every single day.",
-    milestone: "anytime" as TimeCapsuleMilestone,
-    milestoneLabel: "Cherished Words Forever",
     icon: "💖",
+    title: "Words of Love for Pratima",
+    label: "A Message of Gratitude",
+    text: "Pratima, forty-six years together have been my greatest fortune. Even when my memory wanders, my heart always recognizes your warm tea, your footsteps, and your gentle voice. Thank you.",
+    photoUrl: "/sample-images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.jpg",
   },
 ];
 
-const PRESET_PHOTOS = [
+const PHOTO_CHOICES = [
   {
     url: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
-    label: "Silpukhuri Verandah",
+    label: "Our Home Verandah",
   },
   {
     url: "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
@@ -94,48 +79,57 @@ export function FutureTimeCapsuleModal({
   onClose,
   langCode = "as",
 }: FutureTimeCapsuleModalProps) {
-  const [activeTab, setActiveTab] = useState<"create" | "vault">("create");
+  const [activeTab, setActiveTab] = useState<"messages" | "create">("messages");
   const [capsules, setCapsules] = useState<FutureTimeCapsule[]>(() =>
     getFutureTimeCapsules(patientId)
   );
 
-  // Form Fields
-  const [title, setTitle] = useState(PRESET_IDENTITY_PROMPTS[0].title);
-  const [messageText, setMessageText] = useState(PRESET_IDENTITY_PROMPTS[0].text);
-  const [selectedPhoto, setSelectedPhoto] = useState(PRESET_PHOTOS[0].url);
-  const [selectedMilestone, setSelectedMilestone] = useState<TimeCapsuleMilestone>("confused_days");
-  const [selectedTheme, setSelectedTheme] = useState<TimeCapsuleTheme>("identity");
-  const [recipient, setRecipient] = useState<"future_self" | "family" | "children">("future_self");
+  // Active message detail view
+  const [selectedMessage, setSelectedMessage] = useState<FutureTimeCapsule | null>(null);
 
-  // Voice recording state
+  // Form Fields for new message
+  const [title, setTitle] = useState(PRESET_IDEAS[0].title);
+  const [messageText, setMessageText] = useState(PRESET_IDEAS[0].text);
+  const [selectedPhoto, setSelectedPhoto] = useState(PRESET_IDEAS[0].photoUrl);
+  const [selectedTheme, setSelectedTheme] = useState<TimeCapsuleTheme>("identity");
+
+  // Voice recording
   const [isRecording, setIsRecording] = useState(false);
-  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
-  // Sealing celebration animation state
-  const [isSealing, setIsSealing] = useState(false);
-  const [sealedCapsuleJustNow, setSealedCapsuleJustNow] = useState<FutureTimeCapsule | null>(null);
-
-  // Active opened capsule in vault view
-  const [openedCapsule, setOpenedCapsule] = useState<FutureTimeCapsule | null>(null);
+  // Sealing / saving feedback
+  const [isSaved, setIsSaved] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     setCapsules(getFutureTimeCapsules(patientId));
   }, [patientId, isOpen]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const existing = getFutureTimeCapsules(patientId);
+      setCapsules(existing);
+      if (existing.length > 0) {
+        setActiveTab("messages");
+        setSelectedMessage(null);
+      } else {
+        setActiveTab("create");
+      }
+      setIsSaved(false);
+    }
+  }, [isOpen, patientId]);
+
   if (!isOpen) return null;
 
-  const handleSelectPrompt = (p: typeof PRESET_IDENTITY_PROMPTS[0]) => {
+  const handleSelectPreset = (p: typeof PRESET_IDEAS[0]) => {
     playTapFeedback();
     setTitle(p.title);
     setMessageText(p.text);
-    setSelectedMilestone(p.milestone);
+    setSelectedPhoto(p.photoUrl);
     setSelectedTheme(p.theme);
   };
 
@@ -149,71 +143,70 @@ export function FutureTimeCapsuleModal({
       };
       mr.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setRecordedAudioUrl(reader.result as string);
-        };
-        reader.readAsDataURL(audioBlob);
-        stream.getTracks().forEach((t) => t.stop());
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setRecordedAudioUrl(audioUrl);
       };
       mediaRecorderRef.current = mr;
       mr.start();
       setIsRecording(true);
-      setRecordingSeconds(0);
-      timerIntervalRef.current = setInterval(() => {
-        setRecordingSeconds((s) => s + 1);
-      }, 1000);
+      playTapFeedback();
     } catch {
-      alert("Microphone permission needed to record audio message.");
+      alert("Microphone permission was denied. You can still use the written message!");
     }
   };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
       setIsRecording(false);
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-        timerIntervalRef.current = null;
-      }
-      playCorrect();
+      playTapFeedback();
     }
   };
 
-  const handlePreviewSpeech = () => {
-    playTapFeedback();
-    if (recordedAudioUrl) {
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.pause();
-        audioPlayerRef.current = null;
-        setIsPlayingAudio(false);
-        return;
-      }
-      const a = new Audio(recordedAudioUrl);
-      audioPlayerRef.current = a;
-      setIsPlayingAudio(true);
-      a.onended = () => {
-        setIsPlayingAudio(false);
-        audioPlayerRef.current = null;
-      };
-      a.play().catch(() => setIsPlayingAudio(false));
+  const handleListenText = (text: string) => {
+    unlockAudio();
+    if (isPlayingAudio) {
+      stopSpeaking();
+      if (audioPlayerRef.current) audioPlayerRef.current.pause();
+      setIsPlayingAudio(false);
     } else {
-      speak(messageText, langCode, 0.85);
+      setIsPlayingAudio(true);
+      speak(text, langCode, 0.85, () => {}, () => setIsPlayingAudio(false));
     }
   };
 
-  const handleSealCapsule = () => {
-    if (!messageText.trim()) return;
-    setIsSealing(true);
-    playEncourage();
+  const handlePlayVoiceAudio = (audioUrl: string | null | undefined, fallbackText: string) => {
+    unlockAudio();
+    if (isPlayingAudio) {
+      stopSpeaking();
+      if (audioPlayerRef.current) audioPlayerRef.current.pause();
+      setIsPlayingAudio(false);
+      return;
+    }
 
-    const milestoneLabelMap: Record<TimeCapsuleMilestone, string> = {
-      confused_days: "When I Feel Foggy or Anxious",
-      next_bihu: "Next Festive Gathering (Rongali Bihu)",
-      six_months: "In 6 Months",
-      one_year: "In 1 Year",
-      anytime: "Cherished Words Always",
-    };
+    if (audioUrl) {
+      setIsPlayingAudio(true);
+      const audio = new Audio(audioUrl);
+      audioPlayerRef.current = audio;
+      audio.onended = () => setIsPlayingAudio(false);
+      audio.onerror = () => {
+        setIsPlayingAudio(false);
+        speak(fallbackText, langCode, 0.85);
+      };
+      audio.play().catch(() => {
+        setIsPlayingAudio(false);
+        speak(fallbackText, langCode, 0.85);
+      });
+    } else {
+      setIsPlayingAudio(true);
+      speak(fallbackText, langCode, 0.85, () => {}, () => setIsPlayingAudio(false));
+    }
+  };
+
+  const handleSave = () => {
+    if (!messageText.trim()) return;
+    playEncourage();
 
     const newCapsule: FutureTimeCapsule = {
       id: `time-capsule-${Date.now()}`,
@@ -221,45 +214,44 @@ export function FutureTimeCapsuleModal({
       authorName: patientName,
       authorRole: "patient",
       title: title || "A Message for Tomorrow",
-      recipient,
-      messageText,
+      recipient: "future_self",
+      messageText: messageText.trim(),
       photoUrl: selectedPhoto,
       audioUrl: recordedAudioUrl,
       theme: selectedTheme,
-      milestone: selectedMilestone,
-      milestoneLabel: milestoneLabelMap[selectedMilestone],
+      milestone: "anytime",
+      milestoneLabel: "Cherished Words",
       sealedAt: new Date().toISOString(),
       isSealed: true,
     };
 
+    const updated = saveFutureTimeCapsule(newCapsule);
+    setCapsules(updated);
+    setIsSaved(true);
+
     setTimeout(() => {
-      const updated = saveFutureTimeCapsule(newCapsule);
-      setCapsules(updated);
-      setIsSealing(false);
-      setSealedCapsuleJustNow(newCapsule);
-      setActiveTab("vault");
-      setOpenedCapsule(newCapsule);
-    }, 1200);
+      setIsSaved(false);
+      setActiveTab("messages");
+      setSelectedMessage(newCapsule);
+    }, 800);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-5 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-2xl max-h-[92vh] flex flex-col rounded-3xl border-3 border-black bg-[#FAF6F0] shadow-[8px_8px_0px_#000] overflow-hidden text-ink">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b-2 border-black/10 bg-white">
+      <div className="relative w-full max-w-xl max-h-[90vh] flex flex-col rounded-3xl border-3 border-black bg-[#FAF6F0] shadow-[8px_8px_0px_#000] overflow-hidden text-ink">
+        
+        {/* Header - Clean, gentle, high-contrast */}
+        <div className="flex items-center justify-between px-5 py-4 border-b-2 border-black/15 bg-white">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-2xl bg-amber-100 border-2 border-amber-800 text-amber-900 flex items-center justify-center font-black">
-              <Clock className="h-5 w-5" />
+            <div className="h-10 w-10 rounded-2xl bg-amber-100 border-2 border-black text-amber-900 flex items-center justify-center font-black">
+              <Heart className="h-5 w-5 fill-amber-400 text-amber-900" />
             </div>
             <div>
-              <h2 className="font-serif font-black text-lg sm:text-xl text-ink leading-tight flex items-center gap-1.5">
-                <span>Time Capsule: Words for Tomorrow</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-tea-light text-tea-dark font-sans font-bold border border-tea/30">
-                  ভৱিষ্যতৰ বাৰ্তা
-                </span>
+              <h2 className="font-serif font-black text-lg sm:text-xl text-ink leading-tight">
+                Loving Messages for Tomorrow
               </h2>
               <p className="text-xs text-ink-secondary font-bold">
-                Preserve comforting words, identity anchors & blessings for your future self & family
+                Gentle reminders and comforting words from your heart
               </p>
             </div>
           </div>
@@ -271,121 +263,291 @@ export function FutureTimeCapsuleModal({
               if (audioPlayerRef.current) audioPlayerRef.current.pause();
               onClose();
             }}
-            className="h-8 w-8 rounded-full border-2 border-black bg-white hover:bg-rose-100 flex items-center justify-center cursor-pointer transition-colors"
+            className="h-10 w-10 rounded-full border-2 border-black bg-white hover:bg-rose-100 flex items-center justify-center cursor-pointer transition-colors shadow-xs"
             title="Close"
+            aria-label="Close"
           >
-            <X className="h-4 w-4 text-ink" />
+            <X className="h-5 w-5 text-ink" />
           </button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex border-b-2 border-black/10 bg-amber-50/50 px-5 pt-2">
+        {/* Minimal 2-Tab Bar */}
+        <div className="flex border-b-2 border-black/15 bg-[#FFF9EE] px-4 pt-2">
+          <button
+            type="button"
+            onClick={() => {
+              playTapFeedback();
+              setActiveTab("messages");
+              setSelectedMessage(null);
+            }}
+            className={`pb-2.5 px-4 text-xs sm:text-sm font-black transition-all border-b-3 cursor-pointer flex items-center gap-2 ${
+              activeTab === "messages"
+                ? "border-tea text-tea-dark font-black"
+                : "border-transparent text-ink-secondary hover:text-ink"
+            }`}
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span>Read & Listen ({capsules.length})</span>
+          </button>
+
           <button
             type="button"
             onClick={() => {
               playTapFeedback();
               setActiveTab("create");
+              setSelectedMessage(null);
             }}
-            className={`pb-2.5 px-4 text-xs sm:text-sm font-black transition-all border-b-3 cursor-pointer flex items-center gap-1.5 ${
+            className={`pb-2.5 px-4 text-xs sm:text-sm font-black transition-all border-b-3 cursor-pointer flex items-center gap-2 ${
               activeTab === "create"
                 ? "border-tea text-tea-dark font-black"
                 : "border-transparent text-ink-secondary hover:text-ink"
             }`}
           >
             <Sparkles className="h-4 w-4" />
-            <span>Create Future Message</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              playTapFeedback();
-              setActiveTab("vault");
-            }}
-            className={`pb-2.5 px-4 text-xs sm:text-sm font-black transition-all border-b-3 cursor-pointer flex items-center gap-1.5 ${
-              activeTab === "vault"
-                ? "border-tea text-tea-dark font-black"
-                : "border-transparent text-ink-secondary hover:text-ink"
-            }`}
-          >
-            <Lock className="h-4 w-4" />
-            <span>Sealed Capsules Vault ({capsules.length})</span>
+            <span>Leave a New Message</span>
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
-          {activeTab === "create" ? (
-            <>
-              {/* Errorless Assisted Inspiration Prompts */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+          {activeTab === "messages" ? (
+            selectedMessage ? (
+              /* Single Message Expanded View - Large, clear, readable */
+              <div className="space-y-4 animate-in fade-in">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapFeedback();
+                    setSelectedMessage(null);
+                  }}
+                  className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-white px-3.5 py-1.5 text-xs font-black text-ink hover:bg-amber-50 cursor-pointer shadow-xs"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span>All Messages</span>
+                </button>
+
+                {selectedMessage.photoUrl && (
+                  <div className="relative w-full h-44 sm:h-52 rounded-2xl border-2 border-black overflow-hidden shadow-xs">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={selectedMessage.photoUrl}
+                      alt={selectedMessage.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <h3 className="font-serif font-black text-xl sm:text-2xl text-ink leading-tight">
+                    {selectedMessage.title}
+                  </h3>
+                  <p className="text-xs text-ink-secondary font-bold mt-1">
+                    Saved on {new Date(selectedMessage.sealedAt).toLocaleDateString()}
+                  </p>
+                </div>
+
+                {/* Big message text box */}
+                <div className="rounded-2xl border-2 border-black/15 bg-white p-4 text-base sm:text-lg font-medium text-ink leading-relaxed whitespace-pre-wrap shadow-xs">
+                  {selectedMessage.messageText}
+                </div>
+
+                {/* Big Listen Button */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    handlePlayVoiceAudio(selectedMessage.audioUrl, selectedMessage.messageText)
+                  }
+                  className={`btn-tactile w-full py-3.5 rounded-2xl border-3 border-black text-base font-black shadow-[3px_3px_0px_#000] cursor-pointer flex items-center justify-center gap-2.5 transition-all active:scale-95 ${
+                    isPlayingAudio
+                      ? "bg-amber-400 text-black ring-2 ring-black"
+                      : "bg-tea text-white hover:bg-emerald-800"
+                  }`}
+                >
+                  {isPlayingAudio ? (
+                    <>
+                      <VolumeX className="h-5 w-5" />
+                      <span>Stop Reading</span>
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="h-5 w-5" />
+                      <span>Listen to Message</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            ) : (
+              /* Message List - Simple & Clean */
+              <div className="space-y-3">
+                <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+                  Tap any card to open and listen:
+                </p>
+
+                {capsules.length === 0 ? (
+                  <div className="rounded-2xl border-2 border-dashed border-black/30 p-8 text-center bg-white space-y-3">
+                    <Heart className="h-10 w-10 text-amber-600 mx-auto" />
+                    <p className="font-serif text-base font-bold text-ink">
+                      No saved messages yet.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("create")}
+                      className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-tea px-4 py-2 text-xs font-black text-white cursor-pointer shadow-xs"
+                    >
+                      <span>Leave Your First Message</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {capsules.map((cap) => (
+                      <div
+                        key={cap.id}
+                        onClick={() => {
+                          playTapFeedback();
+                          setSelectedMessage(cap);
+                        }}
+                        className="btn-tactile p-4 rounded-2xl border-2 border-black bg-white shadow-[3px_3px_0px_#000] hover:bg-amber-50/70 transition-all cursor-pointer flex items-center gap-3.5"
+                      >
+                        {cap.photoUrl ? (
+                          <div className="h-16 w-16 rounded-xl border-2 border-black overflow-hidden shrink-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={cap.photoUrl}
+                              alt={cap.title}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="h-16 w-16 rounded-xl border-2 border-black bg-amber-100 flex items-center justify-center shrink-0">
+                            <Heart className="h-7 w-7 text-amber-800" />
+                          </div>
+                        )}
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-serif font-black text-base text-ink leading-tight truncate">
+                            {cap.title}
+                          </h4>
+                          <p className="text-xs text-ink-secondary line-clamp-1 mt-1 font-medium">
+                            {cap.messageText}
+                          </p>
+                          <span className="text-[11px] font-bold text-tea-dark mt-1 inline-block">
+                            Tap to listen →
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          ) : (
+            /* Creation Flow - Ultra-simple, 2-step */
+            <div className="space-y-4">
+              {/* Step 1: 1-Tap Heartfelt Presets */}
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-ink-secondary mb-2">
-                  Choose a Heartfelt Anchor or Write Your Own
+                <label className="block text-xs font-black text-ink mb-1.5">
+                  1. What would you like this message to be about?
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {PRESET_IDENTITY_PROMPTS.map((p, idx) => (
+                  {PRESET_IDEAS.map((item, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => handleSelectPrompt(p)}
-                      className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
-                        title === p.title
-                          ? "border-black bg-amber-100 shadow-[2px_2px_0px_#000]"
+                      onClick={() => handleSelectPreset(item)}
+                      className={`p-3 rounded-2xl border-2 text-left cursor-pointer transition-all ${
+                        title === item.title
+                          ? "border-black bg-amber-200 shadow-[2px_2px_0px_#000]"
                           : "border-black/20 bg-white hover:bg-amber-50"
                       }`}
                     >
-                      <div className="text-lg mb-1">{p.icon}</div>
-                      <h4 className="text-xs font-black text-ink leading-tight mb-1">{p.label}</h4>
-                      <p className="text-[10px] text-ink-secondary font-bold line-clamp-2">{p.title}</p>
+                      <span className="text-xl">{item.icon}</span>
+                      <h4 className="font-serif font-black text-xs text-ink mt-1 leading-snug">
+                        {item.label}
+                      </h4>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Title & Message Box */}
-              <div>
-                <label className="block text-xs font-black text-ink mb-1">
-                  Message Title
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-xl border-2 border-black bg-white px-3.5 py-2 text-sm font-bold text-ink shadow-[2px_2px_0px_#000] focus:outline-none focus:ring-2 focus:ring-tea"
-                  placeholder="e.g. To My Future Self on Foggy Days"
-                />
-              </div>
-
+              {/* Step 2: The Message Words */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-black text-ink">
-                    Your Words of Comfort & Memory
+                    2. Your Words (Read or Edit)
                   </label>
                   <button
                     type="button"
-                    onClick={handlePreviewSpeech}
-                    className="inline-flex items-center gap-1 text-[11px] font-black text-tea hover:text-tea-dark cursor-pointer"
+                    onClick={() => handleListenText(messageText)}
+                    className="inline-flex items-center gap-1 text-xs font-black text-tea hover:text-tea-dark cursor-pointer"
                   >
                     <Volume2 className="h-3.5 w-3.5" />
                     <span>Listen Aloud</span>
                   </button>
                 </div>
+
                 <textarea
                   rows={4}
                   value={messageText}
                   onChange={(e) => setMessageText(e.target.value)}
-                  className="w-full rounded-2xl border-2 border-black bg-white p-3.5 text-sm font-medium text-ink shadow-[2px_2px_0px_#000] leading-relaxed focus:outline-none focus:ring-2 focus:ring-tea"
-                  placeholder="Write gentle words, your name, names of loved ones, or memories you never want to forget..."
+                  className="w-full rounded-2xl border-2 border-black bg-white p-3.5 text-sm sm:text-base font-medium text-ink shadow-[2px_2px_0px_#000] leading-relaxed focus:outline-none focus:ring-2 focus:ring-tea"
+                  placeholder="Write your words here..."
                 />
               </div>
 
-              {/* Photo Attachment Selection */}
+              {/* Optional: Tap to Speak Voice Note */}
+              <div className="rounded-2xl border-2 border-black bg-white p-3.5 flex items-center justify-between gap-3 shadow-[2px_2px_0px_#000]">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`h-10 w-10 rounded-full border-2 border-black flex items-center justify-center ${
+                      isRecording
+                        ? "bg-rose-500 text-white animate-pulse"
+                        : recordedAudioUrl
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-amber-100 text-amber-900"
+                    }`}
+                  >
+                    <Mic className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h5 className="text-xs font-black text-ink">
+                      {isRecording ? "Listening to your voice..." : "Add Your Voice (Optional)"}
+                    </h5>
+                    <p className="text-[11px] text-ink-secondary font-bold">
+                      {recordedAudioUrl
+                        ? "Voice recorded and attached!"
+                        : "Speak in your own comforting voice"}
+                    </p>
+                  </div>
+                </div>
+
+                {isRecording ? (
+                  <button
+                    type="button"
+                    onClick={stopRecording}
+                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-rose-600 text-white px-3.5 py-2 text-xs font-black cursor-pointer shadow-xs"
+                  >
+                    <Square className="h-3.5 w-3.5 fill-white" />
+                    <span>Done</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={startRecording}
+                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 text-amber-950 px-3.5 py-2 text-xs font-black cursor-pointer shadow-xs"
+                  >
+                    <Mic className="h-3.5 w-3.5" />
+                    <span>{recordedAudioUrl ? "Re-record" : "Speak"}</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Step 3: Pick a Photo */}
               <div>
-                <label className="block text-xs font-black text-ink mb-2">
-                  Attach a Cherished Photo
+                <label className="block text-xs font-black text-ink mb-1.5">
+                  3. Pick a Familiar Photo
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {PRESET_PHOTOS.map((photo, i) => (
+                <div className="grid grid-cols-4 gap-2">
+                  {PHOTO_CHOICES.map((photo, i) => (
                     <button
                       key={i}
                       type="button"
@@ -393,10 +555,10 @@ export function FutureTimeCapsuleModal({
                         playTapFeedback();
                         setSelectedPhoto(photo.url);
                       }}
-                      className={`group relative rounded-xl border-2 overflow-hidden transition-all cursor-pointer aspect-video ${
+                      className={`relative rounded-xl border-2 overflow-hidden transition-all cursor-pointer aspect-square ${
                         selectedPhoto === photo.url
-                          ? "border-amber-600 ring-2 ring-amber-500 scale-[1.02]"
-                          : "border-black/30 opacity-80 hover:opacity-100"
+                          ? "border-tea ring-3 ring-tea/50 scale-102 shadow-xs"
+                          : "border-black/30 opacity-70 hover:opacity-100"
                       }`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -405,12 +567,9 @@ export function FutureTimeCapsuleModal({
                         alt={photo.label}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-x-0 bottom-0 bg-black/70 px-1.5 py-0.5 text-[9px] font-black text-white text-center truncate">
-                        {photo.label}
-                      </div>
                       {selectedPhoto === photo.url && (
-                        <div className="absolute top-1 right-1 h-4 w-4 rounded-full bg-amber-500 text-white flex items-center justify-center">
-                          <CheckCircle2 className="h-3 w-3" />
+                        <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-tea text-white flex items-center justify-center">
+                          <CheckCircle2 className="h-3.5 w-3.5" />
                         </div>
                       )}
                     </button>
@@ -418,232 +577,27 @@ export function FutureTimeCapsuleModal({
                 </div>
               </div>
 
-              {/* Voice Recording Strip */}
-              <div className="rounded-2xl border-2 border-black bg-white p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-[2px_2px_0px_#000]">
-                <div className="flex items-center gap-2.5">
-                  <div className={`h-8 w-8 rounded-full border-2 border-black flex items-center justify-center ${
-                    isRecording ? "bg-rose-500 text-white animate-pulse" : "bg-amber-100 text-amber-900"
-                  }`}>
-                    <Mic className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h5 className="text-xs font-black text-ink">
-                      {isRecording ? `Recording... (${recordingSeconds}s)` : "Voice Message"}
-                    </h5>
-                    <p className="text-[10px] text-ink-secondary font-bold">
-                      {recordedAudioUrl
-                        ? "Voice note recorded and attached"
-                        : "Record yourself speaking in your own voice"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {isRecording ? (
-                    <button
-                      type="button"
-                      onClick={stopRecording}
-                      className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-rose-600 text-white px-3 py-1.5 text-xs font-black cursor-pointer shadow-[2px_2px_0px_#000]"
-                    >
-                      <Square className="h-3 w-3 fill-white" />
-                      <span>Stop Recording</span>
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={startRecording}
-                      className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-amber-50 hover:bg-amber-100 text-amber-950 px-3 py-1.5 text-xs font-black cursor-pointer shadow-[2px_2px_0px_#000]"
-                    >
-                      <Mic className="h-3.5 w-3.5 text-amber-800" />
-                      <span>{recordedAudioUrl ? "Re-record Voice" : "Record Voice"}</span>
-                    </button>
-                  )}
-
-                  {recordedAudioUrl && !isRecording && (
-                    <button
-                      type="button"
-                      onClick={handlePreviewSpeech}
-                      className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-tea text-white px-3 py-1.5 text-xs font-black cursor-pointer shadow-[2px_2px_0px_#000]"
-                    >
-                      <Play className="h-3 w-3 fill-white" />
-                      <span>{isPlayingAudio ? "Playing..." : "Play"}</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Delivery Milestone Condition */}
-              <div>
-                <label className="block text-xs font-black text-ink mb-1.5">
-                  When Should This Capsule Be Unsealed?
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                  {[
-                    { key: "confused_days", label: "When Feeling Foggy", sub: "Compassion Anchor" },
-                    { key: "next_bihu", label: "Rongali Bihu", sub: "Festive Joy" },
-                    { key: "six_months", label: "In 6 Months", sub: "Future Milestone" },
-                    { key: "anytime", label: "Always Available", sub: "Cherished Anytime" },
-                  ].map((m) => (
-                    <button
-                      key={m.key}
-                      type="button"
-                      onClick={() => {
-                        playTapFeedback();
-                        setSelectedMilestone(m.key as TimeCapsuleMilestone);
-                      }}
-                      className={`p-2.5 rounded-xl border-2 text-left cursor-pointer transition-all ${
-                        selectedMilestone === m.key
-                          ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
-                          : "border-black/20 bg-white text-ink hover:bg-amber-50"
-                      }`}
-                    >
-                      <div className="font-black text-xs leading-tight">{m.label}</div>
-                      <div className={`text-[10px] font-bold ${selectedMilestone === m.key ? "text-white/80" : "text-ink-secondary"}`}>
-                        {m.sub}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Seal Button */}
+              {/* Save Button */}
               <div className="pt-2">
                 <button
                   type="button"
-                  onClick={handleSealCapsule}
-                  disabled={isSealing || !messageText.trim()}
-                  className="w-full btn-tactile inline-flex items-center justify-center gap-2 rounded-2xl border-3 border-black bg-amber-500 hover:bg-amber-600 text-amber-950 px-6 py-3.5 text-base font-black shadow-[4px_4px_0px_#000] cursor-pointer transition-transform active:scale-95 disabled:opacity-50"
+                  onClick={handleSave}
+                  disabled={!messageText.trim() || isSaved}
+                  className="w-full btn-tactile inline-flex items-center justify-center gap-2 rounded-2xl border-3 border-black bg-tea hover:bg-emerald-800 text-white px-6 py-3.5 text-base font-black shadow-[4px_4px_0px_#000] cursor-pointer transition-transform active:scale-95 disabled:opacity-50"
                 >
-                  {isSealing ? (
+                  {isSaved ? (
                     <>
-                      <Lock className="h-5 w-5 animate-spin" />
-                      <span>Sealing Time Capsule with Sacred Chime...</span>
+                      <CheckCircle2 className="h-5 w-5" />
+                      <span>Saved with Love!</span>
                     </>
                   ) : (
                     <>
-                      <Lock className="h-5 w-5" />
-                      <span>Seal Time Capsule into Vault (চীল কৰক)</span>
+                      <Heart className="h-5 w-5 fill-white" />
+                      <span>Save My Message</span>
                     </>
                   )}
                 </button>
               </div>
-            </>
-          ) : (
-            /* Vault of Sealed Capsules */
-            <div className="space-y-4">
-              {openedCapsule ? (
-                /* Unsealed Capsule View */
-                <div className="rounded-3xl border-3 border-black bg-white p-5 shadow-[4px_4px_0px_#000] space-y-4 animate-in fade-in">
-                  <div className="flex items-center justify-between border-b-2 border-black/10 pb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black uppercase">
-                        {openedCapsule.milestoneLabel}
-                      </span>
-                      <span className="text-xs text-ink-secondary font-bold">
-                        Sealed {new Date(openedCapsule.sealedAt).toLocaleDateString()}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setOpenedCapsule(null)}
-                      className="text-xs font-black text-tea hover:underline cursor-pointer"
-                    >
-                      ← Back to All Capsules
-                    </button>
-                  </div>
-
-                  {openedCapsule.photoUrl && (
-                    <div className="relative w-full h-48 sm:h-64 rounded-2xl border-2 border-black overflow-hidden shadow-inner">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={openedCapsule.photoUrl}
-                        alt={openedCapsule.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-
-                  <div>
-                    <h3 className="font-serif font-black text-xl text-ink mb-1">
-                      {openedCapsule.title}
-                    </h3>
-                    <p className="text-xs font-bold text-ink-secondary mb-3">
-                      From {openedCapsule.authorName} to {openedCapsule.recipient.replace("_", " ")}
-                    </p>
-                    <div className="rounded-2xl border-2 border-black/10 bg-amber-50/60 p-4 text-sm font-medium text-ink leading-relaxed whitespace-pre-wrap">
-                      {openedCapsule.messageText}
-                    </div>
-                  </div>
-
-                  {/* Audio Playback of the patient's own voice */}
-                  <div className="flex items-center justify-between rounded-xl border-2 border-black bg-[#FAF6F0] p-3">
-                    <div className="flex items-center gap-2 text-xs font-bold text-ink">
-                      <Volume2 className="h-4 w-4 text-tea" />
-                      <span>Hear Voice of Capsule</span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (openedCapsule.audioUrl) {
-                          const a = new Audio(openedCapsule.audioUrl);
-                          a.play();
-                        } else {
-                          speak(openedCapsule.messageText, langCode, 0.85);
-                        }
-                      }}
-                      className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea text-white px-3.5 py-1.5 text-xs font-black cursor-pointer shadow-[2px_2px_0px_#000]"
-                    >
-                      <Play className="h-3.5 w-3.5 fill-white" />
-                      <span>Listen to Message</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                /* List of Capsules */
-                <div className="space-y-3">
-                  <p className="text-xs font-bold text-ink-secondary">
-                    Tap any sealed capsule to open and listen to its comforting message:
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {capsules.map((cap) => (
-                      <div
-                        key={cap.id}
-                        onClick={() => {
-                          playTapFeedback();
-                          setOpenedCapsule(cap);
-                        }}
-                        className="p-4 rounded-2xl border-2 border-black bg-white shadow-[3px_3px_0px_#000] hover:bg-amber-50/70 transition-all cursor-pointer flex flex-col justify-between"
-                      >
-                        <div>
-                          <div className="flex items-center justify-between text-[11px] font-black uppercase text-tea mb-1">
-                            <span className="flex items-center gap-1">
-                              <Lock className="h-3 w-3" />
-                              <span>{cap.milestoneLabel}</span>
-                            </span>
-                            <span className="text-ink-secondary text-[10px]">
-                              {new Date(cap.sealedAt).toLocaleDateString()}
-                            </span>
-                          </div>
-
-                          <h4 className="font-serif font-black text-sm text-ink leading-tight mb-1">
-                            {cap.title}
-                          </h4>
-                          <p className="text-xs text-ink-secondary line-clamp-2 leading-relaxed">
-                            {cap.messageText}
-                          </p>
-                        </div>
-
-                        <div className="mt-3 pt-2 border-t border-black/10 flex items-center justify-between text-xs font-black text-tea">
-                          <span>Unseal & Listen</span>
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           )}
         </div>

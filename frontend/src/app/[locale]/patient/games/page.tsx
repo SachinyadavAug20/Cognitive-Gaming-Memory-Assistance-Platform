@@ -125,225 +125,76 @@ export default function GamesHubPage() {
       {/* ========================================================================= */}
       {/* FEATURED SPATIAL & COMPUTER VISION EXPERIENCES HERO SHOWCASE              */}
       {/* ========================================================================= */}
-      <div className="mb-8 space-y-4">
-        {/* Flagship: A Day in My World 3D Story Campaign Banner */}
-        <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="space-y-2 text-center md:text-left">
-            <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
+      {/* Featured Experiences: A Day in My Village & Echoes of Home */}
+      <div className="mb-6 grid gap-4 md:grid-cols-2">
+        {/* Flagship: A Day in My Village 3D Story Campaign */}
+        <div className="relative overflow-hidden rounded-3xl border-3 border-black bg-gradient-to-br from-amber-600 to-amber-700 p-5 sm:p-6 text-white shadow-[5px_5px_0px_#000] flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="rounded-full bg-amber-300 px-3 py-1 text-[11px] font-black uppercase text-amber-950">
+                ⭐ Featured Story
+              </span>
+              <button
+                type="button"
+                onClick={() => handleSpeak(`${dayInWorld.title}. ${dayInWorld.audioPrompt}`)}
+                className="btn-tactile flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white/20 text-white hover:bg-white/30 cursor-pointer shadow-xs"
+                title={hub.listenGuide}
+              >
+                <Volume2 className="h-4 w-4" />
+              </button>
+            </div>
+            <h2 className="font-serif text-xl sm:text-2xl font-black text-white leading-tight">
               {dayInWorld.introTitle || dayInWorld.title}
             </h2>
-            <p className="text-sm sm:text-base font-semibold text-amber-100 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm font-semibold text-amber-100 leading-relaxed">
               {dayInWorld.introSubtitle}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={() => handleSpeak(`${dayInWorld.title}. ${dayInWorld.audioPrompt}`)}
-              className="btn-tactile rounded-2xl border-3 border-black bg-amber-200 p-3.5 text-black shadow-[3px_3px_0px_#000] hover:bg-amber-300 cursor-pointer"
-              title={hub.listenGuide}
-            >
-              <Volume2 className="h-5 w-5" />
-            </button>
+          <div className="mt-5 pt-3 border-t border-white/20 flex items-center justify-end">
             <button
               type="button"
               onClick={() => setActiveModalGame("day-in-my-world")}
-              className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm sm:text-base font-black text-amber-950 shadow-[4px_4px_0px_#000] hover:bg-amber-100 flex items-center gap-2.5 cursor-pointer"
+              className="btn-tactile rounded-2xl border-2 border-black bg-white px-5 py-2.5 text-xs sm:text-sm font-black text-amber-950 shadow-[3px_3px_0px_#000] hover:bg-amber-100 flex items-center gap-2 cursor-pointer"
             >
-              <Play className="h-5 w-5 fill-amber-950" />
+              <Play className="h-4 w-4 fill-amber-950" />
               <span>{hub.flagshipCta}</span>
             </button>
           </div>
         </div>
 
-        {/* Feature 1: Echoes of Home — Multi-Sensory Memory Capsule */}
-        <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-900 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
-          <div className="space-y-2 text-center md:text-left">
-            <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
-              Echoes of Home (Sound & Memories)
+        {/* Feature 2: Echoes of Home — Peaceful Sounds & Memories */}
+        <div className="relative overflow-hidden rounded-3xl border-3 border-black bg-gradient-to-br from-teal-800 to-cyan-900 p-5 sm:p-6 text-white shadow-[5px_5px_0px_#000] flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="rounded-full bg-teal-300 px-3 py-1 text-[11px] font-black uppercase text-teal-950">
+                🌿 Calming Memories
+              </span>
+              <button
+                type="button"
+                onClick={() => handleSpeak("Echoes of Home. Reconnect with memories with sounds of rain, rivers, temple bells, and family voices.")}
+                className="btn-tactile flex h-9 w-9 items-center justify-center rounded-xl border border-white/40 bg-white/20 text-white hover:bg-white/30 cursor-pointer shadow-xs"
+                title={hub.listenGuide}
+              >
+                <Volume2 className="h-4 w-4" />
+              </button>
+            </div>
+            <h2 className="font-serif text-xl sm:text-2xl font-black text-white leading-tight">
+              Echoes of Home
             </h2>
-            <p className="text-sm sm:text-base font-semibold text-teal-100 max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm font-semibold text-teal-100 leading-relaxed">
               Step inside family photos brought gently to life. Listen to soothing sounds of rain, rivers, temple bells, and loving family voices.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={() => handleSpeak("Echoes of Home. Reconnect with memories with sounds of rain, rivers, temple bells, and family voices.")}
-              className="btn-tactile rounded-2xl border-3 border-black bg-teal-300 p-3.5 text-black shadow-[3px_3px_0px_#000] hover:bg-teal-200 cursor-pointer"
-              title={hub.listenGuide}
-            >
-              <Volume2 className="h-5 w-5" />
-            </button>
+          <div className="mt-5 pt-3 border-t border-white/20 flex items-center justify-end">
             <Link
               href="/patient/echoes-of-home"
-              className="btn-tactile rounded-2xl border-3 border-black bg-white px-6 py-3.5 text-sm sm:text-base font-black text-teal-950 shadow-[4px_4px_0px_#000] hover:bg-teal-50 flex items-center gap-2.5 cursor-pointer"
+              className="btn-tactile rounded-2xl border-2 border-black bg-white px-5 py-2.5 text-xs sm:text-sm font-black text-teal-950 shadow-[3px_3px_0px_#000] hover:bg-teal-50 flex items-center gap-2 cursor-pointer"
             >
-              <Play className="h-5 w-5 fill-teal-950" />
-              <span>Open Memory Box</span>
+              <Play className="h-4 w-4 fill-teal-950" />
+              <span>Open Memories</span>
             </Link>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 pt-2">
-          <Sparkles className="h-4 w-4 text-amber-600" />
-          <span className="text-xs font-black uppercase tracking-wider text-ink">
-            {hub.featuredSectionTitle}
-          </span>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {/* 1. Majuli Village Walk (3D Spatial Memory) */}
-          <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#2D5A27] to-[#1E3F1A] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="rounded-full bg-amber-400 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm flex items-center gap-1">
-                  <Footprints className="h-3.5 w-3.5" /> Walk & Explore
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleSpeak(`${majuliWalk.title}. ${majuliWalk.audioPrompt}`)}
-                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
-                  title={hub.listenGuide}
-                >
-                  <Volume2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              <h2 className="font-serif text-lg sm:text-xl font-black text-white">
-                {majuliWalk.title}
-              </h2>
-              <p className="text-xs sm:text-sm font-medium text-white/80 mt-1.5 leading-relaxed">
-                {majuliWalk.introSubtitle}
-              </p>
-            </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-xs font-bold text-white/90">Peaceful Stroll</span>
-              <button
-                type="button"
-                onClick={() => setActiveModalGame("majuli-walk")}
-                className="btn-tactile rounded-xl border-2 border-black bg-amber-400 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-300 flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play className="h-4 w-4 fill-black" />
-                <span>{hub.play3D}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 2. Tea Garden Harvest (Motion Tracking) */}
-          <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#14532D] to-[#064E3B] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="rounded-full bg-emerald-400 px-3 py-1 text-[10px] font-black uppercase text-emerald-950 shadow-sm flex items-center gap-1">
-                  <Camera className="h-3.5 w-3.5" /> Hand Motion
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleSpeak(`${teaHarvest.title}. ${teaHarvest.audioPrompt}`)}
-                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
-                  title={hub.listenGuide}
-                >
-                  <Volume2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              <h2 className="font-serif text-lg sm:text-xl font-black text-white">
-                {teaHarvest.title}
-              </h2>
-              <p className="text-xs sm:text-sm font-medium text-white/80 mt-1.5 leading-relaxed">
-                {teaHarvest.introSubtitle}
-              </p>
-            </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-xs font-bold text-white/90">Gentle Plucking</span>
-              <button
-                type="button"
-                onClick={() => setActiveModalGame("tea-harvest-vision")}
-                className="btn-tactile rounded-xl border-2 border-black bg-emerald-400 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-emerald-300 flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play className="h-4 w-4 fill-black" />
-                <span>{hub.playVision}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 3. Bihu Dhol Beats & Grounding (Rhythm & Music) */}
-          <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#78350F] to-[#451A03] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="rounded-full bg-amber-300 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm flex items-center gap-1">
-                  <Activity className="h-3.5 w-3.5" /> Folk Beats
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleSpeak(`${bihuDhol.title}. ${bihuDhol.audioPrompt}`)}
-                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
-                  title={hub.listenGuide}
-                >
-                  <Volume2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              <h2 className="font-serif text-lg sm:text-xl font-black text-white">
-                {bihuDhol.title}
-              </h2>
-              <p className="text-xs sm:text-sm font-medium text-white/80 mt-1.5 leading-relaxed">
-                {bihuDhol.introSubtitle}
-              </p>
-            </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-xs font-bold text-amber-200">Gentle Rhythm</span>
-              <button
-                type="button"
-                onClick={() => setActiveModalGame("bihu-dhol")}
-                className="btn-tactile rounded-xl border-2 border-black bg-amber-300 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-amber-200 flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play className="h-4 w-4 fill-black" />
-                <span>{hub.playDrum}</span>
-              </button>
-            </div>
-          </div>
-          {/* 4. Pathways: Bamboo Arrow Labyrinth (Direction & Focus) */}
-          <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#0F2B38] to-[#0A1F29] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="rounded-full bg-cyan-300 px-3 py-1 text-[10px] font-black uppercase text-cyan-950 shadow-sm flex items-center gap-1">
-                  <Compass className="h-3.5 w-3.5" /> Arrow Paths
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleSpeak(`${arrowEscape.title}. ${arrowEscape.audioPrompt}`)}
-                  className="btn-tactile flex h-7 w-7 items-center justify-center rounded-lg border border-white/40 bg-white/20 text-white hover:bg-white/40 shadow-xs cursor-pointer"
-                  title={hub.listenGuide}
-                >
-                  <Volume2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              <h2 className="font-serif text-lg sm:text-xl font-black text-white">
-                {arrowEscape.title}
-              </h2>
-              <p className="text-xs sm:text-sm font-medium text-white/85 mt-1.5 leading-relaxed">
-                {arrowEscape.introSubtitle}
-              </p>
-            </div>
-
-            <div className="mt-5 pt-3.5 border-t border-white/20 flex items-center justify-between gap-2">
-              <span className="text-xs font-bold text-cyan-200">Clear Paths</span>
-              <button
-                type="button"
-                onClick={() => setActiveModalGame("arrow-escape")}
-                className="btn-tactile rounded-xl border-2 border-black bg-cyan-300 px-4 py-2.5 text-xs sm:text-sm font-black text-black shadow-[2px_2px_0px_#000] hover:bg-cyan-200 flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play className="h-4 w-4 fill-black" />
-                <span>Play Game</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>

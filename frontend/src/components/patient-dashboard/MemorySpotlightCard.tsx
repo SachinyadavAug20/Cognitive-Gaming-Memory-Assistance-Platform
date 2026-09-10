@@ -71,7 +71,7 @@ export function MemorySpotlightCard({
           <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">{title}</h3>
         </div>
         <span className="hidden sm:inline-block text-xs font-bold text-ink-secondary bg-amber-100 px-3 py-1 rounded-full border border-black/20">
-          Daily Reminiscence
+          Cherished Family Memory
         </span>
       </div>
 

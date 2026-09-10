@@ -47,17 +47,17 @@ export const SAATHI_LANGUAGES: readonly SaathiLanguageOption[] = [
 export const DOCTOR_LANGUAGES = SAATHI_LANGUAGES;
 
 const GREETINGS_BY_LANG: Record<string, string> = {
-  en: "Hello! I am Saathi, your cognitive memory companion. I am here to check on your orientation, routine, and health today. How are you feeling right now?",
-  as: "নমস্কাৰ! মই আপোনাৰ সংগী সাৰথি (Saathi)। আপোনাৰ স্বাস্থ্য, ঔষধ আৰু মানসিক সুস্থতাৰ বুজ ল'বলৈ মই উপস্থিত আছোঁ। আজি আপোনাৰ কেনে লাগিছে?",
-  hi: "नमस्ते! मैं आपका साथी (Saathi) हूँ। आपके स्वास्थ्य, दवाइयों और मानसिक शांति का ध्यान रखने के लिए मैं यहाँ हूँ। आज आपकी तबीयत कैसी है?",
-  bn: "নমস্কার! আমি আপনার সঙ্গী সাথী (Saathi)। আপনার শারীরিক সুস্থতা, ওষুধ এবং মানসিক শান্তির খেয়াল রাখতে আমি পাশে আছি। আজ কেমন বোধ করছেন?",
-  mr: "नमस्कार! मी तुमचा साथी (Saathi) आहे. तुमच्या आरोग्याची आणि औषधांची काळजी घेण्यासाठी मी सदैव उपस्थित आहे. आज तुमची तब्येत कशी आहे?",
-  ne: "नमस्ते! म तपाईंको साथी (Saathi) हुँ। तपाईंको स्वास्थ्य, औषधि र दिनचर्याको हेरचाह गर्न म यहाँ छु। आज तपाईं कस्तो महसुस गर्दै हुनुहुन्छ?",
+  en: "Hello! I am Saathi, your friendly companion. I am always here to talk with you, remind you of home, and keep you company. How are you feeling today?",
+  as: "নমস্কাৰ! মই আপোনাৰ সংগী সাৰথি (Saathi)। আপোনাৰ লগত কথা পাতিবলৈ আৰু আপোনাৰ আপোন ঘৰখনৰ কথা সোঁৱৰাবলৈ মই আছোঁ। আজি আপোনাৰ কেনে লাগিছে?",
+  hi: "नमस्ते! मैं आपका साथी (Saathi) हूँ। मैं आपके साथ बातें करने, घर की यादें साझा करने और आपका ध्यान रखने के लिए हमेशा यहाँ हूँ। आज आप कैसा महसूस कर रहे हैं?",
+  bn: "নমস্কার! আমি আপনার সঙ্গী সাথী (Saathi)। আপনার সাথে কথা বলতে এবং সুন্দর স্মৃতি মনে করিয়ে দিতে আমি পাশে আছি। আজ কেমন বোধ করছেন?",
+  mr: "नमस्कार! मी तुमचा साथी (Saathi) आहे. तुमच्यासोबत गप्पा मारायला आणि घराच्या आठवणी ताज्या करायला मी इथे आहे. आज तुमची तब्येत कशी आहे?",
+  ne: "नमस्ते! म तपाईंको साथी (Saathi) हुँ। तपाईंसँग कुराकानी गर्न र घरको मीठो सम्झना गराउन म यहाँ छु। आज तपाईं कस्तो महसुस गर्दै हुनुहुन्छ?",
   mni: "খুরুমজরি! ঐহাক নহাক্কী সাথীনি (Saathi)। নহাক্কী হকচাংগী ফিবম অমসুং হিদাক-লাংথক য়েংশিন্নবা ঐহাক লৈরি। ঙসি নহাক্কী ফিবম করম তৌবগে?",
   brx: "खुसुम! आं नोंनि साथि (Saathi)। नोंनि देहा आरो मुलिनि थाखाय आं दं। नों दिनै माबोरै मोनदों?",
   grt: "Salam! Anga nang·ni Saathi. Nang·ni an·sengbaljokaniko aro sam rangko ni·rikna anga donga. Da·alo maikai dakenga?",
   kha: "Khublei! Nga dei u Saathi jong phi. Ban sumar ia ka koit ka khiah bad ki dawai jong phi. Kumno phi sngew mynta ka sngi?",
-  lus: "Chibai! I thian Saathi ka ni. I hriselna leh damdawi ei hun endik turin ka awm e. Vawiin enge i an le?",
+  lus: "Chibai! I thian Saathi ka ni. I thian tha tak ka ni e. Vawiin enge i an le?",
 };
 
 const PROMPT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
