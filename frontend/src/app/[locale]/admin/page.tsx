@@ -33,24 +33,35 @@ import type {
   AdminEmergencyBroadcast,
   AdminEpidemiologicalSurveillance,
 } from "@/types/admin";
+import dynamic from "next/dynamic";
 import { AdminOverviewCards } from "@/components/admin/AdminOverviewCards";
 import { AdminTabsNav, type AdminTab } from "@/components/admin/AdminTabsNav";
-import { AdminSurveillanceTab } from "@/components/admin/tabs/AdminSurveillanceTab";
-import { AdminRegionsTab } from "@/components/admin/tabs/AdminRegionsTab";
-import { AdminPredictiveTab } from "@/components/admin/tabs/AdminPredictiveTab";
-import { AdminTeleManasTab } from "@/components/admin/tabs/AdminTeleManasTab";
-import { AdminMedicationsTab } from "@/components/admin/tabs/AdminMedicationsTab";
-import { AdminBurnoutTab } from "@/components/admin/tabs/AdminBurnoutTab";
-import { AdminAlertsTab } from "@/components/admin/tabs/AdminAlertsTab";
-import { AdminIncentivesTab } from "@/components/admin/tabs/AdminIncentivesTab";
-import { AdminBroadcastTab } from "@/components/admin/tabs/AdminBroadcastTab";
-import { AdminPatientsTab } from "@/components/admin/tabs/AdminPatientsTab";
-import { AdminSessionsTab } from "@/components/admin/tabs/AdminSessionsTab";
-import { AdminAiTab } from "@/components/admin/tabs/AdminAiTab";
-import { AdminKiosksTab } from "@/components/admin/tabs/AdminKiosksTab";
-import { AdminCulturalTab } from "@/components/admin/tabs/AdminCulturalTab";
-import { AdminAuditTab } from "@/components/admin/tabs/AdminAuditTab";
-import { AdminRevokeModal } from "@/components/admin/AdminRevokeModal";
+
+function TabLoading() {
+  return (
+    <div className="flex flex-col items-center justify-center p-12 text-ink-secondary gap-3">
+      <div className="h-8 w-8 animate-spin rounded-full border-3 border-emerald-600 border-t-transparent" />
+      <span className="text-sm font-semibold">Loading module...</span>
+    </div>
+  );
+}
+
+const AdminSurveillanceTab = dynamic(() => import("@/components/admin/tabs/AdminSurveillanceTab").then((m) => m.AdminSurveillanceTab), { loading: () => <TabLoading />, ssr: false });
+const AdminRegionsTab = dynamic(() => import("@/components/admin/tabs/AdminRegionsTab").then((m) => m.AdminRegionsTab), { loading: () => <TabLoading />, ssr: false });
+const AdminPredictiveTab = dynamic(() => import("@/components/admin/tabs/AdminPredictiveTab").then((m) => m.AdminPredictiveTab), { loading: () => <TabLoading />, ssr: false });
+const AdminTeleManasTab = dynamic(() => import("@/components/admin/tabs/AdminTeleManasTab").then((m) => m.AdminTeleManasTab), { loading: () => <TabLoading />, ssr: false });
+const AdminMedicationsTab = dynamic(() => import("@/components/admin/tabs/AdminMedicationsTab").then((m) => m.AdminMedicationsTab), { loading: () => <TabLoading />, ssr: false });
+const AdminBurnoutTab = dynamic(() => import("@/components/admin/tabs/AdminBurnoutTab").then((m) => m.AdminBurnoutTab), { loading: () => <TabLoading />, ssr: false });
+const AdminAlertsTab = dynamic(() => import("@/components/admin/tabs/AdminAlertsTab").then((m) => m.AdminAlertsTab), { loading: () => <TabLoading />, ssr: false });
+const AdminIncentivesTab = dynamic(() => import("@/components/admin/tabs/AdminIncentivesTab").then((m) => m.AdminIncentivesTab), { loading: () => <TabLoading />, ssr: false });
+const AdminBroadcastTab = dynamic(() => import("@/components/admin/tabs/AdminBroadcastTab").then((m) => m.AdminBroadcastTab), { loading: () => <TabLoading />, ssr: false });
+const AdminPatientsTab = dynamic(() => import("@/components/admin/tabs/AdminPatientsTab").then((m) => m.AdminPatientsTab), { loading: () => <TabLoading />, ssr: false });
+const AdminSessionsTab = dynamic(() => import("@/components/admin/tabs/AdminSessionsTab").then((m) => m.AdminSessionsTab), { loading: () => <TabLoading />, ssr: false });
+const AdminAiTab = dynamic(() => import("@/components/admin/tabs/AdminAiTab").then((m) => m.AdminAiTab), { loading: () => <TabLoading />, ssr: false });
+const AdminKiosksTab = dynamic(() => import("@/components/admin/tabs/AdminKiosksTab").then((m) => m.AdminKiosksTab), { loading: () => <TabLoading />, ssr: false });
+const AdminCulturalTab = dynamic(() => import("@/components/admin/tabs/AdminCulturalTab").then((m) => m.AdminCulturalTab), { loading: () => <TabLoading />, ssr: false });
+const AdminAuditTab = dynamic(() => import("@/components/admin/tabs/AdminAuditTab").then((m) => m.AdminAuditTab), { loading: () => <TabLoading />, ssr: false });
+const AdminRevokeModal = dynamic(() => import("@/components/admin/AdminRevokeModal").then((m) => m.AdminRevokeModal), { ssr: false });
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("surveillance");

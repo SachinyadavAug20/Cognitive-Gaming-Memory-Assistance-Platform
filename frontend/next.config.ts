@@ -5,6 +5,17 @@ const LONG_CACHE = 'public, max-age=31536000, immutable';
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+  compress: true,
+  poweredByHeader: false,
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "recharts",
+      "three",
+      "@mediapipe/tasks-vision",
+      "qrcode.react",
+    ],
+  },
   allowedDevOrigins: ["192.168.0.103", "192.168.0.101", "192.168.1.5", "localhost", "127.0.0.1"],
   async headers() {
     return [
@@ -19,6 +30,18 @@ const nextConfig: NextConfig = {
       {
         source: "/sample-images/:path*",
         headers: [{ key: "Cache-Control", value: LONG_CACHE }],
+      },
+      {
+        source: "/:all*(svg|png|jpg|jpeg|webp|avif|ico|woff|woff2)",
+        headers: [{ key: "Cache-Control", value: LONG_CACHE }],
+      },
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
       },
     ];
   },

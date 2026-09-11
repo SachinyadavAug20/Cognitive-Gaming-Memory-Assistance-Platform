@@ -8,11 +8,19 @@ import {
   Sliders,
   MousePointer,
 } from "lucide-react";
-import { VirtualAirMouse } from "@/components/accessibility/VirtualAirMouse";
-import { AccessibilityModal } from "@/components/accessibility/AccessibilityModal";
+import dynamic from "next/dynamic";
 import { useListenFirst } from "@/components/accessibility/useListenFirst";
 import { playPress, unlockAudio } from "@/lib/sound";
 import { usePathname } from "@/i18n/navigation";
+
+const VirtualAirMouse = dynamic(
+  () => import("@/components/accessibility/VirtualAirMouse").then((m) => m.VirtualAirMouse),
+  { ssr: false }
+);
+const AccessibilityModal = dynamic(
+  () => import("@/components/accessibility/AccessibilityModal").then((m) => m.AccessibilityModal),
+  { ssr: false }
+);
 
 function subscribeStorage(callback: () => void) {
   if (typeof window === "undefined") return () => {};
@@ -717,66 +725,70 @@ export function AccessibilityToolbar() {
       )}
 
       {/* ── GLOBAL ACTIVE ACCESSIBILITY RUNTIMES ── */}
-      {/* 1. OpenCV Virtual Air Mouse (Strict Mutual Exclusion) */}
-      <VirtualAirMouse
-        active={mounted && inputMode === "virtual"}
-        onClose={() => setInputMode("physical")}
-        dwellTimeMs={dwellTimeMs}
-        smoothing={smoothing}
-        motionReach={motionReach}
-        cursorSize={cursorSize}
-        cursorPace={cursorPace}
-        clickMethod={clickMethod}
-        cameraViewMode={cameraViewMode}
-        handoffPolicy={handoffPolicy}
-        stickyMagnetism={stickyMagnetism}
-        audioTicks={audioTicks}
-        onHoverTarget={(el) => {
-          if (listenFirstActive && el) {
-            speakElement(el);
-          }
-        }}
-      />
+      {/* 1. OpenCV Virtual Air Mouse (Strict Mutual Exclusion - Lazy Loaded On Demand) */}
+      {mounted && inputMode === "virtual" && (
+        <VirtualAirMouse
+          active={true}
+          onClose={() => setInputMode("physical")}
+          dwellTimeMs={dwellTimeMs}
+          smoothing={smoothing}
+          motionReach={motionReach}
+          cursorSize={cursorSize}
+          cursorPace={cursorPace}
+          clickMethod={clickMethod}
+          cameraViewMode={cameraViewMode}
+          handoffPolicy={handoffPolicy}
+          stickyMagnetism={stickyMagnetism}
+          audioTicks={audioTicks}
+          onHoverTarget={(el) => {
+            if (listenFirstActive && el) {
+              speakElement(el);
+            }
+          }}
+        />
+      )}
 
       {/* 2. Keyboard & Switch Access Controller — removed: elder patients do not
           use keyboard shortcuts, and the global handler hijacked paste/arrow/typing
           (e.g. Ctrl+V in forms). Elders interact via physical mouse or the Air Mouse. */}
 
-      {/* 3. Elder Accessibility Settings Modal */}
-      <AccessibilityModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        inputMode={inputMode}
-        onInputModeChange={setInputMode}
-        airMouseActive={inputMode === "virtual"}
-        onToggleAirMouse={toggleAirMouse}
-        clickMethod={clickMethod}
-        onClickMethodChange={setClickMethod}
-        dwellTimeMs={dwellTimeMs}
-        onDwellTimeChange={setDwellTime}
-        smoothing={smoothing}
-        onSmoothingChange={setSmoothing}
-        motionReach={motionReach}
-        onMotionReachChange={setMotionReach}
-        cursorSize={cursorSize}
-        onCursorSizeChange={setCursorSize}
-        cursorPace={cursorPace}
-        onCursorPaceChange={setCursorPace}
-        cameraViewMode={cameraViewMode}
-        onCameraViewModeChange={setCameraViewMode}
-        handoffPolicy={handoffPolicy}
-        onHandoffPolicyChange={setHandoffPolicy}
-        stickyMagnetism={stickyMagnetism}
-        onStickyMagnetismChange={setStickyMagnetism}
-        audioTicks={audioTicks}
-        onAudioTicksChange={setAudioTicks}
-        listenFirstEnabled={listenFirstActive}
-        onToggleListenFirst={toggleListenFirst}
-        highContrast={highContrast}
-        onToggleHighContrast={toggleHighContrast}
-        fontSizeLevel={fontSizeLevel}
-        onFontSizeChange={setFontSize}
-      />
+      {/* 3. Elder Accessibility Settings Modal (Lazy Loaded On Demand) */}
+      {isModalOpen && (
+        <AccessibilityModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          inputMode={inputMode}
+          onInputModeChange={setInputMode}
+          airMouseActive={inputMode === "virtual"}
+          onToggleAirMouse={toggleAirMouse}
+          clickMethod={clickMethod}
+          onClickMethodChange={setClickMethod}
+          dwellTimeMs={dwellTimeMs}
+          onDwellTimeChange={setDwellTime}
+          smoothing={smoothing}
+          onSmoothingChange={setSmoothing}
+          motionReach={motionReach}
+          onMotionReachChange={setMotionReach}
+          cursorSize={cursorSize}
+          onCursorSizeChange={setCursorSize}
+          cursorPace={cursorPace}
+          onCursorPaceChange={setCursorPace}
+          cameraViewMode={cameraViewMode}
+          onCameraViewModeChange={setCameraViewMode}
+          handoffPolicy={handoffPolicy}
+          onHandoffPolicyChange={setHandoffPolicy}
+          stickyMagnetism={stickyMagnetism}
+          onStickyMagnetismChange={setStickyMagnetism}
+          audioTicks={audioTicks}
+          onAudioTicksChange={setAudioTicks}
+          listenFirstEnabled={listenFirstActive}
+          onToggleListenFirst={toggleListenFirst}
+          highContrast={highContrast}
+          onToggleHighContrast={toggleHighContrast}
+          fontSizeLevel={fontSizeLevel}
+          onFontSizeChange={setFontSize}
+        />
+      )}
     </>
   );
 }

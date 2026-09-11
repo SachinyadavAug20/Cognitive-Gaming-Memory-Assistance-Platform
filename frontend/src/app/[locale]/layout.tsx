@@ -144,6 +144,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <meta name="theme-color" content="#15803D" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="dns-prefetch" href="http://localhost:8080" />
         <StructuredData locale={locale} />
       </head>
       <body className="min-h-screen bg-canvas text-ink paper-texture overflow-x-hidden">

@@ -1021,3 +1021,13 @@ body.virtual-mouse-active * {
   cursor: none !important;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   RENDERING & SCROLL PERFORMANCE OPTIMIZATIONS
+   Skips offscreen layout and paint to maximize FPS on low-power mobile/tablets
+   ══════════════════════════════════════════════════════════════ */
+.game-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+}
+
+

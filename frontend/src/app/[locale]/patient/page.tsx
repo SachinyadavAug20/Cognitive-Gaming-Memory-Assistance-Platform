@@ -12,11 +12,16 @@ import {
 } from "lucide-react";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { useAuthStore } from "@/store/useAuthStore";
+import dynamic from "next/dynamic";
 import { useIdleTimeout } from "@/hooks/useIdleTimeout";
 import { getMediaUrl } from "@/lib/api";
 import { patientLangCode } from "@/lib/i18n";
-import { MemoryLightbox } from "@/components/ui/MemoryLightbox";
 import { playEncourage, playCalmTone, playGammaStimulation, playTapFeedback, unlockAudio } from "@/lib/sound";
+
+const MemoryLightbox = dynamic(
+  () => import("@/components/ui/MemoryLightbox").then((m) => m.MemoryLightbox),
+  { ssr: false }
+);
 import { speak } from "@/lib/speech";
 import { speechRate } from "@/games/config";
 import { AudioToggle } from "@/components/ui/AudioToggle";
@@ -416,18 +421,20 @@ export default function PatientHome() {
         <PatientBottomLogout />
       </div>
 
-      <MemoryLightbox
-        open={memoryView}
-        onClose={() => setMemoryView(false)}
-        photoUrl={memoryOfDay?.photoUrl}
-        title={t("wellbeing.memoryTitle")}
-        text={memoryOfDay?.text}
-        langCode={langCode}
-        rate={rate}
-        closeLabel={t("audio.close")}
-        listenLabel={t("listen")}
-        speakingLabel={t("speaking")}
-      />
+      {memoryView && (
+        <MemoryLightbox
+          open={memoryView}
+          onClose={() => setMemoryView(false)}
+          photoUrl={memoryOfDay?.photoUrl}
+          title={t("wellbeing.memoryTitle")}
+          text={memoryOfDay?.text}
+          langCode={langCode}
+          rate={rate}
+          closeLabel={t("audio.close")}
+          listenLabel={t("listen")}
+          speakingLabel={t("speaking")}
+        />
+      )}
 
       {/* Interactive Saathi Voice Companion */}
       <SaathiVoiceCompanion
