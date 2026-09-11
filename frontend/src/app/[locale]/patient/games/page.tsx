@@ -64,82 +64,82 @@ type ActiveModalGame =
 function getGameCardBg(id: string): string {
   switch (id) {
     case "jigsaw":
-      return "bg-[#943217]"; // deep river terracotta
+      return "bg-[#C8421A]"; // vibrant river terracotta
     case "majuli-walk":
-      return "bg-[#16532D]"; // deep Assam tea forest green
+      return "bg-[#1B663E]"; // vibrant Assam tea forest green
     case "wayfinding":
-      return "bg-[#144D29]"; // deep pine forest
+      return "bg-[#166534]"; // vibrant pine forest
     case "loom":
-      return "bg-[#92400E]"; // deep golden muga amber
+      return "bg-[#B45309]"; // vibrant golden muga amber
     case "weaving":
-      return "bg-[#9A3412]"; // deep roasted cinnamon
+      return "bg-[#C2410C]"; // vibrant roasted cinnamon
     case "memory-road":
-      return "bg-[#5B2144]"; // deep wild orchid plum
+      return "bg-[#7E2A5D]"; // vibrant wild orchid plum
     case "grandchild-chat":
-      return "bg-[#782838]"; // deep warm rose
+      return "bg-[#9F1239]"; // vibrant warm rose
     case "memory-detective":
-      return "bg-[#7F1D1D]"; // deep rustic berry
+      return "bg-[#A21CAF]"; // vibrant royal berry
     case "timeline":
-      return "bg-[#7C2D12]"; // deep keepsake mahogany
+      return "bg-[#9A3412]"; // vibrant keepsake mahogany
     case "drum":
-      return "bg-[#8C3018]"; // deep bihu drum terracotta
+      return "bg-[#B43818]"; // vibrant bihu drum terracotta
     case "bihu-dhol":
-      return "bg-[#943217]"; // deep festive dhol clay
+      return "bg-[#C2410C]"; // vibrant festive dhol clay
     case "tuned-drum":
-      return "bg-[#854D0E]"; // deep brass gong bronze
+      return "bg-[#A16207]"; // vibrant brass gong bronze
     case "rhythm-hills":
-      return "bg-[#1E5135]"; // deep mountain forest
+      return "bg-[#1E7345]"; // vibrant mountain pine
     case "alpana":
-      return "bg-[#5B2144]"; // deep festive plum
+      return "bg-[#7E2A5D]"; // vibrant festive plum
     case "companion":
-      return "bg-[#16532D]"; // deep soothing tea green
+      return "bg-[#1B663E]"; // vibrant soothing tea green
     case "lotus-painter":
-      return "bg-[#1F4E38]"; // deep lotus pond moss
+      return "bg-[#1F7A48]"; // vibrant lotus pond moss
     case "butterfly-sanctuary":
-      return "bg-[#92400E]"; // deep warm amber
+      return "bg-[#B45309]"; // vibrant warm golden amber
     case "tea-harvest":
-      return "bg-[#16532D]"; // deep tea garden green
+      return "bg-[#1B663E]"; // vibrant tea garden green
     case "tea-harvest-vision":
-      return "bg-[#144D29]"; // deep canopy emerald
+      return "bg-[#166534]"; // vibrant canopy emerald
     case "tea-garden-catch":
-      return "bg-[#1B5E38]"; // deep bamboo grove
+      return "bg-[#1E7345]"; // vibrant bamboo grove
     case "river-lanterns":
-      return "bg-[#9A3412]"; // deep river clay rust
+      return "bg-[#C2410C]"; // vibrant river clay rust
     case "monastery-bell":
-      return "bg-[#854D0E]"; // deep monastery bronze ochre
+      return "bg-[#A16207]"; // vibrant monastery bronze ochre
     case "brahmaputra-boat":
-      return "bg-[#164E35]"; // deep river forest
+      return "bg-[#15803D]"; // vibrant river forest
     case "hornbill-flight":
-      return "bg-[#943217]"; // deep hornbill terracotta
+      return "bg-[#C8421A]"; // vibrant hornbill terracotta
     case "majuli-pottery":
-      return "bg-[#8C3018]"; // deep artisan terracotta
+      return "bg-[#B43818]"; // vibrant artisan terracotta
     case "daily-routine":
-      return "bg-[#854D0E]"; // deep warm golden amber
+      return "bg-[#A16207]"; // vibrant warm golden amber
     case "storybook":
-      return "bg-[#78350F]"; // deep aged parchment walnut
+      return "bg-[#9A3412]"; // vibrant aged parchment walnut
     case "radio":
-      return "bg-[#7C2D12]"; // deep vintage teak
+      return "bg-[#854D0E]"; // vibrant vintage teak
     case "heritage-kitchen":
-      return "bg-[#8C3018]"; // deep spice terracotta
+      return "bg-[#B43818]"; // vibrant spice terracotta
     case "daily-tasks":
-      return "bg-[#943217]"; // deep lal saah red tea
+      return "bg-[#C2410C]"; // vibrant lal saah red tea
     case "bazaar-buddies":
-      return "bg-[#854D0E]"; // deep bazaar brass
+      return "bg-[#A16207]"; // vibrant bazaar brass
     case "sorting":
-      return "bg-[#78350F]"; // deep pantry cedar
+      return "bg-[#854D0E]"; // vibrant pantry cedar
     case "arrow-escape":
     case "pathways":
-      return "bg-[#854D0E]"; // deep archery bronze
+      return "bg-[#A16207]"; // vibrant archery bronze
     case "dzukou-botanist":
-      return "bg-[#16532D]"; // deep Dzukou valley evergreen
+      return "bg-[#1B663E]"; // vibrant Dzukou valley evergreen
     case "memory-garden":
-      return "bg-[#6B2144]"; // deep garden mulberry
+      return "bg-[#831843]"; // vibrant garden mulberry
     case "root-bridge":
-      return "bg-[#144D29]"; // deep Meghalaya canopy green
+      return "bg-[#166534]"; // vibrant Meghalaya canopy green
     case "day-in-my-world":
-      return "bg-[#943217]"; // deep morning village terracotta
+      return "bg-[#C8421A]"; // vibrant morning village terracotta
     default:
-      return "bg-[#16532D]"; // deep tea green fallback
+      return "bg-[#1B663E]"; // vibrant tea green fallback
   }
 }
 

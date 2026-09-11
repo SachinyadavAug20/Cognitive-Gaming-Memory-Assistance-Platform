@@ -181,11 +181,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        {/* 1. Picture Puzzle (jigsaw) - Deep Majuli Terracotta */}
+        {/* 1. Picture Puzzle (jigsaw) - Vibrant Majuli Terracotta */}
         <Link
           href="/patient/games/jigsaw"
           data-voice-desc={`${jigsawStrings.title}. ${jigsawStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#943217] p-5 text-white transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#C8421A] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
@@ -221,11 +221,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 2. Walking Through the Village (majuli-walk) - Deep Assam Tea Forest Green */}
+        {/* 2. Walking Through the Village (majuli-walk) - Vibrant Assam Tea Forest Green */}
         <Link
           href="/patient/games/majuli-walk"
           data-voice-desc={`${majuliStrings.title}. ${majuliStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#16532D] p-5 text-white transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#1B663E] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
@@ -261,11 +261,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 3. The Loom of Memories (loom) - Deep Golden Muga Amber */}
+        {/* 3. The Loom of Memories (loom) - Vibrant Golden Muga Amber */}
         <Link
           href="/patient/games/loom"
           data-voice-desc={`${loomStrings.title}. ${loomStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#92400E] p-5 text-white transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#B45309] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
@@ -301,11 +301,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 4. Finding Signs on the Road (memory-road) - Deep Wild Orchid Plum */}
+        {/* 4. Finding Signs on the Road (memory-road) - Vibrant Wild Orchid Plum */}
         <Link
           href="/patient/games/memory-road"
           data-voice-desc={`${roadStrings.title}. ${roadStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#5B2144] p-5 text-white transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#7E2A5D] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
