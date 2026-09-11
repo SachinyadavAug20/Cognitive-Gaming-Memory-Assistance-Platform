@@ -122,6 +122,7 @@ export function DzukouBotanistGame() {
   const [phase, setPhase] = useState<"intro" | "search" | "done">("intro");
   const [floraList, setFloraList] = useState<FloraSpecimen[]>(BOTANICAL_PLANTS);
   const [currentTargetIndex, setCurrentTargetIndex] = useState(0);
+  const [hintActive, setHintActive] = useState(false);
   const [taps, setTaps] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
@@ -142,6 +143,7 @@ export function DzukouBotanistGame() {
 
     if (plantId === currentTarget.id) {
       playCorrect();
+      setHintActive(false);
       const updated = floraList.map((p) => (p.id === plantId ? { ...p, discovered: true } : p));
       setFloraList(updated);
       speak(`Found! ${currentTarget.name}. ${currentTarget.description}`, locale, rate);
@@ -168,7 +170,17 @@ export function DzukouBotanistGame() {
         }, 800);
       }
     } else {
-      speak("Look closely for the " + currentTarget.name, locale, rate);
+      playPineBreeze();
+      setHintActive(true);
+      speak(
+        locale === "hi"
+          ? `आइए ध्यान से ${currentTarget.name} को ढूंढते हैं।`
+          : locale === "as"
+          ? `আহক মন দি ${currentTarget.name} বিচাৰোঁ।`
+          : `Take your time. Let's look closely for the ${currentTarget.name}.`,
+        locale,
+        rate
+      );
     }
   };
 
@@ -285,41 +297,70 @@ export function DzukouBotanistGame() {
 
           {/* BOTANICAL DISCOVERY MEADOW GRID */}
           <div className="w-full max-w-md grid grid-cols-2 gap-3.5 pt-1">
-            {floraList.map((plant) => (
-              <button
-                key={plant.id}
-                type="button"
-                onClick={() => handlePlantTap(plant.id)}
-                className={`btn-tactile flex flex-col items-center justify-center gap-2 rounded-3xl border-3 p-5 shadow-[4px_4px_0px_#000] transition-all cursor-pointer ${
-                  plant.discovered
-                    ? "bg-emerald-500 border-black text-white ring-4 ring-emerald-300"
-                    : plant.color
-                }`}
-              >
-                <span className="animate-bounce" style={{ animationDuration: "3s" }}>
-                  {renderFloraIcon(plant.iconType, "w-12 h-12")}
-                </span>
-                <div>
-                  <span className="font-serif text-sm sm:text-base font-black block leading-tight">
-                    {plant.name}
+            {floraList.map((plant) => {
+              const isTargetHinted = hintActive && plant.id === currentTarget.id && !plant.discovered;
+              return (
+                <button
+                  key={plant.id}
+                  type="button"
+                  onClick={() => handlePlantTap(plant.id)}
+                  className={`btn-tactile flex flex-col items-center justify-center gap-2 rounded-3xl border-3 p-5 shadow-[4px_4px_0px_#000] transition-all cursor-pointer ${
+                    plant.discovered
+                      ? "bg-emerald-500 border-black text-white ring-4 ring-emerald-300"
+                      : isTargetHinted
+                      ? "ring-4 ring-pink-400 animate-pulse scale-105 border-pink-600 " + plant.color
+                      : plant.color
+                  }`}
+                >
+                  <span className="animate-bounce" style={{ animationDuration: "3s" }}>
+                    {renderFloraIcon(plant.iconType, "w-12 h-12")}
                   </span>
-                  <span className="text-[10px] font-bold opacity-80 uppercase flex items-center justify-center gap-1 mt-0.5">
-                    {plant.discovered ? (
-                      <>
-                        <Check className="w-3 h-3 text-emerald-300" />
-                        <span>In Herbarium</span>
-                      </>
-                    ) : (
-                      <>
-                        <Search className="w-3 h-3" />
-                        <span>Inspect & Collect</span>
-                      </>
-                    )}
-                  </span>
-                </div>
-              </button>
-            ))}
+                  <div>
+                    <span className="font-serif text-sm sm:text-base font-black block leading-tight">
+                      {plant.name}
+                    </span>
+                    <span className="text-[10px] font-bold opacity-80 uppercase flex items-center justify-center gap-1 mt-0.5">
+                      {plant.discovered ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-300" />
+                          <span>In Herbarium</span>
+                        </>
+                      ) : (
+                        <>
+                          <Search className="w-3 h-3" />
+                          <span>Inspect & Collect</span>
+                        </>
+                      )}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </div>
+
+          {!hintActive && (
+            <button
+              type="button"
+              onClick={() => {
+                playPress();
+                playPineBreeze();
+                setHintActive(true);
+                speak(
+                  locale === "hi"
+                    ? `यहाँ है ${currentTarget.name}। चमकती हुई गुलाबी आभा को देखें।`
+                    : locale === "as"
+                    ? `এইটো হ'ল ${currentTarget.name}। উজ্বল গুলপীয়া পোহৰটো চাওক।`
+                    : `Here is the ${currentTarget.name}. Notice the pink glow.`,
+                  locale,
+                  rate
+                );
+              }}
+              className="flex items-center gap-1.5 rounded-xl border-2 border-emerald-800 bg-emerald-50 px-3.5 py-1.5 text-xs font-black text-emerald-950 shadow-[1px_1px_0px_#000] hover:bg-emerald-100 transition-transform active:translate-y-0.5 cursor-pointer mt-1"
+            >
+              <Flower className="w-3.5 h-3.5 text-pink-600" />
+              <span>{locale === "hi" ? "फूल का संकेत दिखाएं" : locale === "as" ? "ফুলৰ সংকেত চাওক" : "Show Flower Hint"}</span>
+            </button>
+          )}
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Grid3X3, Volume2, Music, Image as ImageIcon, Puzzle, RotateCcw } from "lucide-react";
+import { Grid3X3, Volume2, Music, Image as ImageIcon, Puzzle, RotateCcw, Sparkles } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -274,6 +274,44 @@ export function JigsawGame() {
       snapTimer.current = setTimeout(() => setSnapping([]), 520);
     } else {
       playTapFeedback();
+    }
+  }
+
+  function autoSnapOnePiece() {
+    if (phase !== "play" || solved(order)) return;
+    playPress();
+    setTaps((v) => v + 1);
+
+    // Find first misplaced position
+    const targetSlot = order.findIndex((piece, pos) => piece !== pos);
+    if (targetSlot === -1) return;
+
+    // Find where the piece that belongs in targetSlot currently is
+    const sourceSlot = order.findIndex((piece) => piece === targetSlot);
+    if (sourceSlot === -1) return;
+
+    const next = [...order];
+    [next[targetSlot], next[sourceSlot]] = [next[sourceSlot], next[targetSlot]];
+    setOrder(next);
+    setSelectedPos(null);
+
+    playCorrect();
+    setSnapping([targetSlot]);
+    if (snapTimer.current) clearTimeout(snapTimer.current);
+    snapTimer.current = setTimeout(() => setSnapping([]), 520);
+
+    if (solved(next)) {
+      reveal();
+    } else {
+      speak(
+        locale === "hi"
+          ? "एक टुकड़ा सही स्थान पर लगा दिया गया है।"
+          : locale === "as"
+          ? "এটা টুকুৰা সঠিক স্থানত বহুওৱা হ'ল।"
+          : "Guided one piece into place.",
+        locale,
+        rate
+      );
     }
   }
 
@@ -553,6 +591,14 @@ export function JigsawGame() {
             >
               {peeking ? t("jigsaw.playing") : t("jigsaw.peek")}
             </ChunkyButton>
+            <button
+              type="button"
+              onClick={autoSnapOnePiece}
+              className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-amber-600 bg-amber-100 px-4 py-2.5 text-xs font-black text-amber-950 shadow-[3px_3px_0px_#000] hover:bg-amber-200 transition-transform active:translate-y-0.5 cursor-pointer"
+            >
+              <Sparkles className="h-4 w-4 text-amber-700" />
+              <span>{locale === "hi" ? "१ टुकड़ा लगाएं" : locale === "as" ? "১টা টুকুৰা বহুৱাওক" : "Help Place 1 Piece"}</span>
+            </button>
             <p className="text-base font-bold text-ink-secondary">
               {t("jigsaw.tapPrompt")}
             </p>

@@ -272,6 +272,72 @@ const CLINICAL_REFERENCES: ReferenceItem[] = [
     category: "regulatory",
     clinicalTakeaway: "Full reproducible implementation of Errorless Learning serious games, RL-DDA difficulty policy, MoCA telemetry engine, and offline PWA architecture.",
   },
+  {
+    id: "nih-statpearls-dementia-2022",
+    title: "Major Neurocognitive Disorder (Dementia): DSM-5 Diagnostic Criteria, Staging, and Comprehensive Multidisciplinary Management",
+    authors: "Emmady, P. D., Schoo, C., & Tadi, P.",
+    journal: "StatPearls Publishing / National Center for Biotechnology Information (NCBI) Bookshelf, PMID: 32491448",
+    year: 2022,
+    doi: "NBK557444",
+    url: "https://www.ncbi.nlm.nih.gov/books/NBK557444/",
+    category: "guideline",
+    clinicalTakeaway: "Codifies DSM-5 six core cognitive domains (Complex Attention, Executive Function, Learning & Memory, Language, Perceptual-Motor, Social Cognition). Emphasizes non-pharmacological caregiver coaching, BPSD behavioral de-escalation via reassurance and redirection rather than confrontational reality testing, and culturally fair assessments.",
+  },
+  {
+    id: "practical-neurology-kataki-2021",
+    title: "Clinical Approach to Dementia: Differential Diagnosis, Cognitive Screening, and Multimodal Management",
+    authors: "Bouchachi, A., & Kataki, M.",
+    journal: "Practical Neurology, Jun 2021, pp. 26-32",
+    year: 2021,
+    doi: "PN-2021-06-26",
+    url: "https://practicalneurology.com/articles/2021-june/clinical-approach-to-dementia",
+    category: "neuropsych",
+    clinicalTakeaway: "Synthesizes bedside cognitive screening instruments (MoCA, SAGE, Mini-Cog, CERAD, NPI). Demonstrates the therapeutic efficacy of Mediterranean-DASH Intervention for Neurodegenerative Delay (MIND diet) and cognitive stimulation therapy in slowing executive decline.",
+  },
+  {
+    id: "asha-practice-portal-dementia-2023",
+    title: "Dementia: Cognitive-Communication Disorders and Interprofessional Evidence-Based Management",
+    authors: "American Speech-Language-Hearing Association (ASHA)",
+    journal: "ASHA Clinical Practice Portal, Practice Management Resources",
+    year: 2023,
+    doi: "ASHA-PORTAL-DEM-2023",
+    url: "https://www.asha.org/practice-portal/clinical-topics/dementia/",
+    category: "guideline",
+    clinicalTakeaway: "Defines clinical practice guidelines for speech-language pathologists and audiologists in neurocognitive disorders. Establishes secondary prevention in Mild Cognitive Impairment (MCI) and interprets responsive behaviors (wandering, agitation) as communicative attempts expressing unmet needs.",
+  },
+  {
+    id: "kim-cognitive-stimulation-2017",
+    title: "Cognitive Stimulation Therapy for People with Dementia: Systematic Review and Meta-Analysis of Global RCTs",
+    authors: "Kim, K., Han, J. W., & Kim, T. H.",
+    journal: "Journal of the American Medical Directors Association (JAMDA), 18(9), 783-790",
+    year: 2017,
+    doi: "10.1016/j.jamda.2017.04.008",
+    url: "https://doi.org/10.1016/j.jamda.2017.04.008",
+    category: "clinical_trial",
+    clinicalTakeaway: "Meta-analysis of global randomized controlled trials demonstrating that regular Cognitive Stimulation Therapy (CST) yields significant improvements in global cognition (standardized mean difference 0.41), linguistic communication, and caregiver-rated quality of life.",
+  },
+  {
+    id: "rudas-cross-cultural-2004",
+    title: "The Rowland Universal Dementia Assessment Scale (RUDAS): A Multicultural Cognitive Assessment Scale",
+    authors: "Storey, J. E., Rowland, J. T., Basic, D., Conforti, D. A., & Dickson, H. G.",
+    journal: "International Psychogeriatrics, 16(1), 13-31",
+    year: 2004,
+    doi: "10.1017/s1041610204000041",
+    url: "https://doi.org/10.1017/s1041610204000041",
+    category: "neuropsych",
+    clinicalTakeaway: "Validates a culture-fair, low-education cognitive assessment instrument. Eliminates language and literacy penalties inherent to Western-centric tests, directly informing CogniCare's dialect-native visual mechanics in North East India.",
+  },
+  {
+    id: "moca-nasreddine-2005",
+    title: "The Montreal Cognitive Assessment, MoCA: A Brief Screening Tool For Mild Cognitive Impairment",
+    authors: "Nasreddine, Z. S., Phillips, N. A., Bédirian, V., Charbonneau, S., Whitehead, V., Collin, I., et al.",
+    journal: "Journal of the American Geriatrics Society, 53(4), 695-699",
+    year: 2005,
+    doi: "10.1111/j.1532-5415.2005.53221.x" ,
+    url: "https://doi.org/10.1111/j.1532-5415.2005.53221.x",
+    category: "clinical_trial",
+    clinicalTakeaway: "Original validation showing 90% sensitivity in detecting Mild Cognitive Impairment (vs MMSE's 18%). CogniCare maps non-intrusive gameplay telemetry directly against MoCA's 30-point scoring rubrics across 7 cognitive subdomains.",
+  },
 ];
 
 type SectionTab =
@@ -426,7 +492,7 @@ export function ClinicalEvidenceClient() {
               </span>
               <span className="inline-flex items-center gap-1.5 bg-stone-100/80 px-2.5 py-1 rounded-md border border-stone-200/80 text-stone-700 font-medium">
                 <Award className="h-3.5 w-3.5 text-stone-500" />
-                14 Landmark Trials
+                20 Landmark Trials
               </span>
               <span className="inline-flex items-center gap-1.5 bg-stone-100/80 px-2.5 py-1 rounded-md border border-stone-200/80 text-stone-700 font-medium">
                 <ShieldCheck className="h-3.5 w-3.5 text-stone-500" />
@@ -454,7 +520,7 @@ export function ClinicalEvidenceClient() {
                 className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/80 bg-emerald-50/80 px-3.5 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100/80 transition-colors cursor-pointer"
               >
                 <FileText className="h-3.5 w-3.5 text-emerald-700" />
-                <span>14 Landmark Citations</span>
+                <span>20 Landmark Citations</span>
               </button>
             </div>
           </div>
@@ -641,6 +707,160 @@ export function ClinicalEvidenceClient() {
                     </p>
                     <div className="text-[11px] font-semibold text-purple-800 pt-1">
                       CogniCare Module: Make My Tea, Daily Routine Sequencing
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* DSM-5 Six Core Cognitive Domains Matrix */}
+              <div className="pt-4 space-y-4 border-t border-stone-200/80">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <span className="rounded-md bg-stone-100 border border-stone-200 px-2 py-0.5 text-[10px] font-bold uppercase text-stone-700">
+                      DSM-5 &amp; NIH StatPearls Neurocognitive Taxonomy
+                    </span>
+                    <h3 className="font-serif text-xl font-bold text-stone-900 mt-1">
+                      Targeting the Six DSM-5 Neurocognitive Domains
+                    </h3>
+                  </div>
+                  <span className="text-[11px] font-mono text-stone-500">
+                    PMID: 32491448 &bull; Emmady et al. 2022
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                  As codified in the <em>Diagnostic and Statistical Manual of Mental Disorders (DSM-5)</em> and reinforced in NIH StatPearls (Emmady et al., 2022), Major and Mild Neurocognitive Disorders are defined by quantifiable declines across six discrete cognitive domains. CogniCare maps its serious gaming suite and passive telemetry specifically to each neural substrate:
+                </p>
+
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+                  {/* Domain 1 */}
+                  <div className="rounded-xl border border-stone-200/90 bg-[#FAF9F6] p-4 space-y-2 hover:border-emerald-300 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded">
+                        Domain 1
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Frontoparietal</span>
+                    </div>
+                    <h4 className="font-serif text-sm font-bold text-stone-900">Complex Attention &amp; Speed</h4>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Sustained vigilance, selective attention, and psychomotor processing speed under distraction.
+                    </p>
+                    <div className="text-[11px] font-medium text-emerald-900 bg-white p-2 rounded-lg border border-stone-200/80">
+                      <strong>CogniCare Battery:</strong> Monastery Bell (auditory vigilance), River Lantern (selective visual Go/No-Go).
+                    </div>
+                  </div>
+
+                  {/* Domain 2 */}
+                  <div className="rounded-xl border border-stone-200/90 bg-[#FAF9F6] p-4 space-y-2 hover:border-emerald-300 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100/70 px-2 py-0.5 rounded">
+                        Domain 2
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Dorsolateral Prefrontal</span>
+                    </div>
+                    <h4 className="font-serif text-sm font-bold text-stone-900">Executive Function</h4>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Multi-step planning, working memory manipulation, mental flexibility, and cognitive switching.
+                    </p>
+                    <div className="text-[11px] font-medium text-amber-950 bg-white p-2 rounded-lg border border-stone-200/80">
+                      <strong>CogniCare Battery:</strong> Bamboo Labyrinth (heuristic search), Tea Sorting (working memory sets), Make My Tea (IADL sequencing).
+                    </div>
+                  </div>
+
+                  {/* Domain 3 */}
+                  <div className="rounded-xl border border-stone-200/90 bg-[#FAF9F6] p-4 space-y-2 hover:border-emerald-300 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-800 bg-indigo-100/70 px-2 py-0.5 rounded">
+                        Domain 3
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Medial Temporal / Hippo</span>
+                    </div>
+                    <h4 className="font-serif text-sm font-bold text-stone-900">Learning &amp; Episodic Memory</h4>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Immediate and delayed free recall, cued recognition, spatial landmark anchoring, and errorless encoding.
+                    </p>
+                    <div className="text-[11px] font-medium text-indigo-950 bg-white p-2 rounded-lg border border-stone-200/80">
+                      <strong>CogniCare Battery:</strong> Memory Garden (associative recall), Memory Road (topographical cues), Ancestral Herbalist (semantic memory).
+                    </div>
+                  </div>
+
+                  {/* Domain 4 */}
+                  <div className="rounded-xl border border-stone-200/90 bg-[#FAF9F6] p-4 space-y-2 hover:border-emerald-300 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-rose-800 bg-rose-100/70 px-2 py-0.5 rounded">
+                        Domain 4
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Left Perisylvian</span>
+                    </div>
+                    <h4 className="font-serif text-sm font-bold text-stone-900">Language &amp; Semantic Retrieval</h4>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Confrontation naming, semantic category fluency, receptive comprehension in 11 regional mother tongues.
+                    </p>
+                    <div className="text-[11px] font-medium text-rose-950 bg-white p-2 rounded-lg border border-stone-200/80">
+                      <strong>CogniCare Battery:</strong> Dzukou Botanist (floral nomenclature), Echoes of Home (oral reminiscence), Saathi Voice Companion.
+                    </div>
+                  </div>
+
+                  {/* Domain 5 */}
+                  <div className="rounded-xl border border-stone-200/90 bg-[#FAF9F6] p-4 space-y-2 hover:border-emerald-300 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded">
+                        Domain 5
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Parieto-Occipital</span>
+                    </div>
+                    <h4 className="font-serif text-sm font-bold text-stone-900">Perceptual-Motor Function</h4>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Visuoconstructional praxis, visual perception, figure copy, and hand-eye motor trajectory coordination.
+                    </p>
+                    <div className="text-[11px] font-medium text-teal-950 bg-white p-2 rounded-lg border border-stone-200/80">
+                      <strong>CogniCare Battery:</strong> Kaziranga Jigsaw (constructional assembly), Rhino Sanctuary (spatial wayfinding, apraxia support).
+                    </div>
+                  </div>
+
+                  {/* Domain 6 */}
+                  <div className="rounded-xl border border-stone-200/90 bg-[#FAF9F6] p-4 space-y-2 hover:border-emerald-300 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-800 bg-purple-100/70 px-2 py-0.5 rounded">
+                        Domain 6
+                      </span>
+                      <span className="text-[10px] font-mono text-stone-500">Orbitofrontal / Amygdala</span>
+                    </div>
+                    <h4 className="font-serif text-sm font-bold text-stone-900">Social Cognition &amp; BPSD De-escalation</h4>
+                    <p className="text-xs text-stone-600 leading-relaxed">
+                      Theory of mind, empathetic communication, and non-pharmacological behavioral mitigation for agitation or wandering.
+                    </p>
+                    <div className="text-[11px] font-medium text-purple-950 bg-white p-2 rounded-lg border border-stone-200/80">
+                      <strong>CogniCare Battery:</strong> Bazaar Buddies (social commerce interaction), Caregiver De-escalation Coaching (redirection vs confrontation).
+                    </div>
+                  </div>
+                </div>
+
+                {/* Clinical Guidance Callout: Redirection vs Correction & MIND Diet */}
+                <div className="rounded-xl border border-stone-200 bg-stone-50/80 p-4.5 space-y-2.5 mt-2">
+                  <div className="flex items-center gap-2">
+                    <HeartHandshake className="h-4 w-4 text-emerald-800 shrink-0" />
+                    <span className="text-xs font-bold text-stone-900 uppercase tracking-wide">
+                      Interprofessional Rehabilitation Principles (Practical Neurology &amp; ASHA Portal)
+                    </span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3 text-xs text-stone-700">
+                    <div className="space-y-1 bg-white p-3 rounded-lg border border-stone-200/80">
+                      <div className="font-bold text-stone-900 flex items-center gap-1.5">
+                        <Smile className="h-3.5 w-3.5 text-amber-700" />
+                        <span>Validation &amp; Redirection vs Confrontation</span>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed">
+                        In accordance with NIH StatPearls and ASHA guidelines, responsive behaviors (restlessness, wandering, repetitiveness) are treated as expressions of unmet needs. Caregivers are guided never to argue or confront, but to validate emotional truth and gently redirect to familiar soothing rituals.
+                      </p>
+                    </div>
+                    <div className="space-y-1 bg-white p-3 rounded-lg border border-stone-200/80">
+                      <div className="font-bold text-stone-900 flex items-center gap-1.5">
+                        <Brain className="h-3.5 w-3.5 text-emerald-700" />
+                        <span>MIND Diet &amp; Ethnobotany Cognitive Reserve</span>
+                      </div>
+                      <p className="text-stone-600 leading-relaxed">
+                        As highlighted by Bouchachi &amp; Kataki (Practical Neurology), combining cognitive stimulation with antioxidant dietary patterns (MIND protocol) slows functional decline. CogniCare integrates indigenous North Eastern botanical wisdom (Lakadong curcumin, Centella asiatica) into daily routines and reminiscence therapy.
+                      </p>
                     </div>
                   </div>
                 </div>

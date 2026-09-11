@@ -30,6 +30,7 @@ const RAW: Array<[string, string, string, string]> = [
   ["timeline", "timeline.title", "timeline.desc", "Life Story Timeline"],
   ["jigsaw", "jigsaw.title", "jigsaw.desc", "Family Photo Jigsaw"],
   ["radio", "radio.title", "radio.desc", "Vintage Folk Radio"],
+  ["ancestral-herbalist", "ancestralHerbalist.title", "ancestralHerbalist.desc", "Ancestral Healing Herbs"],
   // attention
   ["tea-harvest", "teaHarvest.title", "teaHarvest.desc", "Tea Garden Harvest"],
   ["monastery-bell", "monasteryBell.title", "monasteryBell.desc", "Monastery Bell Memory"],

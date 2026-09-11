@@ -59,7 +59,7 @@ function GameShell({
         title={title}
         score={score}
         backHref="/patient/games"
-        bgColor="bg-tea"
+        bgColor="bg-[#C2410C]"
       />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
@@ -470,7 +470,16 @@ export function MemoryRoadGame() {
         } else {
           playEncourage();
           setErrors((e) => e + 1);
-          speak(t("wrong"), locale, rate);
+          const targetName = localizedName(targetObj);
+          speak(
+            locale === "hi"
+              ? `आइए ध्यान से ${targetName} को ढूंढते हैं।`
+              : locale === "as"
+              ? `আহক মন দি ${targetName} বিচাৰোঁ।`
+              : `Take your time. Let's look for the ${targetName}.`,
+            locale,
+            rate
+          );
           next[idx] = { ...tile, wrongFlash: true };
           setTimeout(() => {
             setTiles((current) =>
@@ -481,7 +490,7 @@ export function MemoryRoadGame() {
         return next;
       });
     },
-    [phase, foundCount, levelConfig, completeLevel, locale, rate, t]
+    [phase, foundCount, levelConfig, completeLevel, locale, rate, localizedName, targetObj]
   );
 
   const nextLevel = useCallback(() => {
@@ -630,27 +639,32 @@ export function MemoryRoadGame() {
                 : "grid-cols-4"
             }`}
           >
-            {tiles.map((tile) => (
-              <button
-                key={tile.uid}
-                type="button"
-                disabled={tile.found}
-                onClick={() => tapTile(tile.uid)}
-                className={`btn-tactile aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-50 ${
-                  tile.found
-                    ? "bg-tea-light border-tea ring-2 ring-tea"
-                    : tile.wrongFlash
-                    ? "bg-red-100 border-red-500 animate-shake"
-                    : "bg-surface hover:bg-tea-light/40"
-                }`}
-              >
-                {tile.found ? (
-                  <Check className="h-10 w-10 text-emerald-700" />
-                ) : (
-                  renderRoadObjectIcon(tile.object.id, "h-10 w-10")
-                )}
-              </button>
-            ))}
+            {tiles.map((tile) => {
+              const isTargetHinted = hintUsed && tile.object.id === levelConfig.targetId && !tile.found;
+              return (
+                <button
+                  key={tile.uid}
+                  type="button"
+                  disabled={tile.found}
+                  onClick={() => tapTile(tile.uid)}
+                  className={`btn-tactile aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-50 ${
+                    tile.found
+                      ? "bg-tea-light border-tea ring-2 ring-tea"
+                      : isTargetHinted
+                      ? "ring-4 ring-amber-400 animate-pulse bg-amber-100 border-amber-600 scale-105"
+                      : tile.wrongFlash
+                      ? "bg-amber-100 border-amber-500 animate-shake"
+                      : "bg-surface hover:bg-tea-light/40"
+                  }`}
+                >
+                  {tile.found ? (
+                    <Check className="h-10 w-10 text-emerald-700" />
+                  ) : (
+                    renderRoadObjectIcon(tile.object.id, "h-10 w-10")
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {!hintUsed && (

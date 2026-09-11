@@ -88,6 +88,7 @@ const MakeMyTeaGame = dynamic(() => import("./daily-tasks/MakeMyTeaGame").then((
 const CompanionGame = dynamic(() => import("./companion/CompanionGame").then((m) => m.CompanionGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const RhythmHillsGame = dynamic(() => import("./rhythm-hills/RhythmHillsGame").then((m) => m.RhythmHillsGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const WeavingGame = dynamic(() => import("./weaving/WeavingGame").then((m) => m.WeavingGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const AncestralHerbalistGame = dynamic(() => import("./ancestral-herbalist/AncestralHerbalistGame").then((m) => m.AncestralHerbalistGame), { loading: () => <GameLoaderFallback />, ssr: false });
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -271,6 +272,17 @@ export const GAMES: GameDef[] = [
     category: "reminiscence",
     recommended: false,
     component: NostalgiaRadioGame,
+  },
+  {
+    id: "ancestral-herbalist",
+    icon: Sprout,
+    titleKey: "ancestralHerbalist.title",
+    descKey: "ancestralHerbalist.desc",
+    accent: "bg-[#2D5A27]",
+    domain: "Ancestral Healing Herbs",
+    category: "reminiscence",
+    recommended: true,
+    component: AncestralHerbalistGame,
   },
 
   // ── DOMAIN 3: ATTENTION, WORKING MEMORY & SPATIAL ORIENTATION (7 Modules) ──

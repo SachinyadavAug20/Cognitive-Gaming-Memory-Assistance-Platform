@@ -56,6 +56,7 @@ export function MakeMyTeaGame() {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [taps, setTaps] = useState(0);
+  const [hintActive, setHintActive] = useState(false);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
 
   const guard = useSessionGuard({
@@ -69,6 +70,27 @@ export function MakeMyTeaGame() {
 
   const current = steps[Math.min(progress, steps.length - 1)];
 
+  // Candidate choices for active executive sequencing
+  const choices = useMemo(() => {
+    if (!current) return [];
+    const others = ALL_STEPS.filter((s) => s.key !== current.key);
+    const distractorCount = level === 1 ? 1 : 2;
+    const selectedDistractors = others.slice(0, distractorCount);
+    const pool = [current, ...selectedDistractors];
+    // Deterministic shuffle by progress
+    return [...pool].sort((a, b) => (a.key.charCodeAt(0) * (progress + 3)) % 7 - (b.key.charCodeAt(0) * (progress + 3)) % 7);
+  }, [current, level, progress]);
+
+  // Automatic errorless scaffolding if player hesitates > 8s
+  useEffect(() => {
+    if (done) return;
+    setHintActive(false);
+    const timer = setTimeout(() => {
+      setHintActive(true);
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [progress, done]);
+
   useEffect(() => () => stopSpeaking(), []);
 
   function resetGame() {
@@ -76,45 +98,68 @@ export function MakeMyTeaGame() {
     setProgress(0);
     setDone(false);
     setTaps(0);
+    setHintActive(false);
   }
 
-  function addStep() {
-    const currentKey = current.key;
-    if (currentKey === "water") {
-      playWaterRipple();
-    } else if (currentKey === "leaves") {
-      playLeafPluck();
-      playEncourage();
-    } else if (currentKey === "milk") {
-      playSizzle();
-      playEncourage();
-    } else if (currentKey === "sugar") {
-      playTapFeedback();
-      playEncourage();
-    } else {
-      playWaterRipple();
-    }
+  function handleChooseChoice(stepKey: typeof ALL_STEPS[number]["key"]) {
     setTaps((v) => v + 1);
-    if (progress + 1 >= steps.length) {
-      stopSpeaking();
-      playComplete();
-      setDone(true);
-      guard.markCompleted();
-      recordGameSession(patientId, {
-        gameId: "daily-tasks",
-        level,
-        outcome: "completed",
-        score: steps.length,
-        startedAt,
-        taps,
-      });
+
+    if (stepKey === current.key) {
+      if (current.key === "water") {
+        playWaterRipple();
+      } else if (current.key === "leaves") {
+        playLeafPluck();
+        playEncourage();
+      } else if (current.key === "milk") {
+        playSizzle();
+        playEncourage();
+      } else if (current.key === "sugar") {
+        playTapFeedback();
+        playEncourage();
+      } else {
+        playWaterRipple();
+      }
+
+      setHintActive(false);
+
+      if (progress + 1 >= steps.length) {
+        stopSpeaking();
+        playComplete();
+        setDone(true);
+        guard.markCompleted();
+        recordGameSession(patientId, {
+          gameId: "daily-tasks",
+          level,
+          outcome: "completed",
+          score: steps.length,
+          startedAt,
+          taps: taps + 1,
+        });
+        speak(
+          t("dailyTasks.completeSpeech", { activity: joyTrigger }),
+          locale,
+          rate
+        );
+      } else {
+        setProgress((p) => p + 1);
+        const nextStep = steps[progress + 1];
+        if (nextStep) {
+          speak(t(`dailyTasks.actions.${nextStep.key}`), locale, rate);
+        }
+      }
+    } else {
+      // Errorless Scaffolding
+      playWaterRipple();
+      setHintActive(true);
       speak(
-        t("dailyTasks.completeSpeech", { activity: joyTrigger }),
+        locale === "hi"
+          ? `पहले ${t(`dailyTasks.actions.${current.key}`)}। चमकती हुई वस्तु को चुनें।`
+          : locale === "as"
+          ? `প্ৰথমে ${t(`dailyTasks.actions.${current.key}`)}। পোহৰ হৈ থকা বস্তুটো বাচক।`
+          : `Let's first ${t(`dailyTasks.actions.${current.key}`)}. Select the glowing item.`,
         locale,
         rate
       );
-    } else {
-      setProgress((p) => p + 1);
     }
   }
 
@@ -206,8 +251,8 @@ export function MakeMyTeaGame() {
               <Flame className="h-5 w-5 text-amber-600 animate-pulse" />
               <Flame className="h-5 w-5 text-amber-600 animate-pulse" />
             </div>
-            <div className="h-28 flex items-center justify-center animate-bounce" style={{ animationDuration: "2s" }}>
-              <current.icon className={`h-24 w-24 stroke-[2] ${current.color}`} />
+            <div className="h-24 flex items-center justify-center animate-bounce" style={{ animationDuration: "2s" }}>
+              <current.icon className={`h-20 w-20 stroke-[2] ${current.color}`} />
             </div>
 
             <p className="font-serif text-lg font-black text-ink">
@@ -215,14 +260,49 @@ export function MakeMyTeaGame() {
             </p>
           </div>
 
-          <ChunkyButton
-            variant="terracotta"
-            size="2xl"
-            icon={<ArrowRight className="h-6 w-6 stroke-[3]" />}
-            onClick={addStep}
-          >
-            {t(`dailyTasks.actions.${current.key}`)}
-          </ChunkyButton>
+          {/* CANDIDATE INGREDIENT/ACTION CHOICES */}
+          <div className="w-full max-w-md">
+            <p className="text-xs font-black uppercase tracking-wider text-ink-secondary mb-2.5">
+              {locale === "hi" ? "अगला कदम चुनें:" : locale === "as" ? "পৰৱৰ্তী পদক্ষেপ বাচক:" : "Select the next step:"}
+            </p>
+            <div className={`grid gap-3 w-full ${choices.length === 2 ? "grid-cols-2" : "grid-cols-3"}`}>
+              {choices.map((step) => {
+                const StepIcon = step.icon;
+                const isTarget = step.key === current.key;
+                const isHinted = hintActive && isTarget;
+                return (
+                  <button
+                    key={step.key}
+                    type="button"
+                    onClick={() => handleChooseChoice(step.key)}
+                    className={`btn-tactile flex flex-col items-center justify-center gap-2 rounded-2xl border-3 border-black p-3.5 text-center shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer ${
+                      isHinted
+                        ? "bg-amber-100 ring-4 ring-amber-400 animate-pulse border-amber-600 scale-105"
+                        : "bg-surface hover:bg-[#FAF5EE]"
+                    }`}
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black/5">
+                      <StepIcon className={`h-7 w-7 stroke-[2.2] ${step.color}`} />
+                    </div>
+                    <span className="text-xs font-black text-ink leading-tight">
+                      {t(`dailyTasks.items.${step.key}`)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {!hintActive && (
+            <button
+              type="button"
+              onClick={() => setHintActive(true)}
+              className="flex items-center gap-1.5 rounded-xl border-2 border-amber-700 bg-amber-50 px-3.5 py-1.5 text-xs font-black text-amber-950 shadow-[1px_1px_0px_#000] hover:bg-amber-100 transition-transform active:translate-y-0.5 cursor-pointer"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-amber-700" />
+              <span>{locale === "hi" ? "संकेत दिखाएं" : locale === "as" ? "সংকেত চাওক" : "Show Gentle Hint"}</span>
+            </button>
+          )}
         </div>
       )}
     </GameShell>

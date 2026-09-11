@@ -27,6 +27,50 @@ export type SupportedLocale =
   | "lus";
 
 export const GAME_I18N_STRINGS: Record<string, Partial<Record<SupportedLocale, GameLocalizedStrings>>> = {
+  "ancestral-herbalist": {
+    en: {
+      title: "Ancestral Healing Herbs",
+      introTitle: "Ancestral Herbalist Garden",
+      introSubtitle: "Recognize traditional North Eastern healing plants and match them to grandmother's memories.",
+      audioPrompt: "Welcome to the ancestral garden. Tap the matching medicinal herb to rediscover grandmother's healing remedy.",
+      startButton: "Enter Healing Garden",
+      listenLabel: "Read for Me",
+      playAgainButton: "Visit Garden Again",
+      backToHub: "← Back to Games",
+      celebrationTitle: "Garden Remedy Master!",
+      celebrationSubtitle: "Splendid! You recognized the traditional healing herbs of North East India.",
+      hudProgress: "Herbs Identified",
+      hudAction: "Select the Matching Herb",
+    },
+    hi: {
+      title: "पारंपरिक औषधीय पौधे",
+      introTitle: "दादी की बगिया",
+      introSubtitle: "पारंपरिक औषधीय पौधों को पहचानें और घरेलू नुस्खों को याद करें।",
+      audioPrompt: "औषधीय बगिया में आपका स्वागत है। सही पौधे को चुनकर दादी के नुस्खों को पहचानें।",
+      startButton: "बगिया में प्रवेश करें",
+      listenLabel: "मुझे पढ़कर सुनाएं",
+      playAgainButton: "फिर से खेलें",
+      backToHub: "← खेलों पर वापस",
+      celebrationTitle: "बगिया का ज्ञान पूरा हुआ!",
+      celebrationSubtitle: "बहुत खूब! आपने सभी पारंपरिक औषधीय पौधों को सही पहचाना।",
+      hudProgress: "पहचाने गए पौधे",
+      hudAction: "सही पौधा चुनें",
+    },
+    as: {
+      title: "পুৰণি বনৌষধি আৰু স্মৃতি",
+      introTitle: "আইতাৰ বনৌষধি বাগিচা",
+      introSubtitle: "পৰম্পৰাগত ঔষধি উদ্ভিদসমূহ চিনাক্ত কৰক আৰু আইতাৰ দিহা সোঁৱৰক।",
+      audioPrompt: "বনৌষধি বাগিচালৈ স্বাগতম। সঠিক বনৌষধিত টিপি আইতাৰ পুৰণি দিহা আৱিষ্কাৰ কৰক।",
+      startButton: "বাগিচাত প্ৰৱেশ কৰক",
+      listenLabel: "মোক পঢ়ি শুনাওক",
+      playAgainButton: "পুনৰ খেলক",
+      backToHub: "← খেললৈ উভতি যাওক",
+      celebrationTitle: "বনৌষধি জ্ঞান সফল হ'ল!",
+      celebrationSubtitle: "অপূৰ্ব! আপুনি সকলো থলুৱা বনৌষধি নিখুঁতভাৱে চিনাক্ত কৰিলে।",
+      hudProgress: "চিনাক্ত ঔষধি",
+      hudAction: "সঠিক বনৌষধি বাছক",
+    },
+  },
   "alpana": {
     en: {
       title: "Drawing Rangoli Patterns",

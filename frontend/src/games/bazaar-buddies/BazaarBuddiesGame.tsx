@@ -19,6 +19,7 @@ import {
   Package,
   Flame,
   Check,
+  Sparkles,
 } from "lucide-react";
 import { AssamTeaLeafIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
@@ -338,15 +339,52 @@ export function BazaarBuddiesGame() {
     []
   );
 
+  const suggestExactNotes = useCallback(() => {
+    playPress();
+    let remaining = total;
+    const notes: number[] = [];
+    const denoms = [500, 200, 100, 50, 20, 10];
+    for (const d of denoms) {
+      while (remaining >= d) {
+        notes.push(d);
+        remaining -= d;
+      }
+    }
+    if (remaining > 0) {
+      const smallestCover = [...denoms].reverse().find((d) => d >= remaining) || 10;
+      notes.push(smallestCover);
+    }
+    setPaymentNotes(notes);
+    playCorrect();
+    speak(
+      locale === "hi"
+        ? `दुकानदार को देने के लिए ₹${total} के नोट तैयार हैं`
+        : locale === "as"
+        ? `দোকানীৰ বাবে ₹${total} টকাৰ নোট বাচি লোৱা হ'ল`
+        : `Selected exact notes totaling ₹${notes.reduce((a, b) => a + b, 0)}`,
+      locale,
+      rate
+    );
+  }, [total, locale, rate]);
+
   const submitPayment = useCallback(() => {
     if (paidAmount < total) {
       playEncourage();
+      speak(
+        locale === "hi"
+          ? `कुल ₹${total} है। कृपया कुछ और नोट जोड़ें।`
+          : locale === "as"
+          ? `মুঠ ₹${total} হৈছে। অনুগ্ৰহ কৰি আৰু কিছু নোট যোগ কৰক।`
+          : `The total is ₹${total}. Please add another note.`,
+        locale,
+        rate
+      );
       return;
     }
     playCorrect();
     setPhase("change");
     setPaymentNotes((prev) => [...prev]);
-  }, [paidAmount, total]);
+  }, [paidAmount, total, locale, rate]);
 
   const submitChange = useCallback(
     (value: number) => {
@@ -373,18 +411,34 @@ export function BazaarBuddiesGame() {
       } else {
         playEncourage();
         setErrors((e) => e + 1);
-        speak(t("wrong"), locale, rate);
-        setTimeout(() => setChangeGiven(null), 1500);
+        speak(
+          locale === "hi"
+            ? `बहुत करीब! ₹${paidAmount} में से ₹${total} घटाएं तो सही छुट्टा है ₹${correctChange}`
+            : locale === "as"
+            ? `প্ৰায় মিলিছিল! ₹${paidAmount} টকাৰ পৰা ₹${total} টকা বাদ দিলে সঠিক ভাঙতি হ'ব ₹${correctChange}`
+            : `Almost there! ₹${paidAmount} minus ₹${total} equals ₹${correctChange}. Let's select ₹${correctChange}.`,
+          locale,
+          rate
+        );
+        setTimeout(() => setChangeGiven(null), 2500);
       }
     },
-    [correctChange, startedAt, patientId, level, taps, errors, locale, rate, t]
+    [correctChange, paidAmount, total, startedAt, patientId, level, taps, errors, locale, rate, t]
   );
 
   const showHint = useCallback(() => {
     playPress();
     setHintUsed(true);
-    speak(t("hint", { amount: correctChange }), locale, rate);
-  }, [correctChange, locale, rate, t]);
+    speak(
+      locale === "hi"
+        ? `दुकानदार आपको ₹${correctChange} वापस करेगा। ₹${correctChange} का नोट चुनें।`
+        : locale === "as"
+        ? `দোকানীয়ে আপোনাক ₹${correctChange} ঘূৰাই দিব। ₹${correctChange} টকাৰ নোটটো বাচক।`
+        : `The shopkeeper returns ₹${correctChange}. Select the ₹${correctChange} note.`,
+      locale,
+      rate
+    );
+  }, [correctChange, locale, rate]);
 
   const restartGame = useCallback(() => {
     playPress();
@@ -643,7 +697,7 @@ export function BazaarBuddiesGame() {
             )}
           </div>
 
-          <div className="flex gap-3 w-full max-w-md">
+          <div className="flex flex-wrap gap-2.5 w-full max-w-md">
             <button
               type="button"
               onClick={() => {
@@ -654,6 +708,14 @@ export function BazaarBuddiesGame() {
             >
               <Trash2 className="h-3.5 w-3.5" />
               {t("clearBtn")}
+            </button>
+            <button
+              type="button"
+              onClick={suggestExactNotes}
+              className="btn-tactile flex items-center justify-center gap-1.5 rounded-xl border-2 border-amber-600 bg-amber-100 px-3.5 py-2.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-200 transition-transform active:translate-y-0.5 cursor-pointer"
+            >
+              <Sparkles className="h-4 w-4 text-amber-700" />
+              <span>{locale === "hi" ? "सही नोट चुनें" : locale === "as" ? "সঠিক নোট বাচক" : "Auto-Suggest Notes"}</span>
             </button>
             <ChunkyButton
               variant="tea"
@@ -699,22 +761,33 @@ export function BazaarBuddiesGame() {
               {t("change")}
             </p>
             <div className="flex flex-wrap gap-2">
-              {PAYMENT_NOTES.map((note) => (
-                <button
-                  key={note}
-                  type="button"
-                  onClick={() => submitChange(note)}
-                  disabled={changeGiven !== null}
-                  className={`btn-tactile rounded-2xl border-3 border-black px-4 py-3 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer min-w-[76px] disabled:opacity-40 ${noteBg(note)}`}
-                >
-                  ₹{note}
-                </button>
-              ))}
+              {PAYMENT_NOTES.map((note) => {
+                const isHinted = (hintUsed || (changeGiven !== null && changeGiven !== correctChange)) && note === correctChange;
+                return (
+                  <button
+                    key={note}
+                    type="button"
+                    onClick={() => submitChange(note)}
+                    disabled={changeGiven !== null}
+                    className={`btn-tactile rounded-2xl border-3 border-black px-4 py-3 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer min-w-[76px] disabled:opacity-40 ${noteBg(note)} ${
+                      isHinted ? "ring-4 ring-amber-400 animate-pulse scale-105 border-amber-600" : ""
+                    }`}
+                  >
+                    ₹{note}
+                  </button>
+                );
+              })}
             </div>
             {changeGiven !== null && changeGiven !== correctChange && (
-              <p className="mt-3 text-base font-bold text-red-600 text-center">
-                {t("wrong")}
-              </p>
+              <div className="mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 p-2.5 text-center">
+                <p className="text-xs font-bold text-amber-950">
+                  {locale === "hi"
+                    ? `लगभग सही! ₹${paidAmount} - ₹${total} = ₹${correctChange}। आइए चमकते ₹${correctChange} के नोट को चुनें।`
+                    : locale === "as"
+                    ? `প্ৰায় মিলিছিল! ₹${paidAmount} - ₹${total} = ₹${correctChange}। আহক উজ্বল ₹${correctChange} টকাৰ নোটটো বাচক।`
+                    : `Almost there! ₹${paidAmount} - ₹${total} = ₹${correctChange}. Select the glowing ₹${correctChange} note.`}
+                </p>
+              </div>
             )}
           </div>
 

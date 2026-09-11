@@ -23,6 +23,7 @@ import {
   CloudRain,
   Check,
   Leaf,
+  Sparkles,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
@@ -180,6 +181,7 @@ export function MemoryGardenGame() {
   const [sequenceFeedback, setSequenceFeedback] = useState<
     "idle" | "correct" | "wrong"
   >("idle");
+  const [showGardenHint, setShowGardenHint] = useState(false);
 
   const resultRef = useRef<{ score: number; errors: number; taps: number }>({
     score: 0,
@@ -250,6 +252,7 @@ export function MemoryGardenGame() {
       setChangeGrid(grid);
       setChangeChangedIndex(changedIndex);
       setChangeFeedback("idle");
+      setShowGardenHint(false);
       setSubGame("whatChanged");
       setCountdown(previewSecondsFor(lvl));
       setPhase("preview");
@@ -268,6 +271,7 @@ export function MemoryGardenGame() {
       setSequenceOptions(shuffle(chosen));
       setSequenceIndex(0);
       setSequenceFeedback("idle");
+      setShowGardenHint(false);
       setSubGame("sequence");
       setCountdown(previewSecondsFor(lvl));
       setPhase("preview");
@@ -447,6 +451,7 @@ export function MemoryGardenGame() {
         });
         playEncourage();
         speak(t("whatChanged.wrong"), locale, rate);
+        setShowGardenHint(true);
         window.setTimeout(() => setChangeFeedback("idle"), 1500);
       }
     },
@@ -514,6 +519,7 @@ export function MemoryGardenGame() {
         });
         playEncourage();
         speak(t("sequence.wrong"), locale, rate);
+        setShowGardenHint(true);
         window.setTimeout(() => setSequenceFeedback("idle"), 1200);
       }
     },
@@ -743,6 +749,9 @@ export function MemoryGardenGame() {
                 changeFeedback === "correct" && i === changeChangedIndex;
               const isWrong =
                 changeFeedback === "wrong" && i !== changeChangedIndex;
+              const isBeacon =
+                (showGardenHint || changeFeedback === "wrong") &&
+                i === changeChangedIndex;
               return (
                 <button
                   key={i}
@@ -752,8 +761,10 @@ export function MemoryGardenGame() {
                   className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
                     isChanged
                       ? "bg-tea-light border-tea"
+                      : isBeacon
+                      ? "bg-amber-100 border-amber-600 ring-4 ring-amber-400 animate-pulse scale-[1.03]"
                       : isWrong
-                      ? "bg-red-50 border-red-400"
+                      ? "bg-stone-100 border-stone-300 opacity-60"
                       : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
                   }`}
                 >
@@ -762,14 +773,22 @@ export function MemoryGardenGame() {
               );
             })}
           </div>
+          <button
+            type="button"
+            onClick={() => setShowGardenHint(true)}
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-amber-600 bg-amber-50 px-4 py-2 text-sm font-black text-amber-900 shadow-[2px_2px_0px_#D97706] hover:bg-amber-100 active:translate-y-0.5 cursor-pointer transition-all"
+          >
+            <Sparkles className="h-4 w-4 text-amber-600" />
+            <span>Show Garden Hint</span>
+          </button>
           {changeFeedback === "correct" && (
             <p className="flex items-center gap-2 text-base font-black text-tea">
               <CheckCircle2 className="h-5 w-5" /> {t("whatChanged.correct")}
             </p>
           )}
           {changeFeedback === "wrong" && (
-            <p className="flex items-center gap-2 text-base font-black text-red-500">
-              <XCircle className="h-5 w-5" /> {t("whatChanged.wrong")}
+            <p className="flex items-center gap-2 text-base font-bold text-amber-800 bg-amber-50 px-4 py-2 rounded-xl border border-amber-200">
+              <Sparkles className="h-5 w-5 text-amber-600 animate-spin" /> {t("whatChanged.wrong")}
             </p>
           )}
         </div>
@@ -835,31 +854,45 @@ export function MemoryGardenGame() {
             ))}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-md">
-            {sequenceOptions.map((item, i) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => onSequenceTap(i)}
-                disabled={sequenceFeedback !== "idle"}
-                className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
-                  sequenceFeedback === "wrong" &&
-                  item.id === sequenceItems[sequenceIndex]?.id
-                    ? "bg-tea-light border-tea ring-2 ring-tea"
-                    : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
-                }`}
-              >
-                {renderGardenIcon(item.id, "h-12 w-12")}
-              </button>
-            ))}
+            {sequenceOptions.map((item, i) => {
+              const isTarget = item.id === sequenceItems[sequenceIndex]?.id;
+              const isBeacon =
+                (showGardenHint || sequenceFeedback === "wrong") && isTarget;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onSequenceTap(i)}
+                  disabled={sequenceFeedback !== "idle"}
+                  className={`aspect-square flex items-center justify-center rounded-2xl border-3 border-black shadow-[4px_4px_0px_#000] transition-transform btn-tactile ${
+                    isBeacon
+                      ? "bg-amber-100 border-amber-600 ring-4 ring-amber-400 animate-pulse scale-[1.03]"
+                      : sequenceFeedback === "wrong"
+                      ? "bg-stone-100 border-stone-300 opacity-60"
+                      : "bg-surface hover:scale-[1.02] active:translate-y-0.5 cursor-pointer"
+                  }`}
+                >
+                  {renderGardenIcon(item.id, "h-12 w-12")}
+                </button>
+              );
+            })}
           </div>
+          <button
+            type="button"
+            onClick={() => setShowGardenHint(true)}
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-amber-600 bg-amber-50 px-4 py-2 text-sm font-black text-amber-900 shadow-[2px_2px_0px_#D97706] hover:bg-amber-100 active:translate-y-0.5 cursor-pointer transition-all"
+          >
+            <Sparkles className="h-4 w-4 text-amber-600" />
+            <span>Show Next Item Hint</span>
+          </button>
           {sequenceFeedback === "correct" && (
             <p className="flex items-center gap-2 text-base font-black text-tea">
               <CheckCircle2 className="h-5 w-5" /> {t("sequence.correct")}
             </p>
           )}
           {sequenceFeedback === "wrong" && (
-            <p className="flex items-center gap-2 text-base font-black text-red-500">
-              <XCircle className="h-5 w-5" /> {t("sequence.wrong")}
+            <p className="flex items-center gap-2 text-base font-bold text-amber-800 bg-amber-50 px-4 py-2 rounded-xl border border-amber-200">
+              <Sparkles className="h-5 w-5 text-amber-600 animate-spin" /> {t("sequence.wrong")}
             </p>
           )}
         </div>

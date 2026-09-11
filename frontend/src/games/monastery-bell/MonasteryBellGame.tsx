@@ -201,8 +201,18 @@ export function MonasteryBellGame() {
 
     // Check if match
     if (nextUserSeq[currentStep] !== sequence[currentStep]) {
-      // Gentle errorless feedback: replay sequence
-      speak("Listen once more to the sacred bell sequence.", locale, rate);
+      // Gentle errorless feedback: immediately pause input and replay sequence
+      setPhase("demonstrate");
+      setUserSequence([]);
+      speak(
+        locale === "hi"
+          ? "आइए एक बार फिर से इस पावन धुन को सुनते हैं।"
+          : locale === "as"
+          ? "আহক পুনৰবাৰ এই পৱিত্ৰ সুৰ শুনোঁ।"
+          : "Listen once more to the sacred bell sequence.",
+        locale,
+        rate
+      );
       setTimeout(() => {
         playSequenceDemo(sequence);
       }, 1200);
@@ -373,6 +383,21 @@ export function MonasteryBellGame() {
               />
             ))}
           </div>
+
+          {phase === "reproduce" && (
+            <button
+              type="button"
+              onClick={() => {
+                setPhase("demonstrate");
+                setUserSequence([]);
+                playSequenceDemo(sequence);
+              }}
+              className="flex items-center gap-1.5 rounded-xl border-2 border-purple-800 bg-purple-50 px-3.5 py-1.5 text-xs font-black text-purple-950 shadow-[1px_1px_0px_#000] hover:bg-purple-100 transition-transform active:translate-y-0.5 cursor-pointer mt-1"
+            >
+              <Headphones className="w-3.5 h-3.5 text-purple-800" />
+              <span>{locale === "hi" ? "धुन दोबारा सुनें" : locale === "as" ? "সুৰ পুনৰ শুনক" : "Listen Again"}</span>
+            </button>
+          )}
         </div>
       ) : (
         /* PHASE: DONE CELEBRATION */
