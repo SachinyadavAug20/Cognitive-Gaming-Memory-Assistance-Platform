@@ -22,6 +22,78 @@ interface TherapySuiteGridProps {
 
 const CARD = "border-3 border-black rounded-2xl shadow-[4px_4px_0px_rgba(0,0,0,1)]";
 
+const LOCALIZED_BANNER: Record<
+  string,
+  { title: string; subtitle: string; cta: string; speech: string }
+> = {
+  en: {
+    title: "Family Photos & Peaceful Sounds",
+    subtitle: "Look at family pictures and listen to gentle music",
+    cta: "Open Photos & Music",
+    speech: "Family Photos and Peaceful Sounds. Look at family pictures and listen to gentle music.",
+  },
+  hi: {
+    title: "पारिवारिक यादें और शांत संगीत",
+    subtitle: "परिवार की तस्वीरें देखें और सुकून भरे गीत सुनें",
+    cta: "तस्वीरें और संगीत देखें",
+    speech: "पारिवारिक यादें और शांत संगीत। अपने परिवार की तस्वीरें देखें और मीठे गीत सुनें।",
+  },
+  as: {
+    title: "পৰিয়ালৰ ফটো আৰু শান্ত সংগীত",
+    subtitle: "মৰমৰ পৰিয়ালৰ ফটো চাওক আৰু শান্ত সুৰ শুনক",
+    cta: "ফটো আৰু গান চাওক",
+    speech: "পৰিয়ালৰ ফটো আৰু শান্ত সংগীত। আপোনাৰ মৰমৰ পৰিয়ালৰ ফটো চাওক আৰু ভাল গান শুনক।",
+  },
+  bn: {
+    title: "পরিবারের ছবি ও শান্ত গান",
+    subtitle: "পরিবারের প্রিয় ছবি দেখুন এবং মধুর গান শুনুন",
+    cta: "ছবি ও গান শুনুন",
+    speech: "পরিবারের ছবি ও শান্ত গান। পরিবারের ছবি দেখুন এবং মিষ্টি গান শুনুন।",
+  },
+  mr: {
+    title: "कुटुंबाचे फोटो आणि शांत संगीत",
+    subtitle: "कुटुंबाचे जुने फोटो पहा आणि शांत संगीत ऐका",
+    cta: "फोटो व गाणी पहा",
+    speech: "कुटुंबाचे फोटो आणि शांत संगीत। कुटुंबाचे फोटो पहा आणि शांत गाणी ऐका।",
+  },
+  ne: {
+    title: "परिवारका तस्बिर र शान्त संगीत",
+    subtitle: "परिवारका पुराना तस्बिरहरू हेर्नुहोस् र मीठो संगीत सुन्नुहोस्",
+    cta: "तस्बिर र संगीत हेर्नुहोस्",
+    speech: "परिवारका तस्बिर र शान्त संगीत। परिवारका पुराना तस्बिरहरू हेर्नुहोस् र मीठो संगीत सुन्नुहोस्।",
+  },
+  mni: {
+    title: "ইমুংগী ফোতো অমসুং তোংঙানবা ঈশৈ",
+    subtitle: "ইমুংগী ফোতো য়েংবা অমসুং তোংঙানবা ঈশৈ তাবা",
+    cta: "ফোতো অমসুং ঈশৈ য়েংবা",
+    speech: "ইমুংগী ফোতো অমসুং তোংঙানবা ঈশৈ।",
+  },
+  brx: {
+    title: "नखरनि फट' आरो गोजोन रोजाबनाय",
+    subtitle: "नखरनि फट' नाय आरो मोजां रोजाबनाय खोनासं",
+    cta: "फट' आरो रोजाबनाय नाय",
+    speech: "नखरनि फट' आरो गोजोन रोजाबनाय।",
+  },
+  grt: {
+    title: "Nokgiparangni Photo aro Tom·tom Ring·ani",
+    subtitle: "Nokgiparangni photorangko nibo aro gitko knatimbo",
+    cta: "Photo aro Ring·aniko Nibo",
+    speech: "Nokgiparangni photo aro tom·tom ring·ani.",
+  },
+  kha: {
+    title: "Ki Dur Iing bad Ki Jingrwai Suk",
+    subtitle: "Peit ia ki dur iing bad sngap ia ki jingrwai bajem",
+    cta: "Peit Dur bad Jingrwai",
+    speech: "Ki dur iing bad ki jingrwai suk.",
+  },
+  lus: {
+    title: "Chhungkua Thlalak leh Hla Dam Te",
+    subtitle: "Chhungkua thlalak en la hla dam te ngaithla rawh",
+    cta: "Thlalak leh Hla En Rawh",
+    speech: "Chhungkua thlalak leh hla dam te.",
+  },
+};
+
 const LOCALIZED_VIEW_ALL: Record<string, string> = {
   en: "View All Activities",
   hi: "सभी गतिविधियां देखें",
@@ -37,17 +109,17 @@ const LOCALIZED_VIEW_ALL: Record<string, string> = {
 };
 
 const LOCALIZED_EXPLORE_ALL: Record<string, string> = {
-  en: "Explore All Brain Activities",
-  hi: "सभी मस्तिष्क गतिविधियां देखें",
-  as: "সকলো মগজুৰ কাৰ্যকলাপ চাওক",
-  bn: "সকল মস্তিষ্ক কার্যকলাপ দেখুন",
-  mr: "सर्व मेंदूचे उपक्रम पहा",
-  ne: "सबै मस्तिष्क गतिविधिहरू हेर्नुहोस्",
-  mni: "ৱাখলগী থবক পুম্নমক য়েংবা",
-  brx: "गासै मेमरि हाबाफोर नाय",
-  grt: "Pilak Gisik Kamrangko Nibo",
-  kha: "Pule Baroh Ki Jingtrei Ban Pynkhlain Jingmut",
-  lus: "Thluak Tihchakna Hnathawh Zawng Zawng En Rawh",
+  en: "See All Fun Activities & Games",
+  hi: "सभी खेल और आनंददायक गतिविधियां देखें",
+  as: "সকলো আনন্দদায়ক খেল আৰু কাৰ্যকলাপ চাওক",
+  bn: "সব খেলা ও আনন্দময় কাজ দেখুন",
+  mr: "सर्व खेळ आणि आनंददायी उपक्रम पहा",
+  ne: "सबै खेल र रमाइलो गतिविधिहरू हेर्नुहोस्",
+  mni: "শান্নবা অমসুং নুংঙাইবা থবক পুম্নমক য়েংবা",
+  brx: "गासै मोजां गेलेनायफोर नाय",
+  grt: "Pilak Katta aro Kal·anirangko Nibo",
+  kha: "Peit Baroh Ki Jingialehkai Kmen",
+  lus: "Infiamna leh Hnathawh Nuam Zawng Zawng En Rawh",
 };
 
 export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
@@ -55,6 +127,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
   const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
   const viewAllText = LOCALIZED_VIEW_ALL[normLoc] || LOCALIZED_VIEW_ALL.en;
   const exploreAllText = LOCALIZED_EXPLORE_ALL[normLoc] || LOCALIZED_EXPLORE_ALL.en;
+  const banner = LOCALIZED_BANNER[normLoc] || LOCALIZED_BANNER.en;
 
   // Localized game definitions for the Top 4 featured games on My Routine
   const jigsawStrings = getGameStrings("jigsaw", locale);
@@ -75,16 +148,21 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 shadow-sm text-white">
             <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" />
           </div>
-          <h3 className="font-serif text-xl sm:text-2xl font-black text-white leading-tight">
-            Echoes of Home — Peaceful Sounds & Memories
-          </h3>
+          <div>
+            <h3 className="font-serif text-xl sm:text-2xl font-black text-white leading-tight">
+              {banner.title}
+            </h3>
+            <p className="text-xs sm:text-sm font-semibold text-emerald-100 mt-0.5">
+              {banner.subtitle}
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
           <button
             type="button"
             onClick={(e) => {
               e.preventDefault();
-              handleSpeak("Echoes of Home. Peaceful sounds and family memories.");
+              handleSpeak(banner.speech);
             }}
             className="btn-tactile flex h-12 w-12 sm:h-13 sm:w-13 items-center justify-center rounded-2xl border-2 border-black bg-amber-300 text-amber-950 hover:bg-amber-200 shadow-[2px_2px_0px_#000] cursor-pointer"
             title="Read for Me"
@@ -97,7 +175,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
             className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-white px-5 py-2.5 text-sm font-black text-emerald-950 shadow-[2px_2px_0px_#000] hover:bg-emerald-50 cursor-pointer"
           >
             <Play className="h-4 w-4 fill-emerald-950" />
-            <span>Open Memories</span>
+            <span>{banner.cta}</span>
           </Link>
         </div>
       </div>

@@ -88,7 +88,7 @@ export function CaregiverCapsuleVaultCard({
         <div>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-amber-600" />
-            <span>Echoes of Home — Memories & Soundscapes</span>
+            <span>Family Memories & Peaceful Sounds (Echoes of Home)</span>
           </h2>
           <p className="text-sm text-ink-secondary mt-0.5">
             Living 3D spatial scenes, peaceful regional soundscapes, and sealed future messages

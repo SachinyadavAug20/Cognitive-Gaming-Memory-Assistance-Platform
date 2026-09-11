@@ -1,31 +1,43 @@
 import type { ComponentType } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
-  Coffee,
-  Search,
-  BookOpen,
-  Grid3X3,
-  Compass,
-  Sparkles,
-  Leaf,
-  Radio,
+  Palette,
   Flower2,
-  Utensils,
-  Music,
-  GitFork,
-  Store,
-  Waves,
+  Sprout,
+  Sparkles,
+  Flame,
+  Layers,
+  Disc,
+  BellRing,
   Feather,
-  Clock,
-  Boxes,
-  Bell,
   Disc3,
-  Footprints,
-  Flower,
-  Sun,
-  Brain,
-  Wand2,
+  Coffee,
   Users,
+  CalendarHeart,
+  Grid3X3,
+  Radio,
+  Leaf,
+  Bell,
+  Anchor,
+  Flower,
+  MapPin,
+  Trees,
+  BookOpen,
+  Clock,
+  UtensilsCrossed,
+  Boxes,
+  Compass,
+  Footprints,
+  Hand,
+  Music2,
+  Home,
+  Store,
+  TreePine,
+  Route,
+  CupSoda,
+  MessageCircleHeart,
+  Headphones,
+  Sliders,
 } from "lucide-react";
 
 import dynamic from "next/dynamic";
@@ -95,7 +107,7 @@ export const GAMES: GameDef[] = [
   // ── DOMAIN 1: 3D COMPUTER VISION & KINESTHETIC PRAXIS (10 Modules) ──
   {
     id: "lotus-painter",
-    icon: Waves,
+    icon: Palette,
     titleKey: "lotusPainter.title",
     descKey: "lotusPainter.desc",
     accent: "bg-emerald-950",
@@ -117,7 +129,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "tea-garden-catch",
-    icon: Leaf,
+    icon: Sprout,
     titleKey: "teaGardenCatch.title",
     descKey: "teaGardenCatch.desc",
     accent: "bg-emerald-900",
@@ -139,7 +151,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "river-lanterns",
-    icon: Waves,
+    icon: Flame,
     titleKey: "riverLanterns.title",
     descKey: "riverLanterns.desc",
     accent: "bg-emerald-800",
@@ -150,7 +162,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "loom",
-    icon: Sparkles,
+    icon: Layers,
     titleKey: "loom.title",
     descKey: "loom.desc",
     accent: "bg-amber-800",
@@ -161,7 +173,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "drum",
-    icon: Music,
+    icon: Disc,
     titleKey: "drum.title",
     descKey: "drum.desc",
     accent: "bg-marigold",
@@ -172,7 +184,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "tuned-drum",
-    icon: Wand2,
+    icon: BellRing,
     titleKey: "tunedDrum.title",
     descKey: "tunedDrum.desc",
     accent: "bg-amber-800",
@@ -229,7 +241,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "timeline",
-    icon: Clock,
+    icon: CalendarHeart,
     titleKey: "timeline.title",
     descKey: "timeline.desc",
     accent: "bg-tea",
@@ -286,7 +298,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "brahmaputra-boat",
-    icon: Compass,
+    icon: Anchor,
     titleKey: "boat.title",
     descKey: "boat.desc",
     accent: "bg-emerald-900",
@@ -308,7 +320,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "wayfinding",
-    icon: Compass,
+    icon: MapPin,
     titleKey: "wayfinding.title",
     descKey: "wayfinding.desc",
     accent: "bg-emerald-700",
@@ -319,7 +331,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "root-bridge",
-    icon: GitFork,
+    icon: Trees,
     titleKey: "rootBridge.title",
     descKey: "rootBridge.desc",
     accent: "bg-green-800",
@@ -354,7 +366,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "heritage-kitchen",
-    icon: Utensils,
+    icon: UtensilsCrossed,
     titleKey: "kitchen.title",
     descKey: "kitchen.desc",
     accent: "bg-terracotta",
@@ -404,7 +416,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "tea-harvest-vision",
-    icon: Leaf,
+    icon: Hand,
     titleKey: "teaHarvestVision.title",
     descKey: "teaHarvestVision.desc",
     accent: "bg-[#14532D]",
@@ -415,7 +427,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "bihu-dhol",
-    icon: Music,
+    icon: Music2,
     titleKey: "bihuDhol.title",
     descKey: "bihuDhol.desc",
     accent: "bg-[#78350F]",
@@ -427,7 +439,7 @@ export const GAMES: GameDef[] = [
 
   {
     id: "day-in-my-world",
-    icon: Sun,
+    icon: Home,
     titleKey: "dayInMyWorld.title",
     descKey: "dayInMyWorld.subtitle",
     accent: "bg-[#D97706]",
@@ -449,7 +461,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "memory-garden",
-    icon: Flower,
+    icon: TreePine,
     titleKey: "memoryGarden.title",
     descKey: "memoryGarden.desc",
     accent: "bg-[#7C3AED]",
@@ -460,7 +472,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "memory-road",
-    icon: Compass,
+    icon: Route,
     titleKey: "memoryRoad.title",
     descKey: "memoryRoad.desc",
     accent: "bg-[#C2410C]",
@@ -471,7 +483,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "daily-tasks",
-    icon: Coffee,
+    icon: CupSoda,
     titleKey: "dailyTasks.title",
     descKey: "dailyTasks.desc",
     accent: "bg-[#C2410C]",
@@ -482,7 +494,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "companion",
-    icon: Brain,
+    icon: MessageCircleHeart,
     titleKey: "companion.title",
     descKey: "companion.desc",
     accent: "bg-[#4C1D95]",
@@ -493,7 +505,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "rhythm-hills",
-    icon: Music,
+    icon: Headphones,
     titleKey: "rhythmHills.title",
     descKey: "rhythmHills.desc",
     accent: "bg-[#B45309]",
@@ -504,7 +516,7 @@ export const GAMES: GameDef[] = [
   },
   {
     id: "weaving",
-    icon: Grid3X3,
+    icon: Sliders,
     titleKey: "weaving.title",
     descKey: "weaving.desc",
     accent: "bg-[#5C3D2E]",

@@ -3,9 +3,9 @@ import { EchoesOfHomeClient } from "@/components/capsule/EchoesOfHomeClient";
 import { Spinner } from "@/components/ui/Spinner";
 
 export const metadata = {
-  title: "Echoes of Home — Peaceful Sounds & Memories | CogniCare",
+  title: "Family Photos & Peaceful Sounds | CogniCare",
   description:
-    "Reconnect with cherished memories through gentle 3D visuals, ambient soundscapes, family voice recordings, and comforting reminiscence.",
+    "Look at beloved family photos and listen to gentle, comforting sounds of nature and music.",
 };
 
 export default function EchoesOfHomePage() {

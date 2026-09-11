@@ -296,16 +296,16 @@ export function EchoesOfHomeClient() {
             <div className="flex items-center gap-3">
               <Link
                 href="/patient"
-                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-50 px-3 py-1.5 text-xs font-black text-ink hover:bg-amber-100 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-50 px-3 py-1.5 text-xs sm:text-sm font-black text-ink hover:bg-amber-100 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
               >
-                ← Patient Home
+                ← Back to My Routine
               </Link>
               <div>
                 <h1 className="font-serif font-black text-lg md:text-xl text-ink flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-amber-600" />
-                  <span>Echoes of Home</span>
+                  <span>Family Photos & Peaceful Sounds</span>
                   <span className="hidden sm:inline-block text-xs font-bold text-ink-secondary">
-                    (ঘৰৰ চিনাকি সুৰ)
+                    (পৰিয়ালৰ ফটো আৰু শান্ত গান)
                   </span>
                 </h1>
               </div>

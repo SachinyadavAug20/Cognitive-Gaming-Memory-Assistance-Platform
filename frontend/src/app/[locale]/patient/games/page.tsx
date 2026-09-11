@@ -66,30 +66,43 @@ function getGameCardBg(id: string): string {
     case "jigsaw":
       return "bg-[#FB923C]"; // vibrant tangerine orange
     case "majuli-walk":
-    case "wayfinding":
       return "bg-[#34D399]"; // vibrant emerald jade
+    case "wayfinding":
+      return "bg-[#10B981]"; // vibrant riverbank jade
     case "loom":
       return "bg-[#FBBF24]"; // vibrant golden marigold
+    case "weaving":
+      return "bg-[#F59E0B]"; // vibrant amber gold
     case "memory-road":
       return "bg-[#C084FC]"; // vibrant orchid violet
     case "grandchild-chat":
       return "bg-[#FB7185]"; // vibrant coral rose
     case "memory-detective":
-      return "bg-[#FACC15]"; // vibrant sunshine yellow
+      return "bg-[#F43F5E]"; // vibrant heart rose
+    case "timeline":
+      return "bg-[#FB7185]"; // vibrant keepsake coral rose
     case "drum":
-    case "bihu-dhol":
-    case "tuned-drum":
       return "bg-[#F97316]"; // vibrant energetic bihu orange
+    case "bihu-dhol":
+      return "bg-[#EA580C]"; // vibrant festive drum terracotta
+    case "tuned-drum":
+      return "bg-[#F59E0B]"; // vibrant brass temple amber
+    case "rhythm-hills":
+      return "bg-[#FB923C]"; // vibrant folk melody tangerine
     case "alpana":
       return "bg-[#C084FC]"; // vibrant festive orchid purple
+    case "companion":
+      return "bg-[#C084FC]"; // vibrant comforting lavender violet
     case "lotus-painter":
       return "bg-[#A3E635]"; // vibrant fresh lime meadow
     case "butterfly-sanctuary":
       return "bg-[#FACC15]"; // vibrant sunny yellow
     case "tea-harvest":
-    case "tea-harvest-vision":
-    case "tea-garden-catch":
       return "bg-[#34D399]"; // vibrant tea leaf emerald
+    case "tea-harvest-vision":
+      return "bg-[#10B981]"; // vibrant tea garden jade
+    case "tea-garden-catch":
+      return "bg-[#6EE7B7]"; // vibrant spring garden mint
     case "river-lanterns":
       return "bg-[#FB923C]"; // vibrant lantern flame orange
     case "monastery-bell":
@@ -99,7 +112,7 @@ function getGameCardBg(id: string): string {
     case "hornbill-flight":
       return "bg-[#F97316]"; // vibrant hornbill crest orange
     case "majuli-pottery":
-      return "bg-[#FB923C]"; // vibrant terracotta craft
+      return "bg-[#D97706]"; // vibrant terracotta craft
     case "daily-routine":
       return "bg-[#FACC15]"; // vibrant morning sunshine
     case "storybook":
@@ -108,14 +121,23 @@ function getGameCardBg(id: string): string {
       return "bg-[#FB923C]"; // vibrant vintage radio orange
     case "heritage-kitchen":
       return "bg-[#FB7185]"; // vibrant spice kitchen rose
+    case "daily-tasks":
+      return "bg-[#F97316]"; // vibrant red tea terracotta
     case "bazaar-buddies":
-    case "sorting":
       return "bg-[#A3E635]"; // vibrant fresh market lime
+    case "sorting":
+      return "bg-[#84CC16]"; // vibrant pantry lime
     case "arrow-escape":
-      return "bg-[#FBBF24]"; // vibrant archery amber gold
+    case "pathways":
+      return "bg-[#F59E0B]"; // vibrant archery amber gold
     case "dzukou-botanist":
+      return "bg-[#10B981]"; // vibrant Dzukou valley emerald
     case "memory-garden":
-      return "bg-[#34D399]"; // vibrant Dzukou valley emerald
+      return "bg-[#EC4899]"; // vibrant courtyard garden rose
+    case "root-bridge":
+      return "bg-[#34D399]"; // vibrant rainforest emerald
+    case "day-in-my-world":
+      return "bg-[#FACC15]"; // vibrant morning sunrise yellow
     default:
       return "bg-[#FBBF24]";
   }
@@ -204,7 +226,7 @@ export default function GamesHubPage() {
               >
                 {/* Header: Title, Icon & Voice Preview */}
                 <div className="w-full flex items-center justify-between gap-2.5 border-b-2 border-black/20 pb-2.5">
-                  <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wider uppercase truncate">
+                  <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wide truncate">
                     <Icon className="h-7 w-7 text-black stroke-[2.5] shrink-0" />
                     <span className="truncate">{cardTitle}</span>
                   </div>
@@ -230,9 +252,9 @@ export default function GamesHubPage() {
                   <ActivityIllustration gameId={game.id} className="h-12 w-12 sm:h-14 sm:w-14" />
                 </div>
 
-                {/* Full-width Tactical Button matching user mockup */}
-                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] uppercase tracking-wide flex items-center justify-center gap-2 group-hover:bg-black group-hover:text-white transition-all">
-                  <span>{hub.startSession || "PLAY NOW"}</span>
+                {/* Action Button - Simple Action Text */}
+                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-black group-hover:text-white transition-all">
+                  <span>{gameStrings.startButton || hub.startSession || "Play Now"}</span>
                   <span>➔</span>
                 </div>
               </Link>

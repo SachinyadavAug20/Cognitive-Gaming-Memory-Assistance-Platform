@@ -305,28 +305,28 @@ export default function PatientDemoPage() {
           </div>
         </div>
 
-        {/* FEATURE 1: ECHOES OF HOME — LIVING MEMORIES */}
+        {/* FEATURE 1: FAMILY PHOTOS & PEACEFUL SOUNDS */}
         <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-900 p-6 text-white shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-2 text-center md:text-left">
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-white">
-              Echoes of Home (Sound & Memories)
+              Family Photos & Peaceful Sounds
             </h2>
             <p className="text-xs sm:text-sm font-medium text-teal-100 max-w-xl leading-relaxed">
-              Step inside personal photos transformed into subtle 3D living scenes. Listen to soothing sounds of rain, rivers, temple bells, and family voice notes.
+              Look at your family photos and listen to soothing sounds of rain, birds, temple bells, and loving voices from home.
             </p>
 
             <div className="hidden sm:flex flex-wrap items-center gap-1.5 pt-1 text-[10px] font-black uppercase tracking-wider text-teal-200">
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Living Photos</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Look Around</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Family Photos</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Peaceful Scenes</span>
               <span className="rounded-md bg-black/30 px-2 py-0.5">Nature Sounds</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Family Voice</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">Loving Voices</span>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <button
               type="button"
-              onClick={() => handleSpeak("Echoes of Home. Reconnect with cherished memories in 3D with sounds of rain, rivers, temple bells, and family voices.")}
+              onClick={() => handleSpeak("Family Photos and Peaceful Sounds. Look at your family photos and listen to soothing sounds of rain, birds, temple bells, and loving voices from home.")}
               className="btn-tactile rounded-2xl border-3 border-black bg-teal-300 p-3.5 text-black shadow-[4px_4px_0px_#000] hover:bg-teal-200 cursor-pointer"
               title="Listen to Guide"
             >
@@ -337,7 +337,7 @@ export default function PatientDemoPage() {
               className="btn-tactile rounded-2xl border-3 border-black bg-white px-5 py-3 text-sm font-black text-teal-950 shadow-[4px_4px_0px_#000] hover:bg-teal-50 flex items-center gap-2 cursor-pointer"
             >
               <Play className="h-4 w-4 fill-teal-950" />
-              <span>Open Memories</span>
+              <span>Open Photos & Sounds</span>
             </Link>
           </div>
         </div>
