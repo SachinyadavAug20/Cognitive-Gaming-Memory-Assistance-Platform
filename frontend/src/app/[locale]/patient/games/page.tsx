@@ -64,82 +64,82 @@ type ActiveModalGame =
 function getGameCardBg(id: string): string {
   switch (id) {
     case "jigsaw":
-      return "bg-[#FB923C]"; // vibrant tangerine orange
+      return "bg-[#943217]"; // deep river terracotta
     case "majuli-walk":
-      return "bg-[#34D399]"; // vibrant emerald jade
+      return "bg-[#16532D]"; // deep Assam tea forest green
     case "wayfinding":
-      return "bg-[#10B981]"; // vibrant riverbank jade
+      return "bg-[#144D29]"; // deep pine forest
     case "loom":
-      return "bg-[#FBBF24]"; // vibrant golden marigold
+      return "bg-[#92400E]"; // deep golden muga amber
     case "weaving":
-      return "bg-[#F59E0B]"; // vibrant amber gold
+      return "bg-[#9A3412]"; // deep roasted cinnamon
     case "memory-road":
-      return "bg-[#C084FC]"; // vibrant orchid violet
+      return "bg-[#5B2144]"; // deep wild orchid plum
     case "grandchild-chat":
-      return "bg-[#FB7185]"; // vibrant coral rose
+      return "bg-[#782838]"; // deep warm rose
     case "memory-detective":
-      return "bg-[#F43F5E]"; // vibrant heart rose
+      return "bg-[#7F1D1D]"; // deep rustic berry
     case "timeline":
-      return "bg-[#FB7185]"; // vibrant keepsake coral rose
+      return "bg-[#7C2D12]"; // deep keepsake mahogany
     case "drum":
-      return "bg-[#F97316]"; // vibrant energetic bihu orange
+      return "bg-[#8C3018]"; // deep bihu drum terracotta
     case "bihu-dhol":
-      return "bg-[#EA580C]"; // vibrant festive drum terracotta
+      return "bg-[#943217]"; // deep festive dhol clay
     case "tuned-drum":
-      return "bg-[#F59E0B]"; // vibrant brass temple amber
+      return "bg-[#854D0E]"; // deep brass gong bronze
     case "rhythm-hills":
-      return "bg-[#FB923C]"; // vibrant folk melody tangerine
+      return "bg-[#1E5135]"; // deep mountain forest
     case "alpana":
-      return "bg-[#C084FC]"; // vibrant festive orchid purple
+      return "bg-[#5B2144]"; // deep festive plum
     case "companion":
-      return "bg-[#C084FC]"; // vibrant comforting lavender violet
+      return "bg-[#16532D]"; // deep soothing tea green
     case "lotus-painter":
-      return "bg-[#A3E635]"; // vibrant fresh lime meadow
+      return "bg-[#1F4E38]"; // deep lotus pond moss
     case "butterfly-sanctuary":
-      return "bg-[#FACC15]"; // vibrant sunny yellow
+      return "bg-[#92400E]"; // deep warm amber
     case "tea-harvest":
-      return "bg-[#34D399]"; // vibrant tea leaf emerald
+      return "bg-[#16532D]"; // deep tea garden green
     case "tea-harvest-vision":
-      return "bg-[#10B981]"; // vibrant tea garden jade
+      return "bg-[#144D29]"; // deep canopy emerald
     case "tea-garden-catch":
-      return "bg-[#6EE7B7]"; // vibrant spring garden mint
+      return "bg-[#1B5E38]"; // deep bamboo grove
     case "river-lanterns":
-      return "bg-[#FB923C]"; // vibrant lantern flame orange
+      return "bg-[#9A3412]"; // deep river clay rust
     case "monastery-bell":
-      return "bg-[#FBBF24]"; // vibrant brass temple gold
+      return "bg-[#854D0E]"; // deep monastery bronze ochre
     case "brahmaputra-boat":
-      return "bg-[#10B981]"; // vibrant riverbank jade green
+      return "bg-[#164E35]"; // deep river forest
     case "hornbill-flight":
-      return "bg-[#F97316]"; // vibrant hornbill crest orange
+      return "bg-[#943217]"; // deep hornbill terracotta
     case "majuli-pottery":
-      return "bg-[#D97706]"; // vibrant terracotta craft
+      return "bg-[#8C3018]"; // deep artisan terracotta
     case "daily-routine":
-      return "bg-[#FACC15]"; // vibrant morning sunshine
+      return "bg-[#854D0E]"; // deep warm golden amber
     case "storybook":
-      return "bg-[#FBBF24]"; // vibrant folk story gold
+      return "bg-[#78350F]"; // deep aged parchment walnut
     case "radio":
-      return "bg-[#FB923C]"; // vibrant vintage radio orange
+      return "bg-[#7C2D12]"; // deep vintage teak
     case "heritage-kitchen":
-      return "bg-[#FB7185]"; // vibrant spice kitchen rose
+      return "bg-[#8C3018]"; // deep spice terracotta
     case "daily-tasks":
-      return "bg-[#F97316]"; // vibrant red tea terracotta
+      return "bg-[#943217]"; // deep lal saah red tea
     case "bazaar-buddies":
-      return "bg-[#A3E635]"; // vibrant fresh market lime
+      return "bg-[#854D0E]"; // deep bazaar brass
     case "sorting":
-      return "bg-[#84CC16]"; // vibrant pantry lime
+      return "bg-[#78350F]"; // deep pantry cedar
     case "arrow-escape":
     case "pathways":
-      return "bg-[#F59E0B]"; // vibrant archery amber gold
+      return "bg-[#854D0E]"; // deep archery bronze
     case "dzukou-botanist":
-      return "bg-[#10B981]"; // vibrant Dzukou valley emerald
+      return "bg-[#16532D]"; // deep Dzukou valley evergreen
     case "memory-garden":
-      return "bg-[#EC4899]"; // vibrant courtyard garden rose
+      return "bg-[#6B2144]"; // deep garden mulberry
     case "root-bridge":
-      return "bg-[#34D399]"; // vibrant rainforest emerald
+      return "bg-[#144D29]"; // deep Meghalaya canopy green
     case "day-in-my-world":
-      return "bg-[#FACC15]"; // vibrant morning sunrise yellow
+      return "bg-[#943217]"; // deep morning village terracotta
     default:
-      return "bg-[#FBBF24]";
+      return "bg-[#16532D]"; // deep tea green fallback
   }
 }
 
@@ -225,9 +225,9 @@ export default function GamesHubPage() {
                 className={`game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 rounded-3xl border-3 border-black ${cardBg} p-5 shadow-[5px_5px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative`}
               >
                 {/* Header: Title, Icon & Voice Preview */}
-                <div className="w-full flex items-center justify-between gap-2.5 border-b-2 border-black/20 pb-2.5">
-                  <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wide truncate">
-                    <Icon className="h-7 w-7 text-black stroke-[2.5] shrink-0" />
+                <div className="w-full flex items-center justify-between gap-2.5 border-b-2 border-white/20 pb-2.5">
+                  <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
+                    <Icon className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
                     <span className="truncate">{cardTitle}</span>
                   </div>
 
@@ -239,7 +239,7 @@ export default function GamesHubPage() {
                       e.stopPropagation();
                       handleSpeak(voiceText);
                     }}
-                    className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-200 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
+                    className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-100 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
                     title={hub.listenGuide}
                     aria-label={`${hub.listenGuide}: ${cardTitle}`}
                   >
@@ -253,7 +253,7 @@ export default function GamesHubPage() {
                 </div>
 
                 {/* Action Button - Simple Action Text */}
-                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-black group-hover:text-white transition-all">
+                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-amber-100 transition-all">
                   <span>{gameStrings.startButton || hub.startSession || "Play Now"}</span>
                   <span>➔</span>
                 </div>
