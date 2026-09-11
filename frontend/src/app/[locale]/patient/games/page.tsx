@@ -60,60 +60,70 @@ type ActiveModalGame =
   | "bihu-dhol"
   | null;
 
-// Color Hunt Palette 6040 (whiteyellowbeigebrowngreennaturefallfoodsummer):
-// #597E52 (Sage Forest Green), #C6A969 (Golden Khaki), #F1E4C3 (Warm Linen Beige), #FFFFEC (Warm Ivory Cream)
-function getGameCardTheme(id: string): { bg: string; isDark: boolean } {
+// Vibrant Regional Colors (Terracotta Saffron, Assam Tea Forest, Muga Amber Gold, Kopou Orchid)
+function getGameCardBg(id: string): string {
   switch (id) {
-    // 1. Sage Forest Green (#597E52) - Crisp White Text
-    case "majuli-walk":
-    case "tea-harvest":
-    case "dzukou-botanist":
-    case "companion":
-    case "root-bridge":
-    case "brahmaputra-boat":
-    case "tea-harvest-vision":
-    case "wayfinding":
-    case "tea-garden-catch":
-      return { bg: "bg-[#597E52]", isDark: true };
-
-    // 2. Warm Golden Khaki (#C6A969) - Bold Black Text
+    // 1. Vibrant Terracotta / Saffron
     case "jigsaw":
-    case "lotus-painter":
-    case "rhythm-hills":
-    case "memory-road":
-    case "arrow-escape":
-    case "pathways":
-    case "bazaar-buddies":
     case "hornbill-flight":
-      return { bg: "bg-[#C6A969]", isDark: false };
-
-    // 3. Warm Linen Beige (#F1E4C3) - Bold Black Text
-    case "loom":
+    case "day-in-my-world":
+      return "bg-[#E05316]"; // vibrant river terracotta
     case "weaving":
-    case "majuli-pottery":
-    case "heritage-kitchen":
-    case "drum":
+    case "river-lanterns":
     case "bihu-dhol":
     case "daily-tasks":
-    case "river-lanterns":
-      return { bg: "bg-[#F1E4C3]", isDark: false };
+      return "bg-[#EA580C]"; // vibrant festive drum & craft terracotta
+    case "drum":
+    case "majuli-pottery":
+    case "heritage-kitchen":
+      return "bg-[#D4380D]"; // vibrant artisan terracotta
 
-    // 4. Warm Ivory Cream (#FFFFEC) - Bold Black Text
+    // 2. Vibrant Assam Tea Forest & River Jade
+    case "majuli-walk":
+    case "companion":
+    case "tea-harvest":
+    case "dzukou-botanist":
+    case "brahmaputra-boat":
+      return "bg-[#15803D]"; // vibrant Assam tea garden forest
+    case "wayfinding":
+    case "tea-harvest-vision":
+    case "root-bridge":
+      return "bg-[#16803D]"; // vibrant rainforest canopy
+    case "rhythm-hills":
+    case "tea-garden-catch":
+    case "lotus-painter":
+      return "bg-[#16A34A]"; // vibrant bamboo & hills meadow
+
+    // 3. Vibrant Golden Muga Amber
+    case "loom":
     case "butterfly-sanctuary":
+    case "storybook":
+    case "timeline":
+      return "bg-[#C25E00]"; // vibrant golden muga amber
+    case "tuned-drum":
     case "monastery-bell":
     case "daily-routine":
-    case "tuned-drum":
-    case "storybook":
+    case "bazaar-buddies":
+    case "arrow-escape":
+    case "pathways":
+      return "bg-[#D97706]"; // vibrant brass gong & amber market
     case "radio":
-    case "grandchild-chat":
-    case "memory-detective":
-    case "timeline":
-    case "alpana":
     case "sorting":
+      return "bg-[#B85B00]"; // vibrant vintage teak bronze
+
+    // 4. Vibrant Kopou Orchid & Wild Berry Plum
+    case "memory-road":
+    case "alpana":
+      return "bg-[#9D246C]"; // vibrant Kopou orchid plum
+    case "grandchild-chat":
+      return "bg-[#BE123C]"; // vibrant warm rose
+    case "memory-detective":
+      return "bg-[#A21CAF]"; // vibrant royal berry orchid
     case "memory-garden":
-    case "day-in-my-world":
+      return "bg-[#9D174D]"; // vibrant courtyard mulberry
+
     default:
-      return { bg: "bg-[#FFFFEC]", isDark: false };
+      return "bg-[#15803D]"; // vibrant tea forest fallback
   }
 }
 
@@ -182,49 +192,49 @@ export default function GamesHubPage() {
                 const cardTitle = gameStrings.title || (t.has(game.titleKey) ? t(game.titleKey) : game.domain);
                 const cardDesc = gameStrings.introSubtitle || (t.has(game.descKey) ? t(game.descKey) : "");
                 const voiceText = `${cardTitle}. ${gameStrings.audioPrompt || cardDesc}`;
-                const { bg: cardBg, isDark } = getGameCardTheme(game.id);
+            const cardBg = getGameCardBg(game.id);
 
-                return (
-                  <Link
-                    key={game.id}
-                    href={`/patient/games/${game.id}`}
-                    data-voice-desc={voiceText}
-                    className={`game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 rounded-3xl border-3 border-black ${cardBg} p-5 shadow-[5px_5px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative`}
+            return (
+              <Link
+                key={game.id}
+                href={`/patient/games/${game.id}`}
+                data-voice-desc={voiceText}
+                className={`game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 rounded-3xl border-3 border-black ${cardBg} p-5 shadow-[5px_5px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative`}
+              >
+                {/* Header: Title, Icon & Voice Preview */}
+                <div className="w-full flex items-center justify-between gap-2.5 border-b-2 border-white/20 pb-2.5">
+                  <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
+                    <Icon className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
+                    <span className="truncate">{cardTitle}</span>
+                  </div>
+
+                  {/* Quick Audio Preview Button - Large Accessible Touch Target */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleSpeak(voiceText);
+                    }}
+                    className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-100 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
+                    title={hub.listenGuide}
+                    aria-label={`${hub.listenGuide}: ${cardTitle}`}
                   >
-                    {/* Header: Title, Icon & Voice Preview */}
-                    <div className={`w-full flex items-center justify-between gap-2.5 border-b-2 ${isDark ? "border-white/20" : "border-black/20"} pb-2.5`}>
-                      <div className={`flex items-center gap-2.5 font-black text-sm sm:text-base tracking-wide truncate ${isDark ? "text-white" : "text-black"}`}>
-                        <Icon className={`h-7 w-7 stroke-[2.5] shrink-0 ${isDark ? "text-white" : "text-black"}`} />
-                        <span className="truncate">{cardTitle}</span>
-                      </div>
+                    <Volume2 className="h-6 w-6 stroke-[2.5]" />
+                  </button>
+                </div>
 
-                      {/* Quick Audio Preview Button - Large Accessible Touch Target */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleSpeak(voiceText);
-                        }}
-                        className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-[#FFFFEC] cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
-                        title={hub.listenGuide}
-                        aria-label={`${hub.listenGuide}: ${cardTitle}`}
-                      >
-                        <Volume2 className="h-6 w-6 stroke-[2.5]" />
-                      </button>
-                    </div>
+                {/* Center Visual: Thematic Visual Illustration in crisp white framed box */}
+                <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
+                  <ActivityIllustration gameId={game.id} className="h-12 w-12 sm:h-14 sm:w-14" />
+                </div>
 
-                    {/* Center Visual: Thematic Visual Illustration in crisp white framed box */}
-                    <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
-                      <ActivityIllustration gameId={game.id} className="h-12 w-12 sm:h-14 sm:w-14" />
-                    </div>
-
-                    {/* Action Button - Simple Action Text */}
-                    <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-[#FFFFEC] transition-all">
-                      <span>{gameStrings.startButton || hub.startSession || "Play Now"}</span>
-                      <span>➔</span>
-                    </div>
-                  </Link>
+                {/* Action Button - Simple Action Text */}
+                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-amber-100 transition-all">
+                  <span>{gameStrings.startButton || hub.startSession || "Play Now"}</span>
+                  <span>➔</span>
+                </div>
+              </Link>
             );
           })}
         </div>

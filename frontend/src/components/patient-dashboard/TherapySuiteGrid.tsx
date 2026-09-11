@@ -181,16 +181,16 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        {/* 1. Picture Puzzle (jigsaw) - Color Hunt Warm Golden Khaki (#C6A969) */}
+        {/* 1. Picture Puzzle (jigsaw) - Vibrant River Terracotta / Saffron (#E05316) */}
         <Link
           href="/patient/games/jigsaw"
           data-voice-desc={`${jigsawStrings.title}. ${jigsawStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#C6A969] p-5 text-black transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#E05316] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
-          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">
-            <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wide truncate">
-              <Grid3X3 className="h-7 w-7 text-black stroke-[2.5] shrink-0" />
+          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
+            <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
+              <Grid3X3 className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
               <span className="truncate">{jigsawStrings.title}</span>
             </div>
 
@@ -201,7 +201,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
                 e.stopPropagation();
                 handleSpeak(`${jigsawStrings.title}. ${jigsawStrings.audioPrompt}`);
               }}
-              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-[#FFFFEC] shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-100 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
               title="Read for Me"
               aria-label={`Read for Me: ${jigsawStrings.title}`}
             >
@@ -215,17 +215,17 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
 
           {/* Action Button */}
-          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-[#FFFFEC] transition-all">
+          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-amber-100 transition-all">
             <span>{jigsawStrings.startButton || "Play Puzzle"}</span>
             <span>➔</span>
           </div>
         </Link>
 
-        {/* 2. Walking Through the Village (majuli-walk) - Color Hunt Sage Forest Green (#597E52) */}
+        {/* 2. Walking Through the Village (majuli-walk) - Vibrant Assam Tea Forest Green (#15803D) */}
         <Link
           href="/patient/games/majuli-walk"
           data-voice-desc={`${majuliStrings.title}. ${majuliStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#597E52] p-5 text-white transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#15803D] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
@@ -241,7 +241,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
                 e.stopPropagation();
                 handleSpeak(`${majuliStrings.title}. ${majuliStrings.audioPrompt}`);
               }}
-              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-[#F1E4C3] shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-emerald-50 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
               title="Read for Me"
               aria-label={`Read for Me: ${majuliStrings.title}`}
             >
@@ -255,22 +255,22 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
 
           {/* Action Button */}
-          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-[#F1E4C3] transition-all">
+          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-emerald-50 transition-all">
             <span>{majuliStrings.startButton || "Start Walk"}</span>
             <span>➔</span>
           </div>
         </Link>
 
-        {/* 3. The Loom of Memories (loom) - Color Hunt Warm Linen Beige (#F1E4C3) */}
+        {/* 3. The Loom of Memories (loom) - Vibrant Golden Muga Amber (#C25E00) */}
         <Link
           href="/patient/games/loom"
           data-voice-desc={`${loomStrings.title}. ${loomStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#F1E4C3] p-5 text-black transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#C25E00] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
-          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">
-            <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wide truncate">
-              <Sparkles className="h-7 w-7 text-black stroke-[2.5] shrink-0" />
+          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
+            <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
+              <Sparkles className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
               <span className="truncate">{loomStrings.title}</span>
             </div>
 
@@ -281,7 +281,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
                 e.stopPropagation();
                 handleSpeak(`${loomStrings.title}. ${loomStrings.audioPrompt}`);
               }}
-              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-[#FFFFEC] shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-100 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
               title="Read for Me"
               aria-label={`Read for Me: ${loomStrings.title}`}
             >
@@ -295,22 +295,22 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
 
           {/* Action Button */}
-          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-[#FFFFEC] transition-all">
+          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-amber-100 transition-all">
             <span>{loomStrings.startButton || "Weave Silk"}</span>
             <span>➔</span>
           </div>
         </Link>
 
-        {/* 4. Finding Signs on the Road (memory-road) - Color Hunt Warm Ivory Cream (#FFFFEC) */}
+        {/* 4. Finding Signs on the Road (memory-road) - Vibrant Wild Kopou Orchid Plum (#9D246C) */}
         <Link
           href="/patient/games/memory-road"
           data-voice-desc={`${roadStrings.title}. ${roadStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#FFFFEC] p-5 text-black transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#9D246C] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
-          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">
-            <div className="flex items-center gap-2.5 text-black font-black text-sm sm:text-base tracking-wide truncate">
-              <Route className="h-7 w-7 text-black stroke-[2.5] shrink-0" />
+          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
+            <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
+              <Route className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
               <span className="truncate">{roadStrings.title}</span>
             </div>
 
@@ -321,7 +321,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
                 e.stopPropagation();
                 handleSpeak(`${roadStrings.title}. ${roadStrings.audioPrompt}`);
               }}
-              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-[#F1E4C3] shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-fuchsia-50 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
               title="Read for Me"
               aria-label={`Read for Me: ${roadStrings.title}`}
             >
@@ -335,7 +335,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
 
           {/* Action Button */}
-          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-[#F1E4C3] transition-all">
+          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-fuchsia-50 transition-all">
             <span>{roadStrings.startButton || "Find Signs"}</span>
             <span>➔</span>
           </div>
