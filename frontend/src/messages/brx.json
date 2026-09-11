@@ -401,7 +401,7 @@
       "notes": "डाक्तारनि लिरनाय",
       "physician": "डाक्तार",
       "subscales": "स्कोर जुमाजुमा",
-      "assessment": "१७-जायगा Assessment",
+      "assessment": "६-जायगा Assessment",
       "assessmentDesc": "AI-नों जायगा खनिजायबाय",
       "intact": "ठीक",
       "impaired": "बिग्राय",
@@ -545,7 +545,7 @@
       "removeItem": "बेसाद {index} बखार"
     },
     "domainMatrix": {
-      "heading": "१७-जायगा Clinical Assessment",
+      "heading": "६-जायगा Clinical Assessment",
       "desc": "AI-नों जायगा आरो काम खनिजायबाय",
       "empty": "रिपोर्टआव बिग्राय गैया",
       "domains": {

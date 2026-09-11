@@ -16,7 +16,7 @@ graph TD
     subgraph Clinical Intake & AI Engine
         A[Caregiver Uploads Clinical PDF / EHR] --> B[Apache PDFBox Text Extraction]
         B --> C[Hybrid: Regex Fast-Path + Ollama LLM qwen2.5]
-        C --> D[17-Domain Quantification & MMSE/MoCA Calibration]
+        C --> D[6-Domain Quantification & MMSE/MoCA Calibration]
     end
 
     subgraph Personalized Therapy Suite
@@ -57,8 +57,8 @@ graph TD
 - Each game exposes a server-safe metadata record (`games/meta.ts`) with a cognitive domain and i18n title/description keys; `games/config.ts` provides clinical algorithms (scaffolding, spaced retrieval, kinetic smoothing, severity staging).
 
 ### 2. 🤖 Local Ollama AI Clinical Pipeline
-- **Hybrid extraction**: Apache PDFBox text → regex fast-path (MMSE/MoCA, ICD-10, MTA/Fazekas grades, physician) → rule-based 17-domain derivation → Ollama LLM polish + merge (deterministic metrics are never overwritten).
-- **17 domains**: 7 cognitive + 6 IADLs + 4 behavioral; maps to Level 1/2/3 baseline difficulty.
+- **Hybrid extraction**: Apache PDFBox text → regex fast-path (MMSE/MoCA, ICD-10, MTA/Fazekas grades, physician) → rule-based 6-domain derivation → Ollama LLM polish + merge (deterministic metrics are never overwritten).
+- **6 clinical domains**: Memory, Attention, Orientation, Language, Visuospatial, Executive Function; maps to Level 1/2/3 baseline difficulty.
 - **100% on-device / offline privacy** — no patient health information leaves the local clinic.
 
 ### 3. 🌐 11 Regional Languages & Zero-Flicker Architecture

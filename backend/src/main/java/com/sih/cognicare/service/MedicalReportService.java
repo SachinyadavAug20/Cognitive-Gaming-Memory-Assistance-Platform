@@ -55,7 +55,7 @@ public class MedicalReportService {
         // 1. Fast, deterministic rule-based extraction (MMSE/stage, subscales, biomarkers).
         Map<String, Subscale> subscales = extractFastRegexMetrics(extractedText, profile);
 
-        // 2. Derive 17-domain assessments from the actual subscale scores / stage.
+        // 2. Derive 6-domain assessments from the actual subscale scores / stage.
         //    No generic "MILD" placeholders — every impaired domain is tied to evidence.
         Map<String, DomainAssessment> derivedDomains = deriveDomainsFromSubscales(subscales, profile);
         persistDomains(profile, derivedDomains);
@@ -257,7 +257,7 @@ public class MedicalReportService {
     }
 
     /**
-     * Derives the 17 clinical domains from the actual subscale scores and the overall stage.
+     * Derives the 6 clinical domains from the actual subscale scores and the overall stage.
      * Every "impaired" domain is backed by a subscale percentage or stage evidence — never a
      * generic "MILD" placeholder. Domains with no evidence default to needs_help=false/None.
      */
@@ -362,85 +362,12 @@ public class MedicalReportService {
                     .build());
         }
 
-        // Executive function & functional IADLs — tied to overall stage.
+        // 6. Executive function — tied to overall stage and abstraction
         domains.put("executive_function", DomainAssessment.builder()
                 .needsHelp(substantial)
                 .impairmentLevel(severeOrModerate ? "Severe" : early ? "Moderate" : "None")
                 .scorePct(severeOrModerate ? 20 : early ? 45 : 100)
                 .evidence(substantial ? "Executive planning and multistep tasks impaired at " + stage + " stage." : null)
-                .build());
-
-        boolean navImpaired = substantial || (orient != null && orient.score < 8);
-        domains.put("navigation", DomainAssessment.builder()
-                .needsHelp(navImpaired)
-                .impairmentLevel(navImpaired ? "Moderate" : "None")
-                .scorePct(navImpaired ? 35 : 100)
-                .evidence(navImpaired ? "Disorientation on outdoor routes noted." : null)
-                .build());
-
-        boolean medImpaired = substantial || (recall != null && recall.score < 2);
-        domains.put("medication_management", DomainAssessment.builder()
-                .needsHelp(medImpaired)
-                .impairmentLevel(medImpaired ? "Severe" : "None")
-                .scorePct(medImpaired ? 20 : 100)
-                .evidence(medImpaired ? "Requires caregiver supervision for medication schedule." : null)
-                .build());
-
-        domains.put("decision_making", DomainAssessment.builder()
-                .needsHelp(substantial)
-                .impairmentLevel(substantial ? "Moderate" : "None")
-                .scorePct(substantial ? 40 : 100)
-                .evidence(substantial ? "Difficulty with independent decision making at " + stage + " stage." : null)
-                .build());
-        domains.put("financial_management", DomainAssessment.builder()
-                .needsHelp(substantial)
-                .impairmentLevel(substantial ? "Moderate" : "None")
-                .scorePct(substantial ? 40 : 100)
-                .evidence(substantial ? "Assistance required for finances." : null)
-                .build());
-        domains.put("meal_preparation", DomainAssessment.builder()
-                .needsHelp(substantial)
-                .impairmentLevel(substantial ? "Moderate" : "None")
-                .scorePct(substantial ? 40 : 100)
-                .evidence(substantial ? "Assistance required for meal preparation." : null)
-                .build());
-        domains.put("household_tasks", DomainAssessment.builder()
-                .needsHelp(substantial)
-                .impairmentLevel(substantial ? "Moderate" : "None")
-                .scorePct(substantial ? 40 : 100)
-                .evidence(substantial ? "Assistance required with household tasks." : null)
-                .build());
-        domains.put("driving", DomainAssessment.builder()
-                .needsHelp(false)
-                .impairmentLevel("None")
-                .scorePct(100)
-                .evidence(null)
-                .build());
-
-        // Behavioral domains — MCI/early may keep intact unless deficits noted.
-        domains.put("apathy", DomainAssessment.builder()
-                .needsHelp(false)
-                .impairmentLevel("None")
-                .scorePct(100)
-                .evidence(null)
-                .build());
-        domains.put("agitation", DomainAssessment.builder()
-                .needsHelp(false)
-                .impairmentLevel("None")
-                .scorePct(100)
-                .evidence(null)
-                .build());
-        domains.put("social_withdrawal", DomainAssessment.builder()
-                .needsHelp(severeOrModerate)
-                .impairmentLevel(severeOrModerate ? "Moderate" : "None")
-                .scorePct(severeOrModerate ? 40 : 100)
-                .evidence(severeOrModerate ? "Reduced social engagement at " + stage + " stage." : null)
-                .build());
-        domains.put("sleep_disturbance", DomainAssessment.builder()
-                .needsHelp(false)
-                .impairmentLevel("None")
-                .scorePct(100)
-                .evidence(null)
                 .build());
 
         return domains;

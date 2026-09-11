@@ -280,10 +280,10 @@ export function EchoesOfHomeClient() {
 
   const soundLabelMap: Record<AmbientSoundType, { name: string; icon: React.ReactNode }> = {
     rain: { name: "Monsoon Rain on Tin Roof", icon: <CloudRain className="h-4 w-4 text-emerald-600" /> },
-    river: { name: "Brahmaputra River Swell", icon: <Waves className="h-4 w-4 text-teal-600" /> },
+    river: { name: "Brahmaputra River Swell", icon: <Waves className="h-4 w-4 text-emerald-600" /> },
     birds: { name: "Morning Bamboo Birds", icon: <Bird className="h-4 w-4 text-emerald-600" /> },
     namghar: { name: "Sacred Temple Chimes", icon: <Bell className="h-4 w-4 text-amber-600" /> },
-    flute: { name: "Bamboo Flute (Raga Bhupali)", icon: <Music className="h-4 w-4 text-teal-600" /> },
+    flute: { name: "Bamboo Flute (Raga Bhupali)", icon: <Music className="h-4 w-4 text-emerald-600" /> },
     bazaar: { name: "Distant Village Market", icon: <Store className="h-4 w-4 text-orange-600" /> },
   };
 
@@ -593,7 +593,7 @@ export function EchoesOfHomeClient() {
                     onClick={() => handleBinauralToggle("alpha")}
                     className={`flex-1 py-1.5 rounded-xl border-2 text-center font-black cursor-pointer ${
                       binauralMode === "alpha"
-                        ? "border-black bg-teal-800 text-white"
+                        ? "border-black bg-emerald-800 text-white"
                         : "border-black/30 bg-white text-ink"
                     }`}
                   >

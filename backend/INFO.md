@@ -165,13 +165,13 @@ com.sih.cognicare/
 
 1. **PDFBox 3.0.3** text extraction (`PDDocument`/`PDFTextStripper`).
 2. **Regex fast-path** (`extractFastRegexMetrics`): MMSE/MoCA total `score/max`, clinical stage from score, 5 subscales, MTA grade, Fazekas grade, ICD-10, physician.
-3. **Rule-based stage calibration** (7 cognitive + 6 IADL + 4 behavioral = **17 domains** derived from subscales/stage).
+3. **Rule-based stage calibration** (6 clinical cognitive domains derived from subscales/stage).
 4. **Ollama polish** (`qwen2.5:1.5b`, `format=json`, `stream=false`, temperature 0.0, `num_predict=600`) — extracts diagnosis, clinicalStage, active medications, summary, subscales, domains.
 5. **Merge semantics**: Ollama only overwrites non-null fields, so deterministic rule-based metrics are never wiped; includes JSON-truncation repair; on LLM failure falls back to rule-based summary. Skips the LLM entirely for very short extracted text (scanned PDFs).
 
 **Stage rubric (MMSE/MoCA / 30):** `≥24` MCI/Level 3 · `18–23` Early/Level 2 · `10–17` Moderate/Level 1 · `<10` Severe/Level 1 (high assist).
 
-**17 domains:** Cognitive (7) — Memory, Attention, Executive Function, Orientation, Language, Visuospatial, Decision Making; IADLs (6) — Medication, Financial, Navigation, Meal Prep, Driving, Household; Behavioral (4) — Apathy, Agitation, Social Withdrawal, Sleep Disturbance.
+**6 clinical domains:** Memory, Attention, Orientation, Language, Visuospatial, Executive Function.
 
 ---
 

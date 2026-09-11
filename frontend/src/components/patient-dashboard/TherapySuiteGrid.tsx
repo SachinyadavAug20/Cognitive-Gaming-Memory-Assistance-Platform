@@ -70,7 +70,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
   return (
     <section aria-labelledby="games-title">
       {/* Featured Calming Memories & Sounds */}
-      <div className="mt-4 rounded-2xl border-3 border-black bg-gradient-to-r from-emerald-950 via-teal-950 to-emerald-900 p-4 sm:p-5 text-white shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="mt-4 rounded-2xl border-3 border-black bg-gradient-to-r from-[#065F46] via-[#047857] to-[#15803D] p-4 sm:p-5 text-white shadow-[4px_4px_0px_#000] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
           <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-white/40 bg-white/20 shadow-sm text-white">
             <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" />
@@ -103,11 +103,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        {/* 1. Picture Puzzle (jigsaw) - Warm Peach */}
+        {/* 1. Picture Puzzle (jigsaw) - Vibrant Tangerine */}
         <Link
           href="/patient/games/jigsaw"
           data-voice-desc={`${jigsawStrings.title}. ${jigsawStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#FDBA74] p-5 text-ink transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#FB923C] p-5 text-ink transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">
@@ -143,11 +143,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 2. Walking Through the Village (majuli-walk) - Warm Mint */}
+        {/* 2. Walking Through the Village (majuli-walk) - Vibrant Emerald Jade */}
         <Link
           href="/patient/games/majuli-walk"
           data-voice-desc={`${majuliStrings.title}. ${majuliStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#6EE7B7] p-5 text-ink transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#34D399] p-5 text-ink transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">
@@ -183,11 +183,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 3. The Loom of Memories (loom) - Warm Amber Gold */}
+        {/* 3. The Loom of Memories (loom) - Vibrant Golden Marigold */}
         <Link
           href="/patient/games/loom"
           data-voice-desc={`${loomStrings.title}. ${loomStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#FCD34D] p-5 text-ink transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#FBBF24] p-5 text-ink transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">
@@ -223,11 +223,11 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 4. Finding Signs on the Road (memory-road) - Warm Apricot */}
+        {/* 4. Finding Signs on the Road (memory-road) - Vibrant Orchid Violet */}
         <Link
           href="/patient/games/memory-road"
           data-voice-desc={`${roadStrings.title}. ${roadStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#FED7AA] p-5 text-ink transition-transform hover:scale-[1.01]`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#C084FC] p-5 text-ink transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-black/20 pb-2.5">

@@ -401,7 +401,7 @@
       "notes": "Doctor ziak",
       "physician": "Doctor",
       "subscales": "Score Zau Zau",
-      "assessment": "17 Jaka Assessment",
+      "assessment": "6 Jaka Assessment",
       "assessmentDesc": "AI-n ka hmu thuh",
       "intact": "Ka tla",
       "impaired": "Ka sang",
@@ -545,7 +545,7 @@
       "removeItem": "Item {index} khot"
     },
     "domainMatrix": {
-      "heading": "17 Jaka Clinical Assessment",
+      "heading": "6 Jaka Clinical Assessment",
       "desc": "AI-n ka hmu thuh ki jaka thuh bad kynmia",
       "empty": "Jingsumar a tarlan lo ha report",
       "domains": {

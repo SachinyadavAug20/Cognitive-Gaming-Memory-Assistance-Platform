@@ -237,7 +237,7 @@
       "notes": "Physician Notes",
       "physician": "Physician",
       "subscales": "Standardized Subscale Scores",
-      "assessment": "17-Domain Clinical Assessment",
+      "assessment": "6-Domain Clinical Assessment",
       "assessmentDesc": "Quantified deficit breakdown extracted by local AI",
       "intact": "Intact",
       "impaired": "Impaired",
@@ -381,7 +381,7 @@
       "removeItem": "Remove item {index}"
     },
     "domainMatrix": {
-      "heading": "17-Domain Clinical Assessment",
+      "heading": "6-Domain Clinical Assessment",
       "desc": "Quantified cognitive & functional breakdown extracted by local AI",
       "empty": "No clinical deficit noted in report",
       "domains": {

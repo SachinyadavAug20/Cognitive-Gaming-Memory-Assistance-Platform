@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Brain, Home, HeartPulse } from "lucide-react";
+import { Brain } from "lucide-react";
 import type { ClinicalDomains, DomainMetric } from "@/types/intake";
 
 interface DomainMatrixProps {
@@ -10,13 +10,7 @@ interface DomainMatrixProps {
 
 const CATEGORY_GROUPS: Record<string, string[]> = {
   categoryCognitive: [
-    "memory", "attention", "executive_function", "orientation", "language", "visuospatial", "decision_making",
-  ],
-  categoryIadls: [
-    "medication_management", "financial_management", "navigation", "meal_preparation", "driving", "household_tasks",
-  ],
-  categoryBehavioral: [
-    "apathy", "agitation", "social_withdrawal", "sleep_disturbance",
+    "memory", "attention", "executive_function", "orientation", "language", "visuospatial",
   ],
 };
 
@@ -91,16 +85,6 @@ export function DomainMatrix({ domains }: DomainMatrixProps) {
     orientation: t("domainMatrix.domains.orientation"),
     language: t("domainMatrix.domains.language"),
     visuospatial: t("domainMatrix.domains.visuospatial"),
-    decision_making: t("domainMatrix.domains.decisionMaking"),
-    medication_management: t("domainMatrix.domains.medicationManagement"),
-    financial_management: t("domainMatrix.domains.financialManagement"),
-    navigation: t("domainMatrix.domains.navigation"),
-    meal_preparation: t("domainMatrix.domains.mealPreparation"),
-    driving: t("domainMatrix.domains.driving"),
-    household_tasks: t("domainMatrix.domains.householdTasks"),
-    apathy: t("domainMatrix.domains.apathy"),
-    agitation: t("domainMatrix.domains.agitation"),
-    social_withdrawal: t("domainMatrix.domains.socialWithdrawal"),
   };
 
   if (!domains || Object.keys(domains).length === 0) return null;
@@ -136,7 +120,7 @@ export function DomainMatrix({ domains }: DomainMatrixProps) {
       {Object.entries(CATEGORY_GROUPS).map(([categoryKey, domainKeys]) => {
         const activeKeys = domainKeys.filter((k) => domains[k]);
         if (activeKeys.length === 0) return null;
-        const CategoryIcon = categoryKey === "categoryCognitive" ? Brain : categoryKey === "categoryIadls" ? Home : HeartPulse;
+        const CategoryIcon = Brain;
 
         return (
           <div key={categoryKey} className="space-y-3">

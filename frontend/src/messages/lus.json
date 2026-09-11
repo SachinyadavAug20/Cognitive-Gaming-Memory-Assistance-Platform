@@ -401,7 +401,7 @@
       "notes": "Doctor ziak",
       "physician": "Doctor",
       "subscales": "Score Zau Zau",
-      "assessment": "17 Hmun Assessment",
+      "assessment": "6 Hmun Assessment",
       "assessmentDesc": "AI-in a hriat tir thil",
       "intact": "A tla",
       "impaired": "A sang",
@@ -545,7 +545,7 @@
       "removeItem": "Item {index} tihlang"
     },
     "domainMatrix": {
-      "heading": "17-Hmun Clinical Assessment",
+      "heading": "6-Hmun Clinical Assessment",
       "desc": "AI-n a hriat tir thil tlem leh chawh",
       "empty": "Enkawh a lo tarlan lo",
       "domains": {

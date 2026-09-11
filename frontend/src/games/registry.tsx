@@ -33,7 +33,7 @@ import dynamic from "next/dynamic";
 function GameLoaderFallback() {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-      <div className="h-14 w-14 animate-spin rounded-full border-4 border-teal-600 border-t-transparent" />
+      <div className="h-14 w-14 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
       <p className="text-base font-semibold text-ink-secondary">Loading activity...</p>
     </div>
   );
@@ -98,7 +98,7 @@ export const GAMES: GameDef[] = [
     icon: Waves,
     titleKey: "lotusPainter.title",
     descKey: "lotusPainter.desc",
-    accent: "bg-teal-950",
+    accent: "bg-emerald-950",
     domain: "Painting Lotus Flowers",
     category: "vision-3d",
     recommended: true,
@@ -120,7 +120,7 @@ export const GAMES: GameDef[] = [
     icon: Leaf,
     titleKey: "teaGardenCatch.title",
     descKey: "teaGardenCatch.desc",
-    accent: "bg-teal-900",
+    accent: "bg-emerald-900",
     domain: "Picking Tea Leaves",
     category: "vision-3d",
     recommended: true,
@@ -142,7 +142,7 @@ export const GAMES: GameDef[] = [
     icon: Waves,
     titleKey: "riverLanterns.title",
     descKey: "riverLanterns.desc",
-    accent: "bg-teal-800",
+    accent: "bg-emerald-800",
     domain: "Floating River Lanterns",
     category: "vision-3d",
     recommended: true,

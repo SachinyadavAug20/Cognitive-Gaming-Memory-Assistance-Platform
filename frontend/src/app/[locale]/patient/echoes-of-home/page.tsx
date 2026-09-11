@@ -13,7 +13,7 @@ export default function EchoesOfHomePage() {
     <Suspense
       fallback={
         <div className="flex h-screen w-full items-center justify-center bg-stone-950">
-          <Spinner className="h-10 w-10 text-teal-400" />
+          <Spinner className="h-10 w-10 text-emerald-400" />
         </div>
       }
     >

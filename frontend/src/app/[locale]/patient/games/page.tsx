@@ -64,60 +64,60 @@ type ActiveModalGame =
 function getGameCardBg(id: string): string {
   switch (id) {
     case "jigsaw":
-      return "bg-[#FDBA74]"; // solid light peach / apricot (warm, sleep-safe)
+      return "bg-[#FB923C]"; // vibrant tangerine orange
     case "majuli-walk":
     case "wayfinding":
-      return "bg-[#6EE7B7]"; // solid light mint green
+      return "bg-[#34D399]"; // vibrant emerald jade
     case "loom":
-      return "bg-[#FCD34D]"; // solid light amber gold
+      return "bg-[#FBBF24]"; // vibrant golden marigold
     case "memory-road":
-      return "bg-[#FED7AA]"; // solid light apricot / terracotta
+      return "bg-[#C084FC]"; // vibrant orchid violet
     case "grandchild-chat":
-      return "bg-[#A7F3D0]"; // solid light soft mint green
+      return "bg-[#FB7185]"; // vibrant coral rose
     case "memory-detective":
-      return "bg-[#FDE047]"; // solid light yellow
+      return "bg-[#FACC15]"; // vibrant sunshine yellow
     case "drum":
     case "bihu-dhol":
     case "tuned-drum":
-      return "bg-[#FDBA74]"; // solid light orange/apricot
+      return "bg-[#F97316]"; // vibrant energetic bihu orange
     case "alpana":
-      return "bg-[#E9D5FF]"; // solid light warm lilac
+      return "bg-[#C084FC]"; // vibrant festive orchid purple
     case "lotus-painter":
-      return "bg-[#86EFAC]"; // solid light meadow green
+      return "bg-[#A3E635]"; // vibrant fresh lime meadow
     case "butterfly-sanctuary":
-      return "bg-[#FDE047]"; // solid light sunshine yellow
+      return "bg-[#FACC15]"; // vibrant sunny yellow
     case "tea-harvest":
     case "tea-harvest-vision":
     case "tea-garden-catch":
-      return "bg-[#6EE7B7]"; // solid light tea leaf green
+      return "bg-[#34D399]"; // vibrant tea leaf emerald
     case "river-lanterns":
-      return "bg-[#FED7AA]"; // solid light twilight warm amber
+      return "bg-[#FB923C]"; // vibrant lantern flame orange
     case "monastery-bell":
-      return "bg-[#FCD34D]"; // solid light brass amber
+      return "bg-[#FBBF24]"; // vibrant brass temple gold
     case "brahmaputra-boat":
-      return "bg-[#A7F3D0]"; // solid light jade/meadow green
+      return "bg-[#10B981]"; // vibrant riverbank jade green
     case "hornbill-flight":
-      return "bg-[#FDBA74]"; // solid light sunset peach
+      return "bg-[#F97316]"; // vibrant hornbill crest orange
     case "majuli-pottery":
-      return "bg-[#FED7AA]"; // solid light terracotta peach
+      return "bg-[#FB923C]"; // vibrant terracotta craft
     case "daily-routine":
-      return "bg-[#FDE047]"; // solid light morning gold
+      return "bg-[#FACC15]"; // vibrant morning sunshine
     case "storybook":
-      return "bg-[#FED7AA]"; // solid light parchment amber
+      return "bg-[#FBBF24]"; // vibrant folk story gold
     case "radio":
-      return "bg-[#FDBA74]"; // solid light retro orange
+      return "bg-[#FB923C]"; // vibrant vintage radio orange
     case "heritage-kitchen":
-      return "bg-[#FECDD3]"; // solid light warm rose
+      return "bg-[#FB7185]"; // vibrant spice kitchen rose
     case "bazaar-buddies":
     case "sorting":
-      return "bg-[#86EFAC]"; // solid light market green
+      return "bg-[#A3E635]"; // vibrant fresh market lime
     case "arrow-escape":
-      return "bg-[#FCD34D]"; // solid light golden amber
+      return "bg-[#FBBF24]"; // vibrant archery amber gold
     case "dzukou-botanist":
     case "memory-garden":
-      return "bg-[#86EFAC]"; // solid light botanical green
+      return "bg-[#34D399]"; // vibrant Dzukou valley emerald
     default:
-      return "bg-[#FCD34D]";
+      return "bg-[#FBBF24]";
   }
 }
 
