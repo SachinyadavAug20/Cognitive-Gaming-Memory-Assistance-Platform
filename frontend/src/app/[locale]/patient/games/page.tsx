@@ -52,7 +52,6 @@ const BihuDholBeats = dynamic(
   { loading: () => <GameLoading />, ssr: false }
 );
 
-type FilterKey = "all" | ClinicalDomain;
 type ActiveModalGame =
   | "day-in-my-world"
   | "majuli-walk"
@@ -61,85 +60,60 @@ type ActiveModalGame =
   | "bihu-dhol"
   | null;
 
-function getGameCardBg(id: string): string {
+// Color Hunt Palette 6040 (whiteyellowbeigebrowngreennaturefallfoodsummer):
+// #597E52 (Sage Forest Green), #C6A969 (Golden Khaki), #F1E4C3 (Warm Linen Beige), #FFFFEC (Warm Ivory Cream)
+function getGameCardTheme(id: string): { bg: string; isDark: boolean } {
   switch (id) {
-    case "jigsaw":
-      return "bg-[#C8421A]"; // vibrant river terracotta
+    // 1. Sage Forest Green (#597E52) - Crisp White Text
     case "majuli-walk":
-      return "bg-[#1B663E]"; // vibrant Assam tea forest green
-    case "wayfinding":
-      return "bg-[#166534]"; // vibrant pine forest
-    case "loom":
-      return "bg-[#B45309]"; // vibrant golden muga amber
-    case "weaving":
-      return "bg-[#C2410C]"; // vibrant roasted cinnamon
-    case "memory-road":
-      return "bg-[#7E2A5D]"; // vibrant wild orchid plum
-    case "grandchild-chat":
-      return "bg-[#9F1239]"; // vibrant warm rose
-    case "memory-detective":
-      return "bg-[#A21CAF]"; // vibrant royal berry
-    case "timeline":
-      return "bg-[#9A3412]"; // vibrant keepsake mahogany
-    case "drum":
-      return "bg-[#B43818]"; // vibrant bihu drum terracotta
-    case "bihu-dhol":
-      return "bg-[#C2410C]"; // vibrant festive dhol clay
-    case "tuned-drum":
-      return "bg-[#A16207]"; // vibrant brass gong bronze
-    case "rhythm-hills":
-      return "bg-[#1E7345]"; // vibrant mountain pine
-    case "alpana":
-      return "bg-[#7E2A5D]"; // vibrant festive plum
-    case "companion":
-      return "bg-[#1B663E]"; // vibrant soothing tea green
-    case "lotus-painter":
-      return "bg-[#1F7A48]"; // vibrant lotus pond moss
-    case "butterfly-sanctuary":
-      return "bg-[#B45309]"; // vibrant warm golden amber
     case "tea-harvest":
-      return "bg-[#1B663E]"; // vibrant tea garden green
-    case "tea-harvest-vision":
-      return "bg-[#166534]"; // vibrant canopy emerald
-    case "tea-garden-catch":
-      return "bg-[#1E7345]"; // vibrant bamboo grove
-    case "river-lanterns":
-      return "bg-[#C2410C]"; // vibrant river clay rust
-    case "monastery-bell":
-      return "bg-[#A16207]"; // vibrant monastery bronze ochre
+    case "dzukou-botanist":
+    case "companion":
+    case "root-bridge":
     case "brahmaputra-boat":
-      return "bg-[#15803D]"; // vibrant river forest
-    case "hornbill-flight":
-      return "bg-[#C8421A]"; // vibrant hornbill terracotta
-    case "majuli-pottery":
-      return "bg-[#B43818]"; // vibrant artisan terracotta
-    case "daily-routine":
-      return "bg-[#A16207]"; // vibrant warm golden amber
-    case "storybook":
-      return "bg-[#9A3412]"; // vibrant aged parchment walnut
-    case "radio":
-      return "bg-[#854D0E]"; // vibrant vintage teak
-    case "heritage-kitchen":
-      return "bg-[#B43818]"; // vibrant spice terracotta
-    case "daily-tasks":
-      return "bg-[#C2410C]"; // vibrant lal saah red tea
-    case "bazaar-buddies":
-      return "bg-[#A16207]"; // vibrant bazaar brass
-    case "sorting":
-      return "bg-[#854D0E]"; // vibrant pantry cedar
+    case "tea-harvest-vision":
+    case "wayfinding":
+    case "tea-garden-catch":
+      return { bg: "bg-[#597E52]", isDark: true };
+
+    // 2. Warm Golden Khaki (#C6A969) - Bold Black Text
+    case "jigsaw":
+    case "lotus-painter":
+    case "rhythm-hills":
+    case "memory-road":
     case "arrow-escape":
     case "pathways":
-      return "bg-[#A16207]"; // vibrant archery bronze
-    case "dzukou-botanist":
-      return "bg-[#1B663E]"; // vibrant Dzukou valley evergreen
+    case "bazaar-buddies":
+    case "hornbill-flight":
+      return { bg: "bg-[#C6A969]", isDark: false };
+
+    // 3. Warm Linen Beige (#F1E4C3) - Bold Black Text
+    case "loom":
+    case "weaving":
+    case "majuli-pottery":
+    case "heritage-kitchen":
+    case "drum":
+    case "bihu-dhol":
+    case "daily-tasks":
+    case "river-lanterns":
+      return { bg: "bg-[#F1E4C3]", isDark: false };
+
+    // 4. Warm Ivory Cream (#FFFFEC) - Bold Black Text
+    case "butterfly-sanctuary":
+    case "monastery-bell":
+    case "daily-routine":
+    case "tuned-drum":
+    case "storybook":
+    case "radio":
+    case "grandchild-chat":
+    case "memory-detective":
+    case "timeline":
+    case "alpana":
+    case "sorting":
     case "memory-garden":
-      return "bg-[#831843]"; // vibrant garden mulberry
-    case "root-bridge":
-      return "bg-[#166534]"; // vibrant Meghalaya canopy green
     case "day-in-my-world":
-      return "bg-[#C8421A]"; // vibrant morning village terracotta
     default:
-      return "bg-[#1B663E]"; // vibrant tea green fallback
+      return { bg: "bg-[#FFFFEC]", isDark: false };
   }
 }
 
@@ -148,18 +122,12 @@ export default function GamesHubPage() {
   const t = useTranslations("games");
   const hub = getHubStrings(locale);
   const { detail, loading, error, reload } = usePatientDetail();
-  const [selectedFilter, setSelectedFilter] = useState<FilterKey>("all");
   const [activeModalGame, setActiveModalGame] = useState<ActiveModalGame>(null);
-
-  const filteredGames = GAMES.filter((g) => {
-    if (selectedFilter === "all") return true;
-    return g.category === selectedFilter;
-  });
 
   // Localized Strings for Featured Games
   const dayInWorld = getGameStrings("day-in-my-world", locale);
   const majuliWalk = getGameStrings("majuli-walk", locale);
-  const teaHarvest = getGameStrings("tea-harvest-vision", locale);
+  const teaHarvest = getGameStrings("tea-harvest", locale);
   const bihuDhol = getGameStrings("bihu-dhol", locale);
   const arrowEscape = getGameStrings("arrow-escape", locale);
 
@@ -209,55 +177,54 @@ export default function GamesHubPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 pt-2">
           {GAMES.map((game) => {
-            const Icon = game.icon || Brain;
-            const gameStrings = getGameStrings(game.id, locale);
-            const cardTitle = gameStrings.title || (t.has(game.titleKey) ? t(game.titleKey) : game.domain);
-            const cardDesc = gameStrings.introSubtitle || (t.has(game.descKey) ? t(game.descKey) : "");
-            const voiceText = `${cardTitle}. ${gameStrings.audioPrompt || cardDesc}`;
-            const levelLabel = hub.levelAdaptive.replace("{level}", String(startLevel(detail)));
-            const cardBg = getGameCardBg(game.id);
+                const Icon = game.icon || Brain;
+                const gameStrings = getGameStrings(game.id, locale);
+                const cardTitle = gameStrings.title || (t.has(game.titleKey) ? t(game.titleKey) : game.domain);
+                const cardDesc = gameStrings.introSubtitle || (t.has(game.descKey) ? t(game.descKey) : "");
+                const voiceText = `${cardTitle}. ${gameStrings.audioPrompt || cardDesc}`;
+                const { bg: cardBg, isDark } = getGameCardTheme(game.id);
 
-            return (
-              <Link
-                key={game.id}
-                href={`/patient/games/${game.id}`}
-                data-voice-desc={voiceText}
-                className={`game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 rounded-3xl border-3 border-black ${cardBg} p-5 shadow-[5px_5px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative`}
-              >
-                {/* Header: Title, Icon & Voice Preview */}
-                <div className="w-full flex items-center justify-between gap-2.5 border-b-2 border-white/20 pb-2.5">
-                  <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
-                    <Icon className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
-                    <span className="truncate">{cardTitle}</span>
-                  </div>
-
-                  {/* Quick Audio Preview Button - Large Accessible Touch Target */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleSpeak(voiceText);
-                    }}
-                    className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-amber-100 cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
-                    title={hub.listenGuide}
-                    aria-label={`${hub.listenGuide}: ${cardTitle}`}
+                return (
+                  <Link
+                    key={game.id}
+                    href={`/patient/games/${game.id}`}
+                    data-voice-desc={voiceText}
+                    className={`game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 rounded-3xl border-3 border-black ${cardBg} p-5 shadow-[5px_5px_0px_#000] transition-transform hover:scale-[1.01] cursor-pointer relative`}
                   >
-                    <Volume2 className="h-6 w-6 stroke-[2.5]" />
-                  </button>
-                </div>
+                    {/* Header: Title, Icon & Voice Preview */}
+                    <div className={`w-full flex items-center justify-between gap-2.5 border-b-2 ${isDark ? "border-white/20" : "border-black/20"} pb-2.5`}>
+                      <div className={`flex items-center gap-2.5 font-black text-sm sm:text-base tracking-wide truncate ${isDark ? "text-white" : "text-black"}`}>
+                        <Icon className={`h-7 w-7 stroke-[2.5] shrink-0 ${isDark ? "text-white" : "text-black"}`} />
+                        <span className="truncate">{cardTitle}</span>
+                      </div>
 
-                {/* Center Visual: Thematic Visual Illustration in crisp white framed box */}
-                <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
-                  <ActivityIllustration gameId={game.id} className="h-12 w-12 sm:h-14 sm:w-14" />
-                </div>
+                      {/* Quick Audio Preview Button - Large Accessible Touch Target */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleSpeak(voiceText);
+                        }}
+                        className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-[#FFFFEC] cursor-pointer shadow-[2px_2px_0px_#000] shrink-0"
+                        title={hub.listenGuide}
+                        aria-label={`${hub.listenGuide}: ${cardTitle}`}
+                      >
+                        <Volume2 className="h-6 w-6 stroke-[2.5]" />
+                      </button>
+                    </div>
 
-                {/* Action Button - Simple Action Text */}
-                <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-amber-100 transition-all">
-                  <span>{gameStrings.startButton || hub.startSession || "Play Now"}</span>
-                  <span>➔</span>
-                </div>
-              </Link>
+                    {/* Center Visual: Thematic Visual Illustration in crisp white framed box */}
+                    <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
+                      <ActivityIllustration gameId={game.id} className="h-12 w-12 sm:h-14 sm:w-14" />
+                    </div>
+
+                    {/* Action Button - Simple Action Text */}
+                    <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-[#FFFFEC] transition-all">
+                      <span>{gameStrings.startButton || hub.startSession || "Play Now"}</span>
+                      <span>➔</span>
+                    </div>
+                  </Link>
             );
           })}
         </div>
