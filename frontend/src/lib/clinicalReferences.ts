@@ -389,9 +389,17 @@ export function getReferencesForGame(gameId: string): ClinicalReference[] {
   switch (gameId) {
     case "bazaar-buddies":
       return [
+        REFERENCE_BY_ID["errorless-clare-2008"],
         REFERENCE_BY_ID["active-jama-2002"],
         REFERENCE_BY_ID["active-jag-2014"],
         REFERENCE_BY_ID["finger-lancet-2015"],
+      ].filter(Boolean);
+    case "root-bridge":
+      return [
+        REFERENCE_BY_ID["moca-nasreddine-2005"],
+        REFERENCE_BY_ID["nih-statpearls-dementia-2022"],
+        REFERENCE_BY_ID["errorless-clare-2008"],
+        REFERENCE_BY_ID["practical-neurology-kataki-2021"],
       ].filter(Boolean);
     case "daily-tasks":
     case "heritage-kitchen":
@@ -433,6 +441,13 @@ export function getReferencesForGame(gameId: string): ClinicalReference[] {
         REFERENCE_BY_ID["cst-cochrane-2012"],
         REFERENCE_BY_ID["cst-jamda-meta-2017"],
         REFERENCE_BY_ID["active-dementia-2017"],
+      ].filter(Boolean);
+    case "family-emotions":
+      return [
+        REFERENCE_BY_ID["nih-statpearls-dementia-2022"],
+        REFERENCE_BY_ID["cst-jamda-meta-2017"],
+        REFERENCE_BY_ID["errorless-clare-2008"],
+        REFERENCE_BY_ID["practical-neurology-kataki-2021"],
       ].filter(Boolean);
     case "memory-garden":
     case "grandchild-chat":

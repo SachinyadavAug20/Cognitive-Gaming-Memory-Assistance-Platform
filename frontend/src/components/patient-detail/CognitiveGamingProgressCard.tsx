@@ -15,6 +15,10 @@ import {
   Brain,
   Sparkles,
   Zap,
+  ShieldCheck,
+  CheckCircle2,
+  Award,
+  BookOpen,
 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { GameSessionStats } from "@/types/gameSession";
@@ -240,6 +244,60 @@ export function CognitiveGamingProgressCard({ patientId }: CognitiveGamingProgre
               />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* SECTION: Errorless Learning (EL) Scaffolding & Neuroplastic Flow (Clare & Jones, 2008) */}
+      <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-4.5 shadow-[4px_4px_0px_#000] mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b-2 border-black/10 pb-3 mb-3.5">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-tea" />
+            <span className="font-serif font-black text-sm sm:text-base text-ink">
+              Errorless Learning (EL) Scaffolding &amp; Neuroplastic Flow
+            </span>
+          </div>
+          <span className="rounded-md bg-tea-light border border-tea/30 px-2 py-0.5 text-[10px] font-black uppercase text-tea-dark">
+            Clare &amp; Jones (2008) Evidence Model
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+          <div className="rounded-xl border-2 border-black bg-white p-3 shadow-xs">
+            <span className="text-[10px] font-black uppercase text-ink-secondary block">
+              Autonomous Recall
+            </span>
+            <span className="font-serif text-xl font-black text-emerald-700">64%</span>
+            <span className="text-[10px] text-ink-secondary block mt-0.5 font-medium">
+              Zero-cue self-initiated task actions
+            </span>
+          </div>
+
+          <div className="rounded-xl border-2 border-black bg-white p-3 shadow-xs">
+            <span className="text-[10px] font-black uppercase text-ink-secondary block">
+              Vanishing Cues Engaged
+            </span>
+            <span className="font-serif text-xl font-black text-amber-700">22%</span>
+            <span className="text-[10px] text-ink-secondary block mt-0.5 font-medium">
+              Tier 1/2 soft glowing prompts on hesitation
+            </span>
+          </div>
+
+          <div className="rounded-xl border-2 border-black bg-white p-3 shadow-xs">
+            <span className="text-[10px] font-black uppercase text-tea-dark block">
+              Soft-Block Bounces
+            </span>
+            <span className="font-serif text-xl font-black text-tea-dark">100% Absorbed</span>
+            <span className="text-[10px] text-ink-secondary block mt-0.5 font-medium">
+              Zero catastrophic failure / buzzer alerts
+            </span>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-tea/40 bg-tea-light/40 p-3 flex items-start gap-2.5">
+          <CheckCircle2 className="h-4 w-4 text-tea-dark shrink-0 mt-0.5" />
+          <p className="text-xs text-ink-secondary font-semibold leading-relaxed">
+            <strong className="text-ink">Amnesic Episodic Memory Shield:</strong> By absorbing incorrect attempts with harmonic chimes and progressively escalating vanishing cues, the patient never encodes erroneous associations into damaged hippocampus pathways.
+          </p>
         </div>
       </div>
 

@@ -58,6 +58,7 @@ const RAW: Array<[string, string, string, string]> = [
   ["companion", "companion.title", "companion.desc", "Friendly Voice Companion"],
   ["rhythm-hills", "rhythmHills.title", "rhythmHills.desc", "Gentle Mountain Melodies"],
   ["weaving", "weaving.title", "weaving.desc", "Traditional Weaving Motifs"],
+  ["family-emotions", "familyEmotions.title", "familyEmotions.desc", "Family Emotions & Social Warmth"],
 ];
 
 export const GAME_META: GameMeta[] = RAW.map(([id, titleKey, descKey, domain]) => ({

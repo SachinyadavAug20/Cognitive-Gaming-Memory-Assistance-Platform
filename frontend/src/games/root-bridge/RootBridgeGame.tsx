@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { GitFork, Music, Trees, Mountain, Home, Waves, Leaf } from "lucide-react";
@@ -24,10 +24,15 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { getGameStrings } from "@/lib/gameI18n";
+import {
+  calculateVanishingCue,
+  validateMoveErrorless,
+  type ScaffoldingIntensity,
+} from "@/lib/errorlessLearning";
 
 export interface RootAnchor {
   id: number;
-  name: string;
+  name: Record<string, string>;
   x: number; // percentage
   connected: boolean;
   iconType: "tree" | "bamboo" | "rock" | "village";
@@ -47,6 +52,7 @@ export function RootBridgeGame() {
   const [score, setScore] = useState(0);
   const [taps, setTaps] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
+  const [hesitationSeconds, setHesitationSeconds] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
 
   const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -62,6 +68,20 @@ export function RootBridgeGame() {
     errorCount,
   });
 
+  // Track hesitation for Errorless Learning Vanishing Cues (Clare & Jones, 2008)
+  useEffect(() => {
+    if (phase !== "build") return;
+    const timer = setInterval(() => {
+      setHesitationSeconds((h) => h + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phase, currentAnchorIdx]);
+
+  const vanishingCue = useMemo(() => {
+    if (phase !== "build") return { intensity: "none" as ScaffoldingIntensity, glowOpacity: 0 };
+    return calculateVanishingCue(hesitationSeconds, errorCount);
+  }, [phase, hesitationSeconds, errorCount]);
+
   useEffect(() => {
     return () => {
       stopSpeaking();
@@ -76,19 +96,60 @@ export function RootBridgeGame() {
     setScore(0);
     setTaps(0);
     setErrorCount(0);
+    setHesitationSeconds(0);
     setStartedAt(new Date().toISOString());
 
     const initialAnchors: RootAnchor[] = [
-      { id: 0, name: "Left Riverbank Fig Tree", x: 15, connected: true, iconType: "tree" },
-      { id: 1, name: "Bamboo Guiding Frame", x: 40, connected: false, iconType: "bamboo" },
-      { id: 2, name: "River Gorge Pillar", x: 65, connected: false, iconType: "rock" },
-      { id: 3, name: "Right Village Bank", x: 88, connected: false, iconType: "village" },
+      {
+        id: 0,
+        name: {
+          en: "Left Riverbank Fig Tree",
+          hi: "बायां किनारा (अंजीर वृक्ष)",
+          as: "বাওঁ নদীৰ ডিমৰু গছ",
+        },
+        x: 15,
+        connected: true,
+        iconType: "tree",
+      },
+      {
+        id: 1,
+        name: {
+          en: "Bamboo Guiding Frame",
+          hi: "बांस का मार्गदर्शक ढांचा",
+          as: "বাঁহৰ সহায়িকা কাঠামো",
+        },
+        x: 40,
+        connected: false,
+        iconType: "bamboo",
+      },
+      {
+        id: 2,
+        name: {
+          en: "River Gorge Pillar",
+          hi: "नदी की चट्टान",
+          as: "নদীৰ শিলৰ স্তম্ভ",
+        },
+        x: 65,
+        connected: false,
+        iconType: "rock",
+      },
+      {
+        id: 3,
+        name: {
+          en: "Right Village Bank",
+          hi: "दायां गांव किनारा",
+          as: "সোঁ নদীৰ গাঁৱৰ পাৰ",
+        },
+        x: 88,
+        connected: false,
+        iconType: "village",
+      },
     ];
     setAnchors(initialAnchors);
     setPhase("build");
   }
 
-  // Automatic errorless scaffolding hint after 10s idle
+  // Automatic errorless scaffolding hint after 8s idle
   useEffect(() => {
     if (phase === "build" && currentAnchorIdx < totalAnchors && !hintActive) {
       if (hintTimer.current) clearTimeout(hintTimer.current);
@@ -97,9 +158,18 @@ export function RootBridgeGame() {
         playPineBreeze();
         const nextAnchor = anchors[currentAnchorIdx + 1];
         if (nextAnchor) {
-          speak(`Tap the next bamboo support at ${nextAnchor.name} to guide the root forward.`, locale, rate);
+          const nextName = nextAnchor.name[locale] || nextAnchor.name.en;
+          speak(
+            locale === "hi"
+              ? `जड़ को आगे बढ़ाने के लिए ${nextName} पर धीरे से टैप करें।`
+              : locale === "as"
+              ? `শিপাটো আগুৱাই নিবলৈ ${nextName} ত স্পৰ্শ কৰক।`
+              : `Tap the next bamboo support at ${nextName} to guide the root forward.`,
+            locale,
+            rate
+          );
         }
-      }, 10000);
+      }, 8000);
     }
     return () => {
       if (hintTimer.current) clearTimeout(hintTimer.current);
@@ -111,13 +181,15 @@ export function RootBridgeGame() {
     setTaps((v) => v + 1);
 
     const expectedNextIdx = currentAnchorIdx + 1;
+    const validation = validateMoveErrorless(targetIdx, expectedNextIdx);
 
-    if (targetIdx === expectedNextIdx) {
+    if (validation.isCorrect) {
       playLandmarkChime();
       playCorrect();
       setScore((s) => s + 1);
       setCurrentAnchorIdx(expectedNextIdx);
       setHintActive(false);
+      setHesitationSeconds(0);
 
       setAnchors((prev) =>
         prev.map((a, i) => (i === expectedNextIdx ? { ...a, connected: true } : a))
@@ -128,17 +200,35 @@ export function RootBridgeGame() {
       } else {
         const nextAnchor = anchors[expectedNextIdx + 1];
         if (nextAnchor) {
-          speak(`Root connected! Now guide it forward to ${nextAnchor.name}.`, locale, rate);
+          const nextName = nextAnchor.name[locale] || nextAnchor.name.en;
+          speak(
+            locale === "hi"
+              ? `बहुत बढ़िया! अब जड़ को ${nextName} तक आगे बढ़ाएं।`
+              : locale === "as"
+              ? `বৰ সুন্দৰ! এতিয়া শিপাটো ${nextName} লৈ আগুৱাই নিয়ক।`
+              : `Root connected! Now guide it forward to ${nextName}.`,
+            locale,
+            rate
+          );
         }
       }
     } else {
-      // Errorless Scaffolding
+      // Errorless Scaffolding: Soft harmonic bounce without harsh buzzers
       setErrorCount((e) => e + 1);
       playPineBreeze();
       setHintActive(true);
       const nextExpected = anchors[expectedNextIdx];
       if (nextExpected) {
-        speak(`Let us connect the root step-by-step. Tap ${nextExpected.name}.`, locale, rate);
+        const expectedName = nextExpected.name[locale] || nextExpected.name.en;
+        speak(
+          locale === "hi"
+            ? `आराम से! आइए जड़ को पहले ${expectedName} से जोड़ते हैं।`
+            : locale === "as"
+            ? `লাহেকৈ! আহক শিপাটোক প্ৰথমে ${expectedName} ৰ লগত সংযোগ কৰোঁ।`
+            : `Take your time. Let's connect the root to ${expectedName} next.`,
+          locale,
+          rate
+        );
       }
     }
   }
@@ -173,7 +263,7 @@ export function RootBridgeGame() {
   if (error)
     return (
       <section className="pb-12">
-        <GameHeader title={str.title} score={0} backHref="/patient/games" bgColor="bg-tea" />
+        <GameHeader title={str.title} score={0} backHref="/patient/games" bgColor="bg-tea" gameId="root-bridge" />
         <div className="mx-auto max-w-3xl px-4 pt-6">
           <GameError onRetry={reload} />
         </div>
@@ -182,7 +272,7 @@ export function RootBridgeGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title={str.title} score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader title={str.title} score={score} backHref="/patient/games" bgColor="bg-tea" gameId="root-bridge" />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">
@@ -311,6 +401,12 @@ export function RootBridgeGame() {
               <div className="relative z-20 flex items-center justify-between h-full px-2">
                 {anchors.map((anchor, idx) => {
                   const isExpected = idx === currentAnchorIdx + 1;
+                  const isScaffolded = isExpected && (hintActive || vanishingCue.intensity !== "none" || errorCount > 0);
+                  const glowClass = isScaffolded
+                    ? vanishingCue.intensity === "guided_highlight" || errorCount > 0
+                      ? "ring-4 ring-amber-400 bg-amber-400/40 scale-110 animate-pulse rounded-2xl p-1 shadow-[0_0_20px_rgba(245,158,11,0.9)]"
+                      : "ring-2 ring-emerald-300 bg-emerald-400/25 scale-105 animate-pulse rounded-2xl p-1"
+                    : "";
 
                   return (
                     <button
@@ -320,8 +416,8 @@ export function RootBridgeGame() {
                       className={`btn-tactile flex flex-col items-center gap-1 transition-all duration-300 cursor-pointer ${
                         anchor.connected
                           ? "scale-110"
-                          : isExpected && hintActive
-                          ? "ring-4 ring-amber-400 bg-amber-400/30 scale-110 animate-pulse rounded-2xl p-1"
+                          : isScaffolded
+                          ? glowClass
                           : "opacity-60"
                       }`}
                     >
@@ -331,8 +427,8 @@ export function RootBridgeGame() {
                         {anchor.iconType === "rock" && <Mountain className="h-8 w-8 text-stone-300" />}
                         {anchor.iconType === "village" && <Home className="h-8 w-8 text-amber-300" />}
                       </div>
-                      <span className="text-[10px] font-black text-white/90 max-w-[65px] text-center leading-tight">
-                        {anchor.name}
+                      <span className="text-[10px] font-black text-white/90 max-w-[70px] text-center leading-tight">
+                        {anchor.name[locale] || anchor.name.en}
                       </span>
                     </button>
                   );

@@ -38,6 +38,7 @@ import {
   MessageCircleHeart,
   Headphones,
   Sliders,
+  Heart,
 } from "lucide-react";
 
 import dynamic from "next/dynamic";
@@ -89,6 +90,7 @@ const CompanionGame = dynamic(() => import("./companion/CompanionGame").then((m)
 const RhythmHillsGame = dynamic(() => import("./rhythm-hills/RhythmHillsGame").then((m) => m.RhythmHillsGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const WeavingGame = dynamic(() => import("./weaving/WeavingGame").then((m) => m.WeavingGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const AncestralHerbalistGame = dynamic(() => import("./ancestral-herbalist/AncestralHerbalistGame").then((m) => m.AncestralHerbalistGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const FamilyEmotionsGame = dynamic(() => import("./family-emotions/FamilyEmotionsGame").then((m) => m.FamilyEmotionsGame), { loading: () => <GameLoaderFallback />, ssr: false });
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -536,6 +538,17 @@ export const GAMES: GameDef[] = [
     category: "attention",
     recommended: true,
     component: WeavingGame,
+  },
+  {
+    id: "family-emotions",
+    icon: Heart,
+    titleKey: "familyEmotions.title",
+    descKey: "familyEmotions.desc",
+    accent: "bg-[#BE123C]",
+    domain: "Family Emotions & Social Warmth",
+    category: "reminiscence",
+    recommended: true,
+    component: FamilyEmotionsGame,
   },
 ];
 

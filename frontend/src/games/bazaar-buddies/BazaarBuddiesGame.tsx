@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -39,6 +39,11 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import {
+  calculateVanishingCue,
+  validateMoveErrorless,
+  type ScaffoldingIntensity,
+} from "@/lib/errorlessLearning";
 
 function GameShell({
   title,
@@ -56,6 +61,7 @@ function GameShell({
         score={score}
         backHref="/patient/games"
         bgColor="bg-tea"
+        gameId="bazaar-buddies"
       />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
@@ -279,6 +285,23 @@ export function BazaarBuddiesGame() {
   const [startedAt, setStartedAt] = useState<string | null>(null);
   const [taps, setTaps] = useState(0);
   const [errors, setErrors] = useState(0);
+  const [changeHesitation, setChangeHesitation] = useState(0);
+  const [changeAttempts, setChangeAttempts] = useState(0);
+  const [softBounceFeedback, setSoftBounceFeedback] = useState<string | null>(null);
+
+  // Active hesitation monitoring for Errorless Learning vanishing cues (Clare & Jones, 2008)
+  useEffect(() => {
+    if (phase !== "change" || changeGiven !== null) return;
+    const timer = setInterval(() => {
+      setChangeHesitation((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phase, changeGiven]);
+
+  const vanishingCue = useMemo(() => {
+    if (phase !== "change") return { intensity: "none" as ScaffoldingIntensity, glowOpacity: 0 };
+    return calculateVanishingCue(changeHesitation, changeAttempts);
+  }, [phase, changeHesitation, changeAttempts]);
 
   const localeKey = locale ?? "en";
 
@@ -384,13 +407,19 @@ export function BazaarBuddiesGame() {
     playCorrect();
     setPhase("change");
     setPaymentNotes((prev) => [...prev]);
+    setChangeHesitation(0);
+    setChangeAttempts(0);
+    setSoftBounceFeedback(null);
   }, [paidAmount, total, locale, rate]);
 
   const submitChange = useCallback(
     (value: number) => {
       setTaps((t) => t + 1);
-      setChangeGiven(value);
-      if (value === correctChange) {
+      const validation = validateMoveErrorless(value, correctChange);
+
+      if (validation.isCorrect) {
+        setChangeGiven(value);
+        setSoftBounceFeedback(null);
         playCorrect();
         speak(t("correct"), locale, rate);
         setTimeout(() => {
@@ -409,18 +438,17 @@ export function BazaarBuddiesGame() {
           }
         }, 1200);
       } else {
+        // Errorless Learning Soft-Blocking: Absorbs mistake gently, preserves self-efficacy
+        setChangeAttempts((a) => a + 1);
         playEncourage();
-        setErrors((e) => e + 1);
-        speak(
+        const hintMsg =
           locale === "hi"
-            ? `बहुत करीब! ₹${paidAmount} में से ₹${total} घटाएं तो सही छुट्टा है ₹${correctChange}`
+            ? `बहुत करीब! ₹${paidAmount} में से ₹${total} घटाएं तो सही छुट्टा है ₹${correctChange}। चमकते नोट को चुनें।`
             : locale === "as"
-            ? `প্ৰায় মিলিছিল! ₹${paidAmount} টকাৰ পৰা ₹${total} টকা বাদ দিলে সঠিক ভাঙতি হ'ব ₹${correctChange}`
-            : `Almost there! ₹${paidAmount} minus ₹${total} equals ₹${correctChange}. Let's select ₹${correctChange}.`,
-          locale,
-          rate
-        );
-        setTimeout(() => setChangeGiven(null), 2500);
+            ? `প্ৰায় মিলিছিল! ₹${paidAmount} টকাৰ পৰা ₹${total} টকা বাদ দিলে সঠিক ভাঙতি হ'ব ₹${correctChange}। উজ্বল নোটটো বাচক।`
+            : `Almost there! ₹${paidAmount} minus ₹${total} equals ₹${correctChange}. Let's select the glowing ₹${correctChange} note.`;
+        setSoftBounceFeedback(hintMsg);
+        speak(hintMsg, locale, rate);
       }
     },
     [correctChange, paidAmount, total, startedAt, patientId, level, taps, errors, locale, rate, t]
@@ -450,6 +478,9 @@ export function BazaarBuddiesGame() {
     setStartedAt(null);
     setTaps(0);
     setErrors(0);
+    setChangeHesitation(0);
+    setChangeAttempts(0);
+    setSoftBounceFeedback(null);
   }, []);
 
   const startGame = useCallback(() => {
@@ -762,30 +793,36 @@ export function BazaarBuddiesGame() {
             </p>
             <div className="flex flex-wrap gap-2">
               {PAYMENT_NOTES.map((note) => {
-                const isHinted = (hintUsed || (changeGiven !== null && changeGiven !== correctChange)) && note === correctChange;
+                const isTarget = note === correctChange;
+                const isHinted =
+                  isTarget &&
+                  (hintUsed ||
+                    changeAttempts > 0 ||
+                    vanishingCue.intensity !== "none");
+                const cueStyle =
+                  isTarget && isHinted
+                    ? vanishingCue.intensity === "guided_highlight" || changeAttempts > 0
+                      ? "ring-4 ring-amber-400 animate-pulse scale-105 border-amber-600 shadow-[0_0_18px_rgba(245,158,11,0.85)]"
+                      : "ring-2 ring-amber-300 animate-pulse scale-102 border-amber-500"
+                    : "";
+
                 return (
                   <button
                     key={note}
                     type="button"
                     onClick={() => submitChange(note)}
-                    disabled={changeGiven !== null}
-                    className={`btn-tactile rounded-2xl border-3 border-black px-4 py-3 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer min-w-[76px] disabled:opacity-40 ${noteBg(note)} ${
-                      isHinted ? "ring-4 ring-amber-400 animate-pulse scale-105 border-amber-600" : ""
-                    }`}
+                    disabled={changeGiven !== null && changeGiven === correctChange}
+                    className={`btn-tactile rounded-2xl border-3 border-black px-4 py-3 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer min-w-[76px] disabled:opacity-40 ${noteBg(note)} ${cueStyle}`}
                   >
                     ₹{note}
                   </button>
                 );
               })}
             </div>
-            {changeGiven !== null && changeGiven !== correctChange && (
+            {softBounceFeedback && (
               <div className="mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 p-2.5 text-center">
                 <p className="text-xs font-bold text-amber-950">
-                  {locale === "hi"
-                    ? `लगभग सही! ₹${paidAmount} - ₹${total} = ₹${correctChange}। आइए चमकते ₹${correctChange} के नोट को चुनें।`
-                    : locale === "as"
-                    ? `প্ৰায় মিলিছিল! ₹${paidAmount} - ₹${total} = ₹${correctChange}। আহক উজ্বল ₹${correctChange} টকাৰ নোটটো বাচক।`
-                    : `Almost there! ₹${paidAmount} - ₹${total} = ₹${correctChange}. Select the glowing ₹${correctChange} note.`}
+                  {softBounceFeedback}
                 </p>
               </div>
             )}

@@ -42,6 +42,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { validateMoveErrorless } from "@/lib/errorlessLearning";
 
 function GameShell({
   title,
@@ -59,6 +60,7 @@ function GameShell({
         score={score}
         backHref="/patient/games"
         bgColor="bg-tea"
+        gameId="memory-garden"
       />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
@@ -417,7 +419,8 @@ export function MemoryGardenGame() {
       playTapFeedback();
       setTaps((v) => v + 1);
       resultRef.current.taps = taps + 1;
-      if (index === changeChangedIndex) {
+      const validation = validateMoveErrorless(index, changeChangedIndex);
+      if (validation.isCorrect) {
         setChangeFeedback("correct");
         playCorrect();
         setScore((s) => {
@@ -443,6 +446,7 @@ export function MemoryGardenGame() {
           window.setTimeout(showIntro, 2600);
         }, 1400);
       } else {
+        // Errorless Scaffolding: Soft harmonic bounce with vanishing cue
         setChangeFeedback("wrong");
         setErrors((e) => {
           const ne = e + 1;
@@ -450,7 +454,13 @@ export function MemoryGardenGame() {
           return ne;
         });
         playEncourage();
-        speak(t("whatChanged.wrong"), locale, rate);
+        const hintVoice =
+          locale === "hi"
+            ? "कोई बात नहीं! आइए चमकते हुए पौधे को ध्यान से देखते हैं।"
+            : locale === "as"
+            ? "একো কথা নাই! আহক উজ্বল হৈ থকা গছজোপালৈ মন কৰোঁ।"
+            : t("whatChanged.wrong");
+        speak(hintVoice, locale, rate);
         setShowGardenHint(true);
         window.setTimeout(() => setChangeFeedback("idle"), 1500);
       }
@@ -479,7 +489,9 @@ export function MemoryGardenGame() {
       resultRef.current.taps = taps + 1;
       const current = sequenceIndex;
       const tapped = sequenceOptions[index];
-      if (tapped.id === sequenceItems[current].id) {
+      const validation = validateMoveErrorless(tapped.id, sequenceItems[current].id);
+
+      if (validation.isCorrect) {
         playCorrect();
         setScore((s) => {
           const ns = s + 5;
@@ -511,6 +523,7 @@ export function MemoryGardenGame() {
           }
         }, 600);
       } else {
+        // Errorless Scaffolding: Soft bounce without harsh failure
         setSequenceFeedback("wrong");
         setErrors((e) => {
           const ne = e + 1;
@@ -518,7 +531,13 @@ export function MemoryGardenGame() {
           return ne;
         });
         playEncourage();
-        speak(t("sequence.wrong"), locale, rate);
+        const seqVoice =
+          locale === "hi"
+            ? "आराम से! देखिए, अगला चमकता हुआ फूल आपका मार्गदर्शन कर रहा है।"
+            : locale === "as"
+            ? "লাহেকৈ কৰক! চাওক, পৰৱৰ্তী উজ্বল ফুলটোৱে আপোনাক সহায় কৰিছে।"
+            : t("sequence.wrong");
+        speak(seqVoice, locale, rate);
         setShowGardenHint(true);
         window.setTimeout(() => setSequenceFeedback("idle"), 1200);
       }

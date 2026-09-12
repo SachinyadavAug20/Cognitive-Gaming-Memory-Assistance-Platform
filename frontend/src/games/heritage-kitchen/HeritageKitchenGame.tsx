@@ -38,6 +38,7 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { getGameStrings } from "@/lib/gameI18n";
+import { calculateVanishingCue, validateMoveErrorless } from "@/lib/errorlessLearning";
 
 export interface RecipeStep {
   id: string;
@@ -128,12 +129,12 @@ export function HeritageKitchenGame() {
   const [potIngredients, setPotIngredients] = useState<RecipeStep[]>([]);
   const [isSizzling, setIsSizzling] = useState(false);
   const [hintActive, setHintActive] = useState(false);
+  const [hesitationSeconds, setHesitationSeconds] = useState(0);
+  const [attemptCount, setAttemptCount] = useState(0);
   const [score, setScore] = useState(0);
   const [taps, setTaps] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
   const [startedAt, setStartedAt] = useState<string | null>(null);
-
-  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const recipe = RECIPES[recipeIdx] ?? RECIPES[0];
   const currentStep = recipe.steps[stepIdx] ?? null;
@@ -159,9 +160,20 @@ export function HeritageKitchenGame() {
   useEffect(() => {
     return () => {
       stopSpeaking();
-      if (hintTimer.current) clearTimeout(hintTimer.current);
     };
   }, []);
+
+  // Track hesitation for vanishing cues
+  useEffect(() => {
+    if (phase !== "cook" || !currentStep) return;
+    setHesitationSeconds(0);
+    const interval = setInterval(() => {
+      setHesitationSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [phase, currentStep, stepIdx]);
+
+  const scaffold = calculateVanishingCue(hesitationSeconds, attemptCount);
 
   const announceStep = useCallback(
     (step: RecipeStep) => {
@@ -179,6 +191,8 @@ export function HeritageKitchenGame() {
     setPotIngredients([]);
     setIsSizzling(false);
     setHintActive(false);
+    setHesitationSeconds(0);
+    setAttemptCount(0);
     setScore(0);
     setTaps(0);
     setErrorCount(0);
@@ -186,33 +200,21 @@ export function HeritageKitchenGame() {
     setPhase("cook");
   }
 
-  // Automatic errorless scaffolding hint after 10s idle
-  useEffect(() => {
-    if (phase === "cook" && currentStep && !hintActive) {
-      if (hintTimer.current) clearTimeout(hintTimer.current);
-      hintTimer.current = setTimeout(() => {
-        setHintActive(true);
-        playPineBreeze();
-      }, 10000);
-    }
-    return () => {
-      if (hintTimer.current) clearTimeout(hintTimer.current);
-    };
-  }, [phase, currentStep, hintActive]);
-
   function handleAddIngredient(chosen: RecipeStep) {
     if (!currentStep || isSizzling) return;
     setTaps((v) => v + 1);
 
-    const isCorrect = chosen.id === currentStep.id;
+    const validation = validateMoveErrorless(chosen.id, currentStep.id);
 
-    if (isCorrect) {
+    if (validation.isCorrect) {
       playSizzle();
       playCorrect();
       setIsSizzling(true);
       setScore((s) => s + 1);
       setPotIngredients((prev) => [...prev, chosen]);
       setHintActive(false);
+      setHesitationSeconds(0);
+      setAttemptCount(0);
 
       setTimeout(() => {
         setIsSizzling(false);
@@ -225,11 +227,20 @@ export function HeritageKitchenGame() {
         }
       }, 1000);
     } else {
-      // Errorless Scaffolding
+      // Errorless Scaffolding soft-blocking (gentle harmonic bounce)
       setErrorCount((e) => e + 1);
+      setAttemptCount((a) => a + 1);
       playPineBreeze();
       setHintActive(true);
-      speak(`Let us first add the ${currentStep.name}.`, locale, rate);
+      speak(
+        locale === "hi"
+          ? `पहले ${currentStep.name} को कड़ाही में डालें।`
+          : locale === "as"
+          ? `প্ৰথমে ${currentStep.name} পাত্ৰত দিয়ক।`
+          : `Let us first add the ${currentStep.name}. Notice the gentle golden guide.`,
+        locale,
+        rate
+      );
     }
   }
 
@@ -408,6 +419,7 @@ export function HeritageKitchenGame() {
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {ingredientOptions.map((item) => {
                   const isTarget = item.id === currentStep?.id;
+                  const isCueActive = isTarget && (hintActive || scaffold.intensity !== "none" || attemptCount > 0);
                   const ItemIcon = item.icon;
 
                   return (
@@ -416,13 +428,20 @@ export function HeritageKitchenGame() {
                       type="button"
                       onClick={() => handleAddIngredient(item)}
                       disabled={isSizzling}
-                      className={`btn-tactile group relative flex flex-col items-center gap-1 rounded-2xl border-3 border-black p-3 transition-all duration-200 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 ${
-                        hintActive && isTarget
-                          ? "ring-4 ring-marigold bg-marigold-light scale-105"
-                          : "bg-surface text-ink hover:bg-surface-muted"
+                      className={`btn-tactile group relative flex flex-col items-center gap-1 rounded-2xl border-3 p-3 transition-all duration-200 cursor-pointer shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-0.5 ${
+                        isCueActive
+                          ? scaffold.intensity === "guided_highlight" || attemptCount >= 2
+                            ? "ring-4 ring-amber-500 bg-amber-100 border-amber-700 shadow-[0_0_20px_rgba(245,158,11,0.6)] animate-pulse scale-105"
+                            : "ring-4 ring-amber-400/80 bg-amber-50 border-amber-600 animate-pulse scale-[1.02]"
+                          : "border-black bg-surface text-ink hover:bg-surface-muted"
                       }`}
                     >
-                      <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50">
+                      {isCueActive && (
+                        <span className="absolute -top-2.5 right-1 rounded-full bg-amber-200 border border-amber-500 px-1.5 py-0.2 text-[9px] font-black text-amber-950 uppercase tracking-tight shadow-xs">
+                          Guide ✨
+                        </span>
+                      )}
+                      <div className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl border-2 ${isCueActive ? "border-amber-500 bg-amber-100" : "border-black/20 bg-amber-50"}`}>
                         <ItemIcon className="h-5 w-5 sm:h-6 sm:w-6 text-amber-900" />
                       </div>
                       <span className="text-xs font-black leading-tight truncate max-w-[90px]">

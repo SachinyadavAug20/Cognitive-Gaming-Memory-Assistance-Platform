@@ -956,6 +956,7 @@ export function ActivityIllustration({ gameId, className = "h-12 w-12 sm:h-14 sm
     case "timeline":
       return <KeepsakeAlbumIllustration className={className} />;
     case "memory-detective":
+    case "family-emotions":
       return <FamilyIllustration className={className} />;
     case "tuned-drum":
       return <TunedGongIllustration className={className} />;

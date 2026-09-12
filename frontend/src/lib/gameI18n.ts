@@ -27,6 +27,50 @@ export type SupportedLocale =
   | "lus";
 
 export const GAME_I18N_STRINGS: Record<string, Partial<Record<SupportedLocale, GameLocalizedStrings>>> = {
+  "family-emotions": {
+    en: {
+      title: "Family Emotions & Social Warmth",
+      introTitle: "Family Emotions & Social Warmth",
+      introSubtitle: "Recognize the loving facial expressions of family members in peaceful everyday moments.",
+      audioPrompt: "Welcome to Family Emotions. Look at each family scenario and select the emotion that fills their heart.",
+      startButton: "Start Emotion Journey",
+      listenLabel: "Read for Me",
+      playAgainButton: "Play Journey Again",
+      backToHub: "← Back to Games",
+      celebrationTitle: "Social Warmth Mastered!",
+      celebrationSubtitle: "Splendid! You recognized all family facial expressions with empathy, warmth, and accuracy.",
+      hudProgress: "Emotions Recognized",
+      hudAction: "Select the Matching Emotion",
+    },
+    hi: {
+      title: "भाव-मिलन: चेहरे के भाव और पारिवारिक स्नेह",
+      introTitle: "भाव-मिलन: चेहरे के भाव और पारिवारिक स्नेह",
+      introSubtitle: "परिवार के सदस्यों के चेहरे के सुंदर भावों—आनंद, शांति, स्नेह और आश्चर्य—को पहचानें।",
+      audioPrompt: "भाव-मिलन में आपका स्वागत है। परिवार के सदस्यों के चेहरों को देखकर उनके मन के भावों को पहचानें।",
+      startButton: "अभ्यास शुरू करें",
+      listenLabel: "मुझे पढ़कर सुनाएं",
+      playAgainButton: "फिर से खेलें",
+      backToHub: "← खेलों पर वापस",
+      celebrationTitle: "भाव-मिलन संपन्न!",
+      celebrationSubtitle: "बहुत खूब! आपने परिवार के सदस्यों के चेहरों के सभी भावों को प्रेम और समझ के साथ पहचाना।",
+      hudProgress: "पहचाने गए भाव",
+      hudAction: "सही भाव चुनें",
+    },
+    as: {
+      title: "ভাব-মিলন: মুখাবয়ব ও মনৰ ভাৱ",
+      introTitle: "ভাব-মিলন: মুখাবয়ব ও মনৰ ভাৱ",
+      introSubtitle: "পৰিয়ালৰ সদস্যসকলৰ মুখৰ হাঁহি, মৰম, শান্তি আৰু আনন্দৰ ভাৱসমূহ চিনি লওক।",
+      audioPrompt: "ভাব-মিলনলৈ স্বাগতম। আহক আমি পৰিয়ালৰ মুখৰ মৰম আৰু আনন্দৰ ভাৱবোৰ চিনি পাওঁ।",
+      startButton: "খেল আৰম্ভ কৰক",
+      listenLabel: "মোক পঢ়ি শুনাওক",
+      playAgainButton: "পুনৰ খেলক",
+      backToHub: "← খেললৈ উভতি যাওক",
+      celebrationTitle: "ভাব-মিলন খেল সম্পন্ন!",
+      celebrationSubtitle: "অপূৰ্ব! আপুনি পৰিয়ালৰ সকলো মৰম আৰু হাঁহিৰ ভাৱ অতি সুন্দৰভাৱে চিনি পালে।",
+      hudProgress: "চিনাক্ত ভাৱ",
+      hudAction: "সঠিক ভাৱ বাছক",
+    },
+  },
   "ancestral-herbalist": {
     en: {
       title: "Ancestral Healing Herbs",

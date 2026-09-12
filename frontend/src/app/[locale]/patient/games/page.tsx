@@ -124,6 +124,7 @@ function getGameCardBg(id: string): string {
     case "alpana":
       return "bg-[#9D246C]"; // vibrant Kopou orchid plum
     case "grandchild-chat":
+    case "family-emotions":
       return "bg-[#BE123C]"; // vibrant warm rose
     case "memory-detective":
       return "bg-[#A21CAF]"; // vibrant royal berry orchid

@@ -23,6 +23,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { calculateVanishingCue, validateMoveErrorless } from "@/lib/errorlessLearning";
 
 const ALL_STEPS = [
   { key: "water", icon: Droplets, color: "text-emerald-700" },
@@ -58,6 +59,8 @@ export function MakeMyTeaGame() {
   const [taps, setTaps] = useState(0);
   const [hintActive, setHintActive] = useState(false);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
+  const [hesitationSeconds, setHesitationSeconds] = useState(0);
+  const [attemptCount, setAttemptCount] = useState(0);
 
   const guard = useSessionGuard({
     patientId,
@@ -81,15 +84,17 @@ export function MakeMyTeaGame() {
     return [...pool].sort((a, b) => (a.key.charCodeAt(0) * (progress + 3)) % 7 - (b.key.charCodeAt(0) * (progress + 3)) % 7);
   }, [current, level, progress]);
 
-  // Automatic errorless scaffolding if player hesitates > 8s
+  // Track hesitation time for clinical vanishing cue progression (Clare & Jones, 2008)
   useEffect(() => {
     if (done) return;
-    setHintActive(false);
-    const timer = setTimeout(() => {
-      setHintActive(true);
-    }, 8000);
-    return () => clearTimeout(timer);
+    setHesitationSeconds(0);
+    const timer = setInterval(() => {
+      setHesitationSeconds((s) => s + 1);
+    }, 1000);
+    return () => clearInterval(timer);
   }, [progress, done]);
+
+  const scaffold = calculateVanishingCue(hesitationSeconds, attemptCount);
 
   useEffect(() => () => stopSpeaking(), []);
 
@@ -99,12 +104,16 @@ export function MakeMyTeaGame() {
     setDone(false);
     setTaps(0);
     setHintActive(false);
+    setHesitationSeconds(0);
+    setAttemptCount(0);
   }
 
   function handleChooseChoice(stepKey: typeof ALL_STEPS[number]["key"]) {
     setTaps((v) => v + 1);
 
-    if (stepKey === current.key) {
+    const validation = validateMoveErrorless(stepKey, current.key);
+
+    if (validation.isCorrect) {
       if (current.key === "water") {
         playWaterRipple();
       } else if (current.key === "leaves") {
@@ -121,6 +130,8 @@ export function MakeMyTeaGame() {
       }
 
       setHintActive(false);
+      setAttemptCount(0);
+      setHesitationSeconds(0);
 
       if (progress + 1 >= steps.length) {
         stopSpeaking();
@@ -148,15 +159,16 @@ export function MakeMyTeaGame() {
         }
       }
     } else {
-      // Errorless Scaffolding
+      // Errorless Scaffolding soft-blocking (absorbs error without negative buzzer)
       playWaterRipple();
+      setAttemptCount((a) => a + 1);
       setHintActive(true);
       speak(
         locale === "hi"
-          ? `पहले ${t(`dailyTasks.actions.${current.key}`)}। चमकती हुई वस्तु को चुनें।`
+          ? `पहले ${t(`dailyTasks.actions.${current.key}`)}। सुनहरी चमक वाली वस्तु को चुनें।`
           : locale === "as"
-          ? `প্ৰথমে ${t(`dailyTasks.actions.${current.key}`)}। পোহৰ হৈ থকা বস্তুটো বাচক।`
-          : `Let's first ${t(`dailyTasks.actions.${current.key}`)}. Select the glowing item.`,
+          ? `প্ৰথমে ${t(`dailyTasks.actions.${current.key}`)}। সোণালী পোহৰ হৈ থকা বস্তুটো বাচক।`
+          : `Let's first ${t(`dailyTasks.actions.${current.key}`)}. Select the softly glowing item.`,
         locale,
         rate
       );
@@ -269,19 +281,29 @@ export function MakeMyTeaGame() {
               {choices.map((step) => {
                 const StepIcon = step.icon;
                 const isTarget = step.key === current.key;
-                const isHinted = hintActive && isTarget;
+                const isCueActive = isTarget && (hintActive || scaffold.intensity !== "none" || attemptCount > 0);
+
                 return (
                   <button
                     key={step.key}
                     type="button"
                     onClick={() => handleChooseChoice(step.key)}
-                    className={`btn-tactile flex flex-col items-center justify-center gap-2 rounded-2xl border-3 border-black p-3.5 text-center shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer ${
-                      isHinted
-                        ? "bg-amber-100 ring-4 ring-amber-400 animate-pulse border-amber-600 scale-105"
+                    className={`btn-tactile relative flex flex-col items-center justify-center gap-2 rounded-2xl border-3 border-black p-3.5 text-center shadow-[3px_3px_0px_#000] transition-all active:translate-y-0.5 cursor-pointer ${
+                      isCueActive
+                        ? scaffold.intensity === "guided_highlight" || attemptCount >= 2
+                          ? "bg-amber-100 ring-4 ring-amber-500 border-amber-700 shadow-[0_0_20px_rgba(245,158,11,0.6)] animate-pulse scale-105"
+                          : scaffold.intensity === "forward_pulse" || attemptCount === 1
+                          ? "bg-amber-50 ring-4 ring-amber-400/80 border-amber-600 shadow-[0_0_12px_rgba(245,158,11,0.4)] animate-pulse scale-[1.02]"
+                          : "bg-amber-50/70 border-amber-500 ring-2 ring-amber-300"
                         : "bg-surface hover:bg-[#FAF5EE]"
                     }`}
                   >
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black/5">
+                    {isCueActive && (
+                      <span className="absolute -top-2.5 right-1 rounded-full bg-amber-200 border border-amber-500 px-1.5 py-0.2 text-[9px] font-black text-amber-950 uppercase tracking-tight shadow-xs">
+                        Guide ✨
+                      </span>
+                    )}
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${isCueActive ? "bg-amber-100" : "bg-black/5"}`}>
                       <StepIcon className={`h-7 w-7 stroke-[2.2] ${step.color}`} />
                     </div>
                     <span className="text-xs font-black text-ink leading-tight">
@@ -293,10 +315,13 @@ export function MakeMyTeaGame() {
             </div>
           </div>
 
-          {!hintActive && (
+          {!hintActive && scaffold.intensity === "none" && attemptCount === 0 && (
             <button
               type="button"
-              onClick={() => setHintActive(true)}
+              onClick={() => {
+                setHintActive(true);
+                setAttemptCount(1);
+              }}
               className="flex items-center gap-1.5 rounded-xl border-2 border-amber-700 bg-amber-50 px-3.5 py-1.5 text-xs font-black text-amber-950 shadow-[1px_1px_0px_#000] hover:bg-amber-100 transition-transform active:translate-y-0.5 cursor-pointer"
             >
               <Sparkles className="h-3.5 w-3.5 text-amber-700" />
