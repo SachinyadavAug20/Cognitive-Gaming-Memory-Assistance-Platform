@@ -14,6 +14,9 @@ import {
   TrendingUp,
   Clock,
   Sparkles,
+  BookOpen,
+  ExternalLink,
+  FileText,
 } from "lucide-react";
 
 interface StateTelemetry {
@@ -375,6 +378,100 @@ export function CommandCenterClient() {
             </div>
           </div>
         </div>
+
+        {/* STATUTORY CLINICAL GOVERNANCE & SCIENTIFIC CITATIONS */}
+        <section className="rounded-3xl border-3 border-black bg-white p-5 sm:p-6 shadow-[5px_5px_0px_#000] text-left space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black/10 pb-3">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl border-2 border-black bg-emerald-100 text-emerald-900">
+                <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
+              </div>
+              <div>
+                <h3 className="font-serif font-black text-base text-ink">
+                  Statutory Healthcare Governance &amp; Clinical Telemetry Standards
+                </h3>
+                <p className="text-[11px] text-ink-secondary">
+                  Aligned with official CDSCO, ICMR, ABDM, and WHO regulatory mandates
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/clinical-evidence"
+              className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea px-3 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-emerald-900 transition-colors"
+            >
+              <FileText className="h-3.5 w-3.5" />
+              <span>SaMD Class B Dossier</span>
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div className="rounded-2xl border-2 border-black/20 bg-stone-50 p-3 space-y-1.5">
+              <span className="font-black text-rose-800 text-[11px] uppercase tracking-wide">CDSCO SaMD Class B</span>
+              <p className="text-[11px] text-stone-600 leading-snug">
+                Medical Device Rules 2017 framework governing non-invasive digital screening software tools.
+              </p>
+              <a
+                href="https://cdsco.gov.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-800 hover:underline"
+              >
+                <span>CDSCO Official Portal</span>
+                <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+
+            <div className="rounded-2xl border-2 border-black/20 bg-stone-50 p-3 space-y-1.5">
+              <span className="font-black text-emerald-800 text-[11px] uppercase tracking-wide">ICMR AI Ethics 2023</span>
+              <p className="text-[11px] text-stone-600 leading-snug">
+                National biomedical AI guidelines mandating patient autonomy, zero cloud egress, and data privacy.
+              </p>
+              <a
+                href="https://main.icmr.nic.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 hover:underline"
+              >
+                <span>ICMR Guidelines (2023)</span>
+                <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+
+            <div className="rounded-2xl border-2 border-black/20 bg-stone-50 p-3 space-y-1.5">
+              <span className="font-black text-indigo-800 text-[11px] uppercase tracking-wide">ABDM FHIR R4 NHA</span>
+              <p className="text-[11px] text-stone-600 leading-snug">
+                Standardized HL7/FHIR longitudinal health record architecture binding telemetry to ABHA IDs.
+              </p>
+              <a
+                href="https://abdm.gov.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-800 hover:underline"
+              >
+                <span>ABDM Architecture</span>
+                <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+
+            <div className="rounded-2xl border-2 border-black/20 bg-stone-50 p-3 space-y-1.5">
+              <span className="font-black text-teal-800 text-[11px] uppercase tracking-wide">Geronto-Neurology</span>
+              <p className="text-[11px] text-stone-600 leading-snug">
+                Bedside cognitive telemetry and non-pharmacological care in rural Indian districts.
+              </p>
+              <a
+                href="https://practicalneurology.com/articles/2021-june/clinical-approach-to-dementia"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[10px] font-bold text-teal-800 hover:underline"
+              >
+                <span>Bouchachi &amp; Kataki (2021)</span>
+                <ExternalLink className="h-2.5 w-2.5" />
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

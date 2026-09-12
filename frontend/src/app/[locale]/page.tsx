@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { HomeClient } from "./HomeClient";
 import { RegionalStatesHub } from "@/components/home/RegionalStatesHub";
 import { ClinicalImpactBadges } from "@/components/home/ClinicalImpactBadges";
+import { ClinicalEvidenceShowcase } from "@/components/home/ClinicalEvidenceShowcase";
 import { FooterBar } from "@/components/home/FooterBar";
 import { buildMetadata } from "@/lib/metadata";
 
@@ -53,7 +54,10 @@ export default async function Home({ params }: Props) {
           {/* 4. Clinical & Public Health Impact Pillars */}
           <ClinicalImpactBadges />
 
-          {/* 5. Footer */}
+          {/* 5. Peer-Reviewed Evidence & Official Citations */}
+          <ClinicalEvidenceShowcase />
+
+          {/* 6. Footer */}
           <FooterBar />
         </div>
       </main>

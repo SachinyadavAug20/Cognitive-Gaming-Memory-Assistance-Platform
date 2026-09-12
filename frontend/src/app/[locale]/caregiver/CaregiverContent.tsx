@@ -7,7 +7,7 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations } from "next-intl";
 import { api } from "@/lib/api";
 import { AudioToggle } from "@/components/ui/AudioToggle";
-import { CreditCard, FileText } from "lucide-react";
+import { CreditCard, FileText, BookOpen, ExternalLink, ShieldCheck } from "lucide-react";
 import type { PatientSummary } from "@/types";
 
 import { getAllPatientSummaries } from "@/data/mockPatients";
@@ -130,6 +130,100 @@ export function CaregiverContent() {
               ))}
             </div>
           )}
+
+          {/* Evidence-Based Clinical Guidance for Caregivers */}
+          <div className="mt-8 rounded-2xl border-2 border-black bg-white p-5 shadow-[4px_4px_0px_#000] space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-black/10 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-tea-light border-2 border-black flex items-center justify-center text-tea">
+                  <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-base text-ink">
+                    Evidence-Based Clinical Guidelines for Caregivers
+                  </h3>
+                  <p className="text-[11px] text-ink-secondary">
+                    Peer-reviewed non-pharmacological care protocols &amp; distress reduction
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href="/clinical-evidence"
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea px-3 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-emerald-900 transition-colors"
+              >
+                <FileText className="h-3.5 w-3.5" />
+                <span>SaMD R&amp;D Dossier</span>
+                <ExternalLink className="h-3 w-3" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div className="rounded-xl border border-stone-200 bg-stone-50 p-3 space-y-1">
+                <span className="font-bold text-tea text-[11px] uppercase">Zarit Burden (ZBI-12)</span>
+                <p className="text-[11px] text-stone-600 leading-snug">
+                  Validated scale for caregiver emotional strain. Scores &gt;17 predict high burnout risk.
+                </p>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/11574710/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-bold text-tea text-[10px] hover:underline"
+                >
+                  <span>Bédard 2001 (PMID: 11574710)</span>
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </div>
+
+              <div className="rounded-xl border border-stone-200 bg-stone-50 p-3 space-y-1">
+                <span className="font-bold text-emerald-800 text-[11px] uppercase">NIH StatPearls Care</span>
+                <p className="text-[11px] text-stone-600 leading-snug">
+                  Never argue or confront delusions; validate emotional feelings and gently redirect.
+                </p>
+                <a
+                  href="https://www.ncbi.nlm.nih.gov/books/NBK557444/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-bold text-emerald-800 text-[10px] hover:underline"
+                >
+                  <span>Emmady 2022 (NBK557444)</span>
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </div>
+
+              <div className="rounded-xl border border-stone-200 bg-stone-50 p-3 space-y-1">
+                <span className="font-bold text-indigo-800 text-[11px] uppercase">ASHA Practice Portal</span>
+                <p className="text-[11px] text-stone-600 leading-snug">
+                  Responsive behaviors express unmet needs (hunger, fear, pain). Use visual aids.
+                </p>
+                <a
+                  href="https://www.asha.org/practice-portal/clinical-topics/dementia/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-bold text-indigo-800 text-[10px] hover:underline"
+                >
+                  <span>ASHA Guidelines (2023)</span>
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </div>
+
+              <div className="rounded-xl border border-stone-200 bg-stone-50 p-3 space-y-1">
+                <span className="font-bold text-purple-800 text-[11px] uppercase">Lancet Commission</span>
+                <p className="text-[11px] text-stone-600 leading-snug">
+                  45% of dementia cases prevented or delayed by addressing 14 lifestyle risk factors.
+                </p>
+                <a
+                  href="https://pubmed.ncbi.nlm.nih.gov/39096926/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 font-bold text-purple-800 text-[10px] hover:underline"
+                >
+                  <span>Livingston 2024 (PMID: 39096926)</span>
+                  <ExternalLink className="h-2.5 w-2.5" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

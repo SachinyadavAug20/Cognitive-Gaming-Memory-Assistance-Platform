@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Construction } from "lucide-react";
 import { GAME_BY_ID } from "@/games/registry";
+import { GameClinicalDrawer } from "@/components/clinical/GameClinicalDrawer";
 
 export function GameClient() {
   const t = useTranslations("games");
@@ -32,5 +33,13 @@ export function GameClient() {
   }
 
   const Game = game.component;
-  return <Game />;
+  return (
+    <div className="relative min-h-screen">
+      {/* Discreet floating Clinical R&D & Evidence trigger */}
+      <div className="fixed top-3 right-3 z-40 print:hidden">
+        <GameClinicalDrawer gameId={params.gameId} gameTitle={game.domain} />
+      </div>
+      <Game />
+    </div>
+  );
 }
