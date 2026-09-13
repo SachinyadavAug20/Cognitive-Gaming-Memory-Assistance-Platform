@@ -1,27 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import {
   ShoppingBag,
   Wallet,
   Store,
-  Tag,
   RotateCcw,
   Music,
   CheckCircle2,
   HelpCircle,
   Trash2,
-  Wheat,
-  Soup,
-  Droplets,
-  Package,
-  Flame,
   Check,
   Sparkles,
+  Volume2,
+  ArrowRight,
+  Plus,
 } from "lucide-react";
-import { AssamTeaLeafIcon } from "@/components/ui/CulturalIcons";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
@@ -33,6 +29,7 @@ import {
   playComplete,
   playEncourage,
   playLifeSong,
+  playTapFeedback,
 } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
@@ -46,351 +43,87 @@ import {
   type ScaffoldingIntensity,
 } from "@/lib/errorlessLearning";
 
-interface BazaarFeedbackStrings {
-  autoSuggestBtn: string;
-  playMelody: string;
-  exactNotesSelected: (total: number, sum: number) => string;
-  needMoreNotes: (total: number) => string;
-  changeHint: (paid: number, total: number, change: number) => string;
-  shopkeeperReturn: (change: number) => string;
-}
+import {
+  BAZAAR_PRODUCTS,
+  BAZAAR_I18N,
+  type BazaarProduct,
+} from "./bazaarI18n";
 
-const BAZAAR_FEEDBACK_I18N: Record<SupportedLocale, BazaarFeedbackStrings> = {
-  en: {
-    autoSuggestBtn: "Auto-Suggest Notes",
-    playMelody: "Play Melody",
-    exactNotesSelected: (_total, sum) => `Selected exact notes totaling ₹${sum}`,
-    needMoreNotes: (total) => `The total is ₹${total}. Please add another note.`,
-    changeHint: (paid, total, change) => `Almost there! ₹${paid} minus ₹${total} equals ₹${change}. Let's select the glowing ₹${change} note.`,
-    shopkeeperReturn: (change) => `The shopkeeper returns ₹${change}. Select the ₹${change} note.`,
-  },
-  as: {
-    autoSuggestBtn: "সঠিক নোট বাচক",
-    playMelody: "সুৰ শুনক",
-    exactNotesSelected: (_total, sum) => `দোকানীৰ বাবে ₹${sum} টকাৰ নোট বাচি লোৱা হ'ল`,
-    needMoreNotes: (total) => `মুঠ ₹${total} হৈছে। অনুগ্ৰহ কৰি আৰু কিছু নোট যোগ কৰক।`,
-    changeHint: (paid, total, change) => `প্ৰায় মিলিছিল! ₹${paid} টকাৰ পৰা ₹${total} টকা বাদ দিলে সঠিক ভাঙতি হ'ব ₹${change}। উজ্বল নোটটো বাচক।`,
-    shopkeeperReturn: (change) => `দোকানীয়ে আপোনাক ₹${change} ঘূৰাই দিব। ₹${change} টকাৰ নোটটো বাচক।`,
-  },
-  hi: {
-    autoSuggestBtn: "सही नोट चुनें",
-    playMelody: "धुन सुनें",
-    exactNotesSelected: (_total, sum) => `दुकानदार को देने के लिए ₹${sum} के नोट तैयार हैं`,
-    needMoreNotes: (total) => `कुल ₹${total} है। कृपया कुछ और नोट जोड़ें।`,
-    changeHint: (paid, total, change) => `बहुत करीब! ₹${paid} में से ₹${total} घटाएं तो सही छुट्टा है ₹${change}। चमकते नोट को चुनें।`,
-    shopkeeperReturn: (change) => `दुकानदार आपको ₹${change} वापस करेगा। ₹${change} का नोट चुनें।`,
-  },
-  bn: {
-    autoSuggestBtn: "সঠিক নোট বাছুন",
-    playMelody: "সুর শুনুন",
-    exactNotesSelected: (_total, sum) => `দোকানিকে দেওয়ার জন্য ₹${sum} টাকার নোট তৈরি`,
-    needMoreNotes: (total) => `মোট ₹${total} হয়েছে। দয়া করে আরো কিছু নোট দিন।`,
-    changeHint: (paid, total, change) => `প্রায় সঠিক! ₹${paid} টাকা থেকে ₹${total} বাদ দিলে ফেরত হবে ₹${change}। জ্বলজ্বলে নোটটি বেছে নিন।`,
-    shopkeeperReturn: (change) => `দোকানি আপনাকে ₹${change} ফেরত দেবেন। ₹${change} টাকার নোটটি নির্বাচন করুন।`,
-  },
-  mr: {
-    autoSuggestBtn: "योग्य नोटा निवडा",
-    playMelody: "सूर ऐका",
-    exactNotesSelected: (_total, sum) => `दुकानदाराला देण्यासाठी ₹${sum} च्या नोटा तयार आहेत`,
-    needMoreNotes: (total) => `एकूण ₹${total} आहे. कृपया आणखी काही नोटा जोडा.`,
-    changeHint: (paid, total, change) => `जवळपास बरोबर! ₹${paid} मधून ₹${total} वजा केल्यास सुट्टे ₹${change} मिळतील. चमकणारी नोट निवडा.`,
-    shopkeeperReturn: (change) => `दुकानदार तुम्हाला ₹${change} परत देईल. ₹${change} ची नोट निवडा.`,
-  },
-  ne: {
-    autoSuggestBtn: "सहि नोट छान्नुहोस्",
-    playMelody: "धुन सुन्नुहोस्",
-    exactNotesSelected: (_total, sum) => `पसलेलाई दिन ₹${sum} को नोट तयार छ`,
-    needMoreNotes: (total) => `जम्मा ₹${total} भयो। कृपया अरू नोट थप्नुहोस्।`,
-    changeHint: (paid, total, change) => `झन्डै मिल्यो! ₹${paid} बाट ₹${total} घटाउँदा बाँकी ₹${change} हुन्छ। चम्किलो नोट छान्नुहोस्।`,
-    shopkeeperReturn: (change) => `पसलेले तपाईंलाई ₹${change} फिर्ता दिनेछ। ₹${change} को नोट छान्नुहोस्।`,
-  },
-  mni: {
-    autoSuggestBtn: "চুম্বা শেনেক খনবীয়ু",
-    playMelody: "সুরা তারসি",
-    exactNotesSelected: (_total, sum) => `দোকানদারদা পীনবা ₹${sum} গী শেনেক শেম-শারে`,
-    needMoreNotes: (total) => `অপুনবা ₹${total} নি। চানবীদুনা অতোপ্পা শেনেক হাপ্পীয়ু।`,
-    changeHint: (paid, total, change) => `নকশিনরে! ₹${paid} দগী ₹${total} হন্থরগা অচুম্বা পোৎ চেঞ্জ ₹${change} নি। ঙাল্লিবা শেনেক খনবীয়ু।`,
-    shopkeeperReturn: (change) => `দোকানদারনা নহাকপু ₹${change} হনগনি। ₹${change} গী শেনেক খনবীয়ু।`,
-  },
-  brx: {
-    autoSuggestBtn: "गेबें नोट सायख'",
-    playMelody: "दामनाय खोनासोन",
-    exactNotesSelected: (_total, sum) => `दुकानदारनो होनो ₹${sum} नि नोट थियारि जाबाय`,
-    needMoreNotes: (total) => `गासै ₹${total} जादों। अननानै गुबुन नोट होबाव।`,
-    changeHint: (paid, total, change) => `खाथियाव जाबाय! ₹${paid} निफ्राय ₹${total} खौ दाखारब्ला ₹${change} जासिगोन। सायख' नोटखौ।`,
-    shopkeeperReturn: (change) => `दुकानदारा नोंनो ₹${change} फिथाय होगोन। ₹${change} नि नोटखौ सायख'।`,
-  },
-  grt: {
-    autoSuggestBtn: "Tik ong·gipa note-ko seokbo",
-    playMelody: "Surko knabo",
-    exactNotesSelected: (_total, sum) => `Dokanina on·na ₹${sum} note tariaha`,
-    needMoreNotes: (total) => `Gimik ₹${total} ong·a. Note-ko aro sonangdapbo.`,
-    changeHint: (paid, total, change) => `Sepangaha! ₹${paid}oni ₹${total}ko matchotahaon, tangka ₹${change} ong·a. Ching·gipa noteko seokbo.`,
-    shopkeeperReturn: (change) => `Dokanigipa nang·na ₹${change} on·pilgen. ₹${change} noteko seokbo.`,
-  },
-  kha: {
-    autoSuggestBtn: "Jied ia ki note ba thik",
-    playMelody: "Sngap jingrwai",
-    exactNotesSelected: (_total, sum) => `La pynkhreh ia ki note ₹${sum} ban ai ia u dukan`,
-    needMoreNotes: (total) => `Ka jinglut baroh ka long ₹${total}. Sngewbha theh sa kawei ka note.`,
-    changeHint: (paid, total, change) => `La jan dep! ₹${paid} minus ₹${total} ka long ₹${change}. Jied ia ka note ₹${change} ba tyngshain.`,
-    shopkeeperReturn: (change) => `U dukan un ai pat ₹${change}. Jied ia ka note ₹${change}.`,
-  },
-  lus: {
-    autoSuggestBtn: "Pawisa note dik thlang rawh",
-    playMelody: "Rimawi ngaihtlakna",
-    exactNotesSelected: (_total, sum) => `Duhsak taka pek turin ₹${sum} note buatsaih a ni`,
-    needMoreNotes: (total) => `A vaiin ₹${total} a ni. Khawngaihin note dang thlak belh rawh.`,
-    changeHint: (paid, total, change) => `I hnaih tawh hle mai! ₹${paid} atanga ₹${total} paihin ₹${change} a bang. Note eng lai kha hmet rawh le.`,
-    shopkeeperReturn: (change) => `Dawr nei tun ₹${change} a pe kir ang che. ₹${change} note thlang rawh.`,
-  },
-};
+const PAYMENT_NOTES = [10, 20, 50, 100, 200, 500];
+const BUDGET = 500;
 
-function GameShell({
-  title,
-  score,
-  children,
-}: {
-  title: string;
-  score: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="pb-12 min-h-screen bg-canvas">
-      <GameHeader
-        title={title}
-        score={score}
-        backHref="/patient/games"
-        bgColor="bg-tea"
-        gameId="bazaar-buddies"
-      />
-      <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
-    </section>
-  );
-}
-
-type Localized = Record<string, string>;
-
-interface Product {
-  id: string;
-  name: Localized;
-  price: number;
-  category: "rice" | "dal" | "oil" | "sugar" | "salt" | "tea" | "atta" | "spices";
-}
-
-function renderProductIcon(category: Product["category"], className = "h-5 w-5") {
-  switch (category) {
+function getProduceEmoji(id: string): string {
+  switch (id) {
+    case "lemon":
+      return "🍋";
+    case "fern":
+      return "🌿";
+    case "banana":
+      return "🍌";
     case "tea":
-      return <AssamTeaLeafIcon className={`${className} text-emerald-800`} />;
-    case "oil":
-      return <Droplets className={`${className} text-amber-700`} />;
+      return "🍵";
+    case "pottery":
+      return "🏺";
     case "rice":
-    case "atta":
-      return <Wheat className={`${className} text-amber-800`} />;
-    case "dal":
-      return <Soup className={`${className} text-orange-700`} />;
-    case "spices":
-      return <Flame className={`${className} text-red-700`} />;
-    case "sugar":
-    case "salt":
+      return "🌾";
+    case "pickle":
+      return "🌶️";
+    case "oil":
+      return "🌻";
     default:
-      return <Package className={`${className} text-stone-700`} />;
+      return "🧺";
   }
 }
 
-const PRODUCTS: Product[] = [
-  {
-    id: "rice",
-    name: {
-      en: "Basmati / Joha Rice (1 kg)",
-      hi: "बासमती चावल (१ किलो)",
-      mr: "बासमती तांदूळ (१ किलो)",
-      as: "জোহা চাউল (১ কেজি)",
-      bn: "জোহা চাল (১ কেজি)",
-      ne: "बासमती चामल (१ किलो)",
-      mni: "জোহা চেং (১ কেজি)",
-      brx: "जहा माइरं (१ किग्रा)",
-      grt: "Joha me·rong (1 kg)",
-      kha: "Kba Basmati (1 kg)",
-      lus: "Buhfai (1 kg)",
-    },
-    price: 80,
-    category: "rice",
-  },
-  {
-    id: "dal",
-    name: {
-      en: "Toor Dal (500 g)",
-      hi: "तूर दाल (५०० ग्रॅम)",
-      mr: "तूर डाळ (५०० ग्रॅम)",
-      as: "ৰহৰ দাইল (৫০০ গ্ৰাম)",
-      bn: "অড়হর ডাল (৫০০ গ্রাম)",
-      ne: "रहर दाल (५०० ग्राम)",
-      mni: "হৱাই (৫০০ গ্রাম)",
-      brx: "दालि (५०० ग्राम)",
-      grt: "Dal (500 g)",
-      kha: "Dai Toor (500 g)",
-      lus: "Dal (500 g)",
-    },
-    price: 65,
-    category: "dal",
-  },
-  {
-    id: "oil",
-    name: {
-      en: "Mustard Oil (1 L)",
-      hi: "सरसों का तेल (१ लीटर)",
-      mr: "मोहरीचे तेल (१ लीटर)",
-      as: "মিঠাতেল (১ লিটাৰ)",
-      bn: "সরিষার তেল (১ লিটার)",
-      ne: "तोरीको तेल (१ लिटर)",
-      mni: "থাও (১ লিটার)",
-      brx: "थाव (१ लिटर)",
-      grt: "Toko (1 L)",
-      kha: "Umphniang sharak (1 L)",
-      lus: "Hriak (1 L)",
-    },
-    price: 90,
-    category: "oil",
-  },
-  {
-    id: "sugar",
-    name: {
-      en: "Sugar (1 kg)",
-      hi: "चीनी (१ किलो)",
-      mr: "साखर (१ किलो)",
-      as: "চেনি (১ কেজি)",
-      bn: "চিনি (১ কেজি)",
-      ne: "चिनी (१ किलो)",
-      mni: "চিনি (১ কেজি)",
-      brx: "सिनि (१ किग्रा)",
-      grt: "Chini (1 kg)",
-      kha: "Shini (1 kg)",
-      lus: "Chini (1 kg)",
-    },
-    price: 45,
-    category: "sugar",
-  },
-  {
-    id: "salt",
-    name: {
-      en: "Salt (1 kg)",
-      hi: "नमक (१ किलो)",
-      mr: "मीठ (१ किलो)",
-      as: "নিমখ (১ কেজি)",
-      bn: "লবণ (১ কেজি)",
-      ne: "नुन (१ किलो)",
-      mni: "থুম (১ কেজি)",
-      brx: "संख्रि (१ किग्रा)",
-      grt: "Kari (1 kg)",
-      kha: "Mluh (1 kg)",
-      lus: "Chi (1 kg)",
-    },
-    price: 25,
-    category: "salt",
-  },
-  {
-    id: "tea",
-    name: {
-      en: "Assam CTC Tea (250 g)",
-      hi: "चाय पत्ती (२५० ग्रॅम)",
-      mr: "चहापावडी (२५० ग्रॅम)",
-      as: "অসম চাহ (২৫০ গ্ৰাম)",
-      bn: "আসাম চা (২৫০ গ্রাম)",
-      ne: "चिया पत्ती (२५० ग्राम)",
-      mni: "চা মনা (২৫০ গ্রাম)",
-      brx: "साहा बिलाइ (२५० ग्राम)",
-      grt: "Cha bijak (250 g)",
-      kha: "Sla Sha (250 g)",
-      lus: "Thingpui hnah (250 g)",
-    },
-    price: 55,
-    category: "tea",
-  },
-  {
-    id: "atta",
-    name: {
-      en: "Wheat Atta (5 kg)",
-      hi: "गेहूं का आटा (५ किलो)",
-      mr: "गहू पीठ (५ किलो)",
-      as: "গমৰ আটা (৫ কেজি)",
-      bn: "আটা (৫ কেজি)",
-      ne: "आँटा (५ किलो)",
-      mni: "আটা (৫ কেজি)",
-      brx: "आटा (५ किग्रा)",
-      grt: "Meda (5 kg)",
-      kha: "Atta (5 kg)",
-      lus: "Atta (5 kg)",
-    },
-    price: 140,
-    category: "atta",
-  },
-  {
-    id: "spices",
-    name: {
-      en: "Masala Box (6 spices)",
-      hi: "मसाला बॉक्स (६ मसाले)",
-      mr: "मसाला पेटी (६ मसाले)",
-      as: "পাঁচফোৰণ মচলা (৬ বিধ)",
-      bn: "মশলা বাক্স (৬ মশলা)",
-      ne: "मसला बाकस (६ प्रकार)",
-      mni: "মচলা (মখল ৬)",
-      brx: "मसला (६ रोखोम)",
-      grt: "Mosla (6 dingtang)",
-      kha: "Musla-manor (6 jait)",
-      lus: "Chawhmeh thil al (6 chi)",
-    },
-    price: 100,
-    category: "spices",
-  },
-];
-
-const PAYMENT_NOTES = [10, 20, 50, 100, 200, 500];
-
-const BUDGET = 500;
-
-function noteBg(note: number) {
+function noteStyle(note: number) {
   switch (note) {
     case 10:
-      return "bg-[#8D5B4C] text-white hover:brightness-110";
+      return "bg-[#795548] text-white border-black hover:brightness-110";
     case 20:
-      return "bg-[#D4E157] text-black hover:brightness-95";
+      return "bg-[#CDDC39] text-black border-black hover:brightness-95";
     case 50:
-      return "bg-[#26A69A] text-white hover:brightness-110";
+      return "bg-[#00897B] text-white border-black hover:brightness-110";
     case 100:
-      return "bg-[#7E57C2] text-white hover:brightness-110";
+      return "bg-[#5E35B1] text-white border-black hover:brightness-110";
     case 200:
-      return "bg-[#FF7043] text-white hover:brightness-110";
+      return "bg-[#F4511E] text-white border-black hover:brightness-110";
     case 500:
-      return "bg-[#78909C] text-white hover:brightness-110";
+      return "bg-[#546E7A] text-white border-black hover:brightness-110";
     default:
-      return "bg-surface text-ink hover:bg-tea-light";
+      return "bg-surface text-ink border-black";
   }
 }
 
 export function BazaarBuddiesGame() {
   const locale = useLocale();
-  const t = useTranslations("games.bazaarBuddies");
-  const { detail, loading, error, reload, patientId } = usePatientDetail();
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const t = BAZAAR_I18N[normLocale] || BAZAAR_I18N.en;
 
+  const { detail, loading, error, reload, patientId } = usePatientDetail();
   const level = resolveAdaptiveLevel(patientId, "bazaarBuddies", startLevel(detail));
   const rate = speechRate(detail);
 
-  const [phase, setPhase] = useState<
-    "intro" | "shop" | "payment" | "change" | "done"
-  >("intro");
+  // Game Phases
+  const [phase, setPhase] = useState<"family" | "market" | "cashier" | "change" | "done">("family");
+
+  // Shopping & Basket State
   const [basket, setBasket] = useState<string[]>([]);
+  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
+
+  // Currency & Math State
   const [paymentNotes, setPaymentNotes] = useState<number[]>([]);
   const [changeGiven, setChangeGiven] = useState<number | null>(null);
   const [hintUsed, setHintUsed] = useState(false);
-  const [startedAt, setStartedAt] = useState<string | null>(null);
-  const [taps, setTaps] = useState(0);
-  const [errors, setErrors] = useState(0);
   const [changeHesitation, setChangeHesitation] = useState(0);
   const [changeAttempts, setChangeAttempts] = useState(0);
   const [softBounceFeedback, setSoftBounceFeedback] = useState<string | null>(null);
 
-  // Active hesitation monitoring for Errorless Learning vanishing cues (Clare & Jones, 2008)
+  // Telemetry
+  const [startedAt, setStartedAt] = useState<string | null>(null);
+  const [taps, setTaps] = useState(0);
+  const [errors, setErrors] = useState(0);
+
+  // Monitor hesitation during change calculation for Errorless Learning
   useEffect(() => {
     if (phase !== "change" || changeGiven !== null) return;
     const timer = setInterval(() => {
@@ -400,112 +133,118 @@ export function BazaarBuddiesGame() {
   }, [phase, changeGiven]);
 
   const vanishingCue = useMemo(() => {
-    if (phase !== "change") return { intensity: "none" as ScaffoldingIntensity, glowOpacity: 0 };
+    if (phase !== "change") {
+      return { intensity: "none" as ScaffoldingIntensity, glowOpacity: 0 };
+    }
     return calculateVanishingCue(changeHesitation, changeAttempts);
   }, [phase, changeHesitation, changeAttempts]);
 
-  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
-  const fb = BAZAAR_FEEDBACK_I18N[normLocale] || BAZAAR_FEEDBACK_I18N.en;
-
-  const total = basket.reduce((sum, id) => {
-    const p = PRODUCTS.find((pr) => pr.id === id);
-    return sum + (p?.price ?? 0);
-  }, 0);
-
-  const paidAmount = paymentNotes.reduce((s, n) => s + n, 0);
-  const correctChange = paidAmount - total;
-  const remaining = BUDGET - total;
-  const score = basket.length * 12 + (phase === "done" ? 100 : 0);
-
-  const productName = (p: Product) => (p.name as Record<string, string>)[normLocale] ?? p.name.en;
-
-  const addToBasket = useCallback(
-    (id: string) => {
-      playPress();
-      setTaps((t) => t + 1);
-      if (basket.includes(id) || basket.length >= 8) return;
-      const product = PRODUCTS.find((p) => p.id === id);
-      if (!product) return;
-      if (total + product.price > BUDGET) {
-        playEncourage();
-        return;
-      }
-      const updated = [...basket, id];
-      setBasket(updated);
-      speak(t("added"), locale, rate);
-    },
-    [basket, total, locale, rate, t]
-  );
-
-  const removeFromBasket = useCallback(
-    (id: string) => {
-      playPress();
-      setTaps((t) => t + 1);
-      setBasket((prev) => prev.filter((x) => x !== id));
-      speak(t("removed"), locale, rate);
-    },
-    [locale, rate, t]
-  );
-
-  const goPayment = useCallback(() => {
-    if (basket.length === 0) return;
-    playPress();
-    setPhase("payment");
-    setPaymentNotes([]);
-    setChangeGiven(null);
+  // Calculations
+  const total = useMemo(() => {
+    return basket.reduce((sum, id) => {
+      const p = BAZAAR_PRODUCTS.find((item) => item.id === id);
+      return sum + (p?.price ?? 0);
+    }, 0);
   }, [basket]);
 
-  const addNote = useCallback(
-    (value: number) => {
+  const paidAmount = useMemo(() => {
+    return paymentNotes.reduce((sum, n) => sum + n, 0);
+  }, [paymentNotes]);
+
+  const correctChange = Math.max(0, paidAmount - total);
+  const remainingBudget = BUDGET - total;
+  const score = basket.length * 15 + (phase === "done" ? 100 : 0);
+
+  // Add / Remove from Basket
+  const handleToggleItem = useCallback(
+    (id: string) => {
       playPress();
       setTaps((t) => t + 1);
-      setPaymentNotes((prev) => [...prev, value]);
+
+      const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
+      if (!product) return;
+
+      const pName = product.name[normLocale] || product.name.en;
+
+      if (basket.includes(id)) {
+        setBasket((prev) => prev.filter((x) => x !== id));
+        speak(t.itemRemovedVoice(pName), locale, rate);
+      } else {
+        if (total + product.price > BUDGET) {
+          playEncourage();
+          return;
+        }
+        setBasket((prev) => [...prev, id]);
+        speak(t.itemAddedVoice(pName, product.price), locale, rate);
+      }
     },
-    []
+    [basket, total, normLocale, locale, rate, t]
   );
+
+  const addNote = useCallback((note: number) => {
+    playPress();
+    setTaps((t) => t + 1);
+    setPaymentNotes((prev) => [...prev, note]);
+  }, []);
+
+  const clearNotes = useCallback(() => {
+    playPress();
+    setPaymentNotes([]);
+  }, []);
 
   const suggestExactNotes = useCallback(() => {
     playPress();
-    let remaining = total;
+    let rem = total;
     const notes: number[] = [];
     const denoms = [500, 200, 100, 50, 20, 10];
+
     for (const d of denoms) {
-      while (remaining >= d) {
+      while (rem >= d) {
         notes.push(d);
-        remaining -= d;
+        rem -= d;
       }
     }
-    if (remaining > 0) {
-      const smallestCover = [...denoms].reverse().find((d) => d >= remaining) || 10;
-      notes.push(smallestCover);
+    if (rem > 0) {
+      const cover = [...denoms].reverse().find((d) => d >= rem) || 10;
+      notes.push(cover);
     }
     setPaymentNotes(notes);
     playCorrect();
     const sum = notes.reduce((a, b) => a + b, 0);
-    speak(
-      fb.exactNotesSelected(total, sum),
-      locale,
-      rate
-    );
-  }, [total, locale, rate, fb]);
+    speak(`Selected ₹${sum} notes for cashier.`, locale, rate);
+  }, [total, locale, rate]);
 
-  const submitPayment = useCallback(() => {
+  const submitCashierPayment = useCallback(() => {
     if (paidAmount < total) {
       playEncourage();
-      speak(
-        fb.needMoreNotes(total),
-        locale,
-        rate
-      );
+      speak(t.needMoreNotes(total), locale, rate);
       return;
     }
     playCorrect();
-    setPhase("change");
-    setPaymentNotes((prev) => [...prev]);
-    setChangeHesitation(0);
-    setChangeAttempts(0);
-    setSoftBounceFeedback(null);
-  }, [paidAmount, total, locale, rate, fb]);
+
+    if (paidAmount === total) {
+      setChangeGiven(0);
+      setPhase("done");
+      playComplete();
+      if (startedAt) {
+        recordGameSession(patientId, {
+          gameId: "bazaarBuddies",
+          level,
+          outcome: "completed",
+          score: 100,
+          startedAt,
+          taps: taps + 1,
+          errorCount: errors,
+        });
+      }
+    } else {
+      setPhase("change");
+      setChangeHesitation(0);
+      setChangeAttempts(0);
+      setSoftBounceFeedback(null);
+      speak(t.changePromptAudio(paidAmount, total, correctChange), locale, rate);
+    }
+  }, [paidAmount, total, correctChange, startedAt, patientId, level, taps, errors, locale, rate, t]);
 
   const submitChange = useCallback(
     (value: number) => {
@@ -516,7 +255,7 @@ export function BazaarBuddiesGame() {
         setChangeGiven(value);
         setSoftBounceFeedback(null);
         playCorrect();
-        speak(t("correct"), locale, rate);
+        speak(t.changeCorrect(value), locale, rate);
         setTimeout(() => {
           setPhase("done");
           playComplete();
@@ -533,30 +272,26 @@ export function BazaarBuddiesGame() {
           }
         }, 1200);
       } else {
-        // Errorless Learning Soft-Blocking: Absorbs mistake gently, preserves self-efficacy
+        setErrors((e) => e + 1);
         setChangeAttempts((a) => a + 1);
         playEncourage();
-        const hintMsg = fb.changeHint(paidAmount, total, correctChange);
-        setSoftBounceFeedback(hintMsg);
-        speak(hintMsg, locale, rate);
+        const hint = t.errorlessHintMsg(correctChange);
+        setSoftBounceFeedback(hint);
+        speak(hint, locale, rate);
       }
     },
-    [correctChange, paidAmount, total, startedAt, patientId, level, taps, errors, locale, rate, t, fb]
+    [correctChange, startedAt, patientId, level, taps, errors, locale, rate, t]
   );
 
   const showHint = useCallback(() => {
     playPress();
     setHintUsed(true);
-    speak(
-      fb.shopkeeperReturn(correctChange),
-      locale,
-      rate
-    );
-  }, [correctChange, locale, rate, fb]);
+    speak(t.errorlessHintMsg(correctChange), locale, rate);
+  }, [correctChange, locale, rate, t]);
 
   const restartGame = useCallback(() => {
     playPress();
-    setPhase("intro");
+    setPhase("family");
     setBasket([]);
     setPaymentNotes([]);
     setChangeGiven(null);
@@ -569,9 +304,9 @@ export function BazaarBuddiesGame() {
     setSoftBounceFeedback(null);
   }, []);
 
-  const startGame = useCallback(() => {
+  const startMarketPhase = useCallback(() => {
     playPress();
-    setPhase("shop");
+    setPhase("market");
     setStartedAt(new Date().toISOString());
   }, []);
 
@@ -584,420 +319,621 @@ export function BazaarBuddiesGame() {
     errorCount: errors,
   });
 
-  if (loading)
+  if (loading) {
     return (
-      <GameShell title={t("title")} score={0}>
-        <GameLoading />
-      </GameShell>
+      <section className="pb-12 min-h-screen bg-canvas">
+        <GameHeader
+          title={t.title}
+          score={0}
+          backHref="/patient/games"
+          bgColor="bg-tea"
+          gameId="bazaar-buddies"
+        />
+        <div className="mx-auto max-w-3xl px-4 pt-8">
+          <GameLoading />
+        </div>
+      </section>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
-      <GameShell title={t("title")} score={0}>
-        <GameError onRetry={reload} />
-      </GameShell>
+      <section className="pb-12 min-h-screen bg-canvas">
+        <GameHeader
+          title={t.title}
+          score={0}
+          backHref="/patient/games"
+          bgColor="bg-tea"
+          gameId="bazaar-buddies"
+        />
+        <div className="mx-auto max-w-3xl px-4 pt-8">
+          <GameError onRetry={reload} />
+        </div>
+      </section>
     );
+  }
 
   return (
-    <GameShell title={t("title")} score={score}>
-      {/* ─── INTRO ─── */}
-      {phase === "intro" && (
-        <div className="flex flex-col items-center gap-6 py-6 text-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-3 border-black bg-tea text-white shadow-[4px_4px_0px_#000]">
-            <Store className="h-10 w-10 stroke-[2.5]" />
-          </div>
+    <section className="pb-20 min-h-screen bg-canvas">
+      {/* Main Game Header */}
+      <GameHeader
+        title={t.title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-tea"
+        gameId="bazaar-buddies"
+      />
 
-          <div className="space-y-1">
-            <h2 className="font-serif text-3xl font-black text-ink">
-              {t("title")}
-            </h2>
-            <p className="max-w-md text-lg font-semibold text-ink-secondary leading-relaxed">
-              {t("desc")}
-            </p>
-          </div>
-
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
-            <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-              <span className="text-base font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                <ShoppingBag className="h-3.5 w-3.5" /> {t("welcome")}
-              </span>
-              <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
-                ₹{BUDGET}
-              </span>
+      {/* Unified Top Dashboard Bar (Market Title + Financial State) - Only shown during active market phases */}
+      {(phase === "market" || phase === "cashier" || phase === "change") && (
+        <div className="mx-auto max-w-4xl px-4 pt-3">
+          <div className="w-full flex items-center justify-between gap-3 rounded-2xl border-3 border-black bg-surface px-4 py-2.5 shadow-[3px_3px_0px_#000]">
+            {/* Village Stall Title */}
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-black text-ink">
+              <Store className="h-4 w-4 text-tea shrink-0" />
+              <span className="truncate">{t.stallHeading}</span>
             </div>
-            <p className="text-base font-bold text-ink-secondary leading-relaxed">
-              {t("instruction")}
-            </p>
-          </div>
 
-          <AudioPrompt
-            text={t("instruction")}
-            label={t("welcome")}
-            size="md"
-          />
-
-          <ChunkyButton variant="tea" size="xl" onClick={startGame}>
-            {t("shopNow")}
-          </ChunkyButton>
-        </div>
-      )}
-
-      {/* ─── SHOP ─── */}
-      {phase === "shop" && (
-        <div className="flex flex-col items-center gap-4 py-1">
-          <div className="w-full max-w-md flex items-center justify-between rounded-xl border-2 border-black bg-surface px-3.5 py-2 shadow-[2px_2px_0px_#000]">
-            <div className="flex items-center gap-2">
-              <Wallet className="h-4 w-4 text-tea" />
-              <span className="text-base font-black text-ink">
-                {t("remaining")}:{" "}
-                <strong className="text-tea">₹{remaining}</strong>
-              </span>
-            </div>
-            <span className="text-base font-black text-ink">
-              {t("total")}: <strong className="text-tea">₹{total}</strong>
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5 w-full max-w-md">
-            {PRODUCTS.map((product) => {
-              const inBasket = basket.includes(product.id);
-              const wouldExceed = total + product.price > BUDGET;
-              return (
-                <button
-                  key={product.id}
-                  type="button"
-                  disabled={inBasket || wouldExceed}
-                  onClick={() =>
-                    inBasket
-                      ? removeFromBasket(product.id)
-                      : addToBasket(product.id)
-                  }
-                  className={`btn-tactile flex items-center gap-2.5 rounded-xl border-3 border-black px-3 py-3 text-left shadow-[4px_4px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-40 ${
-                    inBasket
-                      ? "bg-tea-light border-tea"
-                      : "bg-surface hover:bg-tea-light"
-                  }`}
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-black/5">
-                    {renderProductIcon(product.category, "h-5 w-5")}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-black text-ink leading-tight truncate">
-                      {productName(product)}
-                    </p>
-                    <p className="text-[11px] font-bold text-tea mt-0.5">
-                      ₹{product.price}
-                    </p>
-                  </div>
-                  {inBasket && (
-                    <Check className="h-3.5 w-3.5 text-tea shrink-0" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-4 shadow-[4px_4px_0px_#000]">
-            <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-2.5">
-              <span className="text-base font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                <Tag className="h-3.5 w-3.5" /> {t("total")}
-              </span>
-              <span className="text-lg font-black text-tea">₹{total}</span>
-            </div>
-            {basket.length === 0 ? (
-              <p className="text-base font-bold text-ink-secondary text-center py-2">
-                {t("basketEmpty")}
-              </p>
-            ) : (
-              <div className="space-y-1.5">
-                {basket.map((id) => {
-                  const p = PRODUCTS.find((pr) => pr.id === id);
-                  if (!p) return null;
-                  return (
-                    <div
-                      key={id}
-                      className="flex items-center justify-between text-base font-black text-ink"
-                    >
-                      <span className="flex items-center gap-2">
-                        {renderProductIcon(p.category, "h-4 w-4")} {productName(p)}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-tea">₹{p.price}</span>
-                        <button
-                          type="button"
-                          onClick={() => removeFromBasket(id)}
-                          className="text-red-500 hover:text-red-700 cursor-pointer"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+            {/* Running Financial State */}
+            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-black shrink-0">
+              <div className="flex items-center gap-1.5 rounded-xl border border-black/20 bg-amber-50 px-3 py-1 text-ink">
+                <Wallet className="h-4 w-4 text-amber-800" />
+                <span>
+                  {t.remainingLabel}: <strong className="text-amber-900 font-black">₹{remainingBudget}</strong>
+                </span>
               </div>
-            )}
-          </div>
-
-          <ChunkyButton
-            variant="tea"
-            size="xl"
-            onClick={goPayment}
-            disabled={basket.length === 0}
-          >
-            {t("payment")}
-          </ChunkyButton>
-        </div>
-      )}
-
-      {/* ─── PAYMENT ─── */}
-      {phase === "payment" && (
-        <div className="flex flex-col items-center gap-4 py-1">
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[4px_4px_0px_#000]">
-            <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
-              <span className="text-base font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                <Wallet className="h-4 w-4" /> {t("payment")}
-              </span>
-              <span className="text-lg font-black text-tea">₹{total}</span>
-            </div>
-            <div className="space-y-1.5 mb-3">
-              {basket.map((id) => {
-                const p = PRODUCTS.find((pr) => pr.id === id);
-                if (!p) return null;
-                return (
-                  <div
-                    key={id}
-                    className="flex items-center justify-between text-base font-black text-ink"
-                  >
-                    <span className="flex items-center gap-2">
-                      {renderProductIcon(p.category, "h-4 w-4")} {productName(p)}
-                    </span>
-                    <span className="text-tea">₹{p.price}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="border-t-2 border-black/10 pt-2 flex items-center justify-between">
-              <span className="text-base font-black text-ink">
-                {t("total")}
-              </span>
-              <span className="text-lg font-black text-tea">₹{total}</span>
-            </div>
-          </div>
-
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
-            <p className="text-base font-black uppercase tracking-wider text-ink-secondary mb-3">
-              {t("paid")}: ₹{paidAmount}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {PAYMENT_NOTES.map((note) => (
-                <button
-                  key={note}
-                  type="button"
-                  onClick={() => addNote(note)}
-                  className={`btn-tactile rounded-2xl border-3 border-black px-4 py-3 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer min-w-[76px] ${noteBg(note)}`}
-                >
-                  ₹{note}
-                </button>
-              ))}
-            </div>
-            {paymentNotes.length > 0 && (
-              <div className="mt-3 border-t-2 border-black/10 pt-2 space-y-1">
-                {paymentNotes.map((n, i) => (
-                  <span
-                    key={i}
-                    className={`inline-block mr-1.5 rounded-xl border-2 border-black px-2.5 py-1 text-sm font-black shadow-[1px_1px_0px_#000] ${noteBg(n)}`}
-                  >
-                    ₹{n}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-wrap gap-2.5 w-full max-w-md">
-            <button
-              type="button"
-              onClick={() => {
-                playPress();
-                setPaymentNotes([]);
-              }}
-              className="btn-tactile flex-1 flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-surface px-4 py-2.5 text-base font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted transition-transform active:translate-y-0.5 cursor-pointer"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              {t("clearBtn")}
-            </button>
-            <button
-              type="button"
-              onClick={suggestExactNotes}
-              className="btn-tactile flex items-center justify-center gap-1.5 rounded-xl border-2 border-amber-600 bg-amber-100 px-3.5 py-2.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-200 transition-transform active:translate-y-0.5 cursor-pointer"
-            >
-              <Sparkles className="h-4 w-4 text-amber-700" />
-              <span>{fb.autoSuggestBtn}</span>
-            </button>
-            <ChunkyButton
-              variant="tea"
-              size="xl"
-              onClick={submitPayment}
-              disabled={paidAmount < total}
-            >
-              {t("change")}
-            </ChunkyButton>
-          </div>
-        </div>
-      )}
-
-      {/* ─── CHANGE ─── */}
-      {phase === "change" && (
-        <div className="flex flex-col items-center gap-4 py-1">
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[4px_4px_0px_#000]">
-            <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
-              <span className="text-base font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4" /> {t("change")}
-              </span>
-            </div>
-            <div className="space-y-1.5 text-base font-black text-ink">
-              <div className="flex justify-between">
-                <span>{t("total")}</span>
-                <span className="text-tea">₹{total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>{t("paid")}</span>
-                <span className="text-tea">₹{paidAmount}</span>
-              </div>
-              <div className="border-t-2 border-black/10 pt-1.5 flex justify-between text-lg">
-                <span>{t("change")}</span>
-                <span className="text-tea font-black">
-                  {changeGiven !== null ? `₹${changeGiven}` : "?"}
+              <div className="flex items-center gap-1.5 rounded-xl border border-emerald-900/30 bg-emerald-50 px-3 py-1 text-emerald-950">
+                <ShoppingBag className="h-4 w-4 text-emerald-700" />
+                <span>
+                  {t.totalLabel}: <strong className="text-emerald-800 font-black text-sm">₹{total}</strong>
                 </span>
               </div>
             </div>
           </div>
+        </div>
+      )}
 
-          <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
-            <p className="text-base font-black uppercase tracking-wider text-ink-secondary mb-3">
-              {t("change")}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {PAYMENT_NOTES.map((note) => {
-                const isTarget = note === correctChange;
-                const isHinted =
-                  isTarget &&
-                  (hintUsed ||
-                    changeAttempts > 0 ||
-                    vanishingCue.intensity !== "none");
-                const cueStyle =
-                  isTarget && isHinted
-                    ? vanishingCue.intensity === "guided_highlight" || changeAttempts > 0
-                      ? "ring-4 ring-amber-400 animate-pulse scale-105 border-amber-600 shadow-[0_0_18px_rgba(245,158,11,0.85)]"
-                      : "ring-2 ring-amber-300 animate-pulse scale-102 border-amber-500"
-                    : "";
+      <div className="mx-auto max-w-4xl px-4 pt-4">
+        {/* ─── PHASE 1: FAMILY PROMPT & AUTOBIOGRAPHICAL MEMORY ANCHOR ─── */}
+        {phase === "family" && (
+          <div className="flex flex-col items-center justify-center py-4 sm:py-6 px-2">
+            <div className="w-full max-w-lg rounded-3xl border-3 border-black bg-[#FAF5EE] p-5 sm:p-6 shadow-[5px_5px_0px_#000] flex flex-col gap-4">
+              {/* Header: Store Icon + Title & Subtitle + Budget Pill */}
+              <div className="flex items-start justify-between gap-3 border-b-2 border-black/10 pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] shrink-0">
+                    <Store className="h-6 w-6 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <h2 className="font-serif text-lg sm:text-xl font-black text-ink leading-tight">
+                      {t.familyPromptTitle}
+                    </h2>
+                    <p className="text-xs font-semibold text-ink-secondary mt-0.5">
+                      {t.subtitle}
+                    </p>
+                  </div>
+                </div>
 
-                return (
+                <div className="shrink-0 rounded-xl border-2 border-emerald-900/30 bg-emerald-100 px-3 py-1 text-right">
+                  <span className="block text-[10px] font-black uppercase tracking-wider text-emerald-800">
+                    {t.budgetLabel}
+                  </span>
+                  <span className="text-sm sm:text-base font-black text-emerald-950">
+                    ₹{BUDGET}
+                  </span>
+                </div>
+              </div>
+
+              {/* Loving Family Request Message */}
+              <div className="rounded-2xl border-2 border-amber-900/15 bg-amber-50/70 p-4">
+                <blockquote className="font-serif text-base sm:text-lg font-bold text-ink italic leading-relaxed">
+                  {t.familyMessage}
+                </blockquote>
+              </div>
+
+              {/* Actions: Listen Audio & Enter Market Button */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+                <div className="sm:w-auto">
+                  <AudioPrompt
+                    text={t.familyAudioText}
+                    label="Listen"
+                    size="md"
+                  />
+                </div>
+                <div className="flex-1">
+                  <ChunkyButton
+                    variant="tea"
+                    size="xl"
+                    onClick={startMarketPhase}
+                    className="w-full justify-center"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <span>{t.startMarketBtn}</span>
+                      <ArrowRight className="h-5 w-5 stroke-[2.5]" />
+                    </span>
+                  </ChunkyButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── PHASE 2: 2D VILLAGE MARKET STALL & PRODUCE GATHERING ─── */}
+        {phase === "market" && (
+          <div className="flex flex-col items-center gap-4 py-1">
+            {/* Market Stall Banner & Shelf */}
+            <div className="w-full rounded-3xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 shadow-[4px_4px_0px_#000]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-black/15 pb-3 mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] shrink-0">
+                    <Store className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-ink leading-tight">
+                      {t.stallHeading}
+                    </h3>
+                    <p className="text-xs font-semibold text-ink-secondary">
+                      Tap fresh produce to place it into your cane basket (খৰাহী)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="self-start sm:self-center text-xs font-black rounded-xl border-2 border-amber-900/30 bg-amber-100 px-3 py-1.5 text-amber-950 shadow-xs">
+                  {basket.length > 0 ? (
+                    <span>{t.itemsSelectedCount(basket.length)} • ₹{total}</span>
+                  ) : (
+                    <span>Basket Empty</span>
+                  )}
+                </div>
+              </div>
+
+              {/* 8 Fresh North-Eastern Regional Produce Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {BAZAAR_PRODUCTS.map((product) => {
+                  const inBasket = basket.includes(product.id);
+                  const wouldExceed = total + product.price > BUDGET;
+                  const name = product.name[normLocale] || product.name.en;
+                  const desc = product.categoryDesc[normLocale] || product.categoryDesc.en;
+                  const emoji = getProduceEmoji(product.id);
+
+                  return (
+                    <button
+                      key={product.id}
+                      type="button"
+                      disabled={!inBasket && wouldExceed}
+                      onClick={() => handleToggleItem(product.id)}
+                      className={`btn-tactile flex flex-col justify-between rounded-2xl border-3 border-black p-3 text-left shadow-[3px_3px_0px_#000] transition-all cursor-pointer disabled:opacity-40 min-h-[120px] ${
+                        inBasket
+                          ? "bg-emerald-100 border-emerald-950 ring-3 ring-emerald-600 shadow-[4px_4px_0px_#047857]"
+                          : "bg-white hover:bg-amber-50"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-1 w-full">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50 text-2xl select-none">
+                          {emoji}
+                        </div>
+                        <span
+                          className={`px-2.5 py-1 rounded-xl border-2 text-xs sm:text-sm font-black shadow-xs ${
+                            inBasket
+                              ? "bg-emerald-700 text-white border-emerald-950"
+                              : "bg-[#FAF5EE] text-tea border-black/20"
+                          }`}
+                        >
+                          ₹{product.price}
+                        </span>
+                      </div>
+
+                      <div className="mt-2 w-full">
+                        <p className="text-xs sm:text-sm font-black text-ink leading-snug line-clamp-1">
+                          {name}
+                        </p>
+                        <p className="text-[11px] font-semibold text-ink-secondary mt-0.5 line-clamp-1">
+                          {desc}
+                        </p>
+                        <div className="mt-2 pt-1.5 border-t border-black/10 flex items-center justify-between text-[11px] font-black">
+                          {inBasket ? (
+                            <span className="text-emerald-800 flex items-center gap-1">
+                              <Check className="h-3.5 w-3.5 stroke-[3]" /> In Basket
+                            </span>
+                          ) : (
+                            <span className="text-tea flex items-center gap-0.5">
+                              <Plus className="h-3 w-3 stroke-[3]" /> Add to basket
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Cane Basket (খৰাহী) & Direct Checkout Bar */}
+            <div className="w-full rounded-3xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 shadow-[4px_4px_0px_#000]">
+              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
+                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                  <ShoppingBag className="h-4 w-4" /> {t.basketTitle}
+                </span>
+                <span className="text-sm sm:text-base font-black text-tea">
+                  ₹{total} ({t.itemsSelectedCount(basket.length)})
+                </span>
+              </div>
+
+              {basket.length === 0 ? (
+                <div className="text-center py-4 space-y-1">
+                  <p className="text-xs sm:text-sm font-bold text-ink-secondary">
+                    {t.basketEmpty}
+                  </p>
+                  <p className="text-xs font-semibold text-amber-800/80">
+                    💡 Tip: Pratima suggested Kaji Nemu lemons & Joha rice!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {basket.map((id) => {
+                      const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
+                      if (!product) return null;
+                      const name = product.name[normLocale] || product.name.en;
+                      const emoji = getProduceEmoji(id);
+
+                      return (
+                        <div
+                          key={id}
+                          className="inline-flex items-center gap-2 rounded-xl border-2 border-black bg-white px-3 py-1.5 shadow-[2px_2px_0px_#000] text-xs sm:text-sm font-black text-ink"
+                        >
+                          <span>{emoji} {name}</span>
+                          <span className="text-tea font-bold">₹{product.price}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleItem(id);
+                            }}
+                            className="text-rose-600 hover:text-rose-800 p-0.5 cursor-pointer ml-1"
+                            title="Remove item"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Prominent Checkout Action */}
+                  <div className="pt-2 border-t border-black/10 flex justify-end">
+                    <ChunkyButton
+                      variant="tea"
+                      size="xl"
+                      onClick={() => {
+                        playPress();
+                        setPhase("cashier");
+                        setPaymentNotes([]);
+                        setChangeGiven(null);
+                        speak(t.cashierAudioPrompt(total), locale, rate);
+                      }}
+                    >
+                      {t.proceedCashierBtn}
+                    </ChunkyButton>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ─── PHASE 3: CASHIER COUNTER & CURRENCY MATH ─── */}
+        {phase === "cashier" && (
+          <div className="flex flex-col items-center gap-4 py-1">
+            {/* Shopkeeper Dialogue Banner */}
+            <div className="w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[4px_4px_0px_#000]">
+              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
+                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                  <Store className="h-4 w-4" /> {t.stallHeading}
+                </span>
+                <span className="text-base sm:text-lg font-black text-tea">
+                  {t.totalLabel}: ₹{total}
+                </span>
+              </div>
+
+              <blockquote className="font-serif text-base sm:text-lg font-bold text-ink italic leading-relaxed">
+                {t.cashierGreeting(total)}
+              </blockquote>
+
+              <div className="mt-3 flex flex-wrap gap-2 border-t border-black/10 pt-2.5">
+                {basket.map((id) => {
+                  const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
+                  if (!product) return null;
+                  const name = product.name[normLocale] || product.name.en;
+                  const emoji = getProduceEmoji(id);
+                  return (
+                    <span
+                      key={id}
+                      className="rounded-lg border border-black/20 bg-white/80 px-2 py-0.5 text-xs font-bold text-ink"
+                    >
+                      {emoji} {name} • ₹{product.price}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Rupee Notes Laid on Counter */}
+            <div className="w-full rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
+              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
+                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary">
+                  {t.counterNotesLabel}
+                </span>
+                <span className="text-sm sm:text-base font-black text-ink">
+                  {t.amountPaid}:{" "}
+                  <strong
+                    className={`font-black ${
+                      paidAmount >= total ? "text-emerald-700" : "text-amber-800"
+                    }`}
+                  >
+                    ₹{paidAmount}
+                  </strong>{" "}
+                  / ₹{total}
+                </span>
+              </div>
+
+              <div className="min-h-[64px] rounded-xl border-2 border-amber-800 bg-[#E8DCC9] p-3 shadow-inner flex flex-wrap items-center gap-2">
+                {paymentNotes.length === 0 ? (
+                  <p className="text-xs sm:text-sm font-bold text-amber-900/60 italic w-full text-center py-2">
+                    Tap or air-point to rupee notes below to place them on the counter.
+                  </p>
+                ) : (
+                  paymentNotes.map((note, idx) => (
+                    <div
+                      key={idx}
+                      className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-3 py-1.5 text-base font-black shadow-[2px_2px_0px_#000] animate-fade-in ${noteStyle(
+                        note
+                      )}`}
+                    >
+                      <span>₹{note}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Rupee Notes Wallet Picker */}
+            <div className="w-full rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
+              <p className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary mb-3">
+                {t.walletNotesLabel}
+              </p>
+
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                {PAYMENT_NOTES.map((note) => (
                   <button
                     key={note}
                     type="button"
-                    onClick={() => submitChange(note)}
-                    disabled={changeGiven !== null && changeGiven === correctChange}
-                    className={`btn-tactile rounded-2xl border-3 border-black px-4 py-3 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer min-w-[76px] disabled:opacity-40 ${noteBg(note)} ${cueStyle}`}
+                    onClick={() => addNote(note)}
+                    className={`btn-tactile rounded-2xl border-3 border-black py-3 px-2 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer flex flex-col items-center justify-center ${noteStyle(
+                      note
+                    )}`}
                   >
-                    ₹{note}
+                    <span>₹{note}</span>
+                    <span className="text-[10px] font-bold opacity-80 mt-0.5">+ Add</span>
                   </button>
-                );
-              })}
+                ))}
+              </div>
+
+              {/* Cashier Helper Actions */}
+              <div className="mt-4 flex flex-wrap gap-2.5 pt-2 border-t border-black/10">
+                <button
+                  type="button"
+                  onClick={clearNotes}
+                  className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-white px-3.5 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-slate-100 cursor-pointer"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  <span>{t.clearNotesBtn}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={suggestExactNotes}
+                  className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-amber-600 bg-amber-100 px-3.5 py-2 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
+                >
+                  <Sparkles className="h-4 w-4 text-amber-700" />
+                  <span>{t.autoSuggestBtn}</span>
+                </button>
+              </div>
             </div>
-            {softBounceFeedback && (
-              <div className="mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 p-2.5 text-center">
-                <p className="text-xs font-bold text-amber-950">
-                  {softBounceFeedback}
-                </p>
-              </div>
-            )}
-          </div>
 
-          {!hintUsed && (
-            <button
-              type="button"
-              onClick={showHint}
-              className="flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-4 py-2 text-base font-black text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
+            {/* Pay Cashier Button */}
+            <ChunkyButton
+              variant="tea"
+              size="xl"
+              onClick={submitCashierPayment}
+              disabled={paidAmount < total}
             >
-              <HelpCircle className="h-4 w-4" />
-              {t("hintBtn")}
-            </button>
-          )}
-        </div>
-      )}
+              {t.payCashierBtn}
+            </ChunkyButton>
+          </div>
+        )}
 
-      {/* ─── DONE ─── */}
-      {phase === "done" && (
-        <Celebration
-          title={t("complete")}
-          subtitle={t("desc")}
-          xpEarned={basket.length * 12 + 100}
-          accuracy={`${Math.max(0, 100 - errors * 20)}%`}
-        >
-          <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
-            <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
-              <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-                <span className="text-base font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" /> {t("complete")}
-                </span>
-                <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
-                  {t("remaining")}: ₹{remaining}
+        {/* ─── PHASE 4: CHANGE VERIFICATION & ERRORLESS LEARNING ─── */}
+        {phase === "change" && (
+          <div className="flex flex-col items-center gap-4 py-1">
+            {/* Calculation Equation Card */}
+            <div className="w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[4px_4px_0px_#000]">
+              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
+                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4" /> {t.changeSelectLabel}
                 </span>
               </div>
 
-              <h3 className="font-serif text-xl font-black text-ink">
-                {t("title")}
-              </h3>
-              <div className="mt-3 space-y-1.5 border-t border-black/10 pt-2">
-                {basket.map((id) => {
-                  const p = PRODUCTS.find((pr) => pr.id === id);
-                  if (!p) return null;
+              {/* Large Legible Visual Math Equation */}
+              <div className="p-4 rounded-xl border-2 border-black/20 bg-white flex flex-col sm:flex-row items-center justify-around gap-2 text-center">
+                <div>
+                  <span className="block text-[11px] font-bold text-ink-secondary uppercase">
+                    {t.amountPaid}
+                  </span>
+                  <span className="text-xl sm:text-2xl font-black text-ink">₹{paidAmount}</span>
+                </div>
+                <span className="text-2xl font-black text-ink-secondary">−</span>
+                <div>
+                  <span className="block text-[11px] font-bold text-ink-secondary uppercase">
+                    {t.totalLabel}
+                  </span>
+                  <span className="text-xl sm:text-2xl font-black text-tea">₹{total}</span>
+                </div>
+                <span className="text-2xl font-black text-ink-secondary">=</span>
+                <div className="rounded-xl border-2 border-dashed border-amber-600 bg-amber-50 px-4 py-1">
+                  <span className="block text-[11px] font-bold text-amber-900 uppercase">
+                    Change Due
+                  </span>
+                  <span className="text-xl sm:text-2xl font-black text-amber-900">
+                    {changeGiven !== null ? `₹${changeGiven}` : `₹?`}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Note Picker for Change */}
+            <div className="w-full rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
+              <p className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary mb-3">
+                {t.changeSelectLabel}
+              </p>
+
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                {PAYMENT_NOTES.map((note) => {
+                  const isTarget = note === correctChange;
+                  const isHinted =
+                    isTarget &&
+                    (hintUsed ||
+                      changeAttempts > 0 ||
+                      vanishingCue.intensity !== "none");
+
+                  const cueRing =
+                    isTarget && isHinted
+                      ? "ring-4 ring-amber-400 animate-pulse scale-105 border-amber-600 shadow-[0_0_18px_rgba(245,158,11,0.85)]"
+                      : "";
+
                   return (
-                    <div
-                      key={id}
-                      className="flex items-center justify-between text-base font-black text-ink"
+                    <button
+                      key={note}
+                      type="button"
+                      onClick={() => submitChange(note)}
+                      disabled={changeGiven !== null && changeGiven === correctChange}
+                      className={`btn-tactile rounded-2xl border-3 border-black py-3.5 px-2 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-40 flex flex-col items-center justify-center ${noteStyle(
+                        note
+                      )} ${cueRing}`}
                     >
-                      <span className="flex items-center gap-2">
-                        {renderProductIcon(p.category, "h-4 w-4")} {productName(p)}
-                      </span>
-                      <span className="text-tea">₹{p.price}</span>
-                    </div>
+                      <span>₹{note}</span>
+                    </button>
                   );
                 })}
               </div>
 
-              <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
-                <button
-                  type="button"
-                  onClick={() => playLifeSong()}
-                  className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
-                >
-                  <Music className="h-4 w-4 text-ink" />
-                  <span className="text-xs font-black">{fb.playMelody}</span>
-                </button>
-                <span className="text-base font-bold text-ink-secondary">
-                  {t("complete")}
-                </span>
-              </div>
+              {softBounceFeedback && (
+                <div className="mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 p-3 text-center animate-fade-in">
+                  <p className="text-xs sm:text-sm font-bold text-amber-950">
+                    {softBounceFeedback}
+                  </p>
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <ChunkyButton variant="tea" size="xl" onClick={restartGame}>
-                <span className="flex items-center gap-2">
-                  <RotateCcw className="h-4 w-4" /> {t("playAgain")}
-                </span>
-              </ChunkyButton>
-              <Link
-                href="/patient/games"
-                className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-5 py-2.5 text-base font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
+            {!hintUsed && (
+              <button
+                type="button"
+                onClick={showHint}
+                className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 px-4 py-2 text-xs sm:text-sm font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer"
               >
-                ← {t("backToHub")}
-              </Link>
-            </div>
+                <HelpCircle className="h-4 w-4 text-amber-800" />
+                <span>{t.needHintBtn}</span>
+              </button>
+            )}
           </div>
-        </Celebration>
-      )}
-    </GameShell>
+        )}
+
+        {/* ─── PHASE 5: JOYFUL CELEBRATION & RECEIPT ─── */}
+        {phase === "done" && (
+          <Celebration
+            title={t.celebrationTitle}
+            subtitle={t.celebrationSubtitle}
+            xpEarned={basket.length * 15 + 100}
+            accuracy={`${Math.max(0, 100 - errors * 15)}%`}
+          >
+            <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
+              <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
+                <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
+                  <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4" /> {t.receiptTitle}
+                  </span>
+                  <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
+                    PAID IN FULL
+                  </span>
+                </div>
+
+                <p className="text-xs font-semibold text-ink-secondary mb-3">
+                  {t.receiptSubtitle}
+                </p>
+
+                <div className="space-y-1.5 border-t border-black/10 pt-2 text-xs sm:text-sm font-black">
+                  {basket.map((id) => {
+                    const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
+                    if (!product) return null;
+                    const name = product.name[normLocale] || product.name.en;
+                    const emoji = getProduceEmoji(id);
+                    return (
+                      <div key={id} className="flex items-center justify-between">
+                        <span>{emoji} {name}</span>
+                        <span className="text-tea">₹{product.price}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-3 border-t-2 border-black/15 pt-2 text-xs sm:text-sm font-black space-y-1">
+                  <div className="flex justify-between">
+                    <span>{t.totalLabel}:</span>
+                    <span className="text-tea">₹{total}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>{t.amountPaid}:</span>
+                    <span>₹{paidAmount}</span>
+                  </div>
+                  <div className="flex justify-between text-emerald-800">
+                    <span>Change Returned:</span>
+                    <span>₹{changeGiven ?? correctChange}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
+                  <button
+                    type="button"
+                    onClick={() => playLifeSong()}
+                    className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-amber-200 hover:bg-amber-300 px-3.5 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer"
+                  >
+                    <Music className="h-4 w-4" />
+                    <span>{t.playMelodyBtn}</span>
+                  </button>
+                  <span className="text-xs font-bold text-ink-secondary">
+                    {t.itemsSelectedCount(basket.length)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-3 w-full">
+                <ChunkyButton variant="tea" size="xl" onClick={restartGame}>
+                  <span className="flex items-center gap-2">
+                    <RotateCcw className="h-4 w-4" /> {t.playAgainBtn}
+                  </span>
+                </ChunkyButton>
+                <Link
+                  href="/patient/games"
+                  className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-black bg-surface px-5 py-3 text-xs sm:text-sm font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
+                >
+                  {t.backToHubBtn}
+                </Link>
+              </div>
+            </div>
+          </Celebration>
+        )}
+      </div>
+    </section>
   );
 }

@@ -139,6 +139,17 @@ export const GAMES: GameDef[] = [
     component: LotusPainterGame,
   },
   {
+    id: "bazaar-buddies",
+    icon: Store,
+    titleKey: "bazaarBuddies.title",
+    descKey: "bazaarBuddies.desc",
+    accent: "bg-[#D97706]",
+    domain: "Going to the Market (Village Shopping)",
+    category: "iadl",
+    recommended: true,
+    component: BazaarBuddiesGame,
+  },
+  {
     id: "butterfly-sanctuary",
     icon: Flower2,
     titleKey: "butterflySanctuary.title",
@@ -480,17 +491,7 @@ export const GAMES: GameDef[] = [
     category: "reminiscence",
     recommended: true,
     component: DayInMyWorld3D,
-  },
-  {
-    id: "bazaar-buddies",
-    icon: Store,
-    titleKey: "bazaarBuddies.title",
-    descKey: "bazaarBuddies.desc",
-    accent: "bg-[#059669]",
-    domain: "Going to the Market",
-    category: "iadl",
-    recommended: true,
-    component: BazaarBuddiesGame,
+
   },
   {
     id: "memory-garden",
