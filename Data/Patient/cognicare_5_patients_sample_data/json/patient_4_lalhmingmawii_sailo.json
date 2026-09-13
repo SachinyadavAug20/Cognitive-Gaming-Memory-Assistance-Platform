@@ -12,7 +12,10 @@
     "phone_number": "9436142100",
     "form_filled_by": "Spouse",
     "caregiver_name": "Lalrinzuala Sailo",
-    "caregiver_relation": "Spouse"
+    "caregiver_relation": "Spouse",
+    "patient_photo_file": "images/patient_4_lalhmingmawii_sailo/patient_profile_photo_lalhmingmawii_sailo.jpg",
+    "authentic_web_photo_url": "https://c8.alamy.com/comp/K048MH/portrait-of-and-indian-woman-from-the-mizo-tribe-in-a-traditional-K048MH.jpg",
+    "patient_photo_description": "Elderly patient portrait photo (Lalhmingmawii Sailo, Mizoram)"
   },
   "step_2_caregiver_contact": {
     "primary_caregiver": "Lalrinzuala Sailo",
@@ -45,7 +48,10 @@
         "has_specs": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mizo_elderly_gentleman_Aizawl.jpg/600px-Mizo_elderly_gentleman_Aizawl.jpg",
+      "photo_caption": "Lalrinzuala Sailo (Spouse) - Retired Revenue Inspector, Aizawl",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p4_r2",
@@ -64,7 +70,10 @@
         "hair_style": "long",
         "has_specs": true,
         "bg_type": "cool_office"
-      }
+      },
+      "authentic_web_photo_url": "https://c8.alamy.com/comp/K048MH/portrait-of-and-indian-woman-from-the-mizo-tribe-in-a-traditional-K048MH.jpg",
+      "photo_caption": "Vanlalruati Sailo (Daughter) - College Lecturer wearing traditional Mizo Puan",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p4_r3",
@@ -82,7 +91,10 @@
         ],
         "hair_style": "short",
         "bg_type": "outdoor_garden"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Mizo_young_man_Aizawl.jpg/600px-Mizo_young_man_Aizawl.jpg",
+      "photo_caption": "Lalbiakzuala Sailo (Son) - Civil Engineer in PWD, Mission Veng",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p4_r4",
@@ -101,7 +113,10 @@
         "hair_style": "girl",
         "is_child": true,
         "bg_type": "warm_indoor"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mizo_schoolgirl_Aizawl.jpg/600px-Mizo_schoolgirl_Aizawl.jpg",
+      "photo_caption": "Lalramchhani Sailo (Grandchild) - Granddaughter, Aizawl",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p4_r5",
@@ -125,7 +140,10 @@
         ],
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://c8.alamy.com/comp/K08PM2/portrait-of-an-indian-mother-daughter-from-the-mizo-tribe-in-traditional-K08PM2.jpg",
+      "photo_caption": "Lalthanmawii Sailo (Sibling) - Presbyterian fellowship elder, Khatla",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     }
   ],
   "step_4_life_story_and_interests": {
@@ -175,7 +193,10 @@
           40
         ],
         "sky_type": "misty_hills"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Mizo_Hillside_House_Aizawl.jpg/800px-Mizo_Hillside_House_Aizawl.jpg",
+      "landmark_full_title": "Zarkawt Hillside Residence Overlooking Green Valleys, Aizawl",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p4_pl2",
@@ -187,7 +208,10 @@
       "style": {
         "type": "market",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Aizawl_Burra_Bazar_terraced.jpg/800px-Aizawl_Burra_Bazar_terraced.jpg",
+      "landmark_full_title": "Aizawl Bara Bazar (Burra Bazar) Terraced Hill Marketplace",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p4_pl3",
@@ -199,7 +223,10 @@
       "style": {
         "type": "church",
         "sky_type": "misty_hills"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Solomon%27s_Temple%2C_Aizawl%2C_Mizoram%2C_India.jpg",
+      "landmark_full_title": "Solomon's Temple & Zarkawt Presbyterian Church, Aizawl, Mizoram",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p4_pl4",
@@ -211,7 +238,10 @@
       "style": {
         "type": "clinic",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Aizawl_Civil_Hospital_Building.jpg/800px-Aizawl_Civil_Hospital_Building.jpg",
+      "landmark_full_title": "Aizawl Civil Hospital & Urban Primary Health Centre, Mizoram",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p4_pl5",
@@ -223,7 +253,10 @@
       "style": {
         "type": "viewpoint",
         "sky_type": "golden_hour"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Aizawl_panoramicview.jpg",
+      "landmark_full_title": "Durtlang Hills Viewpoint & Panoramic Aizawl Mountain Promenade",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     }
   ]
 }

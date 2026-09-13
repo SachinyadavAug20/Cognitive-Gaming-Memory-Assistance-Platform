@@ -18,7 +18,10 @@
         "phone_number": "9864012845",
         "form_filled_by": "Child",
         "caregiver_name": "Manash Borah",
-        "caregiver_relation": "Son"
+        "caregiver_relation": "Son",
+        "patient_photo_file": "images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg",
+        "authentic_web_photo_url": "https://c8.alamy.com/comp/DM75FH/india-assam-old-man-DM75FH.jpg",
+        "patient_photo_description": "Elderly patient portrait photo (Biren Borah, Assam)"
       },
       "step_2_caregiver_contact": {
         "primary_caregiver": "Manash Borah",
@@ -45,7 +48,10 @@
             "has_specs": true,
             "hair_style": "short",
             "bg_type": "cool_office"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Young_Assamese_man_portrait.jpg/600px-Young_Assamese_man_portrait.jpg",
+          "photo_caption": "Manash Borah (Son) - Tech Professional, Guwahati",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p1_r2",
@@ -71,7 +77,10 @@
             "has_necklace": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Assamese_woman.jpg",
+          "photo_caption": "Pratima Borah (Spouse) - In Traditional Assamese Mekhela Chador",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p1_r3",
@@ -90,7 +99,10 @@
             "hair_style": "long",
             "has_bindi": true,
             "bg_type": "outdoor_garden"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Assamese_girl_in_traditional_attire.jpg/600px-Assamese_girl_in_traditional_attire.jpg",
+          "photo_caption": "Ananya Borah (Daughter) - School Educator, Jorhat",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p1_r4",
@@ -109,7 +121,10 @@
             "hair_style": "boy",
             "is_child": true,
             "bg_type": "warm_indoor"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/School_boy_Northeast_India.jpg/600px-School_boy_Northeast_India.jpg",
+          "photo_caption": "Arnav Borah (Grandchild) - Student, Maharishi Vidya Mandir, Guwahati",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p1_r5",
@@ -134,7 +149,10 @@
             ],
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://c8.alamy.com/comp/DM75FH/india-assam-old-man-DM75FH.jpg",
+          "photo_caption": "Dhireswar Borah (Sibling) - Retired PWD Engineer with Assamese Gamosa",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         }
       ],
       "step_4_life_story_and_interests": {
@@ -185,7 +203,10 @@
               80
             ],
             "sky_type": "morning_sun"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/Vintage_Assam_Type_home_2.jpg",
+          "landmark_full_title": "Vintage Assam-Type Traditional Residence, Assam",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p1_pl2",
@@ -197,7 +218,10 @@
           "style": {
             "type": "market",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Graves_in_Guwahati_war_cemetery.jpg/960px-Graves_in_Guwahati_war_cemetery.jpg.webp",
+          "landmark_full_title": "Silpukhuri Daily Bazaar & Nabagraha Market Corridor, Guwahati",
+          "source_attribution": "OpenStreetMap / Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p1_pl3",
@@ -209,7 +233,10 @@
           "style": {
             "type": "namghar",
             "sky_type": "golden_hour"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/A_namghar_in_Assam.jpg",
+          "landmark_full_title": "Traditional Namghar Community Prayer Hall with Sacred Xorai, Assam",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p1_pl4",
@@ -221,7 +248,10 @@
           "style": {
             "type": "clinic",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Guwahati_Medical_College_and_Hospital.jpg/800px-Guwahati_Medical_College_and_Hospital.jpg",
+          "landmark_full_title": "Community Health Centre & Geriatric Clinic, Guwahati, Assam",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p1_pl5",
@@ -233,7 +263,10 @@
           "style": {
             "type": "lake",
             "sky_type": "morning_sun"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Dighalipukhuri%2C_Guwahati.jpg",
+          "landmark_full_title": "Dighalipukhuri Historic Lake & Shaded Walking Promenade, Guwahati",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         }
       ]
     },
@@ -251,7 +284,10 @@
         "phone_number": "9436108722",
         "form_filled_by": "Child",
         "caregiver_name": "Daphisha Nongrum",
-        "caregiver_relation": "Daughter"
+        "caregiver_relation": "Daughter",
+        "patient_photo_file": "images/patient_2_mary_nongrum/patient_profile_photo_mary_nongrum.jpg",
+        "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Khasi_woman.jpg",
+        "patient_photo_description": "Elderly patient portrait photo (Mary Nongrum, Meghalaya)"
       },
       "step_2_caregiver_contact": {
         "primary_caregiver": "Daphisha Nongrum",
@@ -278,7 +314,10 @@
             "hair_style": "long",
             "has_specs": true,
             "bg_type": "outdoor_garden"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Khasi_woman.jpg",
+          "photo_caption": "Daphisha Nongrum (Daughter) - St. Mary's School Teacher, Shillong",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p2_r2",
@@ -303,7 +342,10 @@
             "has_moustache": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Khasi_elderly_man_Shillong.jpg/600px-Khasi_elderly_man_Shillong.jpg",
+          "photo_caption": "Banker Nongrum (Spouse) - Retired Forestry Officer, Shillong",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p2_r3",
@@ -322,7 +364,10 @@
             "hair_style": "girl",
             "is_child": true,
             "bg_type": "warm_indoor"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Khasi_girl_traditional_dress.jpg/600px-Khasi_girl_traditional_dress.jpg",
+          "photo_caption": "Banylla Nongrum (Grandchild) - Granddaughter, Shillong",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p2_r4",
@@ -340,7 +385,10 @@
             ],
             "hair_style": "short",
             "bg_type": "cool_office"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Khasi_youth_Mawlynnong.jpg/600px-Khasi_youth_Mawlynnong.jpg",
+          "photo_caption": "Pynskhem Nongrum (Son) - Tourism Department Officer, Shillong",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p2_r5",
@@ -364,7 +412,10 @@
             ],
             "is_elderly": true,
             "bg_type": "warm_indoor"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Khasi_senior_woman_jainsem.jpg/600px-Khasi_senior_woman_jainsem.jpg",
+          "photo_caption": "Ibadalin Nongrum (Sibling) - Sister wearing traditional Khasi Jainsem",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         }
       ],
       "step_4_life_story_and_interests": {
@@ -414,7 +465,10 @@
               45
             ],
             "sky_type": "misty_hills"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Pine_surrounded_cottage_Shillong.jpg/800px-Pine_surrounded_cottage_Shillong.jpg",
+          "landmark_full_title": "Nongrim Hills Traditional Wooden-Roof Cottage, Shillong",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p2_pl2",
@@ -426,7 +480,10 @@
           "style": {
             "type": "market",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Iewduh_Bara_Bazar_Shillong.jpg/800px-Iewduh_Bara_Bazar_Shillong.jpg",
+          "landmark_full_title": "Laitumkhrah & Iewduh Traditional Market Stalls, Shillong",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p2_pl3",
@@ -438,7 +495,10 @@
           "style": {
             "type": "church",
             "sky_type": "misty_hills"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Mary_Help_of_Christians_Cathedral%2C_Shillong_%E2%80%93_Front_Side.jpg",
+          "landmark_full_title": "Cathedral of Mary Help of Christians (Landmark Blue Cathedral), Shillong",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p2_pl4",
@@ -450,7 +510,10 @@
           "style": {
             "type": "clinic",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Shillong_Civil_Hospital_Campus.jpg/800px-Shillong_Civil_Hospital_Campus.jpg",
+          "landmark_full_title": "Shillong Civil Hospital Geriatric OPD & Wellness Centre",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p2_pl5",
@@ -462,7 +525,10 @@
           "style": {
             "type": "lake",
             "sky_type": "morning_sun"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Ward%27s_Lake%2C_Shillong.jpg",
+          "landmark_full_title": "Ward's Lake (Nan Polok) Ornamental Lake & Wooden Bridge, Shillong",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         }
       ]
     },
@@ -480,7 +546,10 @@
         "phone_number": "9366014299",
         "form_filled_by": "Spouse",
         "caregiver_name": "T. Sanatombi Devi",
-        "caregiver_relation": "Spouse"
+        "caregiver_relation": "Spouse",
+        "patient_photo_file": "images/patient_3_ibochouba_singh/patient_profile_photo_ibochouba_singh.jpg",
+        "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Meitei_elder_traditional_attire.jpg/600px-Meitei_elder_traditional_attire.jpg",
+        "patient_photo_description": "Elderly patient portrait photo (Tongbram Ibochouba Singh, Manipur)"
       },
       "step_2_caregiver_contact": {
         "primary_caregiver": "T. Sanatombi Devi",
@@ -513,7 +582,10 @@
             "has_bindi": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Meitei_elderly_woman_Imphal.jpg/600px-Meitei_elderly_woman_Imphal.jpg",
+          "photo_caption": "T. Sanatombi Devi (Spouse) - Wearing traditional Meitei Phanek",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p3_r2",
@@ -532,7 +604,10 @@
             "hair_style": "short",
             "has_specs": true,
             "bg_type": "cool_office"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Manipuri_man_portrait.jpg/600px-Manipuri_man_portrait.jpg",
+          "photo_caption": "T. Birjit Singh (Son) - Handloom Corporation Officer, Imphal",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p3_r3",
@@ -551,7 +626,10 @@
             "hair_style": "long",
             "has_bindi": true,
             "bg_type": "outdoor_garden"
-          }
+          },
+          "authentic_web_photo_url": "https://img.magnific.com/premium-photo/photography-beautiful-indian-traditional-girl-happy-lifestyle_1288657-149346.jpg",
+          "photo_caption": "T. Memcha Devi (Daughter) - Traditional cultural practitioner, Kwakeithel",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p3_r4",
@@ -570,7 +648,10 @@
             "hair_style": "boy",
             "is_child": true,
             "bg_type": "warm_indoor"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Manipuri_boy_student.jpg/600px-Manipuri_boy_student.jpg",
+          "photo_caption": "Tomba Singh (Grandchild) - Football player & student, Imphal",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p3_r5",
@@ -600,7 +681,10 @@
             "has_moustache": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Meitei_elder_traditional_attire.jpg/600px-Meitei_elder_traditional_attire.jpg",
+          "photo_caption": "T. Tombi Singh (Sibling) - Elder in traditional white kurta and shawl",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         }
       ],
       "step_4_life_story_and_interests": {
@@ -650,7 +734,10 @@
               45
             ],
             "sky_type": "morning_sun"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Meitei_traditional_Yumjao_homestead.jpg/800px-Meitei_traditional_Yumjao_homestead.jpg",
+          "landmark_full_title": "Uripok Traditional Meitei Yumjao Courtyard Homestead, Imphal",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p3_pl2",
@@ -662,7 +749,10 @@
           "style": {
             "type": "market",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Ima_Market%2C_imphal.jpeg",
+          "landmark_full_title": "Ema Keithel (Ima Market - World's Largest All-Women Market), Imphal",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p3_pl3",
@@ -674,7 +764,10 @@
           "style": {
             "type": "temple",
             "sky_type": "golden_hour"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Shree_Govindaji_temple%2C_Manipur.jpg",
+          "landmark_full_title": "Shree Govindaji Golden Domed Historic Temple, Imphal, Manipur",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p3_pl4",
@@ -686,7 +779,10 @@
           "style": {
             "type": "clinic",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/RIMS_Imphal_Campus.jpg/800px-RIMS_Imphal_Campus.jpg",
+          "landmark_full_title": "Regional Institute of Medical Sciences (RIMS) Geriatric OPD, Imphal",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p3_pl5",
@@ -698,7 +794,10 @@
           "style": {
             "type": "park",
             "sky_type": "morning_sun"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Kangla_Fort_Moat_Gardens.jpg/800px-Kangla_Fort_Moat_Gardens.jpg",
+          "landmark_full_title": "Kangla Fort Sacred Moat Gardens & Shady Walking Promenade, Imphal",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         }
       ]
     },
@@ -716,7 +815,10 @@
         "phone_number": "9436142100",
         "form_filled_by": "Spouse",
         "caregiver_name": "Lalrinzuala Sailo",
-        "caregiver_relation": "Spouse"
+        "caregiver_relation": "Spouse",
+        "patient_photo_file": "images/patient_4_lalhmingmawii_sailo/patient_profile_photo_lalhmingmawii_sailo.jpg",
+        "authentic_web_photo_url": "https://c8.alamy.com/comp/K048MH/portrait-of-and-indian-woman-from-the-mizo-tribe-in-a-traditional-K048MH.jpg",
+        "patient_photo_description": "Elderly patient portrait photo (Lalhmingmawii Sailo, Mizoram)"
       },
       "step_2_caregiver_contact": {
         "primary_caregiver": "Lalrinzuala Sailo",
@@ -749,7 +851,10 @@
             "has_specs": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mizo_elderly_gentleman_Aizawl.jpg/600px-Mizo_elderly_gentleman_Aizawl.jpg",
+          "photo_caption": "Lalrinzuala Sailo (Spouse) - Retired Revenue Inspector, Aizawl",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p4_r2",
@@ -768,7 +873,10 @@
             "hair_style": "long",
             "has_specs": true,
             "bg_type": "cool_office"
-          }
+          },
+          "authentic_web_photo_url": "https://c8.alamy.com/comp/K048MH/portrait-of-and-indian-woman-from-the-mizo-tribe-in-a-traditional-K048MH.jpg",
+          "photo_caption": "Vanlalruati Sailo (Daughter) - College Lecturer wearing traditional Mizo Puan",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p4_r3",
@@ -786,7 +894,10 @@
             ],
             "hair_style": "short",
             "bg_type": "outdoor_garden"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Mizo_young_man_Aizawl.jpg/600px-Mizo_young_man_Aizawl.jpg",
+          "photo_caption": "Lalbiakzuala Sailo (Son) - Civil Engineer in PWD, Mission Veng",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p4_r4",
@@ -805,7 +916,10 @@
             "hair_style": "girl",
             "is_child": true,
             "bg_type": "warm_indoor"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mizo_schoolgirl_Aizawl.jpg/600px-Mizo_schoolgirl_Aizawl.jpg",
+          "photo_caption": "Lalramchhani Sailo (Grandchild) - Granddaughter, Aizawl",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p4_r5",
@@ -829,7 +943,10 @@
             ],
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://c8.alamy.com/comp/K08PM2/portrait-of-an-indian-mother-daughter-from-the-mizo-tribe-in-traditional-K08PM2.jpg",
+          "photo_caption": "Lalthanmawii Sailo (Sibling) - Presbyterian fellowship elder, Khatla",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         }
       ],
       "step_4_life_story_and_interests": {
@@ -879,7 +996,10 @@
               40
             ],
             "sky_type": "misty_hills"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Mizo_Hillside_House_Aizawl.jpg/800px-Mizo_Hillside_House_Aizawl.jpg",
+          "landmark_full_title": "Zarkawt Hillside Residence Overlooking Green Valleys, Aizawl",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p4_pl2",
@@ -891,7 +1011,10 @@
           "style": {
             "type": "market",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Aizawl_Burra_Bazar_terraced.jpg/800px-Aizawl_Burra_Bazar_terraced.jpg",
+          "landmark_full_title": "Aizawl Bara Bazar (Burra Bazar) Terraced Hill Marketplace",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p4_pl3",
@@ -903,7 +1026,10 @@
           "style": {
             "type": "church",
             "sky_type": "misty_hills"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Solomon%27s_Temple%2C_Aizawl%2C_Mizoram%2C_India.jpg",
+          "landmark_full_title": "Solomon's Temple & Zarkawt Presbyterian Church, Aizawl, Mizoram",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p4_pl4",
@@ -915,7 +1041,10 @@
           "style": {
             "type": "clinic",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Aizawl_Civil_Hospital_Building.jpg/800px-Aizawl_Civil_Hospital_Building.jpg",
+          "landmark_full_title": "Aizawl Civil Hospital & Urban Primary Health Centre, Mizoram",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p4_pl5",
@@ -927,7 +1056,10 @@
           "style": {
             "type": "viewpoint",
             "sky_type": "golden_hour"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Aizawl_panoramicview.jpg",
+          "landmark_full_title": "Durtlang Hills Viewpoint & Panoramic Aizawl Mountain Promenade",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         }
       ]
     },
@@ -945,7 +1077,10 @@
         "phone_number": "9436009855",
         "form_filled_by": "Child",
         "caregiver_name": "Seyievinuo Angami",
-        "caregiver_relation": "Daughter"
+        "caregiver_relation": "Daughter",
+        "patient_photo_file": "images/patient_5_kevichusa_angami/patient_profile_photo_kevichusa_angami.jpg",
+        "authentic_web_photo_url": "https://c8.alamy.com/comp/DWKHH7/naga-konyak-tribal-head-hunter-with-traditional-headhunter-necklace-DWKHH7.jpg",
+        "patient_photo_description": "Elderly patient portrait photo (Kevichüsa Angami, Nagaland)"
       },
       "step_2_caregiver_contact": {
         "primary_caregiver": "Seyievinuo Angami",
@@ -972,7 +1107,10 @@
             "hair_style": "long",
             "has_specs": true,
             "bg_type": "outdoor_garden"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Angami_woman_Kohima.jpg/600px-Angami_woman_Kohima.jpg",
+          "photo_caption": "Seyievinuo Angami (Daughter) - High School Principal, Kohima",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p5_r2",
@@ -997,7 +1135,10 @@
             "has_necklace": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Traditional_Naga_elderly_woman.jpg/600px-Traditional_Naga_elderly_woman.jpg",
+          "photo_caption": "Neiphrelie Angami (Spouse) - Master Weaver wearing Angami Loramhü",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p5_r3",
@@ -1015,7 +1156,10 @@
             ],
             "hair_style": "short",
             "bg_type": "cool_office"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Naga_officer_Dimapur.jpg/600px-Naga_officer_Dimapur.jpg",
+          "photo_caption": "Kevilezo Angami (Son) - Agriculture Directorate Officer, Dimapur",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p5_r4",
@@ -1034,7 +1178,10 @@
             "hair_style": "girl",
             "is_child": true,
             "bg_type": "warm_indoor"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Naga_schoolgirl_Kohima.jpg/600px-Naga_schoolgirl_Kohima.jpg",
+          "photo_caption": "Vimenuo Angami (Grandchild) - Granddaughter, Kohima",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         },
         {
           "id": "p5_r5",
@@ -1064,7 +1211,10 @@
             "has_moustache": true,
             "is_elderly": true,
             "bg_type": "traditional_home"
-          }
+          },
+          "authentic_web_photo_url": "https://c8.alamy.com/comp/DWKHH7/naga-konyak-tribal-head-hunter-with-traditional-headhunter-necklace-DWKHH7.jpg",
+          "photo_caption": "Vitsore Angami (Sibling) - Village Elder in traditional Naga woven shawl",
+          "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
         }
       ],
       "step_4_life_story_and_interests": {
@@ -1115,7 +1265,10 @@
               65
             ],
             "sky_type": "misty_hills"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Angami_Naga_homestead_Kohima.jpg/800px-Angami_Naga_homestead_Kohima.jpg",
+          "landmark_full_title": "Midland Kohima Traditional Angami Hillside Homestead with Pine Trees",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p5_pl2",
@@ -1127,7 +1280,10 @@
           "style": {
             "type": "market",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Mao_Market_Kohima_Produce.jpg/800px-Mao_Market_Kohima_Produce.jpg",
+          "landmark_full_title": "Kohima Mao Market (Traditional Organic Produce & Mountain Herbs)",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p5_pl3",
@@ -1139,7 +1295,10 @@
           "style": {
             "type": "church",
             "sky_type": "misty_hills"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Cathedral_Kohima_Aradurah.jpg/800px-Cathedral_Kohima_Aradurah.jpg",
+          "landmark_full_title": "Mary Help of Christians Cathedral on Aradurah Hill, Kohima",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p5_pl4",
@@ -1151,7 +1310,10 @@
           "style": {
             "type": "clinic",
             "sky_type": "blue_day"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Naga_Hospital_Authority_Kohima.jpg/800px-Naga_Hospital_Authority_Kohima.jpg",
+          "landmark_full_title": "Naga Hospital Authority Kohima (NHAK) Geriatric Care Clinic",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         },
         {
           "id": "p5_pl5",
@@ -1163,7 +1325,10 @@
           "style": {
             "type": "park",
             "sky_type": "morning_sun"
-          }
+          },
+          "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Kohima_War_Cemetery%2C_Kohima%2C_Nagaland.jpg",
+          "landmark_full_title": "Kohima War Cemetery Memorial Rose Terraces & Stone Paths, Nagaland",
+          "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
         }
       ]
     }

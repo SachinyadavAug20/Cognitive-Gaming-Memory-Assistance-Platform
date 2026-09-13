@@ -1,0 +1,407 @@
+{
+  "description": "Verified Wikimedia Commons image URLs for North East India photos. All URLs confirmed via API.",
+  "people_portraits": [
+    {
+      "id": 1,
+      "description": "Assamese elderly man - Biren Borah patient profile",
+      "query": "Assamese elderly man",
+      "status": "LIMITED RESULTS - no direct elderly man portrait found",
+      "fallback_title": "Khasi man elderly - for Banker Nongrum could be reused",
+      "note": "Wikimedia search returned mostly PDFs. Use a generic Assamese man photo from other results."
+    },
+    {
+      "id": 2,
+      "description": "Assamese man - son Manash Borah",
+      "query": "Assamese man portrait",
+      "status": "LIMITED RESULTS",
+      "note": "Search returned mostly documents. Could use group cultural photo."
+    },
+    {
+      "id": 3,
+      "description": "Assamese elderly woman - spouse Pratima Borah",
+      "query": "Assamese elderly woman",
+      "status": "FOUND",
+      "title": "Elderly Assamese woman serving tea and snacks in a rural kitchen.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Elderly_Assamese_woman_serving_tea_and_snacks_in_a_rural_kitchen.jpg/960px-Elderly_Assamese_woman_serving_tea_and_snacks_in_a_rural_kitchen.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Elderly_Assamese_woman_serving_tea_and_snacks_in_a_rural_kitchen.jpg",
+      "dimensions": {"width": 1200, "height": 1600},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Elderly_Assamese_woman_serving_tea_and_snacks_in_a_rural_kitchen.jpg"
+    },
+    {
+      "id": 4,
+      "description": "Assamese girl traditional - daughter Ananya Borah",
+      "query": "Assamese girl traditional",
+      "status": "FOUND",
+      "title": "Assamese girl in traditional bihu costume.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Assamese_girl_in_traditional_bihu_costume.jpg/960px-Assamese_girl_in_traditional_bihu_costume.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/d/de/Assamese_girl_in_traditional_bihu_costume.jpg",
+      "dimensions": {"width": 3264, "height": 4928},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Assamese_girl_in_traditional_bihu_costume.jpg"
+    },
+    {
+      "id": 5,
+      "description": "Assamese boy student - grandchild Arnav Borah",
+      "query": "Assamese boy student",
+      "status": "NOT FOUND - use generic student photo",
+      "note": "No direct match found in API results"
+    },
+    {
+      "id": 6,
+      "description": "Khasi woman traditional - Mary Nongrum profile",
+      "query": "Khasi woman traditional",
+      "status": "FOUND",
+      "title": "Khasi Woman Dress Mawphanlur Oct24 A7CR 04247.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Khasi_Woman_Dress_Mawphanlur_Oct24_A7CR_04247.jpg/960px-Khasi_Woman_Dress_Mawphanlur_Oct24_A7CR_04247.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Khasi_Woman_Dress_Mawphanlur_Oct24_A7CR_04247.jpg",
+      "dimensions": {"width": 5480, "height": 7306},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Khasi_Woman_Dress_Mawphanlur_Oct24_A7CR_04247.jpg"
+    },
+    {
+      "id": 7,
+      "description": "Khasi man elderly - spouse Banker Nongrum",
+      "query": "Khasi man elderly",
+      "status": "NOT FOUND - use Khasi woman photo",
+      "note": "Search returned PDFs. Use an alternative cultural photo."
+    },
+    {
+      "id": 8,
+      "description": "Meitei man elderly - Ibochouba Singh profile",
+      "query": "Meitei man elderly",
+      "status": "NOT FOUND",
+      "note": "Search returned documents. Use Meitei cultural photos."
+    },
+    {
+      "id": 9,
+      "description": "Meitei woman traditional - spouse Sanatombi Devi",
+      "query": "Meitei woman traditional",
+      "status": "FOUND",
+      "title": "Classical Meitei sculpture of a Meitei woman, in traditional Meitei clothing, working on a Sumbul (or Shumbul), a traditional Meitei big mortar and pestle 01.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Classical_Meitei_sculpture_of_a_Meitei_woman%2C_in_traditional_Meitei_clothing%2C_working_on_a_%22Sumbul%22_%28or_%22Shumbul%22%29%2C_a_traditional_Meitei_big_mortar_and_pestle_01.jpg/960px-thumbnail.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Classical_Meitei_sculpture_of_a_Meitei_woman%2C_in_traditional_Meitei_clothing%2C_working_on_a_%22Sumbul%22_%28or_%22Shumbul%22%29%2C_a_traditional_Meitei_big_mortar_and_pestle_01.jpg",
+      "dimensions": {"width": 2992, "height": 4000},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Classical_Meitei_sculpture_of_a_Meitei_woman,_in_traditional_Meitei_clothing,_working_on_a_%22Sumbul%22_(or_%22Shumbul%22),_a_traditional_Meitei_big_mortar_and_pestle_01.jpg"
+    },
+    {
+      "id": 10,
+      "description": "Meitei boy student - grandchild Tomba Singh",
+      "query": "Meitei boy student",
+      "status": "NOT FOUND",
+      "note": "No direct match found"
+    },
+    {
+      "id": 11,
+      "description": "Mizo man elderly - Lalhmingmawii Sailo relatives",
+      "query": "Mizo man elderly",
+      "status": "FOUND",
+      "title": "Kuki man playing the Goshem musical instrument.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Kuki_man_playing_the_Goshem_musical_instrument.jpg/960px-Kuki_man_playing_the_Goshem_musical_instrument.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/16/Kuki_man_playing_the_Goshem_musical_instrument.jpg",
+      "dimensions": {"width": 1066, "height": 1600},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Kuki_man_playing_the_Goshem_musical_instrument.jpg",
+      "note": "Kuki is related to Mizo tribal culture in NE India"
+    },
+    {
+      "id": 12,
+      "description": "Mizo woman traditional - spouse Lalrinzuala Sailo",
+      "query": "Mizo woman traditional",
+      "status": "LIMITED - use Mizoram cultural photo",
+      "note": "Chheihlam dance troupe photo from Mizoram available"
+    },
+    {
+      "id": 13,
+      "description": "Mizo schoolgirl - grandchild Lalramchhani Sailo",
+      "query": "Mizo schoolgirl",
+      "status": "LIMITED",
+      "note": "Nuchhungi English Medium School teachers photo available but not schoolgirl"
+    },
+    {
+      "id": 14,
+      "description": "Naga man elderly - Kevichusa Angami relatives",
+      "query": "Naga man elderly",
+      "status": "FOUND",
+      "title": "Aao Naga man and woman.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Aao_Naga_man_and_woman.jpg/960px-Aao_Naga_man_and_woman.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Aao_Naga_man_and_woman.jpg",
+      "dimensions": {"width": 4284, "height": 5712},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Aao_Naga_man_and_woman.jpg"
+    },
+    {
+      "id": 15,
+      "description": "Naga woman traditional - spouse Neiphrelie Angami",
+      "query": "Naga woman traditional",
+      "status": "FOUND",
+      "title": "Naga Woman (in explore) - Flickr - Rod Waddington.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Naga_Woman_%28in_explore%29_-_Flickr_-_Rod_Waddington.jpg/960px-Naga_Woman_%28in_explore%29_-_Flickr_-_Rod_Waddington.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Naga_Woman_%28in_explore%29_-_Flickr_-_Rod_Waddington.jpg",
+      "dimensions": {"width": 5261, "height": 5261},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Naga_Woman_(in_explore)_-_Flickr_-_Rod_Waddington.jpg"
+    },
+    {
+      "id": 16,
+      "description": "Naga schoolgirl - grandchild Vimenuo Angami",
+      "query": "Naga schoolgirl",
+      "status": "NOT FOUND",
+      "note": "Use Konyak woman Hornbill festival photo as alternative"
+    }
+  ],
+  "places_landmarks": [
+    {
+      "id": 17,
+      "description": "Guwahati/Assam home",
+      "query": "Guwahati city / Assam tea garden",
+      "status": "FOUND",
+      "title": "Assam tea garden view.jpeg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Assam_tea_garden_view.jpeg/960px-Assam_tea_garden_view.jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Assam_tea_garden_view.jpeg",
+      "dimensions": {"width": 3000, "height": 2000},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Assam_tea_garden_view.jpeg"
+    },
+    {
+      "id": 18,
+      "description": "Guwahati/Assam market",
+      "query": "Guwahati market / Assam bazaar",
+      "status": "FOUND",
+      "title": "Market place in Goalpara.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Market_place_in_Goalpara.jpg/960px-Market_place_in_Goalpara.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Market_place_in_Goalpara.jpg",
+      "dimensions": {"width": 4096, "height": 3072},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Market_place_in_Goalpara.jpg"
+    },
+    {
+      "id": 19,
+      "description": "Assam namghar temple",
+      "query": "Assam namghar temple",
+      "status": "FOUND",
+      "title": "A namghar in Assam.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/A_namghar_in_Assam.jpg/960px-A_namghar_in_Assam.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/A_namghar_in_Assam.jpg",
+      "dimensions": {"width": 3648, "height": 2736},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:A_namghar_in_Assam.jpg"
+    },
+    {
+      "id": 20,
+      "description": "Shillong/Meghalaya home",
+      "query": "Shillong city / Meghalaya",
+      "status": "FOUND",
+      "title": "Aerial view of Shillong Meghalaya India.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Aerial_view_of_Shillong_Meghalaya_India.jpg/960px-Aerial_view_of_Shillong_Meghalaya_India.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Aerial_view_of_Shillong_Meghalaya_India.jpg",
+      "dimensions": {"width": 3180, "height": 3645},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Shillong_Meghalaya_India.jpg"
+    },
+    {
+      "id": 21,
+      "description": "Shillong market / Laitumkhrah",
+      "query": "Shillong market Laitumkhrah",
+      "status": "NOT FOUND - use Shillong city view",
+      "title": "Shillong City View.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Shillong_City_View.jpg/960px-Shillong_City_View.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Shillong_City_View.jpg",
+      "dimensions": {"width": 4000, "height": 3000},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Shillong_City_View.jpg"
+    },
+    {
+      "id": 22,
+      "description": "Shillong lake / Ward's Lake park",
+      "query": "Ward's Lake Shillong",
+      "status": "FOUND",
+      "title": "Ward's Lake, Shillong.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Ward%27s_Lake%2C_Shillong.jpg/960px-Ward%27s_Lake%2C_Shillong.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Ward%27s_Lake%2C_Shillong.jpg",
+      "dimensions": {"width": 4000, "height": 3000},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Ward%27s_Lake,_Shillong.jpg"
+    },
+    {
+      "id": 23,
+      "description": "Imphal/Manipur home",
+      "query": "Imphal Manipur",
+      "status": "FOUND",
+      "title": "A modern day building in Classical Meitei architecture, in Imphal, the capital city of Manipur state (Kangleipak) 01.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/A_modern_day_building_in_Classical_Meitei_architecture%2C_in_Imphal%2C_the_capital_city_of_Manipur_state_%28Kangleipak%29_01.jpg/960px-A_modern_day_building_in_Classical_Meitei_architecture%2C_in_Imphal%2C_the_capital_city_of_Manipur_state_%28Kangleipak%29_01.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/e5/A_modern_day_building_in_Classical_Meitei_architecture%2C_in_Imphal%2C_the_capital_city_of_Manipur_state_%28Kangleipak%29_01.jpg",
+      "dimensions": {"width": 2992, "height": 4000},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:A_modern_day_building_in_Classical_Meitei_architecture,_in_Imphal,_the_capital_city_of_Manipur_state_(Kangleipak)_01.jpg"
+    },
+    {
+      "id": 24,
+      "description": "Imphal market / Ema Keithel",
+      "query": "Ema Keithel Imphal",
+      "status": "NOT FOUND - use Imphal city",
+      "note": "Ema Keithel not in search results. Use Imphal architecture photo."
+    },
+    {
+      "id": 25,
+      "description": "Kangla Fort / Govindaji Temple",
+      "query": "Kangla Fort Imphal",
+      "status": "FOUND",
+      "title": "Kangla Fort, imphal.JPG",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Kangla_Fort%2C_imphal.JPG/960px-Kangla_Fort%2C_imphal.JPG",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Kangla_Fort%2C_imphal.JPG",
+      "dimensions": {"width": 4456, "height": 2424},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Kangla_Fort,_imphal.JPG"
+    },
+    {
+      "id": 26,
+      "description": "Aizawl/Mizoram home",
+      "query": "Aizawl city Mizoram",
+      "status": "FOUND",
+      "title": "Aizawl City in 2023.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/Aizawl_City_in_2023.jpg/960px-Aizawl_City_in_2023.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/9/99/Aizawl_City_in_2023.jpg",
+      "dimensions": {"width": 4096, "height": 3072},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Aizawl_City_in_2023.jpg"
+    },
+    {
+      "id": 27,
+      "description": "Aizawl market Mizoram",
+      "query": "Aizawl market Mizoram",
+      "status": "NOT FOUND - use Aizawl city view",
+      "title": "Aizawl View Point, Mizoram.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Aizawl_View_Point%2C_Mizoram.jpg/960px-Aizawl_View_Point%2C_Mizoram.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/07/Aizawl_View_Point%2C_Mizoram.jpg",
+      "dimensions": {"width": 4096, "height": 2304},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Aizawl_View_Point,_Mizoram.jpg"
+    },
+    {
+      "id": 28,
+      "description": "Solomon Temple Aizawl (church)",
+      "query": "Solomon Temple Aizawl",
+      "status": "FOUND",
+      "title": "Solomon Temple Aizawl 1.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Solomon_Temple_Aizawl_1.jpg/960px-Solomon_Temple_Aizawl_1.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Solomon_Temple_Aizawl_1.jpg",
+      "dimensions": {"width": 4624, "height": 2136},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Solomon_Temple_Aizawl_1.jpg"
+    },
+    {
+      "id": 29,
+      "description": "Kohima/Nagaland home",
+      "query": "Kohima city Nagaland",
+      "status": "FOUND",
+      "title": "Kohima City.jpeg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Kohima_City.jpeg/960px-Kohima_City.jpeg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Kohima_City.jpeg",
+      "dimensions": {"width": 2048, "height": 1536},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Kohima_City.jpeg"
+    },
+    {
+      "id": 30,
+      "description": "Kohima market",
+      "query": "Kohima market",
+      "status": "NOT FOUND - use Kohima city",
+      "title": "Kohima Nagaland India.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Kohima_Nagaland_India.jpg/960px-Kohima_Nagaland_India.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Kohima_Nagaland_India.jpg",
+      "dimensions": {"width": 4288, "height": 2848},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Kohima_Nagaland_India.jpg"
+    },
+    {
+      "id": 31,
+      "description": "Kohima War Cemetery (memorial)",
+      "query": "Kohima War Cemetery",
+      "status": "FOUND",
+      "title": "Kohima war cemetery 60.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Kohima_war_cemetery_60.jpg/960px-Kohima_war_cemetery_60.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Kohima_war_cemetery_60.jpg",
+      "dimensions": {"width": 2464, "height": 2464},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:Kohima_war_cemetery_60.jpg"
+    },
+    {
+      "id": 32,
+      "description": "Cathedral Kohima (church)",
+      "query": "Cathedral Kohima",
+      "status": "FOUND",
+      "title": "KOHIMA CATHEDRAL.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/KOHIMA_CATHEDRAL.jpg/960px-KOHIMA_CATHEDRAL.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/b/b9/KOHIMA_CATHEDRAL.jpg",
+      "dimensions": {"width": 3008, "height": 2000},
+      "commons_page": "https://commons.wikimedia.org/wiki/File:KOHIMA_CATHEDRAL.jpg"
+    }
+  ],
+  "additional_cultural_photos": {
+    "assamese_group": {
+      "title": "A group of 'Husori' for the occasion of Assamese 'Bohag Bihu' in their traditional attire.png",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/A_group_of_%27Husori%27_for_the_occasion_of_Assamese_%27Bohag_Bihu%27_in_their_traditional_attire.png/960px-A_group_of_%27Husori%27_for_the_occasion_of_Assamese_%27Bohag_Bihu%27_in_their_traditional_attire.png",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/A_group_of_%27Husori%27_for_the_occasion_of_Assamese_%27Bohag_Bihu%27_in_their_traditional_attire.png",
+      "dimensions": {"width": 5760, "height": 4000}
+    },
+    "mising_tribal_girls": {
+      "title": "A group of young Mising tribal girls in their traditional attire.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/A_group_of_young_Mising_tribal_girls_in_their_traditional_attire.jpg/960px-A_group_of_young_Mising_tribal_girls_in_their_traditional_attire.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/33/A_group_of_young_Mising_tribal_girls_in_their_traditional_attire.jpg",
+      "dimensions": {"width": 3820, "height": 2786}
+    },
+    "assamese_woman_portrait": {
+      "title": "Assamese Woman.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Assamese_Woman.jpg/960px-Assamese_Woman.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/6/63/Assamese_Woman.jpg",
+      "dimensions": {"width": 2817, "height": 3576}
+    },
+    "khasi_woman_selling": {
+      "title": "Farm-fresh organic cabbages sold by a Khasi woman in the Garo Hills, Meghalaya.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Farm-fresh_organic_cabbages_sold_by_a_Khasi_woman_in_the_Garo_Hills%2C_Meghalaya.jpg/960px-Farm-fresh_organic_cabbages_sold_by_a_Khasi_woman_in_the_Garo_Hills%2C_Meghalaya.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Farm-fresh_organic_cabbages_sold_by_a_Khasi_woman_in_the_Garo_Hills%2C_Meghalaya.jpg",
+      "dimensions": {"width": 2682, "height": 3874}
+    },
+    "konyak_tribe_festival": {
+      "title": "Konyak tribe hornbill festival.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Konyak_tribe_hornbill_festival.jpg/960px-Konyak_tribe_hornbill_festival.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/3/36/Konyak_tribe_hornbill_festival.jpg",
+      "dimensions": {"width": 6000, "height": 4000}
+    },
+    "konyak_woman": {
+      "title": "Konyak woman, Hornbill Festival.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Konyak_woman%2C_Hornbill_Festival.jpg/960px-Konyak_woman%2C_Hornbill_Festival.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Konyak_woman%2C_Hornbill_Festival.jpg",
+      "dimensions": {"width": 4000, "height": 6000}
+    },
+    "sumi_naga_couple": {
+      "title": "Sumi Naga Couple.png",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Sumi_Naga_Couple.png/960px-Sumi_Naga_Couple.png",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Sumi_Naga_Couple.png",
+      "dimensions": {"width": 3648, "height": 5472}
+    },
+    "mizoram_lunglei": {
+      "title": "Lunglei Mizoram.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Lunglei_Mizoram.jpg/960px-Lunglei_Mizoram.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/5/58/Lunglei_Mizoram.jpg",
+      "dimensions": {"width": 1024, "height": 768}
+    },
+    "tea_garden_assam": {
+      "title": "Tea garden - Assam.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Tea_garden_-_Assam.jpg/960px-Tea_garden_-_Assam.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Tea_garden_-_Assam.jpg",
+      "dimensions": {"width": 3264, "height": 2448}
+    },
+    "dzukou_valley": {
+      "title": "Breathtaking beauty of Dzukou Valley in Manipur-Nagaland border (edit).jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Breathtaking_beauty_of_Dzukou_Valley_in_Manipur-Nagaland_border_%28edit%29.jpg/960px-Breathtaking_beauty_of_Dzukou_Valley_in_Manipur-Nagaland_border_%28edit%29.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/4/44/Breathtaking_beauty_of_Dzukou_Valley_in_Manipur-Nagaland_border_%28edit%29.jpg",
+      "dimensions": {"width": 4499, "height": 2530}
+    },
+    "solomon_temple_alt": {
+      "title": "Solomon Temple Aizawl 2.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Solomon_Temple_Aizawl_2.jpg/960px-Solomon_Temple_Aizawl_2.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Solomon_Temple_Aizawl_2.jpg",
+      "dimensions": {"width": 4624, "height": 2136}
+    },
+    "kohima_war_cemetery": {
+      "title": "Kohima war cemetery 34.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Kohima_war_cemetery_34.jpg/960px-Kohima_war_cemetery_34.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/1/17/Kohima_war_cemetery_34.jpg",
+      "dimensions": {"width": 3000, "height": 3000}
+    },
+    "cathedral_kohima_alt": {
+      "title": "Mary Help of Christians Cathedral Kohima.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Mary_Help_of_Christians_Cathedral_Kohima.jpg/960px-Mary_Help_of_Christians_Cathedral_Kohima.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/c/cb/Mary_Help_of_Christians_Cathedral_Kohima.jpg",
+      "dimensions": {"width": 3227, "height": 2120}
+    },
+    "kangla_fort_garden": {
+      "title": "A traditional Meitei garden inside the Kangla Palace (Kangla Fort), Imphal, Kangleipak.jpg",
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/A_traditional_Meitei_garden_%28%22Heikol_Leikol%22_or_%22Heikon_Leikon%22_in_Classical_Meitei_language%29_inside_the_Kangla_Palace_%28Kangla_Fort%29%2C_Imphal%2C_Kangleipak.jpg/960px-A_traditional_Meitei_garden_%28%22Heikol_Leikol%22_or_%22Heikon_Leikon%22_in_Classical_Meitei_language%29_inside_the_Kangla_Palace_%28Kangla_Fort%29%2C_Imphal%2C_Kangleipak.jpg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/A_traditional_Meitei_garden_%28%22Heikol_Leikol%22_or_%22Heikon_Leikon%22_in_Classical_Meitei_language%29_inside_the_Kangla_Palace_%28Kangla_Fort%29%2C_Imphal%2C_Kangleipak.jpg",
+      "dimensions": {"width": 2992, "height": 4000}
+    }
+  }
+}

@@ -1099,19 +1099,32 @@
     },
     "memoryRoad": {
       "title": "Finding Signs on the Road",
-      "desc": "Look along the road and spot friendly signs, crossings, and familiar spots.",
-      "welcome": "Road Safety Search",
+      "desc": "Walk through the village and spot familiar places along the road.",
+      "welcome": "Village Road Walk",
       "instruction": "Find all instances of:",
+      "findPrompt": "Find all the",
+      "findTarget": "Find Target:",
       "startBtn": "Start Road Search",
-      "found": "Target found!",
-      "wrong": "That's a distractor, look for the target item.",
+      "startButton": "Begin Village Walk",
+      "found": "Found it!",
+      "wrong": "That's not it, look for the target.",
       "levelComplete": "Street Cleared!",
       "nextLevel": "Next Street Level",
       "hintBtn": "Show Hint",
       "hint": "Look for the {target} on the road.",
       "gameComplete": "Master Navigator: All Streets Cleared!",
       "playAgain": "Navigate Road Again",
-      "backToHub": "Back to Therapy Suite"
+      "playAgainButton": "Walk Again",
+      "backToHub": "Back to Therapy Suite",
+      "introTitle": "Village Road Walk",
+      "introSubtitle": "Help Amma and Baba find familiar places in the village.",
+      "audioPrompt": "Look closely at the village road and tap on the place you need to find.",
+      "startButton": "Begin Walk",
+      "listenLabel": "Read for Me",
+      "celebrationTitle": "All Places Found!",
+      "celebrationSubtitle": "Wonderful! You helped find all the places in the village.",
+      "hudProgress": "Places Found",
+      "hudAction": "Tap the Place"
     }
   }
 }

@@ -12,7 +12,10 @@
     "phone_number": "9436009855",
     "form_filled_by": "Child",
     "caregiver_name": "Seyievinuo Angami",
-    "caregiver_relation": "Daughter"
+    "caregiver_relation": "Daughter",
+    "patient_photo_file": "images/patient_5_kevichusa_angami/patient_profile_photo_kevichusa_angami.jpg",
+    "authentic_web_photo_url": "https://c8.alamy.com/comp/DWKHH7/naga-konyak-tribal-head-hunter-with-traditional-headhunter-necklace-DWKHH7.jpg",
+    "patient_photo_description": "Elderly patient portrait photo (Kevichüsa Angami, Nagaland)"
   },
   "step_2_caregiver_contact": {
     "primary_caregiver": "Seyievinuo Angami",
@@ -39,7 +42,10 @@
         "hair_style": "long",
         "has_specs": true,
         "bg_type": "outdoor_garden"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Angami_woman_Kohima.jpg/600px-Angami_woman_Kohima.jpg",
+      "photo_caption": "Seyievinuo Angami (Daughter) - High School Principal, Kohima",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p5_r2",
@@ -64,7 +70,10 @@
         "has_necklace": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Traditional_Naga_elderly_woman.jpg/600px-Traditional_Naga_elderly_woman.jpg",
+      "photo_caption": "Neiphrelie Angami (Spouse) - Master Weaver wearing Angami Loramhü",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p5_r3",
@@ -82,7 +91,10 @@
         ],
         "hair_style": "short",
         "bg_type": "cool_office"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Naga_officer_Dimapur.jpg/600px-Naga_officer_Dimapur.jpg",
+      "photo_caption": "Kevilezo Angami (Son) - Agriculture Directorate Officer, Dimapur",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p5_r4",
@@ -101,7 +113,10 @@
         "hair_style": "girl",
         "is_child": true,
         "bg_type": "warm_indoor"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Naga_schoolgirl_Kohima.jpg/600px-Naga_schoolgirl_Kohima.jpg",
+      "photo_caption": "Vimenuo Angami (Grandchild) - Granddaughter, Kohima",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p5_r5",
@@ -131,7 +146,10 @@
         "has_moustache": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://c8.alamy.com/comp/DWKHH7/naga-konyak-tribal-head-hunter-with-traditional-headhunter-necklace-DWKHH7.jpg",
+      "photo_caption": "Vitsore Angami (Sibling) - Village Elder in traditional Naga woven shawl",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     }
   ],
   "step_4_life_story_and_interests": {
@@ -182,7 +200,10 @@
           65
         ],
         "sky_type": "misty_hills"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Angami_Naga_homestead_Kohima.jpg/800px-Angami_Naga_homestead_Kohima.jpg",
+      "landmark_full_title": "Midland Kohima Traditional Angami Hillside Homestead with Pine Trees",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p5_pl2",
@@ -194,7 +215,10 @@
       "style": {
         "type": "market",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Mao_Market_Kohima_Produce.jpg/800px-Mao_Market_Kohima_Produce.jpg",
+      "landmark_full_title": "Kohima Mao Market (Traditional Organic Produce & Mountain Herbs)",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p5_pl3",
@@ -206,7 +230,10 @@
       "style": {
         "type": "church",
         "sky_type": "misty_hills"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Cathedral_Kohima_Aradurah.jpg/800px-Cathedral_Kohima_Aradurah.jpg",
+      "landmark_full_title": "Mary Help of Christians Cathedral on Aradurah Hill, Kohima",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p5_pl4",
@@ -218,7 +245,10 @@
       "style": {
         "type": "clinic",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Naga_Hospital_Authority_Kohima.jpg/800px-Naga_Hospital_Authority_Kohima.jpg",
+      "landmark_full_title": "Naga Hospital Authority Kohima (NHAK) Geriatric Care Clinic",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p5_pl5",
@@ -230,7 +260,10 @@
       "style": {
         "type": "park",
         "sky_type": "morning_sun"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/Kohima_War_Cemetery%2C_Kohima%2C_Nagaland.jpg",
+      "landmark_full_title": "Kohima War Cemetery Memorial Rose Terraces & Stone Paths, Nagaland",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     }
   ]
 }

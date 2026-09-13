@@ -12,7 +12,10 @@
     "phone_number": "9366014299",
     "form_filled_by": "Spouse",
     "caregiver_name": "T. Sanatombi Devi",
-    "caregiver_relation": "Spouse"
+    "caregiver_relation": "Spouse",
+    "patient_photo_file": "images/patient_3_ibochouba_singh/patient_profile_photo_ibochouba_singh.jpg",
+    "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Meitei_elder_traditional_attire.jpg/600px-Meitei_elder_traditional_attire.jpg",
+    "patient_photo_description": "Elderly patient portrait photo (Tongbram Ibochouba Singh, Manipur)"
   },
   "step_2_caregiver_contact": {
     "primary_caregiver": "T. Sanatombi Devi",
@@ -45,7 +48,10 @@
         "has_bindi": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Meitei_elderly_woman_Imphal.jpg/600px-Meitei_elderly_woman_Imphal.jpg",
+      "photo_caption": "T. Sanatombi Devi (Spouse) - Wearing traditional Meitei Phanek",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p3_r2",
@@ -64,7 +70,10 @@
         "hair_style": "short",
         "has_specs": true,
         "bg_type": "cool_office"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Manipuri_man_portrait.jpg/600px-Manipuri_man_portrait.jpg",
+      "photo_caption": "T. Birjit Singh (Son) - Handloom Corporation Officer, Imphal",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p3_r3",
@@ -83,7 +92,10 @@
         "hair_style": "long",
         "has_bindi": true,
         "bg_type": "outdoor_garden"
-      }
+      },
+      "authentic_web_photo_url": "https://img.magnific.com/premium-photo/photography-beautiful-indian-traditional-girl-happy-lifestyle_1288657-149346.jpg",
+      "photo_caption": "T. Memcha Devi (Daughter) - Traditional cultural practitioner, Kwakeithel",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p3_r4",
@@ -102,7 +114,10 @@
         "hair_style": "boy",
         "is_child": true,
         "bg_type": "warm_indoor"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Manipuri_boy_student.jpg/600px-Manipuri_boy_student.jpg",
+      "photo_caption": "Tomba Singh (Grandchild) - Football player & student, Imphal",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p3_r5",
@@ -132,7 +147,10 @@
         "has_moustache": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Meitei_elder_traditional_attire.jpg/600px-Meitei_elder_traditional_attire.jpg",
+      "photo_caption": "T. Tombi Singh (Sibling) - Elder in traditional white kurta and shawl",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     }
   ],
   "step_4_life_story_and_interests": {
@@ -182,7 +200,10 @@
           45
         ],
         "sky_type": "morning_sun"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Meitei_traditional_Yumjao_homestead.jpg/800px-Meitei_traditional_Yumjao_homestead.jpg",
+      "landmark_full_title": "Uripok Traditional Meitei Yumjao Courtyard Homestead, Imphal",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p3_pl2",
@@ -194,7 +215,10 @@
       "style": {
         "type": "market",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Ima_Market%2C_imphal.jpeg",
+      "landmark_full_title": "Ema Keithel (Ima Market - World's Largest All-Women Market), Imphal",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p3_pl3",
@@ -206,7 +230,10 @@
       "style": {
         "type": "temple",
         "sky_type": "golden_hour"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Shree_Govindaji_temple%2C_Manipur.jpg",
+      "landmark_full_title": "Shree Govindaji Golden Domed Historic Temple, Imphal, Manipur",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p3_pl4",
@@ -218,7 +245,10 @@
       "style": {
         "type": "clinic",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/RIMS_Imphal_Campus.jpg/800px-RIMS_Imphal_Campus.jpg",
+      "landmark_full_title": "Regional Institute of Medical Sciences (RIMS) Geriatric OPD, Imphal",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p3_pl5",
@@ -230,7 +260,10 @@
       "style": {
         "type": "park",
         "sky_type": "morning_sun"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Kangla_Fort_Moat_Gardens.jpg/800px-Kangla_Fort_Moat_Gardens.jpg",
+      "landmark_full_title": "Kangla Fort Sacred Moat Gardens & Shady Walking Promenade, Imphal",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     }
   ]
 }

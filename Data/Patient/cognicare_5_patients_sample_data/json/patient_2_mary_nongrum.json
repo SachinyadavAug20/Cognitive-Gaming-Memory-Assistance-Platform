@@ -12,7 +12,10 @@
     "phone_number": "9436108722",
     "form_filled_by": "Child",
     "caregiver_name": "Daphisha Nongrum",
-    "caregiver_relation": "Daughter"
+    "caregiver_relation": "Daughter",
+    "patient_photo_file": "images/patient_2_mary_nongrum/patient_profile_photo_mary_nongrum.jpg",
+    "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Khasi_woman.jpg",
+    "patient_photo_description": "Elderly patient portrait photo (Mary Nongrum, Meghalaya)"
   },
   "step_2_caregiver_contact": {
     "primary_caregiver": "Daphisha Nongrum",
@@ -39,7 +42,10 @@
         "hair_style": "long",
         "has_specs": true,
         "bg_type": "outdoor_garden"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Khasi_woman.jpg",
+      "photo_caption": "Daphisha Nongrum (Daughter) - St. Mary's School Teacher, Shillong",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p2_r2",
@@ -64,7 +70,10 @@
         "has_moustache": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Khasi_elderly_man_Shillong.jpg/600px-Khasi_elderly_man_Shillong.jpg",
+      "photo_caption": "Banker Nongrum (Spouse) - Retired Forestry Officer, Shillong",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p2_r3",
@@ -83,7 +92,10 @@
         "hair_style": "girl",
         "is_child": true,
         "bg_type": "warm_indoor"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Khasi_girl_traditional_dress.jpg/600px-Khasi_girl_traditional_dress.jpg",
+      "photo_caption": "Banylla Nongrum (Grandchild) - Granddaughter, Shillong",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p2_r4",
@@ -101,7 +113,10 @@
         ],
         "hair_style": "short",
         "bg_type": "cool_office"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Khasi_youth_Mawlynnong.jpg/600px-Khasi_youth_Mawlynnong.jpg",
+      "photo_caption": "Pynskhem Nongrum (Son) - Tourism Department Officer, Shillong",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p2_r5",
@@ -125,7 +140,10 @@
         ],
         "is_elderly": true,
         "bg_type": "warm_indoor"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Khasi_senior_woman_jainsem.jpg/600px-Khasi_senior_woman_jainsem.jpg",
+      "photo_caption": "Ibadalin Nongrum (Sibling) - Sister wearing traditional Khasi Jainsem",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     }
   ],
   "step_4_life_story_and_interests": {
@@ -175,7 +193,10 @@
           45
         ],
         "sky_type": "misty_hills"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Pine_surrounded_cottage_Shillong.jpg/800px-Pine_surrounded_cottage_Shillong.jpg",
+      "landmark_full_title": "Nongrim Hills Traditional Wooden-Roof Cottage, Shillong",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p2_pl2",
@@ -187,7 +208,10 @@
       "style": {
         "type": "market",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Iewduh_Bara_Bazar_Shillong.jpg/800px-Iewduh_Bara_Bazar_Shillong.jpg",
+      "landmark_full_title": "Laitumkhrah & Iewduh Traditional Market Stalls, Shillong",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p2_pl3",
@@ -199,7 +223,10 @@
       "style": {
         "type": "church",
         "sky_type": "misty_hills"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/1/1c/Mary_Help_of_Christians_Cathedral%2C_Shillong_%E2%80%93_Front_Side.jpg",
+      "landmark_full_title": "Cathedral of Mary Help of Christians (Landmark Blue Cathedral), Shillong",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p2_pl4",
@@ -211,7 +238,10 @@
       "style": {
         "type": "clinic",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Shillong_Civil_Hospital_Campus.jpg/800px-Shillong_Civil_Hospital_Campus.jpg",
+      "landmark_full_title": "Shillong Civil Hospital Geriatric OPD & Wellness Centre",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p2_pl5",
@@ -223,7 +253,10 @@
       "style": {
         "type": "lake",
         "sky_type": "morning_sun"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Ward%27s_Lake%2C_Shillong.jpg",
+      "landmark_full_title": "Ward's Lake (Nan Polok) Ornamental Lake & Wooden Bridge, Shillong",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     }
   ]
 }

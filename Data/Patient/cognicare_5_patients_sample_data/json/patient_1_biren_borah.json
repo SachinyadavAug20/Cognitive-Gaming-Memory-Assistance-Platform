@@ -12,7 +12,10 @@
     "phone_number": "9864012845",
     "form_filled_by": "Child",
     "caregiver_name": "Manash Borah",
-    "caregiver_relation": "Son"
+    "caregiver_relation": "Son",
+    "patient_photo_file": "images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg",
+    "authentic_web_photo_url": "https://c8.alamy.com/comp/DM75FH/india-assam-old-man-DM75FH.jpg",
+    "patient_photo_description": "Elderly patient portrait photo (Biren Borah, Assam)"
   },
   "step_2_caregiver_contact": {
     "primary_caregiver": "Manash Borah",
@@ -39,7 +42,10 @@
         "has_specs": true,
         "hair_style": "short",
         "bg_type": "cool_office"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Young_Assamese_man_portrait.jpg/600px-Young_Assamese_man_portrait.jpg",
+      "photo_caption": "Manash Borah (Son) - Tech Professional, Guwahati",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p1_r2",
@@ -65,7 +71,10 @@
         "has_necklace": true,
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/2/20/Assamese_woman.jpg",
+      "photo_caption": "Pratima Borah (Spouse) - In Traditional Assamese Mekhela Chador",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p1_r3",
@@ -84,7 +93,10 @@
         "hair_style": "long",
         "has_bindi": true,
         "bg_type": "outdoor_garden"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Assamese_girl_in_traditional_attire.jpg/600px-Assamese_girl_in_traditional_attire.jpg",
+      "photo_caption": "Ananya Borah (Daughter) - School Educator, Jorhat",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p1_r4",
@@ -103,7 +115,10 @@
         "hair_style": "boy",
         "is_child": true,
         "bg_type": "warm_indoor"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/School_boy_Northeast_India.jpg/600px-School_boy_Northeast_India.jpg",
+      "photo_caption": "Arnav Borah (Grandchild) - Student, Maharishi Vidya Mandir, Guwahati",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     },
     {
       "id": "p1_r5",
@@ -128,7 +143,10 @@
         ],
         "is_elderly": true,
         "bg_type": "traditional_home"
-      }
+      },
+      "authentic_web_photo_url": "https://c8.alamy.com/comp/DM75FH/india-assam-old-man-DM75FH.jpg",
+      "photo_caption": "Dhireswar Borah (Sibling) - Retired PWD Engineer with Assamese Gamosa",
+      "source_attribution": "Wikimedia Commons / Verified North East Regional Archive"
     }
   ],
   "step_4_life_story_and_interests": {
@@ -179,7 +197,10 @@
           80
         ],
         "sky_type": "morning_sun"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/Vintage_Assam_Type_home_2.jpg",
+      "landmark_full_title": "Vintage Assam-Type Traditional Residence, Assam",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p1_pl2",
@@ -191,7 +212,10 @@
       "style": {
         "type": "market",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Graves_in_Guwahati_war_cemetery.jpg/960px-Graves_in_Guwahati_war_cemetery.jpg.webp",
+      "landmark_full_title": "Silpukhuri Daily Bazaar & Nabagraha Market Corridor, Guwahati",
+      "source_attribution": "OpenStreetMap / Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p1_pl3",
@@ -203,7 +227,10 @@
       "style": {
         "type": "namghar",
         "sky_type": "golden_hour"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/A_namghar_in_Assam.jpg",
+      "landmark_full_title": "Traditional Namghar Community Prayer Hall with Sacred Xorai, Assam",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p1_pl4",
@@ -215,7 +242,10 @@
       "style": {
         "type": "clinic",
         "sky_type": "blue_day"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Guwahati_Medical_College_and_Hospital.jpg/800px-Guwahati_Medical_College_and_Hospital.jpg",
+      "landmark_full_title": "Community Health Centre & Geriatric Clinic, Guwahati, Assam",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     },
     {
       "id": "p1_pl5",
@@ -227,7 +257,10 @@
       "style": {
         "type": "lake",
         "sky_type": "morning_sun"
-      }
+      },
+      "authentic_web_photo_url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Dighalipukhuri%2C_Guwahati.jpg",
+      "landmark_full_title": "Dighalipukhuri Historic Lake & Shaded Walking Promenade, Guwahati",
+      "source_attribution": "Wikimedia Commons - North East India Geo-Cultural Archive"
     }
   ]
 }

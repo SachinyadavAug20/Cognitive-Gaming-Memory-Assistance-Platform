@@ -1050,6 +1050,7 @@ const DEMO_EXTRAS_I18N: Record<string, {
 export default function PatientDemoPage() {
   const locale = useLocale();
   const d18n = DEMO_I18N[locale] || DEMO_I18N.en;
+  const extras = DEMO_EXTRAS_I18N[locale] || DEMO_EXTRAS_I18N.en;
   const login = useAuthStore((s) => s.login);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [activeModalGame, setActiveModalGame] = useState<ActiveModalGame>(null);
@@ -1090,11 +1091,11 @@ export default function PatientDemoPage() {
           <div className="sticky top-2 z-50 w-full max-w-4xl flex items-center justify-between bg-ink/90 border-3 border-black text-white p-3 rounded-2xl shadow-[4px_4px_0px_#000] mb-3">
             <div className="flex items-center gap-2">
               <span className="font-serif font-black text-base sm:text-lg">
-                {activeModalGame === "day-in-my-world" && "A Day in My World (3D Story Campaign)"}
-                {activeModalGame === "majuli-walk" && "Majuli Village Walk (3D Spatial Memory)"}
-                {activeModalGame === "tea-harvest-vision" && "Tea Garden Harvest (Webcam Motion Tracking)"}
-                {activeModalGame === "arrow-escape" && "River Rapids Arrow Escape"}
-                {activeModalGame === "bihu-dhol" && "Bihu Dhol Beats & Grounding"}
+                {activeModalGame === "day-in-my-world" && extras.dayInWorldModal}
+                {activeModalGame === "majuli-walk" && extras.majuliWalkModal}
+                {activeModalGame === "tea-harvest-vision" && extras.teaHarvestModal}
+                {activeModalGame === "arrow-escape" && extras.arrowEscapeModal}
+                {activeModalGame === "bihu-dhol" && extras.bihuDholModal}
               </span>
             </div>
 
