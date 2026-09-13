@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
+import { useLocale } from "next-intl";
 import {
   Sparkles,
   Volume2,
@@ -71,9 +72,256 @@ import { patientLangCode } from "@/lib/i18n";
 import { speechRate } from "@/games/config";
 import { playTapFeedback, playEncourage } from "@/lib/sound";
 
+const ECHOES_I18N: Record<
+  string,
+  {
+    backToRoutine: string;
+    title: string;
+    subtitle: string;
+    lovingMessages: string;
+    soundOn: string;
+    soundMuted: string;
+    caregiverTools: string;
+    memoryOf: (curr: number, total: number) => string;
+    prev: string;
+    next: string;
+    exitZen: string;
+    spotlight: string;
+    familyMessageFrom: (name: string, rel: string) => string;
+    hearVoice: string;
+    playingVoice: string;
+    memoryReflection: string;
+    reflectionSubtitle: string;
+    listen: string;
+  }
+> = {
+  en: {
+    backToRoutine: "← Back to My Routine",
+    title: "Family Photos & Peaceful Sounds",
+    subtitle: "Cherished Reminiscence & Heritage Sounds",
+    lovingMessages: "Loving Messages",
+    soundOn: "Sound: ON",
+    soundMuted: "Sound Muted",
+    caregiverTools: "Caregiver Tools",
+    memoryOf: (curr, total) => `Memory ${curr} of ${total}`,
+    prev: "Prev",
+    next: "Next",
+    exitZen: "Exit Zen Mode",
+    spotlight: "Memory Spotlight",
+    familyMessageFrom: (name, rel) => `Family Message from ${name} (${rel})`,
+    hearVoice: "Hear Family Voice",
+    playingVoice: "Playing Family Note...",
+    memoryReflection: "Cherished Memory Reflection",
+    reflectionSubtitle: "A peaceful moment to reminisce",
+    listen: "Listen",
+  },
+  as: {
+    backToRoutine: "← মোৰ দিনলিপিলৈ ঘূৰি যাওক",
+    title: "পৰিয়ালৰ ফটো আৰু শান্ত গান",
+    subtitle: "মৰমৰ স্মৃতি আৰু ঐতিহ্যৰ সুবাস",
+    lovingMessages: "মৰমৰ বাৰ্তা",
+    soundOn: "শব্দ: চলি আছে",
+    soundMuted: "শব্দ বন্ধ",
+    caregiverTools: "শুশ্ৰূষাকাৰী সঁজুলি",
+    memoryOf: (curr, total) => `স্মৃতি ${curr} / ${total}`,
+    prev: "পূৰ্বৰ",
+    next: "পৰৱৰ্তী",
+    exitZen: "শান্ত অৱস্থা ত্যাগ কৰক",
+    spotlight: "স্মৃতি পোহৰ",
+    familyMessageFrom: (name, rel) => `${name} (${rel})-ৰ পৰিয়ালৰ বাৰ্তা`,
+    hearVoice: "পৰিয়ালৰ মাত শুনক",
+    playingVoice: "বাৰ্তা বাজি আছে...",
+    memoryReflection: "প্ৰিয় স্মৃতিৰ আলোকপাত",
+    reflectionSubtitle: "মন জুৰোৱা স্মৃতিৰ এটি ক্ষণ",
+    listen: "শুনক",
+  },
+  hi: {
+    backToRoutine: "← मेरी दिनचर्या पर वापस",
+    title: "पारिवारिक तस्वीरें और शांत संगीत",
+    subtitle: "प्रिय स्मृतियां और प्रकृति की शांति",
+    lovingMessages: "प्यारे संदेश",
+    soundOn: "ध्वनि: चालू",
+    soundMuted: "ध्वनि बंद",
+    caregiverTools: "देखभालकर्ता उपकरण",
+    memoryOf: (curr, total) => `स्मृति ${curr} / ${total}`,
+    prev: "पिछला",
+    next: "अगला",
+    exitZen: "शांत मोड से बाहर आएं",
+    spotlight: "स्मृति केंद्र",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) का संदेश`,
+    hearVoice: "परिवार की आवाज़ सुनें",
+    playingVoice: "संदेश बज रहा है...",
+    memoryReflection: "प्रिय स्मृति चिंतन",
+    reflectionSubtitle: "शांति से यादें ताजा करने का क्षण",
+    listen: "सुनें",
+  },
+  bn: {
+    backToRoutine: "← আমার দিনলিপিতে ফিরে যান",
+    title: "পারিবারিক ছবি ও শান্ত সুর",
+    subtitle: "স্নেহময় স্মৃতি ও ঐতিহ্যবাহী শব্দ",
+    lovingMessages: "ভালোবাসার বার্তা",
+    soundOn: "শব্দ: চালু",
+    soundMuted: "শব্দ বন্ধ",
+    caregiverTools: "যত্নকারীর সরঞ্জাম",
+    memoryOf: (curr, total) => `স্মৃতি ${curr} / ${total}`,
+    prev: "পূর্ববর্তী",
+    next: "পরবর্তী",
+    exitZen: "শান্ত মোড প্রস্থান",
+    spotlight: "স্মৃতি আলোকপাত",
+    familyMessageFrom: (name, rel) => `${name} (${rel})-এর বার্তা`,
+    hearVoice: "পরিবারের কণ্ঠ শুনুন",
+    playingVoice: "বার্তা বাজছে...",
+    memoryReflection: "প্রিয় স্মৃতিচারণ",
+    reflectionSubtitle: "স্মৃতিচারণের এক প্রশান্ত মুহূর্ত",
+    listen: "শুনুন",
+  },
+  mr: {
+    backToRoutine: "← माझ्या दिनचर्येकडे परत",
+    title: "कौटुंबिक छायाचित्रे आणि शांत संगीत",
+    subtitle: "गोड आठवणी आणि वारसा नाद",
+    lovingMessages: "प्रेमळ संदेश",
+    soundOn: "आवाज: सुरू",
+    soundMuted: "आवाज बंद",
+    caregiverTools: "काळजीवाहू साधने",
+    memoryOf: (curr, total) => `आठवण ${curr} / ${total}`,
+    prev: "मागील",
+    next: "पुढील",
+    exitZen: "शांत मोडमधून बाहेर पडा",
+    spotlight: "स्मृती केंद्र",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) कडून संदेश`,
+    hearVoice: "कुटुंबाचा आवाज ऐका",
+    playingVoice: "संदेश सुरू आहे...",
+    memoryReflection: "गोड आठवणींचे क्षण",
+    reflectionSubtitle: "आठवणींना उजाळा देणारा शांत क्षण",
+    listen: "ऐका",
+  },
+  ne: {
+    backToRoutine: "← मेरो दिनचर्यामा फर्कनुहोस्",
+    title: "पारिवारिक तस्बिर र शान्त ध्वनि",
+    subtitle: "मीठा सम्झनाहरू र प्राकृतिक शान्ति",
+    lovingMessages: "मायालु सन्देशहरू",
+    soundOn: "ध्वनि: चालू",
+    soundMuted: "ध्वनि बन्द",
+    caregiverTools: "हेरचाहकर्ता उपकरण",
+    memoryOf: (curr, total) => `सम्झना ${curr} / ${total}`,
+    prev: "अघिल्लो",
+    next: "पछिल्लो",
+    exitZen: "शान्त मोडबाट बाहिर निस्कनुहोस्",
+    spotlight: "स्मृति केन्द्र",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) को सन्देश`,
+    hearVoice: "परिवारको आवाज सुन्नुहोस्",
+    playingVoice: "सन्देश बज्दैछ...",
+    memoryReflection: "प्रिय सम्झना मनन",
+    reflectionSubtitle: "सम्झना ताजा गर्ने शान्त क्षण",
+    listen: "सुन्नुहोस्",
+  },
+  mni: {
+    backToRoutine: "← ঐগী নুমিৎ খুদিংগী থবক্তা হল্লকপা",
+    title: "ইমুংগী ফোতোশিং অমসুং তোংলবা ইশৈ",
+    subtitle: "নুংশিবা নিংশিংবা অমসুং আরোনবা খোন্থোক",
+    lovingMessages: "নুংশিবা পাউজেল",
+    soundOn: "খোন্থোক: য়াওরি",
+    soundMuted: "খোন্থোক মুত্থৎলে",
+    caregiverTools: "য়েন্থোকপাগী খুৎলাই",
+    memoryOf: (curr, total) => `নিংশিংবা ${curr} / ${total}`,
+    prev: "মমাংগী",
+    next: "মথংগী",
+    exitZen: "তোংবা মোদ থাদোকপা",
+    spotlight: "নিংশিংবা মিৎযেং",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) গী পাউজেল`,
+    hearVoice: "ইমুংগী খোন্থোক তান্নবা",
+    playingVoice: "পাউজেল তারে...",
+    memoryReflection: "নুংশিবা নিংশিংবা ৱাখল",
+    reflectionSubtitle: "নিংশিংবগী তোংলবা তাঞ্জা",
+    listen: "তান্নবা",
+  },
+  brx: {
+    backToRoutine: "← आंनि सानफ्रोमबोनि फारियाव थांफिन",
+    title: "नख'रनि फथ' आरो गोजोन सोदोब",
+    subtitle: "मोजां मोननाय गोसोखांनाय आरो मुलुग सोदोब",
+    lovingMessages: "मोजां मोननाय खौरां",
+    soundOn: "सोदोब: जागायबाय",
+    soundMuted: "सोदोब बन्द'",
+    caregiverTools: "सांग्रां खालामग्रा आगजु",
+    memoryOf: (curr, total) => `गोसोखांनाय ${curr} / ${total}`,
+    prev: "सिगांनि",
+    next: "उनाव",
+    exitZen: "गोजोन म'ड एंगार",
+    spotlight: "गोसोखां नोजोर",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) नि खौरां`,
+    hearVoice: "नख'रनि राव खोनासंनाय",
+    playingVoice: "खौरां गाबबाय दं...",
+    memoryReflection: "मोजां मोननाय गोसोखां महर",
+    reflectionSubtitle: "गोसोखांफिननो गोजोन सम",
+    listen: "खोनासं",
+  },
+  grt: {
+    backToRoutine: "← Angni Salanti Re∙ani Gimin Re∙bapilbo",
+    title: "Nokgimikni Noksa aro Tom∙tomani Gam∙ani",
+    subtitle: "Katchana Gisik Ra∙ani aro Gam∙ani",
+    lovingMessages: "Ka∙saaniko Parikani",
+    soundOn: "Gam∙ani: Ong∙enga",
+    soundMuted: "Gam∙ani Chipa",
+    caregiverTools: "Ni∙rokenggipani Sam",
+    memoryOf: (curr, total) => `Gisik Ra∙ani ${curr} / ${total}`,
+    prev: "Skang",
+    next: "Ja∙mano",
+    exitZen: "Tom∙tom Mod-ko Chipbo",
+    spotlight: "Gisik Ra∙ani Noksan",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) ni nama katta`,
+    hearVoice: "Nokdangni Ku∙rangko Knapo",
+    playingVoice: "Ku∙rangko knaatenga...",
+    memoryReflection: "Gisik Ra∙pilani Chanchiani",
+    reflectionSubtitle: "Gisik ra∙pilna tom∙tomaniko man∙ani",
+    listen: "Knapo",
+  },
+  kha: {
+    backToRoutine: "← Phai sha ka Jingtrei ba Man ka Sngi",
+    title: "Ki Dur Kmie-Kpa bad Ki Jingrwai Suk",
+    subtitle: "Ki Jingkynmaw Kordor bad Sur Tynrai",
+    lovingMessages: "Ki Khubor Maya",
+    soundOn: "Sur: Meh",
+    soundMuted: "La Pynlip ia ka Sur",
+    caregiverTools: "Ki Tiarkam Nongsumar",
+    memoryOf: (curr, total) => `Jingkynmaw ${curr} / ${total}`,
+    prev: "Shuwa",
+    next: "Bud",
+    exitZen: "Mih na ka Zen Mode",
+    spotlight: "Ka Tyngshaiñ Jingkynmaw",
+    familyMessageFrom: (name, rel) => `Ka khubor na u/ka ${name} (${rel})`,
+    hearVoice: "Sngap ia ka Sur Kur-Kha",
+    playingVoice: "Dang pynsawa ia ka khubor...",
+    memoryReflection: "Ka Jingpyrkhat Kynmaw Kordor",
+    reflectionSubtitle: "Ka por kaba suk ban kynmaw kynshew",
+    listen: "Sngap",
+  },
+  lus: {
+    backToRoutine: "← Ka Nitin Hunbi-ah Kir Leh Rawh",
+    title: "Chhungkaw Thlalak leh Thawm Ralmuang",
+    subtitle: "Hriatreng Chhuanawm leh Zai Mawi",
+    lovingMessages: "Hmangaihna Thuchah",
+    soundOn: "Thawm: A nung",
+    soundMuted: "Thawm tihthawmloh",
+    caregiverTools: "Enkawltu Hmanruate",
+    memoryOf: (curr, total) => `Hriatrengna ${curr} / ${total}`,
+    prev: "Hmasa",
+    next: "Dawttu",
+    exitZen: "Zen Mode Atanga Chhuak",
+    spotlight: "Hriatrengna Enchian",
+    familyMessageFrom: (name, rel) => `${name} (${rel}) hnen atanga thuchah`,
+    hearVoice: "Chhungte Aw Ngaithla Rawh",
+    playingVoice: "Thuchah a inpuang mek...",
+    memoryReflection: "Hriatreng Hlu Chhuina",
+    reflectionSubtitle: "Hriatrengna thar leh tura hun hahdam",
+    listen: "Ngaithla Rawh",
+  },
+};
+
 export function EchoesOfHomeClient() {
   const searchParams = useSearchParams();
   const requestedCapsuleId = searchParams.get("capsuleId");
+  const locale = useLocale();
+  const e18n = ECHOES_I18N[locale] || ECHOES_I18N.en;
 
   const { detail, patientId } = usePatientDetail();
   const patientName = detail?.name || "Biren Borah";
@@ -298,14 +546,14 @@ export function EchoesOfHomeClient() {
                 href="/patient"
                 className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-50 px-3 py-1.5 text-xs sm:text-sm font-black text-ink hover:bg-amber-100 transition-colors cursor-pointer shadow-[2px_2px_0px_#000]"
               >
-                ← Back to My Routine
+                {e18n.backToRoutine}
               </Link>
               <div>
                 <h1 className="font-serif font-black text-lg md:text-xl text-ink flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-amber-600" />
-                  <span>Family Photos & Peaceful Sounds</span>
+                  <span>{e18n.title}</span>
                   <span className="hidden sm:inline-block text-xs font-bold text-ink-secondary">
-                    (পৰিয়ালৰ ফটো আৰু শান্ত গান)
+                    ({e18n.subtitle})
                   </span>
                 </h1>
               </div>
@@ -323,7 +571,7 @@ export function EchoesOfHomeClient() {
                 title="Open or write loving messages"
               >
                 <Heart className="h-4 w-4 fill-amber-950 text-amber-950" />
-                <span>Loving Messages ({futureCapsules.length})</span>
+                <span>{e18n.lovingMessages} ({futureCapsules.length})</span>
               </button>
 
               {/* Soothing Soundscape master toggle */}
@@ -339,12 +587,12 @@ export function EchoesOfHomeClient() {
                 {soundscapePlaying ? (
                   <>
                     <Volume2 className="h-4 w-4 text-emerald-800 animate-pulse" />
-                    <span className="hidden sm:inline">Sound: ON</span>
+                    <span className="hidden sm:inline">{e18n.soundOn}</span>
                   </>
                 ) : (
                   <>
                     <VolumeX className="h-4 w-4 text-ink-secondary" />
-                    <span className="hidden sm:inline">Sound Muted</span>
+                    <span className="hidden sm:inline">{e18n.soundMuted}</span>
                   </>
                 )}
               </button>
@@ -361,7 +609,7 @@ export function EchoesOfHomeClient() {
                 title="Clinical controls for caregiver (gaze tracker, 40Hz stimulation)"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
-                <span className="hidden md:inline">Caregiver Tools</span>
+                <span className="hidden md:inline">{e18n.caregiverTools}</span>
               </button>
             </div>
           </div>
@@ -376,7 +624,7 @@ export function EchoesOfHomeClient() {
             <div>
               <div className="flex flex-wrap items-center gap-2 text-xs font-black text-tea-dark uppercase tracking-wider mb-1">
                 <span className="px-2.5 py-0.5 rounded-md bg-tea-light border border-tea/30">
-                  Memory {selectedIndex + 1} of {capsules.length}
+                  {e18n.memoryOf(selectedIndex + 1, capsules.length)}
                 </span>
                 <span>•</span>
                 <span>{activeCapsule.locationName}</span>
@@ -397,7 +645,7 @@ export function EchoesOfHomeClient() {
                 aria-label="Previous Memory"
               >
                 <ChevronLeft className="h-5 w-5" />
-                <span>Prev</span>
+                <span>{e18n.prev}</span>
               </button>
               <button
                 type="button"
@@ -405,7 +653,7 @@ export function EchoesOfHomeClient() {
                 className="btn-tactile min-h-[44px] inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea hover:bg-tea-dark px-4 py-2 text-xs sm:text-sm font-black text-white cursor-pointer shadow-[3px_3px_0px_#000]"
                 aria-label="Next Memory"
               >
-                <span>Next</span>
+                <span>{e18n.next}</span>
                 <ChevronRight className="h-5 w-5" />
               </button>
 
@@ -452,7 +700,7 @@ export function EchoesOfHomeClient() {
               className="absolute top-4 right-4 z-20 btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-white/50 bg-black/80 px-4 py-2 text-xs font-black text-white hover:bg-black cursor-pointer shadow-md"
             >
               <Minimize2 className="h-4 w-4" />
-              <span>Exit Zen Mode</span>
+              <span>{e18n.exitZen}</span>
             </button>
           )}
 
@@ -462,7 +710,7 @@ export function EchoesOfHomeClient() {
               <div className="flex items-center gap-2 mb-1">
                 <span className="h-2.5 w-2.5 rounded-full bg-amber-400 animate-ping" />
                 <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
-                  Memory Spotlight
+                  {e18n.spotlight}
                 </span>
               </div>
               <h4 className="font-serif text-sm font-black text-white">
@@ -482,7 +730,7 @@ export function EchoesOfHomeClient() {
               </div>
               <div className="overflow-hidden">
                 <span className="text-[11px] font-black uppercase tracking-wider text-amber-300 block">
-                  Family Message from {activeCapsule.familyMemberName} ({activeCapsule.relationship})
+                  {e18n.familyMessageFrom(activeCapsule.familyMemberName, activeCapsule.relationship)}
                 </span>
                 <p className="text-xs font-semibold text-white/95 line-clamp-1 italic">
                   "{activeCapsule.voiceNoteText}"
@@ -501,7 +749,7 @@ export function EchoesOfHomeClient() {
                 }`}
               >
                 <Volume2 className="h-4 w-4 text-tea" />
-                <span>{voicePlaying ? "Playing Family Note..." : "Hear Family Voice"}</span>
+                <span>{voicePlaying ? e18n.playingVoice : e18n.hearVoice}</span>
               </button>
             </div>
           </div>
@@ -517,10 +765,10 @@ export function EchoesOfHomeClient() {
                 </div>
                 <div>
                   <h3 className="font-serif text-base sm:text-lg font-black text-ink">
-                    Cherished Memory Reflection
+                    {e18n.memoryReflection}
                   </h3>
                   <span className="text-xs font-bold text-ink-secondary">
-                    A peaceful moment to reminisce
+                    {e18n.reflectionSubtitle}
                   </span>
                 </div>
               </div>
@@ -532,7 +780,7 @@ export function EchoesOfHomeClient() {
                   className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-tea px-4 py-2 text-xs sm:text-sm font-black text-white hover:bg-tea-dark cursor-pointer shadow-[2px_2px_0px_#000]"
                 >
                   <Volume2 className="h-4 w-4" />
-                  <span>Listen</span>
+                  <span>{e18n.listen}</span>
                 </button>
               </div>
             </div>

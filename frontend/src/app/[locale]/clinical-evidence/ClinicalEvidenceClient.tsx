@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   Brain,
@@ -119,26 +120,358 @@ type SectionTab =
   | "authorities"
   | "references";
 
-const SECTIONS: {
-  id: SectionTab;
-  num: string;
-  label: string;
-  shortLabel: string;
-  icon: typeof BookOpen;
-}[] = [
-  { id: "overview", num: "01", label: "The CDTx Imperative", shortLabel: "The CDTx Imperative", icon: BookOpen },
-  { id: "errorless", num: "02", label: "Errorless Learning (EL)", shortLabel: "Errorless Learning", icon: Sparkles },
-  { id: "transfer", num: "03", label: "Transfer of Training (ACTIVE)", shortLabel: "ACTIVE Trial (Transfer)", icon: Award },
-  { id: "moca", num: "04", label: "MoCA Telemetry & Biomarkers", shortLabel: "MoCA & Biomarkers", icon: Activity },
-  { id: "ai_dda", num: "05", label: "AI Difficulty (RL-DDA)", shortLabel: "AI Dynamic Policy", icon: Cpu },
-  { id: "finger", num: "06", label: "Multidomain (FINGER & ZBI)", shortLabel: "FINGER & Zarit", icon: HeartHandshake },
-  { id: "coga", num: "07", label: "W3C COGA & AAA UX", shortLabel: "W3C COGA / AAA UX", icon: ShieldCheck },
-  { id: "ner", num: "08", label: "North East Cultural Matrix", shortLabel: "Cultural Matrix", icon: Compass },
-  { id: "authorities", num: "09", label: "Regulatory & Security", shortLabel: "Regulatory & Auth", icon: Scale },
-  { id: "references", num: "10", label: "Citations & External Links", shortLabel: "Clinical Citations", icon: FileText },
+const DOSSIER_I18N: Record<string, {
+  dossierBadge: string;
+  samdClass: string;
+  title: string;
+  subtitle: string;
+  evidenceDomains: string;
+  landmarkTrials: string;
+  standardsAligned: string;
+  printDossier: string;
+  citationsBadge: string;
+  tableOfContents: string;
+  sectionsCount: string;
+  dossierSections: string;
+  previous: string;
+  next: string;
+  sections: Record<SectionTab, { label: string; shortLabel: string }>;
+}> = {
+  en: {
+    dossierBadge: "Clinical Research Dossier",
+    samdClass: "Software as a Medical Device (SaMD) Class B",
+    title: "AI-Driven Serious Cognitive Gaming & Memory Assistance Platform",
+    subtitle: "A comprehensive clinical, neuropsychological, and regulatory framework governing errorless cognitive rehabilitation, passive MoCA telemetry, reinforcement-learning difficulty adjustment, and indigenous gerontological care in North East India.",
+    evidenceDomains: "10 Evidence Domains",
+    landmarkTrials: "20 Landmark Trials",
+    standardsAligned: "W3C COGA & CDSCO Aligned",
+    printDossier: "Print Dossier",
+    citationsBadge: "20 Landmark Citations",
+    tableOfContents: "Table of Contents",
+    sectionsCount: "10 Sections",
+    dossierSections: "Dossier Sections (10)",
+    previous: "Previous:",
+    next: "Next:",
+    sections: {
+      overview: { label: "The CDTx Imperative", shortLabel: "The CDTx Imperative" },
+      errorless: { label: "Errorless Learning (EL)", shortLabel: "Errorless Learning" },
+      transfer: { label: "Transfer of Training (ACTIVE)", shortLabel: "ACTIVE Trial (Transfer)" },
+      moca: { label: "MoCA Telemetry & Biomarkers", shortLabel: "MoCA & Biomarkers" },
+      ai_dda: { label: "AI Difficulty (RL-DDA)", shortLabel: "AI Dynamic Policy" },
+      finger: { label: "Multidomain (FINGER & ZBI)", shortLabel: "FINGER & Zarit" },
+      coga: { label: "W3C COGA & AAA UX", shortLabel: "W3C COGA / AAA UX" },
+      ner: { label: "North East Cultural Matrix", shortLabel: "Cultural Matrix" },
+      authorities: { label: "Regulatory & Security", shortLabel: "Regulatory & Auth" },
+      references: { label: "Citations & External Links", shortLabel: "Clinical Citations" },
+    },
+  },
+  as: {
+    dossierBadge: "ক্লিনিকেল গৱেষণা ডচিয়েৰ",
+    samdClass: "চিকিৎসা সঁজুলি হিচাপে চফ্টৱেৰ (SaMD) শ্ৰেণী B",
+    title: "এআই-চালিত জ্ঞানীয় গেমিং আৰু স্মৃতি সহায়ক মঞ্চ",
+    subtitle: "উত্তৰ-পূব ভাৰতত ত্ৰুটিহীন জ্ঞানীয় পুনৰ্বাসন, পেচিভ MoCA টেলিমেট্ৰি, শক্তিশালী শিক্ষণ পদ্ধতি আৰু স্থানীয় জ্যেষ্ঠ নাগৰিকৰ যত্ন পৰিচালনাৰ এক বিস্তৃত ক্লিনিকেল আৰু স্নায়ু-মনস্তাত্বিক কাঠামো।",
+    evidenceDomains: "১০ টা প্ৰমাণিত ক্ষেত্ৰ",
+    landmarkTrials: "২০ টা ঐতিহাসিক পৰীক্ষা",
+    standardsAligned: "W3C COGA আৰু CDSCO মান্যপ্ৰাপ্ত",
+    printDossier: "ডচিয়েৰ প্ৰিণ্ট কৰক",
+    citationsBadge: "২০ টা গুৰুত্বপূৰ্ণ উদ্ধৃতি",
+    tableOfContents: "বিষয়সূচী",
+    sectionsCount: "১০ টা অনুচ্ছেদ",
+    dossierSections: "ডচিয়েৰৰ অনুচ্ছেদ (১০)",
+    previous: "পূৰ্বৱৰ্তী:",
+    next: "পৰৱৰ্তী:",
+    sections: {
+      overview: { label: "CDTx ৰ প্ৰয়োজনীয়তা", shortLabel: "CDTx প্ৰয়োজনীয়তা" },
+      errorless: { label: "ভুলহীন শিক্ষণ (EL)", shortLabel: "ভুলহীন শিক্ষণ" },
+      transfer: { label: "প্ৰশিক্ষণৰ প্ৰসাৰ (ACTIVE)", shortLabel: "ACTIVE পৰীক্ষণ" },
+      moca: { label: "MoCA টেলিমেট্ৰি আৰু বায়োমাৰ্কাৰ", shortLabel: "MoCA আৰু বায়োমাৰ্কাৰ" },
+      ai_dda: { label: "AI অসুবিধা নিৰ্ধাৰণ (RL-DDA)", shortLabel: "AI গতিশীল নীতি" },
+      finger: { label: "বহু-ডমেইন সমন্বয় (FINGER & ZBI)", shortLabel: "FINGER আৰু জাৰিট" },
+      coga: { label: "W3C COGA আৰু AAA অভিজ্ঞতা", shortLabel: "COGA / AAA সুচলতা" },
+      ner: { label: "উত্তৰ-পূৰ্বাঞ্চলৰ সাংস্কৃতিক মেট্ৰিক্স", shortLabel: "সাংস্কৃতিক মেট্ৰিক্স" },
+      authorities: { label: "নিয়ন্ত্ৰণ আৰু সুৰক্ষা বিধি", shortLabel: "নিয়ন্ত্ৰণ আৰু সুৰক্ষা" },
+      references: { label: "উদ্ধৃতি আৰু বাহ্যিক সংযোগ", shortLabel: "ক্লিনিকেল উদ্ধৃতি" },
+    },
+  },
+  hi: {
+    dossierBadge: "नैदानिक अनुसंधान डोजियर",
+    samdClass: "सॉफ्टवेयर एज अ मेडिकल डिवाइस (SaMD) क्लास B",
+    title: "एआई-संचालित संज्ञानात्मक गेमिंग एवं स्मृति सहायक प्लेटफॉर्म",
+    subtitle: "पूर्वोत्तर भारत में त्रुटिहीन संज्ञानात्मक पुनर्वास, पैसिव MoCA टेलीमेट्री, सुदृढ़ीकरण-शिक्षण कठिनाई समायोजन और स्वदेशी जेरियाट्रिक देखभाल को नियंत्रित करने वाला एक व्यापक नैदानिक एवं न्यूरोसाइकोलॉजिकल ढांचा।",
+    evidenceDomains: "10 साक्ष्य प्रभाग",
+    landmarkTrials: "20 ऐतिहासिक परीक्षण",
+    standardsAligned: "W3C COGA एवं CDSCO संरेखित",
+    printDossier: "डोजियर प्रिंट करें",
+    citationsBadge: "20 ऐतिहासिक संदर्भ",
+    tableOfContents: "विषय सूची",
+    sectionsCount: "10 खंड",
+    dossierSections: "डोजियर खंड (10)",
+    previous: "पिछला:",
+    next: "अगला:",
+    sections: {
+      overview: { label: "CDTx की अनिवार्यता", shortLabel: "CDTx अनिवार्यता" },
+      errorless: { label: "त्रुटिरहित अधिगम (EL)", shortLabel: "त्रुटिरहित अधिगम" },
+      transfer: { label: "प्रशिक्षण हस्तांतरण (ACTIVE)", shortLabel: "ACTIVE परीक्षण" },
+      moca: { label: "MoCA टेलीमेट्री एवं बायोमार्कर", shortLabel: "MoCA एवं बायोमार्कर" },
+      ai_dda: { label: "AI कठिनाई नीति (RL-DDA)", shortLabel: "AI गतिशील नीति" },
+      finger: { label: "बहु-आयामी दृष्टिकोण (FINGER & ZBI)", shortLabel: "FINGER एवं ज़ारिट" },
+      coga: { label: "W3C COGA एवं AAA सुगमता", shortLabel: "COGA / AAA सुगमता" },
+      ner: { label: "पूर्वोत्तर भारत सांस्कृतिक मैट्रिक्स", shortLabel: "सांस्कृतिक मैट्रिक्स" },
+      authorities: { label: "विनियामक प्राधिकरण एवं सुरक्षा", shortLabel: "विनियामक एवं सुरक्षा" },
+      references: { label: "संदर्भ एवं बाहरी उद्धरण", shortLabel: "नैदानिक संदर्भ" },
+    },
+  },
+  bn: {
+    dossierBadge: "ক্লিনিকাল রিসার্চ ডসিয়ার",
+    samdClass: "সফটওয়্যার এজ আ মেডিকেল ডিভাইস (SaMD) ক্লাস B",
+    title: "এআই-চালিত কগনিটিভ গেমিং এবং স্মৃতি সহায়তা প্ল্যাটফর্ম",
+    subtitle: "উত্তর-পূর্ব ভারতে ত্রুটিহীন জ্ঞানীয় পুনর্বাসন, প্যাসিভ MoCA টেলিমেট্রি এবং বয়স্কদের সেবায় নিয়োজিত একটি সমন্বিত ক্লিনিকাল ও নিউরোসাইকোলজিক্যাল ফ্রেমওয়ার্ক।",
+    evidenceDomains: "১০টি প্রমাণ ক্ষেত্র",
+    landmarkTrials: "২০টি ল্যান্ডমার্ক ট্রায়াল",
+    standardsAligned: "W3C COGA ও CDSCO অনুসারী",
+    printDossier: "ডসিয়ার প্রিন্ট করুন",
+    citationsBadge: "২০টি গবেষণাপত্র রেফারেন্স",
+    tableOfContents: "সূচিপত্র",
+    sectionsCount: "১০টি বিভাগ",
+    dossierSections: "ডসিয়ার বিভাগ (১০)",
+    previous: "পূর্ববর্তী:",
+    next: "পরবর্তী:",
+    sections: {
+      overview: { label: "CDTx এর প্রয়োজনীয়তা", shortLabel: "CDTx প্রয়োজনীয়তা" },
+      errorless: { label: "ত্রুটিহীন শিক্ষা (EL)", shortLabel: "ত্রুটিহীন শিক্ষা" },
+      transfer: { label: "প্রশিক্ষণের স্থানান্তর (ACTIVE)", shortLabel: "ACTIVE ট্রায়াল" },
+      moca: { label: "MoCA টেলিমেট্রি ও বায়োমার্কার", shortLabel: "MoCA ও বায়োমার্কার" },
+      ai_dda: { label: "এআই গতিশীল নীতি (RL-DDA)", shortLabel: "এআই গতিশীল নীতি" },
+      finger: { label: "বহুমুখী থেরাপি (FINGER & ZBI)", shortLabel: "FINGER ও জারিট" },
+      coga: { label: "W3C COGA ও AAA অ্যাক্সেসিবিলিটি", shortLabel: "COGA / AAA অভিজ্ঞতা" },
+      ner: { label: "উত্তর-পূর্ব সাংস্কৃতিক ম্যাট্রিক্স", shortLabel: "সাংস্কৃতিক ম্যাট্রিক্স" },
+      authorities: { label: "নিয়ন্ত্রক ও সুরক্ষা অনুমোদন", shortLabel: "নিয়ন্ত্রণ ও সুরক্ষা" },
+      references: { label: "রেফারেন্স ও উদ্ধৃতি", shortLabel: "ক্লিনিকাল রেফারেন্স" },
+    },
+  },
+  mr: {
+    dossierBadge: "क्लिनिकल संशोधन डॉसियर",
+    samdClass: "सॉफ्टवेअर ॲज अ मेडिकल डिव्हाइस (SaMD) वर्ग B",
+    title: "एआय-चलित कॉग्निटिव्ह गेमिंग आणि स्मृती साहाय्य प्लॅटफॉर्म",
+    subtitle: "ईशान्य भारतात त्रुटीमुक्त संज्ञानात्मक पुनर्वसन, पॅसिव्ह MoCA टेलिमेट्री आणि वृद्धांच्या आरोग्यासाठी सर्वसमावेशक आराखडा.",
+    evidenceDomains: "१० पुरावा क्षेत्रे",
+    landmarkTrials: "२० ऐतिहासिक चाचण्या",
+    standardsAligned: "W3C COGA आणि CDSCO प्रमाणित",
+    printDossier: "डॉसियर प्रिंट करा",
+    citationsBadge: "२० ऐतिहासिक संदर्भ",
+    tableOfContents: "अनुक्रमणिका",
+    sectionsCount: "१० विभाग",
+    dossierSections: "डॉसियर विभाग (१०)",
+    previous: "मागील:",
+    next: "पुढील:",
+    sections: {
+      overview: { label: "CDTx ची गरज", shortLabel: "CDTx गरज" },
+      errorless: { label: "त्रुटीमुक्त शिक्षण (EL)", shortLabel: "त्रुटीमुक्त शिक्षण" },
+      transfer: { label: "प्रशिक्षणाचे हस्तांतरण (ACTIVE)", shortLabel: "ACTIVE चाचणी" },
+      moca: { label: "MoCA टेलिमेट्री आणि बायोमार्कर्स", shortLabel: "MoCA आणि बायोमार्कर्स" },
+      ai_dda: { label: "AI अडचण धोरण (RL-DDA)", shortLabel: "AI डायनॅमिक धोरण" },
+      finger: { label: "बहुआयामी दृष्टीकोन (FINGER & ZBI)", shortLabel: "FINGER आणि झारिट" },
+      coga: { label: "W3C COGA आणि AAA सुलभता", shortLabel: "COGA / AAA सुलभता" },
+      ner: { label: "ईशान्य सांस्कृतिक मॅट्रिक्स", shortLabel: "सांस्कृतिक मॅट्रिक्स" },
+      authorities: { label: "नियामक आणि सुरक्षा", shortLabel: "नियामक आणि सुरक्षा" },
+      references: { label: "संदर्भ आणि बाह्य लिंक्स", shortLabel: "क्लिनिकल संदर्भ" },
+    },
+  },
+  ne: {
+    dossierBadge: "क्लिनिकल अनुसन्धान डोजियर",
+    samdClass: "सफ्टवेयर एज अ मेडिकल डिभाइस (SaMD) क्लास B",
+    title: "एआई-संचालित संज्ञानात्मक गेमिङ र स्मृति सहायता प्लेटफर्म",
+    subtitle: "पूर्वोत्तर भारतमा त्रुटिरहित संज्ञानात्मक पुनर्वास, प्यासिभ MoCA टेलिमेट्री र वृद्धवृद्धाको हेरचाहका लागि विस्तृत क्लिनिकल ढाँचा।",
+    evidenceDomains: "१० प्रमाण डोमेनहरू",
+    landmarkTrials: "२० ऐतिहासिक परीक्षणहरू",
+    standardsAligned: "W3C COGA र CDSCO अनुरूप",
+    printDossier: "डोजियर प्रिन्ट गर्नुहोस्",
+    citationsBadge: "२० ऐतिहासिक सन्दर्भहरू",
+    tableOfContents: "विषयसूची",
+    sectionsCount: "१० खण्डहरू",
+    dossierSections: "डोजियर खण्डहरू (१०)",
+    previous: "अघिल्लो:",
+    next: "पछिल्लो:",
+    sections: {
+      overview: { label: "CDTx को आवश्यकता", shortLabel: "CDTx आवश्यकता" },
+      errorless: { label: "त्रुटिरहित सिकाइ (EL)", shortLabel: "त्रुटिरहित सिकाइ" },
+      transfer: { label: "प्रशिक्षण स्थानान्तरण (ACTIVE)", shortLabel: "ACTIVE परीक्षण" },
+      moca: { label: "MoCA टेलिमेट्री र बायोमार्कर", shortLabel: "MoCA र बायोमार्कर" },
+      ai_dda: { label: "AI कठिनाइ नीति (RL-DDA)", shortLabel: "AI गतिशील नीति" },
+      finger: { label: "बहु-क्षेत्रीय दृष्टिकोण (FINGER & ZBI)", shortLabel: "FINGER र जारिट" },
+      coga: { label: "W3C COGA र AAA पहुँच", shortLabel: "COGA / AAA पहुँच" },
+      ner: { label: "पूर्वोत्तर सांस्कृतिक म्याट्रिक्स", shortLabel: "सांस्कृतिक म्याट्रिक्स" },
+      authorities: { label: "नियामक र सुरक्षा", shortLabel: "नियामक र सुरक्षा" },
+      references: { label: "सन्दर्भ तथा बाह्य लिङ्कहरू", shortLabel: "क्लिनिकल सन्दर्भ" },
+    },
+  },
+  mni: {
+    dossierBadge: "ক্লিনিকেল রিসার্স দোসিয়র",
+    samdClass: "মেডিকেল দিভাইস ওইনা সোফ্টৱেয়র (SaMD) ক্লাস B",
+    title: "AI-না চলাইবা কগনিটিব গেমিং অমসুং মেমোরি এসিস্টেন্স প্লেটফোর্ম",
+    subtitle: "অৱাং-নোংপোক ভারত্তা অশোয়বা য়াওদনা কগনিটিব রিহেবিলিটেশন অমসুং অহলশিংগী যত্ন লৌনবা অখন্নবা ফ্রেমৱার্ক।",
+    evidenceDomains: "খুদ্দমগী লম ১০",
+    landmarkTrials: "অচৌবা চাংয়েং ২০",
+    standardsAligned: "W3C COGA অমসুং CDSCO য়াখ্রবা",
+    printDossier: "দোসিয়র প্রিন্ট তৌবীয়ু",
+    citationsBadge: "রিসার্স ২০",
+    tableOfContents: "ৱাফম মচাশিং",
+    sectionsCount: "শরুক ১০",
+    dossierSections: "দোসিয়রগী শরুকশিং (১০)",
+    previous: "মমাংগী:",
+    next: "তুংগী:",
+    sections: {
+      overview: { label: "CDTx গী তঙাইফদবা", shortLabel: "CDTx তঙাইফদবা" },
+      errorless: { label: "অশোয়বা য়াওদবা তম্বগী পথাপ (EL)", shortLabel: "অশোয়বা য়াওদবা" },
+      transfer: { label: "ত্রেনিং হোংদোকপা (ACTIVE)", shortLabel: "ACTIVE চাংয়েং" },
+      moca: { label: "MoCA তেলিমেত্রি অমসুং বায়োমার্কার", shortLabel: "MoCA তেলিমেত্রি" },
+      ai_dda: { label: "AI অকক্নবা পথাপ (RL-DDA)", shortLabel: "AI পথাপ" },
+      finger: { label: "লম কয়াগী পুনশিনবা (FINGER & ZBI)", shortLabel: "FINGER & ZBI" },
+      coga: { label: "W3C COGA অমসুং AAA UX", shortLabel: "COGA / AAA UX" },
+      ner: { label: "অৱাং নোংপোক্কী নাৎকী মেত্রিক্স", shortLabel: "নাৎকী মেত্রিক্স" },
+      authorities: { label: "নিয়ম অমসুং সেক্যুরিতি", shortLabel: "নিয়ম অমসুং সেক্যুরিতি" },
+      references: { label: "সাইটেশন অমসুং লিঙ্কশিং", shortLabel: "সাইটেশনশিং" },
+    },
+  },
+  brx: {
+    dossierBadge: "क्लिनिकेल नायबिजिरनाय डसियार",
+    samdClass: "सफ्टवेयार एज ए मेडिकेल दिभाइस (SaMD) थाखो B",
+    title: "AI-जों सालायजानाय कग्निथिभ गेलेनाय आरो गोसोखां होनाय प्लेटफर्म",
+    subtitle: "सान्जा-सा भारतआव गोरोन्थि गैयि कग्निथिभ थासारि आरो बैसो गोनां सुबुंफोरनि थाखाय गाहाय बिखान्थि।",
+    evidenceDomains: "10 फोरमान बाहागो",
+    landmarkTrials: "20 गुदि नायबिजिरनाय",
+    standardsAligned: "W3C COGA आरो CDSCO गोरोबनाय",
+    printDossier: "डसियार साफाय",
+    citationsBadge: "20 मखनायफोर",
+    tableOfContents: "आयदानि फारिलाइ",
+    sectionsCount: "10 बाहागो",
+    dossierSections: "डसियारनि बाहागोफोर (10)",
+    previous: "सिगांनि:",
+    next: "उननि:",
+    sections: {
+      overview: { label: "CDTx नि गोनांथि", shortLabel: "CDTx गोनांथि" },
+      errorless: { label: "गोरोन्थि गैयि सोलोंथाइ (EL)", shortLabel: "गोरोन्थि गैयि" },
+      transfer: { label: "फोरोंथाय दैथायहरनाय (ACTIVE)", shortLabel: "ACTIVE आनजाद" },
+      moca: { label: "MoCA तेलिमेट्रि आरो बायोमार्कार", shortLabel: "MoCA तेलिमेट्रि" },
+      ai_dda: { label: "AI गोब्राबथि बिखान्थि (RL-DDA)", shortLabel: "AI बिखान्थि" },
+      finger: { label: "गोबां बिथिंनि (FINGER & ZBI)", shortLabel: "FINGER आरो जारिट" },
+      coga: { label: "W3C COGA आरो AAA सुबिदा", shortLabel: "COGA / AAA" },
+      ner: { label: "सान्जा-सा हारिमु मेट्रिक्स", shortLabel: "हारिमु मेट्रिक्स" },
+      authorities: { label: "नेमखान्थि आरो रैखाथि", shortLabel: "नेमखान्थि आरो रैखाथि" },
+      references: { label: "मखनाय आरो लिंकफोर", shortLabel: "मखनायफोर" },
+    },
+  },
+  grt: {
+    dossierBadge: "Clinical Research Dossier",
+    samdClass: "Software as a Medical Device (SaMD) Class B",
+    title: "AI-Driven Serious Cognitive Gaming & Memory Assistance Platform",
+    subtitle: "North East India-o namgipa cognitive rehabilitation aro budepani an·sengani framework.",
+    evidenceDomains: "10 Evidence Domains",
+    landmarkTrials: "20 Landmark Trials",
+    standardsAligned: "W3C COGA & CDSCO Aligned",
+    printDossier: "Dossier Print Ka·bo",
+    citationsBadge: "20 Landmark Citations",
+    tableOfContents: "Table of Contents",
+    sectionsCount: "10 Sections",
+    dossierSections: "Dossier Sections (10)",
+    previous: "Skangni:",
+    next: "Ja·mano:",
+    sections: {
+      overview: { label: "The CDTx Imperative", shortLabel: "The CDTx Imperative" },
+      errorless: { label: "Errorless Learning (EL)", shortLabel: "Errorless Learning" },
+      transfer: { label: "Transfer of Training (ACTIVE)", shortLabel: "ACTIVE Trial" },
+      moca: { label: "MoCA Telemetry & Biomarkers", shortLabel: "MoCA & Biomarkers" },
+      ai_dda: { label: "AI Difficulty (RL-DDA)", shortLabel: "AI Dynamic Policy" },
+      finger: { label: "Multidomain (FINGER & ZBI)", shortLabel: "FINGER & Zarit" },
+      coga: { label: "W3C COGA & AAA UX", shortLabel: "W3C COGA / AAA UX" },
+      ner: { label: "North East Cultural Matrix", shortLabel: "Cultural Matrix" },
+      authorities: { label: "Regulatory & Security", shortLabel: "Regulatory & Auth" },
+      references: { label: "Citations & External Links", shortLabel: "Clinical Citations" },
+    },
+  },
+  kha: {
+    dossierBadge: "Clinical Research Dossier",
+    samdClass: "Software as a Medical Device (SaMD) Class B",
+    title: "AI-Driven Serious Cognitive Gaming & Memory Assistance Platform",
+    subtitle: "Ka jingpule halor ka jingsumar ia ki tymmen ha North East India lyngba ka AI bad cognitive gaming.",
+    evidenceDomains: "10 Evidence Domains",
+    landmarkTrials: "20 Landmark Trials",
+    standardsAligned: "W3C COGA & CDSCO Aligned",
+    printDossier: "Print Dossier",
+    citationsBadge: "20 Landmark Citations",
+    tableOfContents: "Table of Contents",
+    sectionsCount: "10 Bynta",
+    dossierSections: "Dossier Sections (10)",
+    previous: "Kaba Shwa:",
+    next: "Kaba Bud:",
+    sections: {
+      overview: { label: "The CDTx Imperative", shortLabel: "The CDTx Imperative" },
+      errorless: { label: "Errorless Learning (EL)", shortLabel: "Errorless Learning" },
+      transfer: { label: "Transfer of Training (ACTIVE)", shortLabel: "ACTIVE Trial" },
+      moca: { label: "MoCA Telemetry & Biomarkers", shortLabel: "MoCA & Biomarkers" },
+      ai_dda: { label: "AI Difficulty (RL-DDA)", shortLabel: "AI Dynamic Policy" },
+      finger: { label: "Multidomain (FINGER & ZBI)", shortLabel: "FINGER & Zarit" },
+      coga: { label: "W3C COGA & AAA UX", shortLabel: "W3C COGA / AAA UX" },
+      ner: { label: "North East Cultural Matrix", shortLabel: "Cultural Matrix" },
+      authorities: { label: "Regulatory & Security", shortLabel: "Regulatory & Auth" },
+      references: { label: "Citations & External Links", shortLabel: "Clinical Citations" },
+    },
+  },
+  lus: {
+    dossierBadge: "Clinical Research Dossier",
+    samdClass: "Software as a Medical Device (SaMD) Class B",
+    title: "AI-Driven Serious Cognitive Gaming & Memory Assistance Platform",
+    subtitle: "North East India a pitar leh putarte thluak lam harsatna enkawlna tur framework kimchang.",
+    evidenceDomains: "10 Evidence Domains",
+    landmarkTrials: "20 Landmark Trials",
+    standardsAligned: "W3C COGA & CDSCO Aligned",
+    printDossier: "Print Dossier",
+    citationsBadge: "20 Landmark Citations",
+    tableOfContents: "Table of Contents",
+    sectionsCount: "Then 10",
+    dossierSections: "Dossier Sections (10)",
+    previous: "Hmasa zawk:",
+    next: "Dawt tu:",
+    sections: {
+      overview: { label: "The CDTx Imperative", shortLabel: "The CDTx Imperative" },
+      errorless: { label: "Errorless Learning (EL)", shortLabel: "Errorless Learning" },
+      transfer: { label: "Transfer of Training (ACTIVE)", shortLabel: "ACTIVE Trial" },
+      moca: { label: "MoCA Telemetry & Biomarkers", shortLabel: "MoCA & Biomarkers" },
+      ai_dda: { label: "AI Difficulty (RL-DDA)", shortLabel: "AI Dynamic Policy" },
+      finger: { label: "Multidomain (FINGER & ZBI)", shortLabel: "FINGER & Zarit" },
+      coga: { label: "W3C COGA & AAA UX", shortLabel: "W3C COGA / AAA UX" },
+      ner: { label: "North East Cultural Matrix", shortLabel: "Cultural Matrix" },
+      authorities: { label: "Regulatory & Security", shortLabel: "Regulatory & Auth" },
+      references: { label: "Citations & External Links", shortLabel: "Clinical Citations" },
+    },
+  },
+};
+
+const SECTIONS_BASE = [
+  { id: "overview" as const, num: "01", icon: BookOpen },
+  { id: "errorless" as const, num: "02", icon: Sparkles },
+  { id: "transfer" as const, num: "03", icon: Award },
+  { id: "moca" as const, num: "04", icon: Activity },
+  { id: "ai_dda" as const, num: "05", icon: Cpu },
+  { id: "finger" as const, num: "06", icon: HeartHandshake },
+  { id: "coga" as const, num: "07", icon: ShieldCheck },
+  { id: "ner" as const, num: "08", icon: Compass },
+  { id: "authorities" as const, num: "09", icon: Scale },
+  { id: "references" as const, num: "10", icon: FileText },
 ];
 
 export function ClinicalEvidenceClient() {
+  const locale = useLocale();
+  const normLoc = locale?.split("-")[0]?.toLowerCase() || "en";
+  const dossier = DOSSIER_I18N[normLoc] || DOSSIER_I18N.en;
+
+  const sections = useMemo(() => {
+    return SECTIONS_BASE.map((item) => ({
+      ...item,
+      label: dossier.sections[item.id]?.label || dossier.sections.overview.label,
+      shortLabel: dossier.sections[item.id]?.shortLabel || dossier.sections.overview.shortLabel,
+    }));
+  }, [dossier]);
   const [activeTab, setActiveTab] = useState<SectionTab>("overview");
   const [refSearch, setRefSearch] = useState("");
   const [refCategory, setRefCategory] = useState<string>("all");
@@ -371,9 +704,9 @@ export function ClinicalEvidenceClient() {
     }
   };
 
-  const currentSectionIndex = SECTIONS.findIndex((s) => s.id === activeTab);
-  const prevSection = currentSectionIndex > 0 ? SECTIONS[currentSectionIndex - 1] : null;
-  const nextSection = currentSectionIndex < SECTIONS.length - 1 ? SECTIONS[currentSectionIndex + 1] : null;
+  const currentSectionIndex = sections.findIndex((s) => s.id === activeTab);
+  const prevSection = currentSectionIndex > 0 ? sections[currentSectionIndex - 1] : null;
+  const nextSection = currentSectionIndex < sections.length - 1 ? sections[currentSectionIndex + 1] : null;
 
   const renderPagination = () => (
     <div className="pt-6 border-t border-stone-200/90 flex items-center justify-between gap-4 print:hidden">
@@ -389,7 +722,7 @@ export function ClinicalEvidenceClient() {
           className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50 hover:border-stone-300 transition-colors cursor-pointer shadow-xs"
         >
           <ChevronLeft className="h-4 w-4" />
-          <span className="hidden sm:inline">Previous:</span>
+          <span className="hidden sm:inline">{dossier.previous}:</span>
           <span>{prevSection.shortLabel}</span>
         </button>
       ) : <div />}
@@ -405,7 +738,7 @@ export function ClinicalEvidenceClient() {
           }}
           className="inline-flex items-center gap-2 rounded-xl border border-emerald-700/30 bg-emerald-800 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-900 transition-colors cursor-pointer ml-auto shadow-xs"
         >
-          <span className="hidden sm:inline">Next:</span>
+          <span className="hidden sm:inline">{dossier.next}:</span>
           <span>{nextSection.shortLabel}</span>
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -422,10 +755,10 @@ export function ClinicalEvidenceClient() {
           <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-stone-600">
             <span className="inline-flex items-center gap-1.5 text-emerald-800 font-bold">
               <Stethoscope className="h-4 w-4 text-emerald-700" />
-              <span>Clinical Research Dossier</span>
+              <span>{dossier.dossierBadge}</span>
             </span>
             <span className="text-stone-300">•</span>
-            <span className="text-stone-700">Software as a Medical Device (SaMD) Class B</span>
+            <span className="text-stone-700">{dossier.samdClass}</span>
             <span className="text-stone-300">•</span>
             <span className="rounded-md bg-stone-100 border border-stone-200 px-2 py-0.5 text-[11px] font-mono text-stone-700">
               SIH PS 26003
@@ -433,10 +766,10 @@ export function ClinicalEvidenceClient() {
           </div>
 
           <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-extrabold text-stone-900 tracking-tight leading-tight max-w-4xl">
-            AI-Driven Serious Cognitive Gaming &amp; Memory Assistance Platform
+            {dossier.title}
           </h1>
           <p className="max-w-3xl text-sm sm:text-base font-normal text-stone-600 leading-relaxed">
-            A comprehensive clinical, neuropsychological, and regulatory framework governing errorless cognitive rehabilitation, passive MoCA telemetry, reinforcement-learning difficulty adjustment, and indigenous gerontological care in North East India.
+            {dossier.subtitle}
           </p>
 
           {/* Dossier Metadata & Academic Actions Bar */}
@@ -444,15 +777,15 @@ export function ClinicalEvidenceClient() {
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-medium text-stone-600">
               <span className="inline-flex items-center gap-1.5 bg-stone-100/80 px-2.5 py-1 rounded-md border border-stone-200/80 text-stone-700 font-medium">
                 <BookOpen className="h-3.5 w-3.5 text-stone-500" />
-                10 Evidence Domains
+                {dossier.evidenceDomains}
               </span>
               <span className="inline-flex items-center gap-1.5 bg-stone-100/80 px-2.5 py-1 rounded-md border border-stone-200/80 text-stone-700 font-medium">
                 <Award className="h-3.5 w-3.5 text-stone-500" />
-                20 Landmark Trials
+                {dossier.landmarkTrials}
               </span>
               <span className="inline-flex items-center gap-1.5 bg-stone-100/80 px-2.5 py-1 rounded-md border border-stone-200/80 text-stone-700 font-medium">
                 <ShieldCheck className="h-3.5 w-3.5 text-stone-500" />
-                W3C COGA &amp; CDSCO Aligned
+                {dossier.standardsAligned}
               </span>
             </div>
 
@@ -463,7 +796,7 @@ export function ClinicalEvidenceClient() {
                 className="inline-flex items-center gap-1.5 rounded-lg border border-stone-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50 hover:text-stone-900 transition-colors shadow-xs cursor-pointer print:hidden"
               >
                 <Printer className="h-3.5 w-3.5 text-stone-600" />
-                <span>Print Dossier</span>
+                <span>{dossier.printDossier}</span>
               </button>
               <button
                 type="button"
@@ -476,7 +809,7 @@ export function ClinicalEvidenceClient() {
                 className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-300/80 bg-emerald-50/80 px-3.5 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100/80 transition-colors cursor-pointer"
               >
                 <FileText className="h-3.5 w-3.5 text-emerald-700" />
-                <span>20 Landmark Citations</span>
+                <span>{dossier.citationsBadge}</span>
               </button>
             </div>
           </div>
@@ -488,13 +821,13 @@ export function ClinicalEvidenceClient() {
         {/* Mobile Section Selector (lg:hidden) */}
         <div className="lg:hidden mb-6 print:hidden">
           <div className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-2 flex items-center justify-between">
-            <span>Dossier Sections ({SECTIONS.length})</span>
+            <span>{dossier.dossierSections} ({sections.length})</span>
             <span className="text-emerald-700 font-semibold font-mono">
-              {SECTIONS.find((s) => s.id === activeTab)?.num} / 10
+              {sections.find((s) => s.id === activeTab)?.num} / 10
             </span>
           </div>
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-            {SECTIONS.map((tab) => {
+            {sections.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
                 <button
@@ -527,15 +860,15 @@ export function ClinicalEvidenceClient() {
             <div className="rounded-2xl border border-stone-200/90 bg-white p-4 shadow-xs space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-stone-100">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-stone-500">
-                  Table of Contents
+                  {dossier.tableOfContents}
                 </span>
                 <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-600">
-                  10 Sections
+                  {sections.length} {dossier.sectionsCount}
                 </span>
               </div>
 
               <nav className="space-y-1" aria-label="Clinical Dossier Sections">
-                {SECTIONS.map((tab) => {
+                {sections.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
                   return (

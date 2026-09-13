@@ -2,10 +2,112 @@
 
 import React from "react";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import { BookOpen, ExternalLink, ShieldCheck, CheckCircle2, Award, FileText } from "lucide-react";
 import { CLINICAL_REFERENCES } from "@/lib/clinicalReferences";
 
+
+const EVIDENCE_SHOWCASE_I18N: Record<string, {
+  badge: string;
+  title: string;
+  subtitle: string;
+  dossierBtn: string;
+  readPaper: string;
+  viewAll: string;
+}> = {
+  as: {
+    badge: "চিকিৎসা-পৰীক্ষিত ক্লিনিকেল ভেটি",
+    title: "ক্লিনিকেল গৱেষণাৰ ওপৰত প্ৰতিষ্ঠিত, কাল্পনিক নহয়",
+    subtitle: "CogniCare ৰ প্ৰতিটো খেল, অভিযোজিত কঠিনতা আৰু সুবিধা চিকিৎসাগত নিয়ন্ত্ৰিত পৰীক্ষা আৰু স্বীকৃত মেডিকেল জাৰ্নেলৰ ওপৰত ভিত্তি কৰি তৈয়াৰ কৰা হৈছে।",
+    dossierBtn: "SaMD Class B নথি চাওক",
+    readPaper: "অফিচিয়েল গৱেষণা-পত্ৰ পঢ়ক",
+    viewAll: "সকলো ২০+ স্বীকৃতিপ্ৰাপ্ত প্ৰসংগ চাওক →"
+  },
+  hi: {
+    badge: "सहकर्मी-समीक्षित नैदानिक आधार",
+    title: "नैदानिक अनुसंधानों पर आधारित, कल्पना पर नहीं",
+    subtitle: "CogniCare का प्रत्येक संज्ञानात्मक अभ्यास, अनुकूलनीय कठिनाई और सुगमता सुविधा ऐतिहासिक नियंत्रित परीक्षणों और मान्यता प्राप्त चिकित्सा पत्रिकाओं पर आधारित है।",
+    dossierBtn: "SaMD Class B डोज़ियर देखें",
+    readPaper: "आधिकारिक शोध-पत्र पढ़ें",
+    viewAll: "सभी 20+ सहकर्मी-समीक्षित संदर्भ देखें →"
+  },
+  en: {
+    badge: "Peer-Reviewed Clinical Foundation",
+    title: "{e18n.title}",
+    subtitle: "{e18n.subtitle}",
+    dossierBtn: "Explore SaMD Class B Dossier",
+    readPaper: "Read Official Paper",
+    viewAll: "View all 20+ peer-reviewed citations →"
+  },
+  bn: {
+    badge: "পিয়ার-রিভিউড ক্লিনিক্যাল ভিত্তি",
+    title: "ক্লিনিক্যাল গবেষণার ওপর প্রতিষ্ঠিত, কোনো কল্পনা নয়",
+    subtitle: "CogniCare-এর প্রতিটি ব্যায়াম, অভিযোজিত কঠিনতা এবং অ্যাক্সেসিবিলিটি সুবিধা স্বীকৃত নিয়ন্ত্রিত পরীক্ষা এবং অফিসিয়াল মেডিকেল জার্নালের ওপর প্রতিষ্ঠিত।",
+    dossierBtn: "SaMD Class B ডসিয়ার দেখুন",
+    readPaper: "অফিসিয়াল পেপার পড়ুন",
+    viewAll: "সমস্ত ২০+ পিয়ার-রিভিউড তথ্যসূত্র দেখুন →"
+  },
+  mr: {
+    badge: "तज्ज्ञ-समीक्षित क्लिनिकल पाया",
+    title: "क्लिनिकल संशोधनावर आधारित, कल्पनेवर नाही",
+    subtitle: "CogniCare चा प्रत्येक सराव, अनुकूल अडचण पातळी आणि सुलभता वैशिष्ट्ये प्रमाणित वैद्यकीय चाचण्या आणि नियतकालिकांवर आधारित आहेत.",
+    dossierBtn: "SaMD Class B दस्तऐवज पहा",
+    readPaper: "अधिकृत शोधनिबंध वाचा",
+    viewAll: "सर्व 20+ तज्ज्ञ-समीक्षित संदर्भ पहा →"
+  },
+  ne: {
+    badge: "सहकर्मी-समीक्षित क्लिनिकल आधार",
+    title: "क्लिनिकल अनुसन्धानमा आधारित, कल्पना होइन",
+    subtitle: "CogniCare को प्रत्येक अभ्यास, अनुकूलनीय कठिनाइ र पहुँच सुविधा प्रमाणित चिकित्सा अनुसन्धान र पत्रिकाहरूमा आधारित छ।",
+    dossierBtn: "SaMD Class B कागजात हेर्नुहोस्",
+    readPaper: "आधिकारिक शोधपत्र पढ्नुहोस्",
+    viewAll: "सबै २०+ सहकर्मी-समीक्षित सन्दर्भहरू हेर्नुहोस् →"
+  },
+  mni: {
+    badge: "ক্লিনিকেল য়ুম্ফম",
+    title: "ক্লিনিকেল রিসার্সতা য়ুম্ফম ওইবা",
+    subtitle: "CogniCare গী শান্নপোৎ অমসুং অ্যালগোরিদম পুম্নমক সাইন্তিফিক ওইবা রিসার্সতা য়ুম্ফম ওইবনি।",
+    dossierBtn: "SaMD Class B দোসিঅর য়েংউ",
+    readPaper: "রিসার্স পেপার পাবীয়ু",
+    viewAll: "রিসার্স রেফরেন্স ২০+ পুম্নমক য়েংউ →"
+  },
+  brx: {
+    badge: "क्लिनिकेल ओंथि",
+    title: "क्लिनिकेल आनजादनि सायाव सोनारनाय",
+    subtitle: "CogniCare नि गासै गेलेनाय आरो बिथोनफोरा क्लिनिकेल आनजादनि सायाव गायसननाय।",
+    dossierBtn: "SaMD Class B डसियार नाय",
+    readPaper: "गाहाइ बिलाइ फराय",
+    viewAll: "गासै २०+ रिफारेन्स नाय →"
+  },
+  grt: {
+    badge: "Peer-Reviewed Clinical Foundation",
+    title: "Clinical Research-o Pangchakgimin",
+    subtitle: "CogniCare-ni serious games aro accessibility randomized clinical trials-o pangchaka.",
+    dossierBtn: "SaMD Class B Dossier Nibo",
+    readPaper: "Official Paper Poraibo",
+    viewAll: "20+ Citations-ko Nibo →"
+  },
+  kha: {
+    badge: "Clinical Tynrai ba la Pynskhem",
+    title: "Seng halor ka Jingwad Bniah Clinical",
+    subtitle: "Ki jingialehkai bad ka rukom sumar ha CogniCare la pynshong nongrim halor ki jingwad bniah ba shisha.",
+    dossierBtn: "Peit ia ka SaMD Class B Dossier",
+    readPaper: "Pule ia ka Kot Bniah",
+    viewAll: "Peit Lut 20+ Citations →"
+  },
+  lus: {
+    badge: "Clinical Foundation Rintlak",
+    title: "Clinical Research-a Innghat",
+    subtitle: "CogniCare game leh algorithm zawng zawngte hi clinical trial leh medical journal rintlaka innghat a ni.",
+    dossierBtn: "SaMD Class B Dossier En Rawh",
+    readPaper: "Official Paper Chhiar Rawh",
+    viewAll: "Citation 20+ En Rawh →"
+  }
+};
+
 export function ClinicalEvidenceShowcase() {
+  const locale = useLocale();
+  const e18n = EVIDENCE_SHOWCASE_I18N[locale] || EVIDENCE_SHOWCASE_I18N.en;
   const highlightRefs = [
     CLINICAL_REFERENCES.find((r) => r.id === "nih-statpearls-dementia-2022")!,
     CLINICAL_REFERENCES.find((r) => r.id === "finger-lancet-2015")!,
@@ -21,13 +123,13 @@ export function ClinicalEvidenceShowcase() {
         <div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-tea-light border border-tea/30 text-tea text-xs font-black uppercase tracking-wider mb-2">
             <Award className="h-3.5 w-3.5" />
-            <span>Peer-Reviewed Clinical Foundation</span>
+            <span>{e18n.badge}</span>
           </div>
           <h2 className="font-serif font-black text-2xl sm:text-3xl text-ink leading-tight">
-            Backed by Clinical Research, Not Fiction
+            {e18n.title}
           </h2>
           <p className="text-xs sm:text-sm text-ink-secondary mt-1 max-w-2xl font-medium leading-relaxed">
-            Every cognitive drill, adaptive difficulty algorithm, and accessibility accommodation in CogniCare is grounded in landmark randomized controlled trials, peer-reviewed medical journals, and official statutory guidelines.
+            {e18n.subtitle}
           </p>
         </div>
 
@@ -36,7 +138,7 @@ export function ClinicalEvidenceShowcase() {
           className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-black bg-tea px-4 py-2.5 text-xs sm:text-sm font-black text-white shadow-[2px_2px_0px_#000] hover:bg-emerald-900 transition-colors"
         >
           <FileText className="h-4 w-4" />
-          <span>Explore SaMD Class B Dossier</span>
+          <span>{e18n.dossierBtn}</span>
           <ExternalLink className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -88,7 +190,7 @@ export function ClinicalEvidenceShowcase() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-bold text-tea hover:text-emerald-900 underline"
               >
-                <span>Read Official Paper</span>
+                <span>{e18n.readPaper}</span>
                 <ExternalLink className="h-2.5 w-2.5" />
               </a>
             </div>
@@ -107,7 +209,7 @@ export function ClinicalEvidenceShowcase() {
           href="/clinical-evidence"
           className="font-bold underline hover:text-amber-900 text-xs"
         >
-          View all 20+ peer-reviewed citations &rarr;
+          {e18n.viewAll}
         </Link>
       </div>
     </section>

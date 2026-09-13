@@ -4,7 +4,45 @@
     "ready": "Zan hian a tihna hmang dawn nia?",
     "subtitle": "CogniCare",
     "description": "AI tan vawiin",
-    "nerInitiative": "MDoNER thinrim"
+    "nerInitiative": "MDoNER thinrim",
+    "comingSoon": "Rei loteah a lo thleng ang",
+    "routine": {
+      "title": "Ni tin tih tur ruahmanna",
+      "label": "Vawiin tih tur",
+      "morning_medicine": "Zing damdawi (BP & Vitamin)",
+      "water_reminder": "Tui thianghlim in rawh",
+      "doctor_appointment": "Doctor tlawh hun",
+      "family_photos": "Chhungkaw thlalak & hriat rengna",
+      "medicine_time": "Zing dar 8:00 • Damdawi 1 tui nen",
+      "water_count": "No 6 zinga no 4 vawiin atan",
+      "appointment_time": "Dr. B. K. Sarma • Dispur PHC",
+      "memories_count": "Sunita nen hriat rengna 12",
+      "now": "Tuntumah"
+    },
+    "patient": {
+      "title": "Damlo ka ni",
+      "subtitle": "Damlo Portal",
+      "description": "Ni tin hriatna tihhmasawnna game tan la, i hmasawnna thlir rawh.",
+      "cta": "VAWIIN TIH TUR TAN RAWH →"
+    },
+    "caregiver": {
+      "title": "Enkawltu & Hriselna thawktu",
+      "subtitle": "ASHA / PHC Portal",
+      "description": "Damlo hmasawnna thlir la, thlalak dah lut la, damdawi enkawl rawh.",
+      "cta": "DASHBOARD HAWNG RAWH",
+      "patients": "Damlorang",
+      "sessions": "Vawiin hun hman",
+      "alerts": "Fimkhurna"
+    },
+    "kiosk": {
+      "title": "Kiosk Check-In",
+      "subtitle": "QR Scanner Hmun",
+      "description": "Damlo QR health card scan la, an hun hman tur tan rawh.",
+      "cta": "SCANNER HAWNG RAWH",
+      "showCard": "QR health card hmuh rawh",
+      "scan": "Kiosk-ah scan rawh",
+      "start": "Check in la tan rawh"
+    }
   },
   "kiosk": {
     "title": "CogniCare ah chibai",
@@ -38,7 +76,82 @@
         "caretaker": "I enkawltu hi hriatpuh a ni. Tihtan tur a awm."
       },
       "memoryListen": "Ka tan hriat rengna chhiar rawh",
-      "calmListen": "Ka tan thlamuanna chhiar rawh"
+      "calmListen": "Ka tan thlamuanna chhiar rawh",
+      "familyTitle": "Chhungkaw Hriat Rengnate",
+      "familyEmpty": "I chhungte thlalak a lo lang thuai ang.",
+      "memoryTitle": "Vawiin Hriat Rengna",
+      "memoryAnother": "Hriat rengna dang hmuh rawh",
+      "memoryView": "Hriat rengna en rawh",
+      "memoryEmpty": "Hriat rengna duhawm a lo lang thuai ang.",
+      "calmTitle": "Thlamuanna Hmun",
+      "calmHint": "In lam ngaih ti reh thei hla leh thil ri mawi.",
+      "calmTriggers": "Thlamuanna i mamawh hunah {triggers} ngaihtuah rawh.",
+      "calmMusic": "I hla ngainat berte: {music}.",
+      "calmFallbackTriggers": "zing thingpui sa tui tak",
+      "calmPlay": "Thlamuanna rimawi play rawh",
+      "moodDear": "thian"
+    },
+    "date": "Nilaini, 26 August",
+    "schedule": "Vawiin Hun Ruahman",
+    "waterToday": "Vawiin Tui In",
+    "moreGames": {
+      "label": "Game dangte",
+      "title": "Game & Tih turte Hmun",
+      "desc": "Ni tin tih tur, thliar hran leh kawmngaih tak thian.",
+      "cta": "Game Hmun Hawng Rawh"
+    },
+    "audio": {
+      "greeting": "Zing chibai, Dadu! Nilaini, 26th August a ni. Vawiin tih tur 2 a la awm.",
+      "greetingName": "Zing chibai, {name}! Nilaini, 26th August a ni. Vawiin tih tur 2 a la awm.",
+      "todayIs": "Vawiin hi {date} a ni.",
+      "close": "Khar rawh"
+    },
+    "gamesTitle": "Ni tin Hriatna Tihchak Game-te",
+    "cards": {
+      "memory": {
+        "title": "Chhungkaw Hriat Rengna Inmil",
+        "desc": "Chhungte {count} thlalak nen khel rawh",
+        "descZero": "I chhungte thlalak nen khel rawh"
+      },
+      "jigsaw": {
+        "title": "Chhungkaw Hmel Puzzle",
+        "desc": "Hmel siam chhuak turin thlalak zawmkhawm rawh"
+      },
+      "timeline": {
+        "title": "Ka Nun Zin Kawng",
+        "desc": "I nun hlimawm thil thlengte indawtin rem rawh"
+      },
+      "wayfinding": {
+        "title": "Khawchhung Kal Leh In Kawn",
+        "desc": "Khawchhung hmun hriat lar paltlanga mahni in thlen lehna"
+      },
+      "dailyTasks": {
+        "title": "Thingpui Siam Hun",
+        "desc": "Thingpui sen sa tui tak siam dan zawm rawh"
+      },
+      "exploreAll": "Game Zawng Zawng En Rawh"
+    },
+    "exercise": {
+      "title": "Ni Tin Tih Turte",
+      "teaTime": "Zing thingpui siam",
+      "sorting": "Choka & Tawngtaina Hmun Tiar Thliar",
+      "companion": "Saathi aw nen inbia rawh",
+      "breathing": "Zing boruak thianghlim hip rawh",
+      "done": "Zo ta",
+      "start": "Tan rawh",
+      "inProgress": "Tih mek",
+      "daily": {
+        "label": "Ni Tin Insawizawina",
+        "title": "Vawiin Hriatna Game Khel Rawh",
+        "desc": "Level 2 • Minit 5 • Chhungkaw thlalak nen",
+        "cta": "Tan Rawh"
+      },
+      "bonus": {
+        "label": "Bonus Insawizawina",
+        "title": "Kawng Hre Reng Rawh",
+        "desc": "Khawchhung kawngte zawh rawh. Minit 8.",
+        "cta": "Kal Tan Rawh"
+      }
     }
   },
   "games": {
@@ -46,19 +159,100 @@
       "title": "Famil Memory",
       "preview": "Famil member hnuaia chhiar rawh...",
       "start": "Tan rawh",
-      "complete": "Ngai! I matching tham!"
+      "complete": "Ngai! I matching tham!",
+      "desc": "Chhungkaw hmel inmilte zawng rawh",
+      "previewNote": "Hmel tinte hi hriat reng tum rawh.",
+      "pairs": "A inmilte zawng rawh.",
+      "matched": "Hei hi {name}, i {relation} a ni.",
+      "matchedCount": "{total} zinga {matched} hmuh tawh",
+      "hintShow": "Hriattirna hmuh rawh",
+      "hintHide": "Hriattirna thup rawh",
+      "cardHidden": "Card thup"
     },
     "sorting": {
       "title": "Zan-zan sorting",
-      "complete": "Ngai!"
+      "complete": "Ngai!",
+      "desc": "Choka bungbel leh tawngtaina tiarte thliar hrang rawh.",
+      "intro": "In chhung bungruate i thliar hrang ang u. Bungrua hmet la, a bawmah dah rawh.",
+      "pickItem": "Bungrua la turin hmet rawh.",
+      "pickBasket": "Khawi bawmah nge a luh dawn?",
+      "kitchen": "Choka bawm",
+      "prayer": "Tawngtaina bawm",
+      "correctName": "A tha e! {item} chu tah hian a awm tur a ni.",
+      "wrongSpeech": "A dik chiah lo. {item} chu {category} bawmah a awm tur a ni.",
+      "items": {
+        "incense": "Rimtuina dhoop",
+        "bell": "Dar benthek",
+        "teacup": "Thingpui no",
+        "sugar": "Chini bawm",
+        "clock": "Sana",
+        "japi": "Khumbeu Japi"
+      }
     },
     "wayfinding": {
       "title": "Khawchhung Kal Leh In Kawn",
-      "desc": "Khawchhung hmun hriat lar paltlanga mahni in thlen lehna"
+      "desc": "Khawchhung hmun hriat lar paltlanga mahni in thlen lehna",
+      "modeScenic": "Scenic Walk",
+      "modeRecall": "Find the Way",
+      "startJourney": "Begin Your Walk",
+      "currentLocation": "You are at {name}",
+      "nextDestination": "Next destination: {name}",
+      "stepCounter": "Station {current} of {total}",
+      "signpostPrompt": "Which path leads towards {target}?",
+      "landmarkMemory": "Familiar Memory",
+      "viewScrapbook": "Open Landmark View",
+      "listenGuide": "Hear Guide",
+      "walkButton": "Walk Along Path",
+      "hintWhisper": "Look closely — the path to {name} is right ahead!",
+      "congratulations": "Welcome Back Home!",
+      "completedJourneyDesc": "You navigated through {count} familiar landmarks and reached {home} safely.",
+      "postcardTitle": "Hometown Walk Postcard",
+      "musicCta": "Play Hometown Tune",
+      "walkAgain": "Walk Another Route",
+      "speechIntro": "Welcome to your village walk. Let us begin at {start} and walk together towards {home}.",
+      "speechArrived": "We have arrived at {name}. {description}",
+      "speechTurn": "Which path should we take to reach {target}?",
+      "speechSuccess": "Wonderful! You remembered the way to {name}.",
+      "speechFinish": "Welcome home! You successfully walked the entire village trail today.",
+      "explore": "Let's walk this route...",
+      "step": "Step {current} of {total}",
+      "walkTo": "Walk to {name}",
+      "towards": "Walk towards {name}.",
+      "then": "then to",
+      "arrive": "You arrive home!",
+      "listenDirections": "Listen to directions",
+      "reached": "I remember the way!",
+      "recallStart": "Now, where do we go next?",
+      "recallLabel": "Where do we go next?",
+      "recallDesc": "After {prev}, where do we go?",
+      "correct": "Correct! You remembered!",
+      "wrong": "Take your time, you can try again.",
+      "viewPhoto": "View photo",
+      "complete": "You reached home! Wonderful!"
     },
     "dailyTasks": {
       "title": "Ka tea siam rawh",
-      "complete": "Ngai!"
+      "complete": "Ngai!",
+      "desc": "Thingpui sen sa tui tak siam dan zawm rawh",
+      "intro": "Vawiin chu i ngainat em em: {activity} kan siam dawn nia.",
+      "defaultJoy": "thingpui sen sa no khat",
+      "step": "Pen {current} na {total}",
+      "ready": "In a hun ta e!",
+      "completeSpeech": "I {activity} chu a inpeih ta e. Tui ti takin in rawh!",
+      "actions": {
+        "water": "Tui chhuang so rawh",
+        "leaves": "Thingpui hnah thlak rawh",
+        "milk": "Bawnghnute tlem leih rawh",
+        "sugar": "Chini thlak rawh",
+        "cup": "No-ah thli chhuak rawh"
+      },
+      "items": {
+        "cup": "Thingpui no",
+        "water": "Tui",
+        "leaves": "Thingpui hnah",
+        "milk": "Bawnghnute",
+        "sugar": "Chini"
+      }
     },
     "grandchildChat": {
       "title": "Tu Te Nena Thingpui In & Inkawmna",
@@ -74,7 +268,42 @@
     },
     "jigsaw": {
       "title": "Hriatrengna Lemlem Puzzle",
-      "desc": "Thlalak bung hrang hrang remkhawma chhungte hmel siam thatna"
+      "desc": "Thlalak bung hrang hrang remkhawma chhungte hmel siam thatna",
+      "pick": "Tu thlalak nge kan siam ang?",
+      "pickSpeech": "Thlalak siam dun tur thlang rawh.",
+      "startSpeech": "{name} thlalak hi i siam dun ang u.",
+      "guidance": "{name} thlalak hi ti pumhlum rawh.",
+      "guidanceSpeech": "Them hmet la, a awmna tur dik takah dah rawh. Ka pui zel ang che.",
+      "piece": "Puzzle them",
+      "playAgain": "Khel nawn leh rawh",
+      "noPhoto": "Enkawltu portal-ah thlalak dah lut rawh.",
+      "intro": "Thlalakte zawmkhawm dun ang u. Thlalak {count} a inpeih e.",
+      "face": "Hmel {current} na {total}: {name}",
+      "landmark": "Hmun {current} na {total}: {name}",
+      "nextCta": "Thlalak dawt: {name}",
+      "peek": "Peek",
+      "playing": "Back to puzzle",
+      "peeking": "Peeking at the picture...",
+      "tapPrompt": "Tap one piece, then tap the place it belongs.",
+      "complete": "Wonderful! {name}'s picture is ready!",
+      "completeSpeech": "Wonderful! That is {name}, your {relation}.",
+      "placeComplete": "Wonderful! {name} is ready!",
+      "placeCompleteSpeech": "Wonderful! That is {name}. {description}",
+      "start": "Start Puzzle",
+      "allComplete": "You made all your familiar pictures! Wonderful!",
+      "allCompleteSpeech": "Every familiar face and place is here with you today. What a beautiful story!",
+      "allCompletePlacesSpeech": "You rebuilt all your familiar landmarks today. What wonderful memories!",
+      "notesEmpty": "A memory your family wrote for you.",
+      "viewPicture": "View picture",
+      "categoryFamily": "‍ ‍ Family Members",
+      "categoryPlaces": "Familiar Places",
+      "guideOn": "Guide: ON",
+      "guideOff": "Guide: OFF",
+      "levelGentle": "2×2 Easy (4 pcs)",
+      "levelClassic": "3×3 Classic (9 pcs)",
+      "levelMaster": "4×4 Master (16 pcs)",
+      "music": "Play familiar tune",
+      "musicHint": "A gentle melody, like the songs you love."
     },
     "weaving": {
       "title": "Puan Bu & Puan Tahna",
@@ -87,7 +316,11 @@
       "waveToPluck": "Kut vaiin thingpui hnah lawr rawh",
       "leavesPlucked": "Hnah lawr zat: {count}",
       "basketFull": "Bawm thingpui hnahin a khat e!",
-      "gentleHint": "Muangchangin kut vai la, hnah hring va tawk rawh."
+      "gentleHint": "Muangchangin kut vai la, hnah hring va tawk rawh.",
+      "encouragement": "A tha lutuk e! I kut dam takin thlawh rawh.",
+      "playAgain": "Thingpui hnah thar la rawh",
+      "backToHub": "← Game hmunah let leh rawh",
+      "welcomeSpeech": "Thingpui hnah lohna hmunah ka lo lawm a che. A hnah hring pahnih leh a par hmet rawh."
     },
     "radio": {
       "title": "Akashvani Radio Hlunte",
@@ -135,7 +368,15 @@
       "backToHub": "← Therapy Hub-ah let leh rawh",
       "speakPromptNamghar": "Namghar lam pan rawh",
       "speakPromptChangGhar": "Thing in lam hawi rawh",
-      "speakPromptRiverGhat": "Lui kamah va thleng rawh"
+      "speakPromptRiverGhat": "Lui kamah va thleng rawh",
+      "walking": "Lamtluang zawh mek a ni...",
+      "lookLeft": "Veilam en rawh",
+      "lookAhead": "Hma lam en rawh",
+      "lookRight": "Dinglam en rawh",
+      "currentLandmark": "Hmun awm mekna",
+      "spatialPrompt": "Hmun hriat zawhna:",
+      "questionRiverGhat": "He lamtluang hian khawiah nge min hruai thlen?",
+      "welcomeSpeech": "Majuli thliarkarah ka lo lawm a che. Zing ni chhuak lamtluang zawh turin pen hma rawh."
     },
     "bihuDhol": {
       "title": "Khuang & Dhol Tumna (Rilru Hahdamna)",
@@ -147,7 +388,12 @@
       "calmTitle": "Rilru a hahdam sawng sawng mai!",
       "calmSubtitle": "I kut chet dan leh khuang thluk a inmil hle mai.",
       "playAgain": "Khuang tum leh rawh",
-      "backToHub": "← Therapy Hub-ah let leh rawh"
+      "backToHub": "← Therapy Hub-ah let leh rawh",
+      "bpmText": "Chak zawng: {bpm} BPM",
+      "goodRhythm": "Tum dan dik",
+      "gentleTouch": "Nem takin hmet rawh",
+      "rhythmScore": "Dik zat: {score}%",
+      "calmComplete": "Khuallam session a zo ta"
     },
     "dayInMyWorld": {
       "title": "Ka Khawvela Ni Khat (३D Story Campaign)",
@@ -190,7 +436,16 @@
       "ch6Complete": "Ni hlimawm tak a liam ta! Hriatrengna zawng zawng i hre chiang e.",
       "finalDayCompleteTitle": "Zinkawng a Zo Ta: Hriatna a Nung Thlung",
       "finalDayCompleteDesc": "Saathi nen bung 6 zinkawng hlawhtling takin in zawh ta.",
-      "reliveDayButton": "He ni hi hmang nawn leh rawh"
+      "reliveDayButton": "He ni hi hmang nawn leh rawh",
+      "ch2Success": "A va ropui em! Chhungkaw thlalak bu chu a kim leh ta vek mai.",
+      "ch3Question": "Luikam kawng thlang rawh",
+      "ch3Success": "Kawng dik tak a ni! Bazar kan thleng ta e.",
+      "ch4Prompt": "Pawisa kir tur chhut dik rawh",
+      "ch4Success": "Chhut dik chiah! I ipte chu thlai tharin a khat ta e.",
+      "ch5Prompt": "Chawhnu chawlh hahdam leh tui in",
+      "ch5Success": "I ti tha lutuk! I hahdam hle ta vek mai.",
+      "ch6Prompt": "Vawiin thil thlengte indawtin rem rawh",
+      "finalDayComplete": "Ni hlimawm tak a zo ta! Hriat rengna tinte chu chiang takin i zawh chhuak e."
     },
     "bazaarBuddies": {
       "title": "Bazar Thian (Budget & Sum Enkawl)",
@@ -281,7 +536,108 @@
       "playAgain": "Zawng nawn leh rawh",
       "backToHub": "Therapy Hub-ah let leh rawh"
     },
-    "listen": "Ka tan chhiar rawh"
+    "listen": "Ka tan chhiar rawh",
+    "title": "Ni tin Hriatna Tihchak Game-te",
+    "subtitle": "Hriatna vawn rengna leh hlimna atan game duhawm takte.",
+    "backToRoutine": "← Tih tur ruahmannaah let rawh",
+    "backToHub": "← Game Hmun",
+    "listening": "Tawng mek...",
+    "recommended": "Rawtna",
+    "level": "Level {level}",
+    "plays": "Vawi {count} khelh tawh",
+    "score": "Score: {score}",
+    "lightbox": {
+      "close": "Khar rawh",
+      "listen": "Hriat rengna chhiar rawh"
+    },
+    "loading": "I game tur buatsaih mek a ni...",
+    "loadError": "Thil fel tawk lo a awm.",
+    "retry": "Ti nawn leh rawh",
+    "notFound": {
+      "title": "Rei loteah a lo thleng ang",
+      "desc": "He game hi buatsaih mek a ni. A dang khel rih rawh!"
+    },
+    "timeline": {
+      "title": "Ka Nun Zin Kawng",
+      "desc": "I nun hlimawm thil thlengte ngaihtuah let rawh",
+      "intro": "I nun chu hriat rengna hlu takin a khat a ni. Muangchangin i chhui kir ang u.",
+      "introSpeech": "I nun chu hriat rengna hlu takin a khat a ni. Pen khat te tein i kal dun ang u.",
+      "occupation": "{occupation} hna i thawk thin a ni.",
+      "favoriteMusic": "{favoriteMusic} hi i ngaina takzet tih ka hria.",
+      "start": "Ka zin kawng tan rawh",
+      "promptYear": "Kum {year}-ah khan...",
+      "promptYearLongAgo": "Hmasangah khan...",
+      "question": "Kha mi hun laia i thil tawn kha eng nge ni?",
+      "promptSpeech": "{year} kumah khan i nunah eng nge thleng?",
+      "promptSpeechLongAgo": "Kha hun hlu takah khan eng nge thleng?",
+      "correct": "A dik chiah e!",
+      "correctSpeech": "A ropui lutuk! Kum {year}-ah, {event}.",
+      "wrongSpeech": "Thil dangte pawh en chhin la. Hmanhmawh suh.",
+      "music": "Thlamuanna rimawi play rawh",
+      "musicHint": "I hla ngainat ang chiah rimawi nem.",
+      "nextCta": "Hriat rengna dawt leh",
+      "finish": "Ka zin kawng titawp rawh",
+      "complete": "I nun kawng i zawh chhuak ta! A va ropui em!",
+      "completeSpeech": "A tir atanga a tawp thlengin i nun hi a mawi em em a ni. I hriat rengnate min insem avangin ka lawm e.",
+      "memoriesShared": "hriat rengna mawi takte insem a ni",
+      "longAgo": "hmasang daih tawhah",
+      "moreSoon": "Hriat rengna dang a lo thleng thuai ang.",
+      "moreSoonHint": "I chhungten thil thar an dah belh thei ang.",
+      "generic": {
+        "one": "Chhungkaw hlim taka inkhawm",
+        "two": "Tlaiah luikam vela len harh",
+        "three": "Hmangaihte nen thingpui in ho",
+        "four": "Hla hlui sak ho",
+        "five": "Ni eng mawi tak hnuaia in lama chawlh hahdam"
+      }
+    },
+    "companion": {
+      "desc": "I thian duhtak nen inbia ula, hlim takin awm rawh u.",
+      "hello": "Chibai {name}! Min hmet la, chibai min ti rawh!",
+      "wave": "Engtik lai pawhin chibai min ti thin rawh",
+      "tapMe": "Inbiak nan min hmet rawh",
+      "chat": "Ka nen inbia ang u",
+      "games": "Game khel rawh",
+      "prompts": [
+        "I ti tha lutuk e!",
+        "Kha khan min ti hlim hle mai!",
+        "Kan khel leh vat dawn nia!",
+        "Vawiinah ka thian tha ber i ni e!"
+      ],
+      "title": "Friendly Chat with Saathi"
+    },
+    "alpana": {
+      "title": "Alpana & Rangoli Mawi",
+      "desc": "Puanchei leh rangoli mawi tak thun zawmna"
+    },
+    "hornbill": {
+      "title": "Vaphai Thlawhna",
+      "desc": "Tlang kar vela thlawk la, mit leh kut thlun zawm rawh"
+    },
+    "pottery": {
+      "title": "Majuli Hlum Bel Channa",
+      "desc": "Hlum bel channa leh kut chetzauna"
+    },
+    "monasteryBell": {
+      "title": "Biak In Dar Ri Mawi",
+      "desc": "Dar ri mawi tak hre reng la, zawm ve rawh"
+    },
+    "boat": {
+      "title": "Brahmaputra Luipui Lawng Zin",
+      "desc": "Lui zawh la, hmun hriat lar hriat rengna nei rawh"
+    },
+    "botanist": {
+      "title": "Dzukou Phai Pangpar",
+      "desc": "Tlang pangpar mawite thliar hrang la, hre reng rawh"
+    },
+    "ancestralHerbalist": {
+      "title": "Hmanlai Damdawi Hnah",
+      "desc": "Hmanlai ram damdawi hnahte hre reng rawh"
+    },
+    "dailyRoutine": {
+      "title": "Ni Tin Tih Tur",
+      "desc": "Zing atanga tlai thleng nunphung tha zawm rawh"
+    }
   },
   "nav": {
     "online": "Online",
@@ -317,14 +673,39 @@
     "title": "Hriatrengna Puzzle",
     "subtitle": "Thlalak rem khawm rawh",
     "start": "Tan rawh",
-    "wellDone": "I ti tha hle mai!"
+    "wellDone": "I ti tha hle mai!",
+    "presentation": "He thlalak hi uluk takin en rawh",
+    "puzzle": {
+      "label": "Thlalak zawmkhawm leh rawh!",
+      "desc": "Hnuai ami them hmet la, a awmna tur dik takah dah rawh."
+    },
+    "pieces": "Themte",
+    "howToPlay": "Khelh dan",
+    "recognition": "I hria em?",
+    "correct": "A dik e!",
+    "incorrect": "Ti nawn leh rawh",
+    "backHome": "In lamah haw rawh",
+    "hint": {
+      "show": "Hriattirna hmuh rawh",
+      "hide": "Hriattirna thup rawh"
+    }
   },
   "wayfinding": {
     "title": "Khaw Pui Kawng",
     "subtitle": "In lam pan rawh",
     "start": "Tan rawh",
     "landmark": "Hmun Pawimawh",
-    "reached": "In i thleng ta e!"
+    "reached": "In i thleng ta e!",
+    "explore": "He kawngah hian i kal ang u...",
+    "step": "Kala {current} na {total}",
+    "listen": "Kaihhruaina ngaithla rawh",
+    "walkTo": "{name} lam pan rawh",
+    "recall": {
+      "label": "Khawiah nge kan kal leh ang?",
+      "desc": "{prev} hnuah khawiah nge kan kal ang?"
+    },
+    "complete": "In i thleng ta! A va ropui em!",
+    "score": "Score: {score}"
   },
   "caregiver": {
     "title": "Enkawltu Portal",
@@ -346,7 +727,8 @@
     "language": "Tawng",
     "medicalProfile": "Enkawlna Chhinchhiahna",
     "familyPhotos": "Chhungkaw Thlalak",
-    "save": "Vawng tha rawh"
+    "save": "Vawng tha rawh",
+    "subtitle": "Damlo enkawlna leh hriatna puihna"
   },
   "intake": {
     "step": "Step {current} of {total}",

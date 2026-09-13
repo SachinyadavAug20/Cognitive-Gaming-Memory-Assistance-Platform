@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import {
   Activity,
   RefreshCw,
@@ -37,6 +38,154 @@ import dynamic from "next/dynamic";
 import { AdminOverviewCards } from "@/components/admin/AdminOverviewCards";
 import { AdminTabsNav, type AdminTab } from "@/components/admin/AdminTabsNav";
 
+interface AdminHeaderTexts {
+  mdonerBadge: string;
+  confidentialBadge: string;
+  updatedLabel: string;
+  title: string;
+  subtitle: string;
+  autoSyncLabel: string;
+  on30s: string;
+  off: string;
+  refreshBtn: string;
+  syncingBtn: string;
+}
+
+const ADMIN_HEADER_I18N: Record<string, AdminHeaderTexts> = {
+  en: {
+    mdonerBadge: "Ministry of Development of North Eastern Region (MDoNER)",
+    confidentialBadge: "Confidential Central Administration",
+    updatedLabel: "Updated:",
+    title: "CogniCare Regional Cognitive Governance & Mission Control",
+    subtitle: "AI cognitive therapy telemetry, Tele-MANAS neurology hub, ASHA community workforce supervision, 2G low-bandwidth queue, and PHC kiosk network",
+    autoSyncLabel: "Auto-Sync:",
+    on30s: "ON (30s)",
+    off: "OFF",
+    refreshBtn: "Refresh Telemetry",
+    syncingBtn: "Syncing...",
+  },
+  as: {
+    mdonerBadge: "উত্তৰ-পূৰ্বাঞ্চল উন্নয়ন মন্ত্ৰালয় (MDoNER)",
+    confidentialBadge: "গোপনীয় কেন্দ্ৰীয় প্ৰশাসন",
+    updatedLabel: "আপডেট কৰা হৈছে:",
+    title: "কগ্নিকেয়াৰ আঞ্চলিক সংজ্ঞানাত্মক প্ৰশাসন আৰু মিছন কন্ট্ৰল",
+    subtitle: "AI সংজ্ঞানাত্মক থেৰাপী টেলিমেট্ৰি, টেলি-মানস স্নায়ুৰোগ কেন্দ্ৰ, আশা কৰ্মী তদাৰকী, 2G কিউ আৰু PHC কিঅ'স্ক নেটৱৰ্ক",
+    autoSyncLabel: "স্বয়ংক্ৰিয় সংমিশ্ৰণ:",
+    on30s: "অন (৩০ ছেকেণ্ড)",
+    off: "অফ",
+    refreshBtn: "টেলিমেট্ৰি সতেজ কৰক",
+    syncingBtn: "সংমিশ্ৰণ চলিছে...",
+  },
+  hi: {
+    mdonerBadge: "पूर्वोत्तर क्षेत्र विकास मंत्रालय (MDoNER)",
+    confidentialBadge: "गोपनीय केंद्रीय प्रशासन",
+    updatedLabel: "अद्यतित:",
+    title: "कॉग्निकेयर क्षेत्रीय संज्ञानात्मक शासन एवं मिशन कंट्रोल",
+    subtitle: "AI संज्ञानात्मक थेरेपी टेलीमेट्री, टेली-मानस न्यूरोलॉजी हब, आशा कार्यकर्ता पर्यवेक्षण, 2G नेटवर्क कतार और PHC कियोस्क नेटवर्क",
+    autoSyncLabel: "ऑटो-सिंक:",
+    on30s: "चालू (30s)",
+    off: "बंद",
+    refreshBtn: "टेलीमेट्री रीफ्रेश करें",
+    syncingBtn: "सिंक हो रहा है...",
+  },
+  bn: {
+    mdonerBadge: "উত্তর-পূর্ব অঞ্চল উন্নয়ন মন্ত্রক (MDoNER)",
+    confidentialBadge: "গোপনীয় কেন্দ্রীয় প্রশাসন",
+    updatedLabel: "আপডেট হয়েছে:",
+    title: "কগনিকেয়ার আঞ্চলিক জ্ঞানীয় শাসন ও মিশন কন্ট্রোল",
+    subtitle: "AI জ্ঞানীয় থেরাপি টেলিমেট্রি, টেলি-মানস নিউরোলজি হাব, আশা কর্মী তত্ত্বাবধান, 2G কিউ এবং PHC কিয়স্ক নেটওয়ার্ক",
+    autoSyncLabel: "অটো-সিঙ্ক:",
+    on30s: "চালু (৩০ সে)",
+    off: "বন্ধ",
+    refreshBtn: "টেলিমেট্রি রিফ্রেশ করুন",
+    syncingBtn: "সিঙ্ক হচ্ছে...",
+  },
+  mr: {
+    mdonerBadge: "ईशान्य क्षेत्र विकास मंत्रालय (MDoNER)",
+    confidentialBadge: "गोपनीय केंद्रीय प्रशासन",
+    updatedLabel: "अद्यतन:",
+    title: "कॉग्निकेअर प्रादेशिक संज्ञानात्मक प्रशासन व मिशन कंट्रोल",
+    subtitle: "AI संज्ञानात्मक थेरपी टेलिमेट्री, टेलि-मानस न्यूरोलॉजी केंद्र, आशा कार्यकर्ता पर्यवेक्षण, 2G रांग आणि PHC किओस्क नेटवर्क",
+    autoSyncLabel: "ऑटो-सिंक:",
+    on30s: "सुरू (३० सेकंद)",
+    off: "बंद",
+    refreshBtn: "टेलिमेट्री रीफ्रेश करा",
+    syncingBtn: "सिंक होत आहे...",
+  },
+  ne: {
+    mdonerBadge: "पूर्वोत्तर क्षेत्र विकास मन्त्रालय (MDoNER)",
+    confidentialBadge: "गोपनीय केन्द्रीय प्रशासन",
+    updatedLabel: "अद्यावधिक:",
+    title: "कग्निकेयर क्षेत्रीय संज्ञानात्मक सुशासन तथा मिसन कन्ट्रोल" ,
+    subtitle: "AI संज्ञानात्मक थेरापी टेलिमेट्री, टेलि-मानस न्युरोलोजी केन्द्र, आशा कार्यकर्ता अनुगमन, 2G कम-ब्यान्डविथ लाइन र PHC किओस्क सञ्जाल",
+    autoSyncLabel: "स्वतः-सिङ्क:",
+    on30s: "चालू (३० से)",
+    off: "बन्द",
+    refreshBtn: "टेलिमेट्री ताजा गर्नुहोस्",
+    syncingBtn: "सिङ्क हुँदैछ...",
+  },
+  mni: {
+    mdonerBadge: "নোংপোক-অৱাং থংবা লমদম চাউখৎ-থৌরাংগী মন্ত্রালয় (MDoNER)",
+    confidentialBadge: "লোনশিনবা কেন্দ্রগী শাসন",
+    updatedLabel: "অপদেত তৌরে:",
+    title: "কগ্নিকেয়র রিজনেল কোগ্নিতিভ গভর্নর অমসুং মিসন কন্ত্রোল",
+    subtitle: "AI কোগ্নিতিভ থেরাপী তেলিমেত্রি, তেলি-মানাস নিউরোলোজি হব, আশা শিন্মীগী য়েংশিনবা, 2G কিউ অমসুং PHC কিয়োস্ক নেতৱার্ক",
+    autoSyncLabel: "ওতো-সিংহ্ক:",
+    on30s: "অন (৩০ সে)",
+    off: "ওফ",
+    refreshBtn: "তেলিমেত্রি নৌনা লোউবা",
+    syncingBtn: "সিংহ্ক তৌরি...",
+  },
+  brx: {
+    mdonerBadge: "सा-सान्जा ओनसोल जौगाथाइ मन्त्रालय (MDoNER)",
+    confidentialBadge: "गोमोर गाहाय खुंथाइ",
+    updatedLabel: "गोदान खालामनाय:",
+    title: "कग्निकेयार ओनसोलआरि गोसोनि खुंथाइ आरो मिसन कन्त्रल",
+    subtitle: "AI गोसोनि थेराप्युतिक्स टेलिमेत्रि, टेलि-मानस निउर'लजि मिरु, आशा खामानिगिरि नायबिजिरनाय, 2G लाइन आरो PHC कियस्क हानजा",
+    autoSyncLabel: "गावनो सिंक:",
+    on30s: "जागाय (30s)",
+    off: "बन्द",
+    refreshBtn: "टेलिमेत्रि गोदान खालाम",
+    syncingBtn: "सिंक जागासिनो...",
+  },
+  grt: {
+    mdonerBadge: "Ministry of Development of North Eastern Region (MDoNER)",
+    confidentialBadge: "Donnugimin Central Administration",
+    updatedLabel: "Updated:",
+    title: "CogniCare Regional Cognitive Governance & Mission Control",
+    subtitle: "AI cognitive therapy telemetry, Tele-MANAS neurology hub, ASHA worker niani, 2G queue aro PHC kiosk network",
+    autoSyncLabel: "Auto-Sync:",
+    on30s: "ON (30s)",
+    off: "OFF",
+    refreshBtn: "Telemetry Dalgittal Ka·bo",
+    syncingBtn: "Sync Ka·enga...",
+  },
+  kha: {
+    mdonerBadge: "Ministry of Development of North Eastern Region (MDoNER)",
+    confidentialBadge: "Administration ba Riewhad Central",
+    updatedLabel: "La Pynbha:",
+    title: "CogniCare Regional Cognitive Governance & Mission Control",
+    subtitle: "AI telemetry, Tele-MANAS neurology hub, ASHA supervisory, 2G queue bad PHC kiosk network",
+    autoSyncLabel: "Auto-Sync:",
+    on30s: "ON (30s)",
+    off: "OFF",
+    refreshBtn: "Pynbha Telemetry",
+    syncingBtn: "Dang Sync...",
+  },
+  lus: {
+    mdonerBadge: "Ministry of Development of North Eastern Region (MDoNER)",
+    confidentialBadge: "Thuruk Central Administration",
+    updatedLabel: "Thar thawh leh:",
+    title: "CogniCare Regional Cognitive Governance & Mission Control",
+    subtitle: "AI cognitive telemetry, Tele-MANAS neurology hub, ASHA hnathawktute thlithlai, 2G queue leh PHC kiosk network",
+    autoSyncLabel: "Auto-Sync:",
+    on30s: "ON (30s)",
+    off: "OFF",
+    refreshBtn: "Telemetry Tihtharthawh",
+    syncingBtn: "Sync Mek...",
+  },
+};
+
 function TabLoading() {
   return (
     <div className="flex flex-col items-center justify-center p-12 text-ink-secondary gap-3">
@@ -64,6 +213,10 @@ const AdminAuditTab = dynamic(() => import("@/components/admin/tabs/AdminAuditTa
 const AdminRevokeModal = dynamic(() => import("@/components/admin/AdminRevokeModal").then((m) => m.AdminRevokeModal), { ssr: false });
 
 export default function AdminDashboardPage() {
+  const locale = useLocale();
+  const normLocale = locale?.split("-")[0].toLowerCase() || "en";
+  const adm = ADMIN_HEADER_I18N[normLocale] || ADMIN_HEADER_I18N.en;
+
   const [activeTab, setActiveTab] = useState<AdminTab>("surveillance");
 
   // Core Data States
@@ -596,23 +749,23 @@ export default function AdminDashboardPage() {
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="inline-flex items-center gap-1 rounded-full border-2 border-emerald-900/40 bg-emerald-100 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-950">
                 <Building2 className="h-3 w-3 text-emerald-700" />
-                Ministry of Development of North Eastern Region (MDoNER)
+                {adm.mdonerBadge}
               </span>
               <span className="inline-flex items-center gap-1 rounded-full border-2 border-rose-900/40 bg-rose-100 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-rose-950">
                 <Lock className="h-3 w-3 text-rose-700" />
-                Confidential Central Administration
+                {adm.confidentialBadge}
               </span>
               <span suppressHydrationWarning className="text-[11px] font-bold text-ink-secondary">
-                Updated: {lastRefreshedAt.toLocaleTimeString()}
+                {adm.updatedLabel} {lastRefreshedAt.toLocaleTimeString()}
               </span>
             </div>
 
             <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2.5">
               <ShieldAlert className="h-8 w-8 text-tea shrink-0" />
-              CogniCare Regional Cognitive Governance & Mission Control
+              {adm.title}
             </h1>
             <p className="text-xs sm:text-sm font-semibold text-ink-secondary mt-1">
-              AI cognitive therapy telemetry, Tele-MANAS neurology hub, ASHA community workforce supervision, 2G low-bandwidth queue, and PHC kiosk network
+              {adm.subtitle}
             </p>
           </div>
 
@@ -625,7 +778,7 @@ export default function AdminDashboardPage() {
               }`}
             >
               <Activity className={`h-4 w-4 ${autoRefresh ? "text-emerald-700 animate-pulse" : ""}`} />
-              <span>Auto-Sync: {autoRefresh ? "ON (30s)" : "OFF"}</span>
+              <span>{adm.autoSyncLabel} {autoRefresh ? adm.on30s : adm.off}</span>
             </button>
 
             <button
@@ -635,7 +788,7 @@ export default function AdminDashboardPage() {
               className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-4 py-2 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer active:translate-y-0.5 disabled:opacity-50"
             >
               <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-              <span>{isRefreshing ? "Syncing..." : "Refresh Telemetry"}</span>
+              <span>{isRefreshing ? adm.syncingBtn : adm.refreshBtn}</span>
             </button>
           </div>
         </div>

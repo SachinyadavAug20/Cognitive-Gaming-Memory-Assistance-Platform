@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { ExternalLink, BookOpen, CheckCircle2, Shield, ChevronDown, ChevronUp } from "lucide-react";
+import { useLocale } from "next-intl";
 import { type ClinicalReference, getReferenceById } from "@/lib/clinicalReferences";
 
 interface ClinicalReferenceCardProps {
@@ -10,11 +11,32 @@ interface ClinicalReferenceCardProps {
   compact?: boolean;
 }
 
+const REF_CARD_I18N: Record<string, {
+  officialSource: string;
+  rationale: string;
+  pubmed: string;
+  doi: string;
+}> = {
+  en: { officialSource: "Official Source", rationale: "Peer-Reviewed Clinical Rationale:", pubmed: "PubMed Entry", doi: "DOI Resolution" },
+  as: { officialSource: "আনুষ্ঠানিক উৎস", rationale: "সমীক্ষিত ক্লিনিকেল ভিত্তি:", pubmed: "পাবমেড ভুক্তি", doi: "DOI সমাধান" },
+  hi: { officialSource: "आधिकारिक स्रोत", rationale: "समीक्षित नैदानिक आधार:", pubmed: "पबमेड प्रविष्टि", doi: "DOI समाधान" },
+  bn: { officialSource: "অফিসিয়াল উৎস", rationale: "সমীক্ষিত ক্লিনিক্যাল ভিত্তি:", pubmed: "পাবমেড ভুক্তি", doi: "DOI সমাধান" },
+  mr: { officialSource: "अधिकृत स्रोत", rationale: "पुनरावलोकन केलेला क्लिनिकल आधार:", pubmed: "पबमेड नोंद", doi: "DOI संदर्भ" },
+  ne: { officialSource: "आधिकारिक स्रोत", rationale: "समीक्षित क्लिनिकल आधार:", pubmed: "पबमेड प्रविष्टि", doi: "DOI समाधान" },
+  mni: { officialSource: "অফিসিয়েল হৌরকফম", rationale: "পিয়র-রিভিউ তৌবা ক্লিনিকেল মরম:", pubmed: "পাবমেড চংবা", doi: "DOI রিসোলুশন" },
+  brx: { officialSource: "गुबै फुंखा", rationale: "बिजिरनाय क्लिनिकेल बिथा:", pubmed: "पाबमेड हाबनाय", doi: "DOI राहा" },
+  grt: { officialSource: "Katchi Jakalgipa Ja·pang", rationale: "Nirikgimin Clinical Pangchakani:", pubmed: "PubMed Katta", doi: "DOI Solution" },
+  kha: { officialSource: "Ka Tlong Ba Shisha", rationale: "Ka Nongrim Clinical Ba La Peit:", pubmed: "PubMed Entry", doi: "DOI Resolution" },
+  lus: { officialSource: "Hmun Dik Tak", rationale: "Clinical Finfiahna Dik:", pubmed: "PubMed Thuziak", doi: "DOI Enna" },
+};
+
 export function ClinicalReferenceCard({
   referenceId,
   reference: propRef,
   compact = false,
 }: ClinicalReferenceCardProps) {
+  const locale = useLocale();
+  const t = REF_CARD_I18N[locale] || REF_CARD_I18N.en;
   const [expanded, setExpanded] = useState(!compact);
   const ref = propRef || (referenceId ? getReferenceById(referenceId) : undefined);
 
@@ -76,7 +98,7 @@ export function ClinicalReferenceCard({
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 rounded-lg border border-emerald-700/30 bg-emerald-800 hover:bg-emerald-900 px-2.5 py-1 text-xs font-semibold text-white shadow-2xs transition-colors cursor-pointer"
           >
-            <span>Official Source</span>
+            <span>{t.officialSource}</span>
             <ExternalLink className="h-3 w-3" />
           </a>
         </div>
@@ -96,7 +118,7 @@ export function ClinicalReferenceCard({
             <CheckCircle2 className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
             <div className="space-y-1">
               <span className="font-bold text-[11px] uppercase tracking-wide text-emerald-900">
-                Peer-Reviewed Clinical Rationale:
+                {t.rationale}
               </span>
               <p className="text-stone-700 text-xs leading-relaxed">{ref.clinicalTakeaway}</p>
             </div>
@@ -110,7 +132,7 @@ export function ClinicalReferenceCard({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-semibold text-sky-800 hover:underline"
               >
-                <span>PubMed Entry</span>
+                <span>{t.pubmed}</span>
                 <ExternalLink className="h-2.5 w-2.5" />
               </a>
             )}
@@ -121,7 +143,7 @@ export function ClinicalReferenceCard({
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-semibold text-indigo-800 hover:underline"
               >
-                <span>DOI Resolution</span>
+                <span>{t.doi}</span>
                 <ExternalLink className="h-2.5 w-2.5" />
               </a>
             )}

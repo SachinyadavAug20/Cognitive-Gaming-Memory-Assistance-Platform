@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { Smile, Meh, HeartHandshake } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -22,6 +23,68 @@ const MOODS: { key: MoodKey; icon: LucideIcon; color: string }[] = [
 
 const CARD = "border-3 border-black rounded-3xl shadow-[4px_4px_0px_rgba(0,0,0,1)]";
 
+const MOOD_I18N: Record<string, {
+  subtitle: string;
+  tapPrompt: string;
+  defaultThanks: string;
+}> = {
+  en: {
+    subtitle: "Check in with your loved ones and health worker",
+    tapPrompt: "Tap any emotion above to check in with family",
+    defaultThanks: "Thank you for sharing your mood today.",
+  },
+  as: {
+    subtitle: "আপোনাৰ আত্মীয় আৰু স্বাস্থ্যকৰ্মীৰ সৈতে মনৰ কথা জনাওক",
+    tapPrompt: "পৰিয়ালক জনাবলৈ ওপৰৰ যিকোনো এটা ভাৱত স্পৰ্শ কৰক",
+    defaultThanks: "আজি আপোনাৰ অনুভৱ প্ৰকাশ কৰাৰ বাবে ধন্যবাদ।",
+  },
+  hi: {
+    subtitle: "अपने परिजनों और स्वास्थ्य कार्यकर्ता के साथ साझा करें",
+    tapPrompt: "परिवार को बताने के लिए ऊपर किसी भी भाव पर टैप करें",
+    defaultThanks: "आज अपने मन की बात साझा करने के लिए धन्यवाद।",
+  },
+  bn: {
+    subtitle: "আপনার প্রিয়জন ও স্বাস্থ্যকর্মীর সাথে অনুভূতি ভাগ করুন",
+    tapPrompt: "পরিবারকে জানাতে উপরের যেকোনো অনুভূতিতে ট্যাপ করুন",
+    defaultThanks: "আজ আপনার অনুভূতি জানানোর জন্য ধন্যবাদ।",
+  },
+  mr: {
+    subtitle: "आपल्या प्रियजनांशी आणि आरोग्य सेविकेशी संवाद साधा",
+    tapPrompt: "कुटुंबाला कळवण्यासाठी वरील कोणत्याही भावनेवर टॅप करा",
+    defaultThanks: "आज तुमची भावना सांगितल्याबद्दल धन्यवाद.",
+  },
+  ne: {
+    subtitle: "आफ्ना परिवार र स्वास्थ्यकर्मीसँग कुरा साट्नुहोस्",
+    tapPrompt: "परिवारलाई जानकारी दिन माथिको कुनै पनि भावमा ट्याप गर्नुहोस्",
+    defaultThanks: "आज आफ्नो मनको भावना साझा गर्नुभएकोमा धन्यवाद।",
+  },
+  mni: {
+    subtitle: "ইমুংগী মীওই অমসুং আশাগা ৱারী শানবিয়ু",
+    tapPrompt: "ইমুংদা খঙহন্নবা মথক্কী অপাম্বা অমদা নম্বিয়ু",
+    defaultThanks: "ঙসিগী অপাম্বা ফোঙদোকপগীদমক থাগৎচরি।",
+  },
+  brx: {
+    subtitle: "नखरनि सुबुं आरो आसाजों गोसोनि खोथा सावराय",
+    tapPrompt: "नखरनो खोनथानो गोग्लैनाय मोनसेयाव थु",
+    defaultThanks: "दिनै गोसोनि खोथा बुंनायनि थाखाय साबायखर।",
+  },
+  grt: {
+    subtitle: "Nokdang aro ASHA baksa agangrikani",
+    tapPrompt: "Nokdangna aganna kosako nang·atbo",
+    defaultThanks: "Da·al an·sengani aganani gimin mittelaha.",
+  },
+  kha: {
+    subtitle: "Iasyllok bad kiba ha iing bad nongtrei koit khiah",
+    tapPrompt: "Ktiat ha kawei na ki jingbuh ban pyntip sha iing",
+    defaultThanks: "Khublei shibun ba phi la iathuh ia ka jingsngew.",
+  },
+  lus: {
+    subtitle: "Chhungkua leh hriselna thawktute hnenah i rilru hriattir rawh",
+    tapPrompt: "Chhungte hriattir nan a chunga mi hi hmet rawh",
+    defaultThanks: "Vawiin i rilru puthmang i sawi avangin ka lawm e.",
+  },
+};
+
 export function DailyMoodTracker({
   lastMood,
   onChooseMood,
@@ -30,6 +93,10 @@ export function DailyMoodTracker({
   feedbackMessage,
   moodLabels,
 }: DailyMoodTrackerProps) {
+  const locale = useLocale();
+  const normLoc = locale?.split("-")[0]?.toLowerCase() || "en";
+  const loc = MOOD_I18N[normLoc] || MOOD_I18N.en;
+
   return (
     <div className={`${CARD} bg-[#FFFDF9] p-5 sm:p-6 flex flex-col justify-between text-left h-full min-h-[260px]`}>
       <div>
@@ -38,7 +105,7 @@ export function DailyMoodTracker({
           <h3 className="font-serif text-xl sm:text-2xl font-black text-ink">{title}</h3>
         </div>
         <p className="mt-2 text-xs sm:text-sm font-bold text-ink-secondary">
-          Check in with your loved ones and health worker
+          {loc.subtitle}
         </p>
         <div className="mt-4 grid grid-cols-3 gap-2.5 sm:gap-3">
           {MOODS.map((mood) => {
@@ -77,13 +144,13 @@ export function DailyMoodTracker({
             {lastMood === "okay" && <Meh className="h-5 w-5 text-amber-700 shrink-0" />}
             {lastMood === "caretaker" && <HeartHandshake className="h-5 w-5 text-rose-700 shrink-0" />}
             <p className="text-xs sm:text-sm font-bold leading-tight">
-              {feedbackMessage || thanksMessage || "Thank you for sharing your mood today."}
+              {feedbackMessage || thanksMessage || loc.defaultThanks}
             </p>
           </div>
         ) : (
           <div className="p-2.5 sm:p-3 rounded-2xl bg-black/5 border border-black/10 text-center">
             <span className="text-xs sm:text-sm font-bold text-ink-secondary">
-              Tap any emotion above to check in with family
+              {loc.tapPrompt}
             </span>
           </div>
         )}

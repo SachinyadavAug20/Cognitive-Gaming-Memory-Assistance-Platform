@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import {
   Activity,
   Paperclip,
@@ -163,7 +164,227 @@ const LIVE_SESSION_FEED = [
   { id: 5, text: "Doctor Review (Kohima District Hospital) validated Biomarker Radar", metric: "Status: Stable", time: "1m ago", state: "Nagaland" },
 ];
 
+const CC_I18N: Record<string, {
+  headerBadge: string;
+  headerTitle: string;
+  headerSubtitle: string;
+  connectedBadge: string;
+  caregiverPortal: string;
+  totalPatients: string;
+  activeNesStates: string;
+  avgAdherence: string;
+  weeklyGoal: string;
+  connectedPhcs: string;
+  facilities: string;
+  ashaNodes: string;
+  activeModules: string;
+  cdtxSuite: string;
+  localTech: string;
+  selectState: string;
+}> = {
+  as: {
+    headerBadge: "MDoNER ৮-ৰাজ্যৰ এপিডেমিঅ'লজী আৰু টেলিমেট্ৰি কমাণ্ড চেণ্টাৰ",
+    headerTitle: "আঞ্চলিক জ্ঞানীয় স্বাস্থ্য টেলিমেট্ৰি",
+    headerSubtitle: "উত্তৰ-পূব ভাৰতৰ বাস্তৱ-সময়ৰ ক্লিনিকেল নিৰীক্ষণ, জিলা চিকিৎসা নিয়মীয়াতা আৰু আশা নেটৱৰ্ক টেলিমেট্ৰি",
+    connectedBadge: "৮ খন ৰাজ্য সংযুক্ত",
+    caregiverPortal: "যত্নকৰ্তা পোৰ্টেল",
+    totalPatients: "মুঠ ৰোগী",
+    activeNesStates: "৮ খন উত্তৰ-পূব ৰাজ্যত সক্ৰিয়",
+    avgAdherence: "গড় নিয়মীয়াতা",
+    weeklyGoal: "সাপ্তাহিক সেশন লক্ষ্য",
+    connectedPhcs: "সংযুক্ত পিএইচচি",
+    facilities: "কেন্দ্ৰ",
+    ashaNodes: "আশা টেবলেট ন'ড",
+    activeModules: "সক্ৰিয় মডিউল",
+    cdtxSuite: "১৮ টা CDTx চুইট",
+    localTech: "স্থানীয় Ollama আৰু ৩ডি WebGL",
+    selectState: "পৰীক্ষাৰ বাবে উত্তৰ-পূবৰ ৰাজ্য বাছক:"
+  },
+  hi: {
+    headerBadge: "MDoNER 8-राज्यीय महामारी विज्ञान एवं टेलीमेट्री कमांड सेंटर",
+    headerTitle: "क्षेत्रीय संज्ञानात्मक स्वास्थ्य टेलीमेट्री",
+    headerSubtitle: "पूर्वोत्तर भारत में वास्तविक समय की नैदानिक निगरानी, जिला चिकित्सा निरंतरता और आशा नेटवर्क टेलीमेट्री",
+    connectedBadge: "8 राज्य जुड़े हुए",
+    caregiverPortal: "देखभालकर्ता पोर्टल",
+    totalPatients: "कुल मरीज़",
+    activeNesStates: "8 पूर्वोत्तर राज्यों में सक्रिय",
+    avgAdherence: "औसत निरंतरता",
+    weeklyGoal: "साप्ताहिक सत्र लक्ष्य",
+    connectedPhcs: "जुड़े पीएचसी केंद्र",
+    facilities: "सुविधाएं",
+    ashaNodes: "आशा टैबलेट नोड्स",
+    activeModules: "सक्रिय मॉड्यूल",
+    cdtxSuite: "18 CDTx सुइट",
+    localTech: "स्थानीय Ollama और 3D WebGL",
+    selectState: "निरीक्षण हेतु पूर्वोत्तर राज्य चुनें:"
+  },
+  en: {
+    headerBadge: "MDoNER 8-State Epidemiology & Telemetry Command Center",
+    headerTitle: "Regional Cognitive Health Telemetry",
+    headerSubtitle: "Real-time clinical monitoring, district therapy adherence, and ASHA network telemetry across North East India",
+    connectedBadge: "8 States Connected",
+    caregiverPortal: "Caregiver Portal",
+    totalPatients: "Total Patients",
+    activeNesStates: "Active across 8 NES States",
+    avgAdherence: "Avg Adherence",
+    weeklyGoal: "Weekly Session Goal",
+    connectedPhcs: "Connected PHCs",
+    facilities: "Facilities",
+    ashaNodes: "ASHA Tablet Nodes",
+    activeModules: "Active Modules",
+    cdtxSuite: "18 CDTx Suite",
+    localTech: "Local Ollama & 3D WebGL",
+    selectState: "Select North Eastern State to Inspect:"
+  },
+  bn: {
+    headerBadge: "MDoNER ৮-রাজ্যের মহামারী বিজ্ঞান ও টেলিমেট্রি কমান্ড সেন্টার",
+    headerTitle: "আঞ্চলিক জ্ঞানীয় স্বাস্থ্য টেলিমেট্রি",
+    headerSubtitle: "উত্তর-পূর্ব ভারতের রিয়েল-টাইম ক্লিনিক্যাল পর্যবেক্ষণ, জেলা থেরাপি নিয়মিততা এবং আশা নেটওয়ার্ক টেলিমেট্রি",
+    connectedBadge: "৮টি রাজ্য সংযুক্ত",
+    caregiverPortal: "সেবাকারী পোর্টাল",
+    totalPatients: "মোট রোগী",
+    activeNesStates: "৮টি রাজ্যে সক্রিয়",
+    avgAdherence: "গড় নিয়মিততা",
+    weeklyGoal: "সাপ্তাহিক সেশন লক্ষ্য",
+    connectedPhcs: "সংযুক্ত পিএইচসি",
+    facilities: "কেন্দ্র",
+    ashaNodes: "আশা ট্যাবলেট নোড",
+    activeModules: "সক্রিয় মডিউল",
+    cdtxSuite: "১৮টি CDTx স্যুট",
+    localTech: "স্থানীয় Ollama ও ৩ডি WebGL",
+    selectState: "পরিদর্শনের জন্য উত্তর-পূর্বের রাজ্য নির্বাচন করুন:"
+  },
+  mr: {
+    headerBadge: "MDoNER 8-राज्यीय महामारी विज्ञान व टेलिमेट्री कमांड सेंटर",
+    headerTitle: "प्रादेशिक संज्ञानात्मक आरोग्य टेलिमेट्री",
+    headerSubtitle: "ईशान्य भारतात वास्तविक-वेळ क्लिनिकल निरीक्षण, जिल्हा उपचार नियमितता आणि आशा नेटवर्क टेलिमेट्री",
+    connectedBadge: "8 राज्ये जोडलेली",
+    caregiverPortal: "काळजीवाहक पोर्टल",
+    totalPatients: "एकूण रुग्ण",
+    activeNesStates: "8 ईशान्य राज्यांमध्ये सक्रिय",
+    avgAdherence: "सरासरी नियमितता",
+    weeklyGoal: "साप्ताहिक सत्र उद्दिष्ट",
+    connectedPhcs: "जोडलेली पीएचसी",
+    facilities: "सुविधा",
+    ashaNodes: "आशा टॅब्लेट नोड्स",
+    activeModules: "सक्रिय मॉड्यूल",
+    cdtxSuite: "18 CDTx संच",
+    localTech: "स्थानिक Ollama आणि 3D WebGL",
+    selectState: "तपासणीसाठी ईशान्येकडील राज्य निवडा:"
+  },
+  ne: {
+    headerBadge: "MDoNER ८-राज्यीय महामारी विज्ञान र टेलिमेट्री कमान्ड सेन्टर",
+    headerTitle: "क्षेत्रीय संज्ञानात्मक स्वास्थ्य टेलिमेट्री",
+    headerSubtitle: "पूर्वोत्तर भारतमा वास्तविक समयको क्लिनिकल अनुगमन, जिल्ला उपचार नियमितता र आशा नेटवर्क टेलिमेट्री",
+    connectedBadge: "८ राज्यहरू जोडिएका",
+    caregiverPortal: "हेरचाहकर्ता पोर्टल",
+    totalPatients: "कुल बिरामी",
+    activeNesStates: "८ पूर्वोत्तर राज्यहरूमा सक्रिय",
+    avgAdherence: "औसत नियमितता",
+    weeklyGoal: "साप्ताहिक सत्र लक्ष्य",
+    connectedPhcs: "जोडिएका पीएचसी",
+    facilities: "सुविधाहरू",
+    ashaNodes: "आशा ट्याब्लेट नोडहरू",
+    activeModules: "सक्रिय मोड्युलहरू",
+    cdtxSuite: "१८ CDTx सुइट",
+    localTech: "स्थानीय Ollama र ३डी WebGL",
+    selectState: "निरीक्षणका लागि पूर्वोत्तर राज्य छान्नुहोस्:"
+  },
+  mni: {
+    headerBadge: "MDoNER রাজ্য ৮ গী এপিদেমিওলোজি অমসুং তেলিমেত্রি কমান্দ সেন্তর",
+    headerTitle: "লমদমগী ৱাখলগী হকশেল তেলিমেত্রি",
+    headerSubtitle: "অৱাং-নোংপোক ভারতকী ক্লিনিকেল য়েংশিনবা অমসুং আশা নেতৱার্ক তেলিমেত্রি",
+    connectedBadge: "রাজ্য ৮ শম্নরে",
+    caregiverPortal: "য়োকখৎপীবা পোর্তাল",
+    totalPatients: "অপুনবা অনাবা",
+    activeNesStates: "রাজ্য ৮ দা চত্থরি",
+    avgAdherence: "চাপ চাবা",
+    weeklyGoal: "হপ্তাগী পান্দম",
+    connectedPhcs: "পিঐচসি ক্লিনিকশিং",
+    facilities: "মফমশিং",
+    ashaNodes: "আশা তেব্লেত নোদ",
+    activeModules: "মডিউলশিং",
+    cdtxSuite: "১৮ CDTx চুইট",
+    localTech: "Ollama অমসুং ৩ডি WebGL",
+    selectState: "য়েংশিন্নবা রাজ্য খল্লু:"
+  },
+  brx: {
+    headerBadge: "MDoNER ८-राज्योरि टेलिमेट्रि कमान्द सेनतार",
+    headerTitle: "जायगायारि गोसोखांथि सावस्रि टेलिमेट्रि",
+    headerSubtitle: "सानजा-सा भारतआव क्लिनिकेल नायदिंनाय आरो आशा नेतवर्क टेलिमेट्रि",
+    connectedBadge: "८ राज्यो फोनांजाबबाय",
+    caregiverPortal: "सामलायग्रा पोर्टल",
+    totalPatients: "गासै बेमारिफोर",
+    activeNesStates: "८ राज्योआव सोलिगासिनो दं",
+    avgAdherence: "नेमो बादियै",
+    weeklyGoal: "सप्ताहनि थांखि",
+    connectedPhcs: "पीएचसी क्लिनिकफोर",
+    facilities: "थावनि",
+    ashaNodes: "आशा टेबलेत नद",
+    activeModules: "सोलिफुं मडिउल",
+    cdtxSuite: "१८ CDTx सुइट",
+    localTech: "गावनि Ollama आरो ३डी WebGL",
+    selectState: "नायनो थाखाय राज्यो सायख:"
+  },
+  grt: {
+    headerBadge: "MDoNER 8-State Epidemiology & Telemetry Command Center",
+    headerTitle: "Regional Cognitive Health Telemetry",
+    headerSubtitle: "Real-time clinical monitoring, district therapy adherence, and ASHA network telemetry.",
+    connectedBadge: "State 8 Nangrima",
+    caregiverPortal: "Caregiver Portal",
+    totalPatients: "Total Sa·giparang",
+    activeNesStates: "State 8-o Kam Ka·enga",
+    avgAdherence: "Avg Adherence",
+    weeklyGoal: "Weekly Goal",
+    connectedPhcs: "Connected PHCs",
+    facilities: "Facilities",
+    ashaNodes: "ASHA Tablet Nodes",
+    activeModules: "Active Modules",
+    cdtxSuite: "18 CDTx Suite",
+    localTech: "Local Ollama & 3D WebGL",
+    selectState: "Select North Eastern State:"
+  },
+  kha: {
+    headerBadge: "MDoNER 8-State Epidemiology & Telemetry Command Center",
+    headerTitle: "Regional Cognitive Health Telemetry",
+    headerSubtitle: "Real-time clinical monitoring, district therapy adherence, bad ka ASHA network telemetry.",
+    connectedBadge: "8 State La Iasoh",
+    caregiverPortal: "Portal Nongri",
+    totalPatients: "Baroh ki Nongpang",
+    activeNesStates: "Dang trei ha ki 8 State",
+    avgAdherence: "Jingiaid Ryntih",
+    weeklyGoal: "Thong Shitaiew",
+    connectedPhcs: "Ki PHC ba Iasoh",
+    facilities: "Jaka",
+    ashaNodes: "ASHA Tablet Nodes",
+    activeModules: "Modules ba Trei",
+    cdtxSuite: "18 CDTx Suite",
+    localTech: "Local Ollama & 3D WebGL",
+    selectState: "Jied ia ka State:"
+  },
+  lus: {
+    headerBadge: "MDoNER 8-State Epidemiology & Telemetry Command Center",
+    headerTitle: "Regional Cognitive Health Telemetry",
+    headerSubtitle: "Real-time clinical monitoring, district therapy adherence, leh ASHA network telemetry.",
+    connectedBadge: "State 8 Thlun Zawm",
+    caregiverPortal: "Enkawltu Portal",
+    totalPatients: "Damlo Zawng Zawng",
+    activeNesStates: "State 8-ah hman mek a ni",
+    avgAdherence: "Inzawmna Tha",
+    weeklyGoal: "Kar Tih Tur",
+    connectedPhcs: "PHC Zawmte",
+    facilities: "Hmun",
+    ashaNodes: "ASHA Tablet Nodes",
+    activeModules: "Module Hman Mek",
+    cdtxSuite: "18 CDTx Suite",
+    localTech: "Local Ollama & 3D WebGL",
+    selectState: "En turin State thlang rawh:"
+  }
+};
+
 export function CommandCenterClient() {
+  const locale = useLocale();
+  const c18n = CC_I18N[locale] || CC_I18N.en;
   const [selectedStateId, setSelectedStateId] = useState<string>("assam");
 
   const activeState = NE_STATES_DATA.find((s) => s.id === selectedStateId) || NE_STATES_DATA[0];
@@ -183,27 +404,27 @@ export function CommandCenterClient() {
             <div className="flex items-center gap-2 mb-1">
               <Paperclip className="h-4 w-4 text-tea" />
               <span className="text-xs font-black uppercase tracking-wider text-ink">
-                MDoNER 8-State Epidemiology & Telemetry Command Center
+                {c18n.headerBadge}
               </span>
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2">
-              <Activity className="h-7 w-7 text-tea" /> Regional Cognitive Health Telemetry
+              <Activity className="h-7 w-7 text-tea" /> {c18n.headerTitle}
             </h1>
             <p className="text-xs sm:text-sm font-semibold text-ink-secondary mt-1">
-              Real-time clinical monitoring, district therapy adherence, and ASHA network telemetry across North East India
+              {c18n.headerSubtitle}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-green-100 px-3 py-1.5 text-xs font-black text-green-900 shadow-[2px_2px_0px_#000]">
               <span className="h-2.5 w-2.5 rounded-full bg-green-600 animate-pulse" />
-              <span>8 States Connected</span>
+              <span>{c18n.connectedBadge}</span>
             </span>
             <Link
               href="/caregiver"
               className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-tea px-3.5 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-tea-dark"
             >
-              <span>Caregiver Portal</span> <ArrowRight className="h-3.5 w-3.5" />
+              <span>{c18n.caregiverPortal}</span> <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
@@ -212,45 +433,45 @@ export function CommandCenterClient() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
           <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] text-left">
             <div className="flex items-center justify-between text-ink-secondary mb-1">
-              <span className="text-xs font-black uppercase tracking-wider">Total Patients</span>
+              <span className="text-xs font-black uppercase tracking-wider">{c18n.totalPatients}</span>
               <Users className="h-4 w-4 text-tea" />
             </div>
             <div className="font-serif text-2xl font-black text-ink">{totalPatients.toLocaleString()}</div>
-            <span className="text-[10px] font-bold text-green-700 mt-1 block">Active across 8 NES States</span>
+            <span className="text-[10px] font-bold text-green-700 mt-1 block">{c18n.activeNesStates}</span>
           </div>
 
           <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] text-left">
             <div className="flex items-center justify-between text-ink-secondary mb-1">
-              <span className="text-xs font-black uppercase tracking-wider">Avg Adherence</span>
+              <span className="text-xs font-black uppercase tracking-wider">{c18n.avgAdherence}</span>
               <TrendingUp className="h-4 w-4 text-green-700" />
             </div>
             <div className="font-serif text-2xl font-black text-green-800">{avgAdherence}%</div>
-            <span className="text-[10px] font-bold text-ink-secondary mt-1 block">Weekly Session Goal</span>
+            <span className="text-[10px] font-bold text-ink-secondary mt-1 block">{c18n.weeklyGoal}</span>
           </div>
 
           <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] text-left">
             <div className="flex items-center justify-between text-ink-secondary mb-1">
-              <span className="text-xs font-black uppercase tracking-wider">Connected PHCs</span>
+              <span className="text-xs font-black uppercase tracking-wider">{c18n.connectedPhcs}</span>
               <MapPin className="h-4 w-4 text-amber-700" />
             </div>
-            <div className="font-serif text-2xl font-black text-ink">{totalPHCs} Facilities</div>
-            <span className="text-[10px] font-bold text-ink-secondary mt-1 block">ASHA Tablet Nodes</span>
+            <div className="font-serif text-2xl font-black text-ink">{totalPHCs} {c18n.facilities}</div>
+            <span className="text-[10px] font-bold text-ink-secondary mt-1 block">{c18n.ashaNodes}</span>
           </div>
 
           <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] text-left">
             <div className="flex items-center justify-between text-ink-secondary mb-1">
-              <span className="text-xs font-black uppercase tracking-wider">Active Modules</span>
+              <span className="text-xs font-black uppercase tracking-wider">{c18n.activeModules}</span>
               <Brain className="h-4 w-4 text-purple-700" />
             </div>
-            <div className="font-serif text-2xl font-black text-purple-900">18 CDTx Suite</div>
-            <span className="text-[10px] font-bold text-tea mt-1 block">Local Ollama & 3D WebGL</span>
+            <div className="font-serif text-2xl font-black text-purple-900">{c18n.cdtxSuite}</div>
+            <span className="text-[10px] font-bold text-tea mt-1 block">{c18n.localTech}</span>
           </div>
         </div>
 
         {/* STATE SELECTOR PILLS */}
         <div className="space-y-2 text-left">
           <span className="text-xs font-black uppercase tracking-wider text-tea block">
-            Select North Eastern State to Inspect:
+            {c18n.selectState}
           </span>
           <div className="flex flex-wrap items-center gap-2">
             {NE_STATES_DATA.map((s) => (

@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { AssamTeaLeafIcon, BambooShootIcon } from "@/components/ui/CulturalIcons";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import { playTapFeedback, unlockAudio } from "@/lib/sound";
 import { playCapsuleSoundscape, stopCapsuleSoundscape } from "@/lib/capsuleSoundscapes";
 import { speak, stopSpeaking } from "@/lib/speech";
@@ -257,7 +258,204 @@ const NER_STATES: StateData[] = [
   },
 ];
 
+
+const REGIONAL_HUB_I18N: Record<string, {
+  headerTitle: string;
+  headerSubtitle: string;
+  exploreGames: string;
+  voiceAssisted: string;
+  playingAmbience: string;
+  listenAmbience: string;
+  speakingGreeting: string;
+  memoryAnchorsTitle: string;
+  neuroBasisTitle: string;
+  neuroBasisText: string;
+  regionalGamesTitle: string;
+  modules: string;
+  offlineCapable: string;
+  viewFullLibrary: string;
+}> = {
+  as: {
+    headerTitle: "সাংস্কৃতিকভাৱে শিপোৱা জ্ঞানীয় থেৰাপী",
+    headerSubtitle: "উত্তৰ-পূবৰ ৮ খন ৰাজ্যৰ বাবে প্ৰস্তুত কৰা চিকিৎসাগতভাৱে কেলিব্ৰেট কৰা খেল, পুৰণি শব্দ আৰু স্থানীয় ভাষাৰ সহায়।",
+    exploreGames: "সকলো ৪০+ খেল চাওক",
+    voiceAssisted: "স্থানীয় উপভাষাত ধ্বনি সহায়",
+    playingAmbience: "শব্দ বাজি আছে (বন্ধ কৰিবলৈ টিপক)",
+    listenAmbience: "সুৰ শুনক",
+    speakingGreeting: "শুভেচ্ছা কৈ আছে...",
+    memoryAnchorsTitle: "আঞ্চলিক স্মৃতি সমল (সংবেদনশীল স্মৃতি জাগৰণ)",
+    neuroBasisTitle: "স্নায়ুজ্ঞানীয় ভিত্তি:",
+    neuroBasisText: "পৰিচিত আঞ্চলিক পৰিৱেশ আৰু শব্দই মগজুৰ সংৰক্ষিত স্মৃতি মুকলি কৰে আৰু ডিমেনচিয়াৰ অস্থিৰতা হ্ৰাস কৰে।",
+    regionalGamesTitle: "আঞ্চলিক বিশেষ খেলসমূহ",
+    modules: "মডিউল",
+    offlineCapable: "১০০% অফলাইনত সক্ষম",
+    viewFullLibrary: "সম্পূৰ্ণ সংগ্ৰহ চাওক"
+  },
+  hi: {
+    headerTitle: "सांस्कृतिक रूप से समृद्ध संज्ञानात्मक चिकित्सा",
+    headerSubtitle: "पूर्वोत्तर के सभी 8 राज्यों के बुजुर्गों के लिए नैदानिक रूप से प्रमाणित खेल, पुराने संगीत और क्षेत्रीय बोली सहायता।",
+    exploreGames: "सभी 40+ खेल देखें",
+    voiceAssisted: "क्षेत्रीय बोलियों में आवाज़ सहायता",
+    playingAmbience: "ध्वनि बज रही है (बंद करने के लिए टैप करें)",
+    listenAmbience: "ध्वनि सुनें",
+    speakingGreeting: "अभिवादन बोल रहे हैं...",
+    memoryAnchorsTitle: "क्षेत्रीय स्मृति स्तंभ (संवेदी स्मृति जागरण)",
+    neuroBasisTitle: "न्यूरोकॉग्निटिव आधार:",
+    neuroBasisText: "परिचित क्षेत्रीय परिदृश्य और संवेदी संकेत मस्तिष्क की पुरानी यादों को सक्रिय कर डिमेंशिया की चिंता कम करते हैं।",
+    regionalGamesTitle: "क्षेत्रीय चिकित्सीय खेल",
+    modules: "मॉड्यूल",
+    offlineCapable: "100% ऑफलाइन सक्षम",
+    viewFullLibrary: "पूरी लाइब्रेरी देखें"
+  },
+  en: {
+    headerTitle: "Culturally-Rooted Cognitive Therapeutics",
+    headerSubtitle: "Clinically-calibrated serious games, acoustic reminiscence, and dialect speech engines tailored for the elderly across all 8 North Eastern states.",
+    exploreGames: "Explore All 40+ Games",
+    voiceAssisted: "Voice-Assisted in Regional Dialects",
+    playingAmbience: "Playing Ambience (tap to mute)",
+    listenAmbience: "Listen Ambience",
+    speakingGreeting: "Speaking greeting...",
+    memoryAnchorsTitle: "Regional Memory Anchors (Sensory Reminiscence Triggers)",
+    neuroBasisTitle: "Neurocognitive Basis:",
+    neuroBasisText: "Familiar regional landscapes and sensory anchors unlock preserved episodic memories in the medial prefrontal cortex, reducing dementia agitation and sundowning confusion.",
+    regionalGamesTitle: "Regional Serious Games",
+    modules: "Modules",
+    offlineCapable: "100% Offline Capable",
+    viewFullLibrary: "View Full Library"
+  },
+  bn: {
+    headerTitle: "সাংস্কৃতিকভাবে প্রতিষ্ঠিত জ্ঞানীয় থেরাপিউটিক্স",
+    headerSubtitle: "উত্তর-পূর্বের ৮টি রাজ্যের বয়স্কদের জন্য চিকিৎসাগতভাবে ক্যালিব্রেট করা খেলা, স্মৃতিমধুর শব্দতরঙ্গ ও আঞ্চলিক কণ্ঠ সহায়তা।",
+    exploreGames: "সমস্ত ৪০+ খেলা দেখুন",
+    voiceAssisted: "আঞ্চলিক ভাষায় কণ্ঠ সহায়তা",
+    playingAmbience: "আবহ শব্দ বাজছে (বন্ধ করতে চাপুন)",
+    listenAmbience: "শব্দ শুনুন",
+    speakingGreeting: "শুভেচ্ছা বলা হচ্ছে...",
+    memoryAnchorsTitle: "আঞ্চলিক স্মৃতি স্তম্ভ (সংবেদী স্মৃতি জাগরণ)",
+    neuroBasisTitle: "নিউरोकগনিটিভ ভিত্তি:",
+    neuroBasisText: "পরিচিত আঞ্চলিক দৃশ্যপট ও সুর মস্তিষ্কের সংরক্ষিত স্মৃতি উন্মোচন করে এবং ডিমেনশিয়ার অস্থিরতা হ্রাস করে।",
+    regionalGamesTitle: "আঞ্চলিক বিশেষ থেরাপিউটিক গেমস",
+    modules: "মডিউল",
+    offlineCapable: "১০০% অফলাইনে সক্ষম",
+    viewFullLibrary: "সম্পূর্ণ লাইব্রেরি দেখুন"
+  },
+  mr: {
+    headerTitle: "सांस्कृतिकदृष्ट्या समृद्ध संज्ञानात्मक उपचार",
+    headerSubtitle: "ईशान्येकडील सर्व 8 राज्यांमधील वृद्धांसाठी वैद्यकीयदृष्ट्या प्रमाणित खेळ, जुने संगीत आणि प्रादेशिक बोलीभाषा साहाय्य.",
+    exploreGames: "सर्व 40+ खेळ पहा",
+    voiceAssisted: "स्थानिक बोलींमध्ये आवाज साहाय्य",
+    playingAmbience: "आवाज वाजत आहे (बंद करण्यासाठी टॅप करा)",
+    listenAmbience: "आवाज ऐका",
+    speakingGreeting: "अभिवादन बोलत आहे...",
+    memoryAnchorsTitle: "प्रादेशिक स्मृती आधारस्तंभ (संवेदी स्मृती जागरण)",
+    neuroBasisTitle: "न्यूरोकॉग्निटिव्ह आधार:",
+    neuroBasisText: "परिचित प्रादेशिक देखावे आणि संवेदी संकेत मेंदूतील जुन्या आठवणी जागृत करून डिमेंशियाची अस्वस्थता कमी करतात.",
+    regionalGamesTitle: "प्रादेशिक उपचार खेळ",
+    modules: "मॉड्यूल",
+    offlineCapable: "100% ऑफलाइन सक्षम",
+    viewFullLibrary: "संपूर्ण लायब्ररी पहा"
+  },
+  ne: {
+    headerTitle: "सांस्कृतिक रूपमा आधारित संज्ञानात्मक चिकित्सा",
+    headerSubtitle: "पूर्वोत्तरका ८ वटै राज्यहरूका लागि चिकित्सकीय रूपमा प्रमाणित खेलहरू, पुराना धुनहरू र स्थानीय भाषा सहायता।",
+    exploreGames: "सबै ४०+ खेलहरू हेर्नुहोस्",
+    voiceAssisted: "स्थानीय बोलीमा आवाज सहायता",
+    playingAmbience: "धुन बजिरहेको छ (बन्द गर्न छुनुहोस्)",
+    listenAmbience: "धुन सुन्नुहोस्",
+    speakingGreeting: "अभिवादन बोल्दैछ...",
+    memoryAnchorsTitle: "क्षेत्रीय स्मृति आधारहरू (संवेदी स्मृति जागरण)",
+    neuroBasisTitle: "न्यूरोकग्निटिभ आधार:",
+    neuroBasisText: "परिचित क्षेत्रीय दृश्यहरू र धुनहरूले मस्तिष्कका पुराना सम्झनाहरू ताजा बनाउँछन् र डिमेन्सियाको तनाव कम गर्छन्।",
+    regionalGamesTitle: "क्षेत्रीय विशेष खेलहरू",
+    modules: "मोड्युल",
+    offlineCapable: "१००% अफलाइन सक्षम",
+    viewFullLibrary: "पूरा संग्रह हेर्नुहोस्"
+  },
+  mni: {
+    headerTitle: "সংস্কৃতিদা য়ুম্ফম ওইবা ৱাখলগী লাইয়েং",
+    headerSubtitle: "অৱাং-নোংপোক্কী রাজ্য ৮ গীদমক ক্লিনিকেল ওইনা শেম্বা শান্নপোৎ, অরিবা সুর অমসুং লমদমগী খোন্থোক মতেং।",
+    exploreGames: "৪০+ শান্নপোৎ পুম্নমক য়েংউ",
+    voiceAssisted: "লমদমগী লোলদা খোন্থোক মতেং",
+    playingAmbience: "সুর তারে (থিংশিন্নবা নম্মু)",
+    listenAmbience: "সুর তারো",
+    speakingGreeting: "কুরামজরবা হায়রি...",
+    memoryAnchorsTitle: "লমদমগী নিংশিং মফমশিং",
+    neuroBasisTitle: "নিয়ুরোকগনিটিব য়ুম্ফম:",
+    neuroBasisText: "খঙনবা লমদমগী মফম অমসুং সুরশিংনা মমাংগী নিংশিংবা হিংগৎহল্লি অমসুং ডিমেন্সিয়াগী অৱাবা হন্থহল্লি।",
+    regionalGamesTitle: "লমদমগী অখন্নবা শান্নপোৎ",
+    modules: "মদ্যুল",
+    offlineCapable: "১০০% অফলাইন য়ারি",
+    viewFullLibrary: "পুম্নমক য়েংউ"
+  },
+  brx: {
+    headerTitle: "हारिमुयारि गोसोखांथि फाहामथाय",
+    headerSubtitle: "सानजा-सा राज्योफोरनि थाखाय क्लिनिकेल गेलेनाय, गोदोनि रिंखांनाय आरो गावनि रावजों हेफाजात।",
+    exploreGames: "गासै ४०+ गेलेनाय नाय",
+    voiceAssisted: "गावनि रावजों राव हेफाजात",
+    playingAmbience: "रिंखां सोलिगासिनो दं (बन्द खालामनो सु)",
+    listenAmbience: "रिंखां खोनासं",
+    speakingGreeting: "बरायनो बुंगासिनो दं...",
+    memoryAnchorsTitle: "जायगायारि गोसोखांथि खुन्थिया",
+    neuroBasisTitle: "स्नायुगोसोनि ओंथि:",
+    neuroBasisText: "सिनायथि जायगा आरो रिंखांआ गोसोनि गोदोनि गोसोखांथिखौ गोदान खालामो आरो गोसोनि खस्थ खम खालामो।",
+    regionalGamesTitle: "जायगायारि क्लिनिकेल गेलेनाय",
+    modules: "मडिउल",
+    offlineCapable: "१००% अफलाइन जानाय",
+    viewFullLibrary: "गासै नाय"
+  },
+  grt: {
+    headerTitle: "Dakbewalgita Tarigimin Gisik Sanani",
+    headerSubtitle: "North East state 8-ni gimin clinically calibrated serious games, git aro native dialect voice assistance.",
+    exploreGames: "40+ Kal·aniko Nibo",
+    voiceAssisted: "Native Dialect-o Voice Assistance",
+    playingAmbience: "Ambience gam·enga (Chipna krakbo)",
+    listenAmbience: "Ambience knatimatbo",
+    speakingGreeting: "Salam inenga...",
+    memoryAnchorsTitle: "Regional Memory Anchors",
+    neuroBasisTitle: "Neurocognitive Basis:",
+    neuroBasisText: "U·igimin biaprang aro surang gisik ra·aniko mangrakat-e dementia agitation-ko komiat-a.",
+    regionalGamesTitle: "Regional Serious Games",
+    modules: "Modules",
+    offlineCapable: "100% Offline Capable",
+    viewFullLibrary: "Library-ko Nibo"
+  },
+  kha: {
+    headerTitle: "Ka Jingpynkhiah Jingmut katkum ka Riti Tynrai",
+    headerSubtitle: "Ki jingialehkai ba la pynbeit kyrpang, ki sur tynrai bad ka jingiarap ktien tynrai na ka bynta ki 8 tylli ki state ka North East.",
+    exploreGames: "Peit Lut 40+ Games",
+    voiceAssisted: "Jingiarap Ktien Tynrai",
+    playingAmbience: "Ka sur ka dang tem (Khang ban thab)",
+    listenAmbience: "Sngap ia ka sur",
+    speakingGreeting: "Dang kren khublei...",
+    memoryAnchorsTitle: "Ki Jaka Kynmaw Tynrai",
+    neuroBasisTitle: "Neurocognitive Basis:",
+    neuroBasisText: "Ki jaka ba la mlien bad ki sur tynrai ki pynkynmaw pat ia ki por ba la leit bad pynduna ia ka jingkhuslai jingmut.",
+    regionalGamesTitle: "Regional Serious Games",
+    modules: "Modules",
+    offlineCapable: "100% Offline Capable",
+    viewFullLibrary: "Peit ia ka Library"
+  },
+  lus: {
+    headerTitle: "Nunphung Zulzui Hriatna Tihdamna",
+    headerSubtitle: "North East state 8-a upate tana clinically calibrated game, hla hlui leh mahni tawnga aw puihna.",
+    exploreGames: "Game 40+ En Vevek Rawh",
+    voiceAssisted: "Mahni Tawnga Aw Puihna",
+    playingAmbience: "Rimawi a ri mek (Tawp tir nan hmet rawh)",
+    listenAmbience: "Rimawi ngaithla rawh",
+    speakingGreeting: "Chibai buknain a tawng mek...",
+    memoryAnchorsTitle: "Hriat Rengna Hmun Larte",
+    neuroBasisTitle: "Neurocognitive Basis:",
+    neuroBasisText: "Hmun hriat larte leh aw mawi takte hian hriat rengna a kaitho va, dementia lungngaihna a ti kiang thin.",
+    regionalGamesTitle: "Regional Serious Games",
+    modules: "Modules",
+    offlineCapable: "100% Offline Capable",
+    viewFullLibrary: "Library Pum En Rawh"
+  }
+};
+
 export function RegionalStatesHub() {
+  const locale = useLocale();
+  const rh18n = REGIONAL_HUB_I18N[locale] || REGIONAL_HUB_I18N.en;
   const [selectedStateId, setSelectedStateId] = useState<string>("assam");
   const [soundPlaying, setSoundPlaying] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
@@ -306,10 +504,10 @@ export function RegionalStatesHub() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b-2 border-black/15 pb-4">
         <div>
           <h2 className="font-serif text-2xl md:text-3xl font-black text-ink tracking-tight">
-            Culturally Grounded Cognitive Therapeutics
+            {rh18n.headerTitle}
           </h2>
           <p className="text-xs md:text-sm font-semibold text-ink-secondary mt-1 max-w-2xl leading-relaxed">
-            Clinically calibrated therapeutic gaming, nostalgic soundscapes, and native-dialect voice assistance tailored for elderly dementia care across all 8 North Eastern states.
+            {rh18n.headerSubtitle}
           </p>
         </div>
 
@@ -318,7 +516,7 @@ export function RegionalStatesHub() {
           className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-tea px-4 py-2 text-xs md:text-sm font-black text-white shadow-[2px_2px_0px_#000] hover:bg-tea-dark transition-all shrink-0 cursor-pointer"
         >
           <Gamepad2 className="h-4 w-4" />
-          <span>Explore All 40+ Games</span>
+          <span>{rh18n.exploreGames}</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -408,8 +606,8 @@ export function RegionalStatesHub() {
               <Volume2 className={`h-4.5 w-4.5 ${soundPlaying ? "text-amber-300" : "text-tea"}`} />
               <span>
                 {soundPlaying
-                  ? "Playing Ambience (Tap to Mute)"
-                  : `Listen ${currentState.soundType === "namghar" ? "Namghar Bells" : currentState.soundType === "river" ? "River Stream" : currentState.soundType === "birds" ? "Forest Birds" : "Ambience"}`}
+                  ? rh18n.playingAmbience
+                  : rh18n.listenAmbience}
               </span>
             </button>
 
@@ -421,7 +619,7 @@ export function RegionalStatesHub() {
               title="Hear text-to-speech greeting in regional dialect"
             >
               <Mic className={`h-4.5 w-4.5 text-amber-900 ${isSpeaking ? "animate-spin" : ""}`} />
-              <span>{isSpeaking ? "Speaking Greeting..." : currentState.voiceGreeting.label}</span>
+              <span>{isSpeaking ? rh18n.speakingGreeting : currentState.voiceGreeting.label}</span>
             </button>
           </div>
         </div>
@@ -433,7 +631,7 @@ export function RegionalStatesHub() {
             {/* Native Dialects Available */}
             <div>
               <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary block mb-2">
-                Voice-Assisted in Native Dialects
+                {rh18n.voiceAssisted}
               </span>
               <div className="flex flex-wrap items-center gap-2">
                 {currentState.languages.map((lang) => (
@@ -451,7 +649,7 @@ export function RegionalStatesHub() {
             <div>
               <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-tea-dark flex items-center gap-2 mb-2.5">
                 <MapPin className="h-4 w-4 text-tea shrink-0" />
-                <span>Regional Memory Anchors (Sensory Reminiscence Triggers)</span>
+                <span>{rh18n.memoryAnchorsTitle}</span>
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -483,7 +681,7 @@ export function RegionalStatesHub() {
             <div className="rounded-xl border-2 border-tea/30 bg-tea-light/60 p-3.5 flex items-start gap-2.5 text-xs sm:text-sm text-tea-dark">
               <CheckCircle2 className="h-4.5 w-4.5 text-tea shrink-0 mt-0.5" />
               <p className="font-semibold leading-relaxed">
-                <strong>Neurocognitive Basis:</strong> Familiar regional landscapes and sensory anchors unlock preserved episodic memories in the medial prefrontal cortex, reducing dementia agitation and sundowning confusion.
+                <strong>{rh18n.neuroBasisTitle}</strong> {rh18n.neuroBasisText}
               </p>
             </div>
           </div>
@@ -494,10 +692,10 @@ export function RegionalStatesHub() {
               <div className="flex items-center justify-between border-b-2 border-black/10 pb-2.5 mb-3">
                 <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
                   <Gamepad2 className="h-4 w-4" />
-                  <span>Regional Serious Games</span>
+                  <span>{rh18n.regionalGamesTitle}</span>
                 </span>
                 <span className="text-xs font-black text-emerald-900 bg-emerald-100 border border-emerald-300 rounded-md px-2.5 py-0.5">
-                  {currentState.games.length} Modules
+                  {currentState.games.length} {rh18n.modules}
                 </span>
               </div>
 
@@ -527,9 +725,9 @@ export function RegionalStatesHub() {
             </div>
 
             <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between text-xs sm:text-sm font-bold text-ink-secondary">
-              <span>100% Offline Capable</span>
+              <span>{rh18n.offlineCapable}</span>
               <Link href="/patient/games" className="text-tea font-black hover:underline flex items-center gap-1">
-                <span>View Full Library</span>
+                <span>{rh18n.viewFullLibrary}</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>

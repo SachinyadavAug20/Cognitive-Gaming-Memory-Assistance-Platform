@@ -18,7 +18,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function LoginPage() {
+const LOGIN_PAGE_I18N: Record<string, { welcome: string; subtitle: string; orManual: string }> = {
+  as: { welcome: "পুনৰ স্বাগতম", subtitle: "অব্যাহত ৰাখিবলৈ ছাইন ইন কৰক", orManual: "বা মেনুৱেলী ছাইন ইন কৰক" },
+  hi: { welcome: "पुनः स्वागत है", subtitle: "आगे बढ़ने के लिए साइन इन करें", orManual: "या मैन्युअल रूप से साइन इन करें" },
+  en: { welcome: "Welcome Back", subtitle: "Sign in to continue", orManual: "or sign in manually" },
+  bn: { welcome: "পুনরায় স্বাগতম", subtitle: "চালিয়ে যেতে সাইন ইন করুন", orManual: "বা ম্যানুয়ালি সাইন ইন করুন" },
+  mr: { welcome: "पुन्हा स्वागत आहे", subtitle: "सुरू ठेवण्यासाठी साइन इन करा", orManual: "किंवा स्वतः साइन इन करा" },
+  ne: { welcome: "पुनः स्वागत छ", subtitle: "जारी राख्न साइन इन गर्नुहोस्", orManual: "वा म्यानुअल रूपमा साइन इन गर्नुहोस्" },
+  mni: { welcome: "অমুক হন্না তরাম্না ওকচরি", subtitle: "মখা চত্থনবা সাইন ইন তৌবীয়ু", orManual: "নত্রগা মশানা সাইন ইন তৌবীয়ু" },
+  brx: { welcome: "फिन बरायबाय", subtitle: "दावगानो साइन इन खालाम", orManual: "एबा गाव गावनो साइन इन खालाम" },
+  grt: { welcome: "Rimnaptaita", subtitle: "Re·angana sign in ka·bo", orManual: "Ba an·tang sign in ka·bo" },
+  kha: { welcome: "Pdiang sngewbha biang", subtitle: "Sign in ban bteng", orManual: "Lane sign in da lade" },
+  lus: { welcome: "Lo lawm leh a che", subtitle: "Chhunzawm turin sign in rawh", orManual: "A nih loh leh mahniin sign in rawh" },
+};
+
+export default async function LoginPage({ params }: Props) {
+  const { locale } = await params;
+  const str = LOGIN_PAGE_I18N[locale] || LOGIN_PAGE_I18N.en;
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 paper-texture">
       <div className="w-full max-w-md space-y-5">
@@ -32,8 +49,8 @@ export default async function LoginPage() {
             </div>
             <span className="font-[family-name:var(--font-serif)] font-bold text-2xl text-ink">CogniCare</span>
           </Link>
-          <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl text-ink mb-1">Welcome Back</h1>
-          <p className="text-ink-secondary text-base">Sign in to continue</p>
+          <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl text-ink mb-1">{str.welcome}</h1>
+          <p className="text-ink-secondary text-base">{str.subtitle}</p>
         </div>
 
         {/* QR Kiosk Scanner */}
@@ -46,7 +63,7 @@ export default async function LoginPage() {
           </div>
           <div className="relative flex justify-center text-xs">
             <span className="px-3 bg-canvas text-ink-secondary font-bold uppercase tracking-wider">
-              or sign in manually
+              {str.orManual}
             </span>
           </div>
         </div>

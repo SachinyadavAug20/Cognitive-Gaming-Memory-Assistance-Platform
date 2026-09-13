@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { PlusCircle, ShieldCheck } from "lucide-react";
+import { useLocale } from "next-intl";
 import {
   useGameVerificationStore,
   INITIAL_VERIFICATIONS,
@@ -19,6 +20,80 @@ interface VerifiedStampBadgeProps {
   forceShowUnverifiedInCaregiverMode?: boolean;
 }
 
+const STAMP_BADGE_I18N: Record<string, {
+  verifiedTitle: string;
+  srOnly: string;
+  certifyBtn: string;
+  certifyTitle: string;
+}> = {
+  en: {
+    verifiedTitle: "Field Expert Verified: Click to view clinical certification.",
+    srOnly: "Verified by Field Expert & Caregiver",
+    certifyBtn: "Certify",
+    certifyTitle: "Certify as Caregiver",
+  },
+  as: {
+    verifiedTitle: "ক্ষেত্ৰ বিশেষজ্ঞ দ্বাৰা প্ৰত্যায়িত: ক্লিনিকেল প্ৰমাণপত্ৰ চাবলৈ ক্লিক কৰক।",
+    srOnly: "ক্ষেত্ৰ বিশেষজ্ঞ আৰু তত্ত্বাৱধায়ক দ্বাৰা প্ৰত্যায়িত",
+    certifyBtn: "প্ৰত্যায়িত কৰক",
+    certifyTitle: "তত্ত্বাবধায়ক হিচাপে প্ৰত্যায়িত কৰক",
+  },
+  hi: {
+    verifiedTitle: "क्षेत्र विशेषज्ञ द्वारा सत्यापित: नैदानिक प्रमाण पत्र देखने के लिए क्लिक करें।",
+    srOnly: "क्षेत्र विशेषज्ञ और देखभालकर्ता द्वारा सत्यापित",
+    certifyBtn: "प्रमाणित करें",
+    certifyTitle: "देखभालकर्ता के रूप में प्रमाणित करें",
+  },
+  bn: {
+    verifiedTitle: "ক্ষেত্র বিশেষজ্ঞ দ্বারা প্রত্যয়িত: ক্লিনিক্যাল প্রশংসাপত্র দেখতে ক্লিক করুন।",
+    srOnly: "ক্ষেত্র বিশেষজ্ঞ ও পরিচর্যাকারী দ্বারা প্রত্যয়িত",
+    certifyBtn: "প্রত্যয়ন করুন",
+    certifyTitle: "পরিচর্যাকারী হিসেবে প্রত্যয়ন করুন",
+  },
+  mr: {
+    verifiedTitle: "क्षेत्र तज्ज्ञांद्वारे सत्यापित: क्लिनिकल प्रमाणपत्र पाहण्यासाठी क्लिक करा.",
+    srOnly: "क्षेत्र तज्ज्ञ आणि काळजीवाहू द्वारे सत्यापित",
+    certifyBtn: "प्रमाणित करा",
+    certifyTitle: "काळजीवाहू म्हणून प्रमाणित करा",
+  },
+  ne: {
+    verifiedTitle: "क्षेत्र विशेषज्ञद्वारा प्रमाणित: क्लिनिकल प्रमाणपत्र हेर्न क्लिक गर्नुहोस्।",
+    srOnly: "क्षेत्र विशेषज्ञ र हेरचाहकर्ताद्वारा प्रमाणित",
+    certifyBtn: "प्रमाणित गर्नुहोस्",
+    certifyTitle: "हेरचाहकर्ताको रूपमा प्रमाणित गर्नुहोस्",
+  },
+  mni: {
+    verifiedTitle: "লমদমগী এক্সপার্টনা চেকিং তৌরবা: ক্লিনিকেল সর্তিফিকেট য়েংনবগীদমক ক্লিক তৌউ।",
+    srOnly: "লমদমগী এক্সপার্ট অমসুং য়েংশিনবিরিবনা চেকিং তৌরবা",
+    certifyBtn: "সর্তিফাই তৌউ",
+    certifyTitle: "য়েংশিনবিরিবা ওইনা সর্তিফাই তৌউ",
+  },
+  brx: {
+    verifiedTitle: "बिजिरगिरिजों थार आनजाद खालामनाय: क्लिनिकেল सार्टिफिकेट नायनो थु।",
+    srOnly: "बिजिरगिरि आरो नायदिंग्राजों थार आनजाद खालामनाय",
+    certifyBtn: "सार्टिफाइ खालाम",
+    certifyTitle: "नायदिंग्रा हिसाबै सार्टिफाइ खालाम",
+  },
+  grt: {
+    verifiedTitle: "Field Expert Sakki On·gimin: Certificate-ko nina jotbo.",
+    srOnly: "Field Expert aro Nirokgipachi Sakki On·gimin",
+    certifyBtn: "Sakki On·bo",
+    certifyTitle: "Nirokgipa gita Sakki On·bo",
+  },
+  kha: {
+    verifiedTitle: "La pynshisha da ki Expert: Thb ban peit ia ka certificate.",
+    srOnly: "La pynshisha da ki Expert bad u Nongsumar",
+    certifyBtn: "Pynshisha",
+    certifyTitle: "Pynshisha kum u Nongsumar",
+  },
+  lus: {
+    verifiedTitle: "Mithiamte Nemngheh: Certificate en nan hmet rawh.",
+    srOnly: "Mithiamte leh Enkawltu Nemngheh",
+    certifyBtn: "Nemngheh Rawh",
+    certifyTitle: "Enkawltu anga Nemngheh Rawh",
+  },
+};
+
 export function VerifiedStampBadge({
   gameId,
   gameTitle,
@@ -27,6 +102,8 @@ export function VerifiedStampBadge({
   size = "md",
   forceShowUnverifiedInCaregiverMode = true,
 }: VerifiedStampBadgeProps) {
+  const locale = useLocale();
+  const t = STAMP_BADGE_I18N[locale] || STAMP_BADGE_I18N.en;
   const { isGameVerified, getVerification, caregiverMode } =
     useGameVerificationStore();
 
@@ -84,8 +161,8 @@ export function VerifiedStampBadge({
           <button
             type="button"
             onClick={handleClick}
-            title={`Field Expert Verified: ${gameTitle || gameId}. Click to view clinical certification.`}
-            aria-label={`Field Expert Verified: ${gameTitle || gameId}. Click to view clinical certification.`}
+            title={`${t.verifiedTitle} (${gameTitle || gameId})`}
+            aria-label={`${t.verifiedTitle} (${gameTitle || gameId})`}
             className={`group relative flex items-center justify-center rounded-full bg-white border-2 border-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all duration-200 hover:scale-105 hover:-rotate-6 hover:shadow-[3px_3px_0px_#000] active:scale-95 select-none ${sizeClasses}`}
           >
             <div className="relative w-full h-full">
@@ -103,18 +180,18 @@ export function VerifiedStampBadge({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600 border border-white" />
             </span>
-            <span className="sr-only">Verified by Field Expert & Caregiver</span>
+            <span className="sr-only">{t.srOnly}</span>
           </button>
         ) : (
           /* Caregiver quick-stamp ghost button when in Caregiver Mode */
           <button
             type="button"
             onClick={handleClick}
-            title={`Certify ${gameTitle || gameId} as Caregiver`}
+            title={`${t.certifyTitle}: ${gameTitle || gameId}`}
             className="flex items-center gap-1 rounded-full border-2 border-dashed border-emerald-700/80 bg-emerald-50 px-2.5 py-1 text-[10px] font-black text-emerald-900 shadow-sm hover:bg-emerald-100 hover:border-emerald-800 transition-all cursor-pointer"
           >
             <PlusCircle className="h-3.5 w-3.5 text-emerald-700" />
-            <span>Certify</span>
+            <span>{t.certifyBtn}</span>
           </button>
         )}
       </div>

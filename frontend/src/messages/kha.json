@@ -4,7 +4,45 @@
     "ready": "अमुक तारोंग Springfield!",
     "subtitle": "CogniCare",
     "description": "AI মরল নнун-মরল",
-    "nerInitiative": "MDoNER ফগ"
+    "nerInitiative": "MDoNER ফগ",
+    "comingSoon": "Shen shen ban wan",
+    "routine": {
+      "title": "Ka jingpynbeit kam man ka sngi",
+      "label": "Kam mynta ka sngi",
+      "morning_medicine": "Dawai step (BP & Vitamin)",
+      "water_reminder": "Dih um khuid",
+      "doctor_appointment": "Leit sha u Doctor",
+      "family_photos": "Dur kynmaw ba haiing",
+      "medicine_time": "8:00 AM • 1 tylli u dawai bad ka um",
+      "water_count": "4 na 6 khiew um mynta",
+      "appointment_time": "Dr. B. K. Sarma • Dispur PHC",
+      "memories_count": "12 tylli ki jingkynmaw bad i Sunita",
+      "now": "Mynta"
+    },
+    "patient": {
+      "title": "Nga dei uba pang",
+      "subtitle": "Portal nongpang",
+      "description": "Sdang ia ki jingialehkai kynmaw man ka sngi bad peit ia ka jingiaid shaphrang.",
+      "cta": "SDANG IA KI JINGIALEHKAI MYNTA →"
+    },
+    "caregiver": {
+      "title": "Nongri & Nongtrei ka koit ka khiah",
+      "subtitle": "Portal ASHA / PHC",
+      "description": "Peit ia ka jingiaid shaphrang, thep dur kynmaw, pynbeit dawai.",
+      "cta": "PLIE IA KA DASHBOARD",
+      "patients": "Ki nongpang",
+      "sessions": "Ki jingialehkai mynta",
+      "alerts": "Ki jingmaham"
+    },
+    "kiosk": {
+      "title": "Kiosk Check-In",
+      "subtitle": "Ka jaka scan QR",
+      "description": "Scan ia ka QR health card u nongpang ban sdang ia ka jingialehkai.",
+      "cta": "PLIE SCANNER",
+      "showCard": "Pyni ia ka QR health card",
+      "scan": "Scan ha ka kiosk",
+      "start": "Check in bad sdang ialehkai"
+    }
   },
   "kiosk": {
     "title": "CogniCare দা य़ाङ্গ्लो",
@@ -38,7 +76,82 @@
         "caretaker": "নখোত হং সূচিত দিং। মমা সিং দিং খং।"
       },
       "memoryListen": "Pule ia nga ka jingkynmaw",
-      "calmListen": "Pule ia nga ka jingsuk"
+      "calmListen": "Pule ia nga ka jingsuk",
+      "familyTitle": "Ki Jingkynmaw Ba Haiing",
+      "familyEmpty": "Ki dur jong ki ba haiing kin sa mih shen hangne.",
+      "memoryTitle": "Jingkynmaw Mynta Ka Sngi",
+      "memoryAnother": "Pyni da kawei pat ka jingkynmaw",
+      "memoryView": "Peit jingkynmaw",
+      "memoryEmpty": "Ka jingkynmaw ba thiang kan sa mih hangne shen.",
+      "calmTitle": "Jaka Shongthait Jingsuk",
+      "calmHint": "Ki sur bad jingrwai kiba pynkynmaw ia la iing.",
+      "calmTriggers": "Ynda phi kwah jingsuk, kynmaw ia {triggers}.",
+      "calmMusic": "Ki jingrwai ba phi sngewbha: {music}.",
+      "calmFallbackTriggers": "sha saw kaba khluit ha ka step",
+      "calmPlay": "Tem ia ka sur jingsuk",
+      "moodDear": "paralok"
+    },
+    "date": "Sngi Balang, 26 August",
+    "schedule": "Ka jingpynbeit kam mynta",
+    "waterToday": "Um mynta ka sngi",
+    "moreGames": {
+      "label": "Kiwei pat ki jingialehkai",
+      "title": "Jaka ialehkai & kam man ka sngi",
+      "desc": "Ki kam man ka sngi, ka jingbuh ryntih bad u paralok ba kmen.",
+      "cta": "Plie Jaka Ialehkai"
+    },
+    "audio": {
+      "greeting": "Khublei step, Dadu! Ka dei ka sngi Balang, 26th August. Don 2 tylli ki kam mynta.",
+      "greetingName": "Khublei step, {name}! Ka dei ka sngi Balang, 26th August. Don 2 tylli ki kam mynta.",
+      "todayIs": "Mynta ka dei {date}.",
+      "close": "Khang"
+    },
+    "gamesTitle": "Ki Jingialehkai Jingmut Man ka Sngi",
+    "cards": {
+      "memory": {
+        "title": "Pyniahap Jingkynmaw Bahaiing",
+        "desc": "Ialehkai bad ki dur jong {count} ngut ki ba haiing",
+        "descZero": "Ialehkai bad ki dur ki ba haiing jong phi"
+      },
+      "jigsaw": {
+        "title": "Puzzle Khmat Ba Haiing",
+        "desc": "Pyniasoh ia ki dkhot ban pynmih ia ka dur khmat"
+      },
+      "timeline": {
+        "title": "Ka Jingim Ba Kordor",
+        "desc": "Buh ryntih ia ki jingjia ba kmen ha ka jingim"
+      },
+      "wayfinding": {
+        "title": "Iaid Lynti Shnong",
+        "desc": "Iaid lyngba ki lynti shnong ban poi suk sha la iing"
+      },
+      "dailyTasks": {
+        "title": "Shep Sha Step",
+        "desc": "Shep ia ka sha saw kaba sngewtynnad step-by-step"
+      },
+      "exploreAll": "Peit Lut Baroh Ki Jingialehkai"
+    },
+    "exercise": {
+      "title": "Ki Kam Man Ka Sngi",
+      "teaTime": "Shep sha step",
+      "sorting": "Pynbynta tiar shetja & jingduwai",
+      "companion": "Iakren bad i Saathi",
+      "breathing": "Ring mynsiem suk mynstep",
+      "done": "Dep",
+      "start": "Sdang",
+      "inProgress": "Dang iaid",
+      "daily": {
+        "label": "Jingkynmaw Man Ka Sngi",
+        "title": "Ialehkai Mynta Ka Sngi",
+        "desc": "Level 2 • 5 Minit • Bad ki dur ba haiing",
+        "cta": "Sdang Ialehkai"
+      },
+      "bonus": {
+        "label": "Jingialehkai Shuh Shuh",
+        "title": "Kynmaw Ia Ka Lynti",
+        "desc": "Iaid ha ki lynti shnong ba la mlien. 8 minit.",
+        "cta": "Sdang Iaid Lynti"
+      }
     }
   },
   "games": {
@@ -46,19 +159,100 @@
       "title": "মরল মনন",
       "preview": "মরল মনন দৌবা...",
       "start": "দৌ",
-      "complete": "মনন দু!"
+      "complete": "মনন দু!",
+      "desc": "Pyniahap ia ki khmat ba haiing",
+      "previewNote": "Pyrshang ban kynmaw ia man kawei ka khmat.",
+      "pairs": "Wad ia ki shijur ba iadei.",
+      "matched": "Kane dei {name}, i {relation} jong phi.",
+      "matchedCount": "La ioh {matched} na {total}",
+      "hintShow": "Pyni hint",
+      "hintHide": "Buhrieh hint",
+      "cardHidden": "Ka card ba buhrieh"
     },
     "sorting": {
       "title": "ফগ-রাত্তি খোদ",
-      "complete": "মনন দু!"
+      "complete": "মনন দু!",
+      "desc": "Buh ryntih ia ki tiar ha ka shang shetja ne shang duwai.",
+      "intro": "Ia pynbynta ia ki tiar. Thab tiar, nangta thab shang.",
+      "pickItem": "Thab ban shim ia ka tiar.",
+      "pickBasket": "Hano kane ka shang kan leit?",
+      "kitchen": "Shang shetja",
+      "prayer": "Shang duwai",
+      "correctName": "Bha shibun! {item} ka dei hangto.",
+      "wrongSpeech": "Pyrshang biang. {item} ka dei ha ka shang {category}.",
+      "items": {
+        "incense": "Dhoop",
+        "bell": "Shakuriaw btai",
+        "teacup": "Khiew sha",
+        "sugar": "Pang shini",
+        "clock": "Baje",
+        "japi": "Tupi japi"
+      }
     },
     "wayfinding": {
       "title": "Iaid Lynti Shnong",
-      "desc": "Iaid lyngba ki lynti shnong ban poi suk sha la iing"
+      "desc": "Iaid lyngba ki lynti shnong ban poi suk sha la iing",
+      "modeScenic": "Scenic Walk",
+      "modeRecall": "Find the Way",
+      "startJourney": "Begin Your Walk",
+      "currentLocation": "You are at {name}",
+      "nextDestination": "Next destination: {name}",
+      "stepCounter": "Station {current} of {total}",
+      "signpostPrompt": "Which path leads towards {target}?",
+      "landmarkMemory": "Familiar Memory",
+      "viewScrapbook": "Open Landmark View",
+      "listenGuide": "Hear Guide",
+      "walkButton": "Walk Along Path",
+      "hintWhisper": "Look closely — the path to {name} is right ahead!",
+      "congratulations": "Welcome Back Home!",
+      "completedJourneyDesc": "You navigated through {count} familiar landmarks and reached {home} safely.",
+      "postcardTitle": "Hometown Walk Postcard",
+      "musicCta": "Play Hometown Tune",
+      "walkAgain": "Walk Another Route",
+      "speechIntro": "Welcome to your village walk. Let us begin at {start} and walk together towards {home}.",
+      "speechArrived": "We have arrived at {name}. {description}",
+      "speechTurn": "Which path should we take to reach {target}?",
+      "speechSuccess": "Wonderful! You remembered the way to {name}.",
+      "speechFinish": "Welcome home! You successfully walked the entire village trail today.",
+      "explore": "Let's walk this route...",
+      "step": "Step {current} of {total}",
+      "walkTo": "Walk to {name}",
+      "towards": "Walk towards {name}.",
+      "then": "then to",
+      "arrive": "You arrive home!",
+      "listenDirections": "Listen to directions",
+      "reached": "I remember the way!",
+      "recallStart": "Now, where do we go next?",
+      "recallLabel": "Where do we go next?",
+      "recallDesc": "After {prev}, where do we go?",
+      "correct": "Correct! You remembered!",
+      "wrong": "Take your time, you can try again.",
+      "viewPhoto": "View photo",
+      "complete": "You reached home! Wonderful!"
     },
     "dailyTasks": {
       "title": "মোৰ চাহ",
-      "complete": "মনন দু!"
+      "complete": "মনন দু!",
+      "desc": "Shep ia ka sha saw ba khluit man ka step",
+      "intro": "Mynta ngin shep ia kaba phi sngewbha: {activity}. Ia leh suki.",
+      "defaultJoy": "ka khiew sha saw ba khluit",
+      "step": "Khyndiat {current} na {total}",
+      "ready": "Ka por ban dih mynta!",
+      "completeSpeech": "Ka {activity} jong phi ka la dep. Dih bad sngewbha!",
+      "actions": {
+        "water": "Pynkhluit um",
+        "leaves": "Buh sla sha",
+        "milk": "Theh khyndiat dud",
+        "sugar": "Buh shini",
+        "cup": "Theh ha ka khiew sha"
+      },
+      "items": {
+        "cup": "Khiew sha",
+        "water": "Um",
+        "leaves": "Sla sha",
+        "milk": "Dud",
+        "sugar": "Shini"
+      }
     },
     "grandchildChat": {
       "title": "Kylli & Iakren Sha ryngkat u Khun Ksiew",
@@ -74,7 +268,42 @@
     },
     "jigsaw": {
       "title": "Pyniasoh Dur Jingkynmaw",
-      "desc": "Pyniasoh ia ki dkhot dur ban pynim biang ia ki dur jingkynmaw"
+      "desc": "Pyniasoh ia ki dkhot dur ban pynim biang ia ki dur jingkynmaw",
+      "pick": "Dur jongno ngin pyniasoh?",
+      "pickSpeech": "Jied ia ka dur ban shna lang. Shu thab ban sdang.",
+      "startSpeech": "Ia shna lang ia kane ka dur jong {name}.",
+      "guidance": "Pyndep ia ka dur jong {name}.",
+      "guidanceSpeech": "Thab ia ka dkhot, nangta thab ha kaba dei ka jaka. Nga don hangne ban iarap.",
+      "piece": "Dkhot puzzle",
+      "playAgain": "Ialehkai biang",
+      "noPhoto": "Thep dur ba haiing ha ka portal nongri ban ialehkai.",
+      "intro": "Ia pyniasoh dur lang. Don {count} tylli ki dur ba la khreh.",
+      "face": "Khmat {current} na {total}: {name}",
+      "landmark": "Jaka {current} na {total}: {name}",
+      "nextCta": "Dur ba bud: {name}",
+      "peek": "Peek",
+      "playing": "Back to puzzle",
+      "peeking": "Peeking at the picture...",
+      "tapPrompt": "Tap one piece, then tap the place it belongs.",
+      "complete": "Wonderful! {name}'s picture is ready!",
+      "completeSpeech": "Wonderful! That is {name}, your {relation}.",
+      "placeComplete": "Wonderful! {name} is ready!",
+      "placeCompleteSpeech": "Wonderful! That is {name}. {description}",
+      "start": "Start Puzzle",
+      "allComplete": "You made all your familiar pictures! Wonderful!",
+      "allCompleteSpeech": "Every familiar face and place is here with you today. What a beautiful story!",
+      "allCompletePlacesSpeech": "You rebuilt all your familiar landmarks today. What wonderful memories!",
+      "notesEmpty": "A memory your family wrote for you.",
+      "viewPicture": "View picture",
+      "categoryFamily": "‍ ‍ Family Members",
+      "categoryPlaces": "Familiar Places",
+      "guideOn": "Guide: ON",
+      "guideOff": "Guide: OFF",
+      "levelGentle": "2×2 Easy (4 pcs)",
+      "levelClassic": "3×3 Classic (9 pcs)",
+      "levelMaster": "4×4 Master (16 pcs)",
+      "music": "Play familiar tune",
+      "musicHint": "A gentle melody, like the songs you love."
     },
     "weaving": {
       "title": "Ka Thain Jainsem & Ryndia",
@@ -87,7 +316,11 @@
       "waveToPluck": "Pynkhih kti ban kheit sla sha",
       "leavesPlucked": "Ki sla sha ba la kheit: {count}",
       "basketFull": "Ka shang ka la dap bha da ki sla sha!",
-      "gentleHint": "Pynkhih jem ia ki kti bad ktah ia ki sla jyrngam."
+      "gentleHint": "Pynkhih jem ia ki kti bad ktah ia ki sla jyrngam.",
+      "encouragement": "Bha shibun! Pynjem ia ka kti.",
+      "playAgain": "Kheit sla sha bathymmai",
+      "backToHub": "← Leit biang sha ka jaka ialehkai",
+      "welcomeSpeech": "Pdiang sngewbha sha ka jingkheit sla sha. Kheit ia ki ar sla bad u thning."
     },
     "radio": {
       "title": "Radio Akashvani Rim",
@@ -135,7 +368,15 @@
       "backToHub": "← Wanphai sha Therapy Hub",
       "speakPromptNamghar": "Iaid sha ka Namghar",
       "speakPromptChangGhar": "Peit sha ka iing dieng",
-      "speakPromptRiverGhat": "Poi sha rud wah"
+      "speakPromptRiverGhat": "Poi sha rud wah",
+      "walking": "Dang iaid ha ka lynti...",
+      "lookLeft": "Peit sha kadiang",
+      "lookAhead": "Peit shakhmat",
+      "lookRight": "Peit sha kamon",
+      "currentLandmark": "Jaka ba don mynta",
+      "spatialPrompt": "Jingkylli kynmaw jaka:",
+      "questionRiverGhat": "Hangno kane ka lynti ka la ialam ia ngi?",
+      "welcomeSpeech": "Pdiang sngewbha sha Majuli Island. Iaid shakhmat ha ka lynti step."
     },
     "bihuDhol": {
       "title": "Ka Sur Ksing & Dhol (Jingsuk Jingmut)",
@@ -147,7 +388,12 @@
       "calmTitle": "Jingmut ba suk bad shongsuk!",
       "calmSubtitle": "Ki kti jong phi ki la tem bha katkum ka sur ksing.",
       "playAgain": "Tem biang ia ka ksing",
-      "backToHub": "← Wanphai sha Therapy Hub"
+      "backToHub": "← Wanphai sha Therapy Hub",
+      "bpmText": "Stet: {bpm} BPM",
+      "goodRhythm": "Sur ba bha",
+      "gentleTouch": "Tba jem",
+      "rhythmScore": "Sur score: {score}%",
+      "calmComplete": "Jingialehkai sur la dep"
     },
     "dayInMyWorld": {
       "title": "Kawei Ka Sngi Ha Jingim Jong Nga (३D Story Campaign)",
@@ -190,7 +436,16 @@
       "ch6Complete": "Ka sngi ba suk ka la kut! Phi la kynmaw shai ia baroh.",
       "finalDayCompleteTitle": "Lynti la dep: Jingkynmaw la im biang",
       "finalDayCompleteDesc": "Phi la pyndep ia baroh 6 bynta ryngkat u Saathi.",
-      "reliveDayButton": "Pynim biang ia kane ka sngi"
+      "reliveDayButton": "Pynim biang ia kane ka sngi",
+      "ch2Success": "Sngewtynnad! Ka album iing ka la biang lut.",
+      "ch3Question": "Jied ia ka lynti harud wah",
+      "ch3Success": "Lynti ba dei! Ngi la poi suk ha iew.",
+      "ch4Prompt": "Khein ia ka pisa ba sah",
+      "ch4Success": "Khein paka! Ka pla ka dap da ki tiar bathymmai.",
+      "ch5Prompt": "Shongthait bad dih um mynstep",
+      "ch5Success": "Bha shibun! Phi la thait bad koit biang.",
+      "ch6Prompt": "Pynbynta ia ki jingkynmaw mynta ka sngi",
+      "finalDayComplete": "Ka sngi ba suk ka la dep! Phi la kynmaw baroh da ka jingsuk."
     },
     "bazaarBuddies": {
       "title": "Lok Iew (Budget & Tyngka)",
@@ -281,7 +536,108 @@
       "playAgain": "Wad lynti biang",
       "backToHub": "Wanphai sha Therapy Hub"
     },
-    "listen": "Pule ia nga"
+    "listen": "Pule ia nga",
+    "title": "Ki Jingialehkai Jingmut Man ka Sngi",
+    "subtitle": "Ki kam ba jem bad ba suk ban pyndonkam bad kynmaw.",
+    "backToRoutine": "← Leit biang sha ka routine",
+    "backToHub": "← Jaka Ialehkai",
+    "listening": "Dang kren...",
+    "recommended": "Ba la bthah",
+    "level": "Kyrdan {level}",
+    "plays": "La ialehkai {count} sien",
+    "score": "Score: {score}",
+    "lightbox": {
+      "close": "Khang",
+      "listen": "Pule ia ka jingkynmaw"
+    },
+    "loading": "Dang pynkhreh ia ka jingialehkai...",
+    "loadError": "Don jingthut ha kaba shim ia ki jingtip.",
+    "retry": "Pyrshang biang",
+    "notFound": {
+      "title": "Shen shen ban wan",
+      "desc": "Dang pynkhreh ia kane ka jingialehkai. Pyrshang da kawei pat!"
+    },
+    "timeline": {
+      "title": "Ka Jingim Ba Kordor",
+      "desc": "Iaid suki lyngba ki sngi kmen jong ka jingim",
+      "intro": "Ka jingim jong phi ka dap da ki jingkynmaw ba kordor. Ia iaid lang suki.",
+      "introSpeech": "Ka jingim jong phi ka dap da ki jingkynmaw ba kordor. Ia iaid lang shisngi shisngi.",
+      "occupation": "Phi la trei kum u {occupation} mynshuwa.",
+      "favoriteMusic": "Nga tip ba phi sngewbha ia {favoriteMusic}.",
+      "start": "Sdang ia ka jingiaid",
+      "promptYear": "Ha u snem {year}...",
+      "promptYearLongAgo": "Mynhyndai...",
+      "question": "Kano ka dei ka jingkynmaw jong phi ha kato ka por?",
+      "promptSpeech": "Ha u snem {year}, kiei kiba jia ha ka jingim jong phi?",
+      "promptSpeechLongAgo": "Ha kato ka por ba kordor, kiei kiba jia?",
+      "correct": "Kaba dei paka!",
+      "correctSpeech": "Sngewtynnad shibun! Ha u snem {year}, {event}.",
+      "wrongSpeech": "Peit ia kiwei pat ki jingkynmaw. Shim por.",
+      "music": "Tem ia ka sur jingsuk",
+      "musicHint": "Ka sur ba jem, kumba phi ieit.",
+      "nextCta": "Jingkynmaw ba bud",
+      "finish": "Pynkut ia ka jingiaid",
+      "complete": "Phi la pyndep ia ka jingkynmaw jingim! Khublei!",
+      "completeSpeech": "Ka jingim jong phi ka itynnad naduh ba sdang haduh kaba kut. Khublei ba phi iasam jingkynmaw.",
+      "memoriesShared": "ki jingkynmaw ba itynnad la iasam",
+      "longAgo": "mynhyndai kulong kumah",
+      "moreSoon": "Kiwei pat ki jingkynmaw kin sa wan shen.",
+      "moreSoonHint": "Ka iing jong phi ka lah ban thep jingkynmaw bathymmai.",
+      "generic": {
+        "one": "Ka jingiaseng kmen jong ka iing ka sem",
+        "two": "Ka jingiaid pyngngad harud wah ha ka janmiet",
+        "three": "Dih sha lang bad kiba ieit",
+        "four": "Rwai jingrwai rim ryngkat",
+        "five": "Ka sngi kmen ha la iing"
+      }
+    },
+    "companion": {
+      "desc": "Iakren bad u paralok ba iarap.",
+      "hello": "Khublei {name}! Thab ia nga bad ong khublei!",
+      "wave": "Ong khublei man ka por",
+      "tapMe": "Thab ban iakren",
+      "chat": "Iakren bad nga",
+      "games": "Ialehkai game",
+      "prompts": [
+        "Phi la leh bha shibun!",
+        "Kano ka pynsngewbha ia nga!",
+        "Ia ialehkai biang shen!",
+        "Phi dei u paralok ba nga ieit mynta!"
+      ],
+      "title": "Friendly Chat with Saathi"
+    },
+    "alpana": {
+      "title": "Alpana & Rangoli Dur",
+      "desc": "Dur tynrai bad symmetry ba itynnad"
+    },
+    "hornbill": {
+      "title": "Ka Jingher Ka Hornbill",
+      "desc": "Her halor ki them lum bad peit bniah"
+    },
+    "pottery": {
+      "title": "Shna Khiew Majuli",
+      "desc": "Shna khiew khyndew bad pynbiang kti"
+    },
+    "monasteryBell": {
+      "title": "Sur Shakuriaw Monasteri",
+      "desc": "Kynmaw ia ka sur shakuriaw monasteri"
+    },
+    "boat": {
+      "title": "Lieng Wah Brahmaputra",
+      "desc": "Kam ia ka wah bad kynmaw ia ki jaka"
+    },
+    "botanist": {
+      "title": "Tiew Dzukou Valley",
+      "desc": "Ithuh ia ki syntiew lum bad kynmaw"
+    },
+    "ancestralHerbalist": {
+      "title": "Dawai Kynbat Tynrai",
+      "desc": "Ithuh ia ki kynbat dawai tynrai"
+    },
+    "dailyRoutine": {
+      "title": "Kam Man Ka Sngi",
+      "desc": "Nalor mynstep haduh janmiet ki kam ba bha"
+    }
   },
   "nav": {
     "online": "Online",
@@ -317,14 +673,39 @@
     "title": "Jingialehkai Dur",
     "subtitle": "Pyniad lang ia ki dur",
     "start": "Sdang",
-    "wellDone": "Phi la leh bha!"
+    "wellDone": "Phi la leh bha!",
+    "presentation": "Peit bniah ia kane ka dur",
+    "puzzle": {
+      "label": "Pyniasoh biang ia ka dur!",
+      "desc": "Khyndiat ia ka dkhot harum, nangta buh ha ka jaka kaba dei."
+    },
+    "pieces": "Ki dkhot",
+    "howToPlay": "Kumno ban ialehkai",
+    "recognition": "Phi ithuh ne em?",
+    "correct": "Kaba dei!",
+    "incorrect": "Pyrshang biang",
+    "backHome": "Leit biang sha iing",
+    "hint": {
+      "show": "Pyni hint",
+      "hide": "Buhrieh hint"
+    }
   },
   "wayfinding": {
     "title": "Lynti Shnong",
     "subtitle": "Leit phai sha iing",
     "start": "Sdang Jingiaid",
     "landmark": "Jaka Tynrai",
-    "reached": "Phi la poi sha iing!"
+    "reached": "Phi la poi sha iing!",
+    "explore": "Ia iaid ha kane ka lynti...",
+    "step": "Khyndiat {current} na {total}",
+    "listen": "Sngap ia ka jingbthah",
+    "walkTo": "Iaid sha {name}",
+    "recall": {
+      "label": "Hangno ngin leit nangne?",
+      "desc": "Hadien {prev}, hangno ngin leit?"
+    },
+    "complete": "Phi la poi suk sha iing! Khublei shibun!",
+    "score": "Score: {score}"
   },
   "caregiver": {
     "title": "Portal u Nongsumar",
@@ -346,7 +727,8 @@
     "language": "Ktien",
     "medicalProfile": "Jingsumar",
     "familyPhotos": "Dur Kiba Ha Iing",
-    "save": "Kynshew"
+    "save": "Kynshew",
+    "subtitle": "Jingpeit ia ki nongpang bad ka jingiarap kynmaw"
   },
   "intake": {
     "step": "Step {current} of {total}",

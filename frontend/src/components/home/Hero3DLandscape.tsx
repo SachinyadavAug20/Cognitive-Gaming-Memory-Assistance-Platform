@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import * as THREE from "three";
 import {
   Volume2,
@@ -15,6 +16,152 @@ import {
   Camera,
 } from "lucide-react";
 import { playTapFeedback, ensureAudioContext } from "@/lib/sound";
+
+const HERO_3D_I18N: Record<string, {
+  headerTitle: string;
+  sunrise: string;
+  golden: string;
+  night: string;
+  valley: string;
+  river: string;
+  tea: string;
+  calmAudio: string;
+  locationTag: string;
+  rotateTooltip: string;
+}> = {
+  en: {
+    headerTitle: "3D Brahmaputra Basin // Living Heritage Landscape",
+    sunrise: "Sunrise",
+    golden: "Golden",
+    night: "Night",
+    valley: "Valley",
+    river: "River",
+    tea: "Tea Terraces",
+    calmAudio: "Calm Audio",
+    locationTag: "Brahmaputra Valley, Upper Assam",
+    rotateTooltip: "Toggle Orbit Rotation",
+  },
+  hi: {
+    headerTitle: "3D ब्रह्मपुत्र घाटी // जीवंत सांस्कृतिक परिदृश्य",
+    sunrise: "सूर्योदय",
+    golden: "गोधूलि",
+    night: "रात्रि",
+    valley: "घाटी",
+    river: "नदी",
+    tea: "चाय बागान",
+    calmAudio: "शांत संगीत",
+    locationTag: "ब्रह्मपुत्र घाटी, ऊपरी असम",
+    rotateTooltip: "दृश्य घुमाव बदलें",
+  },
+  as: {
+    headerTitle: "3D ব্ৰহ্মপুত্ৰ উপত্যকা // সজীৱ ঐতিহ্যৰ দৃশ্যপট",
+    sunrise: "সূৰ্য্যোদয়",
+    golden: "সোণালী সন্ধিয়া",
+    night: "ৰাতি",
+    valley: "উপত্যকা",
+    river: "নৈ",
+    tea: "চাহ বাগিচা",
+    calmAudio: "শান্ত সুৰ",
+    locationTag: "ব্ৰহ্মপুত্ৰ উপত্যকা, উজনি অসম",
+    rotateTooltip: "দৃশ্য ভ্ৰমণ সলনি কৰক",
+  },
+  bn: {
+    headerTitle: "3D ব্রহ্মপুত্র উপত্যকা // সজীব সাংস্কৃতিক রূপরেখা",
+    sunrise: "সূর্যোদয়",
+    golden: "গোধূলি",
+    night: "রাত্রি",
+    valley: "উপত্যকা",
+    river: "নদী",
+    tea: "চা বাগান",
+    calmAudio: "শান্ত সুর",
+    locationTag: "ব্রহ্মপুত্র উপত্যকা, উজনি অসম",
+    rotateTooltip: "ঘূর্ণন পরিবর্তন করুন",
+  },
+  mr: {
+    headerTitle: "3D ब्रह्मपुत्रा खोरे // जिवंत वारसा देखावा",
+    sunrise: "सूर्योदय",
+    golden: "सायंकाळ",
+    night: "रात्र",
+    valley: "खोरे",
+    river: "नदी",
+    tea: "चहाच्या बागा",
+    calmAudio: "शांत संगीत",
+    locationTag: "ब्रह्मपुत्रा खोरे, अप्पर आसाम",
+    rotateTooltip: "दृश्य फिरवणे बदला",
+  },
+  ne: {
+    headerTitle: "3D ब्रह्मपुत्र उपत्यका // जीवित सम्पदा परिदृश्य",
+    sunrise: "सूर्योदय",
+    golden: "गोधूलि",
+    night: "रात",
+    valley: "उपत्यका",
+    river: "नदी",
+    tea: "चिया बगान",
+    calmAudio: "शान्त ध्वनि",
+    locationTag: "ब्रह्मपुत्र उपत्यका, माथिल्लो असम",
+    rotateTooltip: "दृश्य घुमाउनुहोस्",
+  },
+  mni: {
+    headerTitle: "3D ব্রহ্মপুত্র লম্পাক // পুন্সি মহিক পুন্সী লৈফম",
+    sunrise: "নুমিৎ থোকপা",
+    golden: "নুমিৎ য়াইফবা",
+    night: "অহিং",
+    valley: "লম্পাক",
+    river: "তুরেল",
+    tea: "চা পাম্বী",
+    calmAudio: "শান্তি খোঞ্জেল",
+    locationTag: "ব্রহ্মপুত্র লম্পাক, অৱাং আসাম",
+    rotateTooltip: "কোইনা য়েংবা",
+  },
+  brx: {
+    headerTitle: "3D ब्रह्मपुत्र हाजोमा // गाहाम गोसोखां हादर",
+    sunrise: "सान ओंखारनाय",
+    golden: "सान हाबनाय",
+    night: "हर",
+    valley: "हाजोमा",
+    river: "दैमा",
+    tea: "चा बागान",
+    calmAudio: "गोजोन सोदोब",
+    locationTag: "ब्रह्मपुत्र हाजोमा, गोजौ आसाम",
+    rotateTooltip: "गिदिंनाय सोलाय",
+  },
+  grt: {
+    headerTitle: "3D Brahmaputra Chiring // Living Heritage Landscape",
+    sunrise: "Sal Chakat",
+    golden: "Attam Sal",
+    night: "Wal",
+    valley: "Chiring",
+    river: "Chibima",
+    tea: "Cha Bagicho",
+    calmAudio: "Tomi Gam·ani",
+    locationTag: "Brahmaputra Chiring, Upper Assam",
+    rotateTooltip: "Rotation Switch",
+  },
+  kha: {
+    headerTitle: "3D Brahmaputra Wah // Ka Ri Ba Im Ka Kolshor",
+    sunrise: "Mynstep Mih Sngi",
+    golden: "Janmiet Sngi",
+    night: "Miet",
+    valley: "Thei Wah",
+    river: "Wah",
+    tea: "Kper Sha",
+    calmAudio: "Sur Jai Jai",
+    locationTag: "Brahmaputra Wah, Upper Assam",
+    rotateTooltip: "Phai Sawdong",
+  },
+  lus: {
+    headerTitle: "3D Brahmaputra Ruam // Living Heritage Landscape",
+    sunrise: "Zing Ni Chhuak",
+    golden: "Tlai Ni Tla",
+    night: "Zan",
+    valley: "Ruam",
+    river: "Lui",
+    tea: "Thingpui Huan",
+    calmAudio: "Rilru Hahdamna Ri",
+    locationTag: "Brahmaputra Ruam, Upper Assam",
+    rotateTooltip: "Vir Kualna",
+  },
+};
 
 type TimeOfDay = "morning" | "golden" | "night";
 type CameraPreset = "panoramic" | "river" | "tea";
@@ -740,6 +887,10 @@ export function Hero3DLandscape() {
     }
   }, [isPlayingAudio]);
 
+  const locale = useLocale();
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const heroT = HERO_3D_I18N[normLoc] || HERO_3D_I18N.en;
+
   const toggleFullscreen = () => {
     playTapFeedback();
     setIsFullscreen(!isFullscreen);
@@ -759,7 +910,7 @@ export function Hero3DLandscape() {
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-tea" />
           <span className="text-xs font-black uppercase tracking-wider text-ink">
-            3D Brahmaputra Basin // Living Heritage Landscape
+            {heroT.headerTitle}
           </span>
         </div>
 
@@ -780,7 +931,7 @@ export function Hero3DLandscape() {
               }`}
             >
               <Sun className="h-3 w-3" />
-              <span>Sunrise</span>
+              <span>{heroT.sunrise}</span>
             </button>
             <button
               type="button"
@@ -795,7 +946,7 @@ export function Hero3DLandscape() {
               }`}
             >
               <Sunset className="h-3 w-3" />
-              <span>Golden</span>
+              <span>{heroT.golden}</span>
             </button>
             <button
               type="button"
@@ -810,7 +961,7 @@ export function Hero3DLandscape() {
               }`}
             >
               <Moon className="h-3 w-3" />
-              <span>Night</span>
+              <span>{heroT.night}</span>
             </button>
           </div>
 
@@ -828,7 +979,7 @@ export function Hero3DLandscape() {
                   : "text-ink hover:bg-surface-muted"
               }`}
             >
-              Valley
+              {heroT.valley}
             </button>
             <button
               type="button"
@@ -842,7 +993,7 @@ export function Hero3DLandscape() {
                   : "text-ink hover:bg-surface-muted"
               }`}
             >
-              River
+              {heroT.river}
             </button>
             <button
               type="button"
@@ -856,7 +1007,7 @@ export function Hero3DLandscape() {
                   : "text-ink hover:bg-surface-muted"
               }`}
             >
-              Tea Terraces
+              {heroT.tea}
             </button>
           </div>
 
@@ -883,12 +1034,12 @@ export function Hero3DLandscape() {
             {isPlayingAudio ? (
               <>
                 <Volume2 className="h-3.5 w-3.5" />
-                <span>Calm Audio</span>
+                <span>{heroT.calmAudio}</span>
               </>
             ) : (
               <>
                 <VolumeX className="h-3.5 w-3.5" />
-                <span>Calm Audio</span>
+                <span>{heroT.calmAudio}</span>
               </>
             )}
           </button>
@@ -921,7 +1072,7 @@ export function Hero3DLandscape() {
         {/* Floating Ambient Info Tag */}
         <div className="absolute top-3 right-3 bg-surface/90 backdrop-blur-xs border-2 border-black px-3 py-1 rounded-xl text-xs font-black text-ink shadow-[2px_2px_0px_#000] pointer-events-none flex items-center gap-1.5">
           <Camera className="h-3.5 w-3.5 text-tea" />
-          <span>Brahmaputra Valley, Upper Assam</span>
+          <span>{heroT.locationTag}</span>
         </div>
       </div>
     </div>

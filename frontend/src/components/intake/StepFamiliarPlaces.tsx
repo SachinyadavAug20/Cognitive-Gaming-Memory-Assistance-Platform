@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { StepHeader } from "./StepHeader";
 import { DynamicList } from "./DynamicList";
 import { PhotoPicker } from "./PhotoPicker";
@@ -20,6 +20,39 @@ import {
 } from "lucide-react";
 import { LANDMARK_ICONS } from "@/types/intake";
 import type { LandmarkEntry } from "@/types/intake";
+
+const LANDMARK_ICON_LABELS: Record<string, Record<string, string>> = {
+  home: {
+    en: "Home", as: "ঘৰ", hi: "घर", bn: "বাড়ি", mr: "घर", ne: "घर", mni: "য়ুম", brx: "न'", grt: "Nok", kha: "Iing", lus: "In"
+  },
+  market: {
+    en: "Market", as: "বজাৰ", hi: "बाज़ार", bn: "বাজার", mr: "बाजार", ne: "बजार", mni: "কৈথেল", brx: "बाजार", grt: "Bazaar", kha: "Iew", lus: "Bazar"
+  },
+  temple: {
+    en: "Temple / Worship", as: "নামঘৰ / মন্দিৰ", hi: "मंदिर / पूजा स्थल", bn: "মন্দির / উপাসনালয়", mr: "मंदिर / पूजा स्थान", ne: "मन्दिर / पूजा स्थल", mni: "লাইশং", brx: "थान / मन्दिर", grt: "Gilja Nok", kha: "Manoir", lus: "Biakin"
+  },
+  clinic: {
+    en: "Clinic / Hospital", as: "চিকিৎসালয় / ক্লিনিক", hi: "अस्पताल / क्लिनिक", bn: "হাসপাতাল / ক্লিনিক", mr: "दवाखाना / रुग्णालय", ne: "अस्पताल / क्लिनिक", mni: "হিদাকফম / লায়েশং", brx: "फाहामथायसाली", grt: "Sam Nok", kha: "Phaidaw", lus: "Damdawi In"
+  },
+  school: {
+    en: "School", as: "বিদ্যালয়", hi: "स्कूल / विद्यालय", bn: "বিদ্যালয়", mr: "शाळा", ne: "विद्यालय", mni: "লাইরিক তমহংবা", brx: "फरायसाली", grt: "School", kha: "Skul", lus: "Sikulpui"
+  },
+  park: {
+    en: "Park / Garden", as: "উদ্যান / ফুলনি", hi: "पार्क / बगीचा", bn: "পার্ক / বাগান", mr: "उद्यान / बाग", ne: "पार्क / बगैँचा", mni: "লৈকোল", brx: "पार्क / बागां", grt: "Bagan", kha: "Kper", lus: "Huan"
+  },
+  bus: {
+    en: "Bus / Transit", as: "বাছ আস্থান", hi: "बस स्टॉप", bn: "বাস স্টপ", mr: "बस थांबा", ne: "बस स्टेसन", mni: "বস ষ্টপ", brx: "बास थासारि", grt: "Bus Station", kha: "Bus Stand", lus: "Bus Stand"
+  },
+  store: {
+    en: "Store / Shop", as: "দোকান", hi: "दुकान", bn: "দোকান", mr: "दुकान", ne: "पसल", mni: "দুকান", brx: "दुकान", grt: "Dokkan", kha: "Dukan", lus: "Dawr"
+  },
+  hills: {
+    en: "Hills / Scenic", as: "পাহাৰ / প্ৰকৃতি", hi: "पहाड़ / प्राकृतिक", bn: "পাহাড় / মনোরম", mr: "टेकडी / निसर्ग", ne: "डाँडा / पहाड", mni: "চিংশাং", brx: "हाजो / मिथिंगा", grt: "A·bri", kha: "Lum", lus: "Tlang"
+  },
+  lake: {
+    en: "Lake / River", as: "নৈ / পুখুৰী", hi: "झील / नदी", bn: "হ্রদ / নদী", mr: "तलाव / नदी", ne: "ताल / नदी", mni: "লমপাক / তুরেল", brx: "दोलं / दैसा", grt: "Chiring", kha: "Wah", lus: "Tuipui / Dil"
+  },
+};
 
 const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }>> = {
   home: Home,
@@ -89,6 +122,8 @@ function LandmarkCard({
   const tName = useTranslations("intake.places.name");
   const tDesc = useTranslations("intake.places.desc");
   const tIcon = useTranslations("intake.places");
+  const locale = useLocale();
+  const normLoc = locale?.split("-")[0]?.toLowerCase() || "en";
 
   const handlePhoto = useCallback(
     (_file: File, dataUrl: string) => {
@@ -143,6 +178,7 @@ function LandmarkCard({
           {LANDMARK_ICONS.map((item) => {
             const IconComp = ICON_COMPONENTS[item.id] || MapPin;
             const isSelected = landmark.emoji === item.id;
+            const locLabel = LANDMARK_ICON_LABELS[item.id]?.[normLoc] || item.label;
 
             return (
               <button
@@ -151,7 +187,8 @@ function LandmarkCard({
                 role="radio"
                 aria-checked={isSelected}
                 onClick={() => onUpdate({ ...landmark, emoji: item.id })}
-                title={item.label}
+                title={locLabel}
+                aria-label={locLabel}
                 className={`flex-shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-xl border-3 transition-all cursor-pointer ${
                   isSelected
                     ? "bg-marigold-light border-marigold scale-105 text-ink font-bold shadow-xs"
@@ -159,7 +196,7 @@ function LandmarkCard({
                 }`}
               >
                 <IconComp className="h-5 w-5 stroke-[2.2]" />
-                <span className="text-[9px] font-bold mt-1 line-clamp-1">{item.label.split(" ")[0]}</span>
+                <span className="text-[9px] font-bold mt-1 line-clamp-1">{locLabel.split(" ")[0]}</span>
               </button>
             );
           })}

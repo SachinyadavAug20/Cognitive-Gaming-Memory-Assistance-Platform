@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, useCallback, useState, useEffect } from "react";
+import { useLocale } from "next-intl";
 import {
   Moon,
   Hand,
@@ -12,6 +13,188 @@ import dynamic from "next/dynamic";
 import { useListenFirst } from "@/components/accessibility/useListenFirst";
 import { playPress, unlockAudio } from "@/lib/sound";
 import { usePathname } from "@/i18n/navigation";
+
+const TOOLBAR_I18N: Record<string, {
+  seniorLabel: string;
+  textSize: string;
+  readAloud: string;
+  audioOn: string;
+  nightMode: string;
+  nightOn: string;
+  govtSub: string;
+  mouse: string;
+  airMouse: string;
+  airOn: string;
+  contrastMode: string;
+  contrastOn: string;
+  settings: string;
+}> = {
+  en: {
+    seniorLabel: "Senior Reading & Accessibility",
+    textSize: "Text Size:",
+    readAloud: "Read Aloud",
+    audioOn: "Audio: ON",
+    nightMode: "Night Mode",
+    nightOn: "Night: ON",
+    govtSub: "Cognitive Digital Therapeutics (CDTx)",
+    mouse: "Mouse",
+    airMouse: "Air Mouse",
+    airOn: "Air: ON",
+    contrastMode: "Contrast Mode",
+    contrastOn: "Contrast: ON",
+    settings: "Settings",
+  },
+  hi: {
+    seniorLabel: "वरिष्ठ पाठन एवं सुगमता",
+    textSize: "अक्षर आकार:",
+    readAloud: "बोलकर सुनाएं",
+    audioOn: "ध्वनि: चालू",
+    nightMode: "रात्रि मोड",
+    nightOn: "रात: चालू",
+    govtSub: "संज्ञानात्मक डिजिटल थेरेप्यूटिक्स (CDTx)",
+    mouse: "माउस",
+    airMouse: "एयर माउस",
+    airOn: "एयर: चालू",
+    contrastMode: "कंट्रास्ट मोड",
+    contrastOn: "कंट्रास्ट: चालू",
+    settings: "सेटिंग्स",
+  },
+  as: {
+    seniorLabel: "জেষ্ঠ্য পঠন আৰু সুচলতা",
+    textSize: "আখৰৰ আকাৰ:",
+    readAloud: "পঢ়ি শুনাওক",
+    audioOn: "ধ্বনি: চলি আছে",
+    nightMode: "ৰাতিৰ ম'ড",
+    nightOn: "ৰাতি: চলি আছে",
+    govtSub: "জ্ঞানমূলক ডিজিটেল চিকিৎসা (CDTx)",
+    mouse: "মাউছ",
+    airMouse: "এয়াৰ মাউছ",
+    airOn: "এয়াৰ: চলি আছে",
+    contrastMode: "কনট্ৰাষ্ট ম'ড",
+    contrastOn: "কনট্ৰাষ্ট: চলি আছে",
+    settings: "ছেটিংছ",
+  },
+  bn: {
+    seniorLabel: "জ্যেষ্ঠ পাঠ ও সহজগম্যতা",
+    textSize: "হরফের আকার:",
+    readAloud: "পড়ে শোনান",
+    audioOn: "শব্দ: চালু",
+    nightMode: "রাত্রি মোড",
+    nightOn: "রাত: চালু",
+    govtSub: "কগনিটিভ ডিজিটাল থেরাপিউটিক্স (CDTx)",
+    mouse: "মাউস",
+    airMouse: "এয়ার মাউস",
+    airOn: "এয়ার: চালু",
+    contrastMode: "কনট্রাস্ট মোড",
+    contrastOn: "কনট্রাস্ট: চালু",
+    settings: "সেটিংস",
+  },
+  mr: {
+    seniorLabel: "ज्येष्ठ वाचन व सुलभता",
+    textSize: "अक्षर आकार:",
+    readAloud: "वाचून दाखवा",
+    audioOn: "आवाज: चालू",
+    nightMode: "रात्र मोड",
+    nightOn: "रात्र: चालू",
+    govtSub: "कॉग्निटिव्ह डिजिटल थेरॅप्युटिक्स (CDTx)",
+    mouse: "माऊस",
+    airMouse: "एअर माऊस",
+    airOn: "एअर: चालू",
+    contrastMode: "कॉन्ट्रास्ट मोड",
+    contrastOn: "कॉन्ट्रास्ट: चालू",
+    settings: "सेटिंग्ज",
+  },
+  ne: {
+    seniorLabel: "ज्येष्ठ पठन र पहुँच",
+    textSize: "अक्षरको आकार:",
+    readAloud: "पढेर सुनाउनुहोस्",
+    audioOn: "ध्वनि: चालू",
+    nightMode: "रातको मोड",
+    nightOn: "रात: चालू",
+    govtSub: "संज्ञानात्मक डिजिटल थेराप्यूटिक्स (CDTx)",
+    mouse: "माउस",
+    airMouse: "एयर माउस",
+    airOn: "एयर: चालू",
+    contrastMode: "कन्ट्रास्ट मोड",
+    contrastOn: "कन्ट्रास्ट: चालू",
+    settings: "सेटिङहरू",
+  },
+  mni: {
+    seniorLabel: "অহলশিংগী পাভী-সুচলতা",
+    textSize: "ময়েক্কী অচৌ-অচা:",
+    readAloud: "পাথোকউ",
+    audioOn: "খোল্লাক: য়াওরে",
+    nightMode: "অহিং মোড",
+    nightOn: "অহিং: য়াওরে",
+    govtSub: "কগনিটিভ দিজিতেল থেরাপী (CDTx)",
+    mouse: "মাউস",
+    airMouse: "এয়ার মাউস",
+    airOn: "এয়ার: য়াওরে",
+    contrastMode: "কনত্রাষ্ট মোড",
+    contrastOn: "কনত্রাষ্ট: য়াওরে",
+    settings: "সেতিংশিং",
+  },
+  brx: {
+    seniorLabel: "गिदिरफोरनि फरायनाय आरो हेफाजाब",
+    textSize: "हांखो महर:",
+    readAloud: "फरायना खोनथा",
+    audioOn: "सोदोब: जागायबाय",
+    nightMode: "हरनि महर",
+    nightOn: "हर: जागायबाय",
+    govtSub: "कगनिथिव दिजिथेल थेरापि (CDTx)",
+    mouse: "माउस",
+    airMouse: "एयार माउस",
+    airOn: "एयार: जाबाय",
+    contrastMode: "कनत्रास्ट महर",
+    contrastOn: "कनत्रास्ट: जागायबाय",
+    settings: "सेटिंफोर",
+  },
+  grt: {
+    seniorLabel: "Balgipani Poriani & Dakchakaniko",
+    textSize: "Okkorni dal·ani:",
+    readAloud: "Porie Knatimatbo",
+    audioOn: "Gam·ani: ON",
+    nightMode: "Walo Ni·ani",
+    nightOn: "Wal: ON",
+    govtSub: "Cognitive Digital Therapeutics (CDTx)",
+    mouse: "Mouse",
+    airMouse: "Air Mouse",
+    airOn: "Air: ON",
+    contrastMode: "Contrast Mode",
+    contrastOn: "Contrast: ON",
+    settings: "Settings",
+  },
+  kha: {
+    seniorLabel: "Ka Jingpule Ki Rangbah & Jingiarap",
+    textSize: "Ka jingheh dak:",
+    readAloud: "Pule ia nga",
+    audioOn: "Sur: ON",
+    nightMode: "Rukom Miet",
+    nightOn: "Miet: ON",
+    govtSub: "Cognitive Digital Therapeutics (CDTx)",
+    mouse: "Mouse",
+    airMouse: "Air Mouse",
+    airOn: "Air: ON",
+    contrastMode: "Contrast Mode",
+    contrastOn: "Contrast: ON",
+    settings: "Settings",
+  },
+  lus: {
+    seniorLabel: "Upate Chhiarna leh Puihna",
+    textSize: "Hawrawp Len Zawng:",
+    readAloud: "Chhiar Rawh",
+    audioOn: "Ri: ON",
+    nightMode: "Zan Thim Rim",
+    nightOn: "Zan: ON",
+    govtSub: "Cognitive Digital Therapeutics (CDTx)",
+    mouse: "Mouse",
+    airMouse: "Air Mouse",
+    airOn: "Air: ON",
+    contrastMode: "Contrast Mode",
+    contrastOn: "Contrast: ON",
+    settings: "Settings",
+  },
+};
 
 const VirtualAirMouse = dynamic(
   () => import("@/components/accessibility/VirtualAirMouse").then((m) => m.VirtualAirMouse),
@@ -472,6 +655,9 @@ export function AccessibilityToolbar() {
   const activeInputMode = mounted ? inputMode : "physical";
   const activeListenFirst = mounted ? listenFirstActive : false;
   const pathname = usePathname();
+  const locale = useLocale();
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const a11y = TOOLBAR_I18N[normLoc] || TOOLBAR_I18N.en;
   const isPatientRoute = pathname.startsWith("/patient") || pathname.startsWith("/kiosk");
 
   return (
@@ -487,7 +673,7 @@ export function AccessibilityToolbar() {
             <div className="flex items-center gap-2 font-bold shrink-0">
               <span className="flex items-center gap-2 text-sm sm:text-base font-black text-tea whitespace-nowrap">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-tea" />
-                Senior Reading & Accessibility
+                {a11y.seniorLabel}
               </span>
             </div>
 
@@ -495,7 +681,7 @@ export function AccessibilityToolbar() {
             <div className="flex items-center gap-2.5 shrink-0">
               {/* Font Size Scaler */}
               <div className="flex items-center gap-1 rounded-xl border-2 border-black/40 bg-surface p-1 shadow-xs shrink-0">
-                <span className="text-xs sm:text-sm font-black px-2 text-ink hidden sm:inline">Text Size:</span>
+                <span className="text-xs sm:text-sm font-black px-2 text-ink hidden sm:inline">{a11y.textSize}</span>
                 <button
                   type="button"
                   onClick={() => setFontSize("sm")}
@@ -547,7 +733,7 @@ export function AccessibilityToolbar() {
                 title="Toggle Voice Read Aloud on Hover or Touch"
               >
                 <Volume2 className="h-4.5 w-4.5 stroke-[2.5]" />
-                <span>{activeListenFirst ? "Audio: ON" : "Read Aloud"}</span>
+                <span>{activeListenFirst ? a11y.audioOn : a11y.readAloud}</span>
               </button>
 
               {/* Circadian Night Mode Toggle */}
@@ -563,7 +749,7 @@ export function AccessibilityToolbar() {
                 title="Toggle High Contrast Night Mode"
               >
                 <Moon className="h-4.5 w-4.5" />
-                <span>{activeHighContrast ? "Night: ON" : "Night Mode"}</span>
+                <span>{activeHighContrast ? a11y.nightOn : a11y.nightMode}</span>
               </button>
             </div>
           </div>
@@ -582,7 +768,7 @@ export function AccessibilityToolbar() {
             </span>
             <span className="text-black/30 hidden 2xl:inline">|</span>
             <span className="text-[11px] text-ink-secondary hidden 2xl:inline whitespace-nowrap">
-              Cognitive Digital Therapeutics (CDTx)
+              {a11y.govtSub}
             </span>
           </div>
 
@@ -608,7 +794,7 @@ export function AccessibilityToolbar() {
                 title="Physical Mouse & Touch Mode (Standard OS Cursor)"
               >
                 <MousePointer className="h-3 w-3 stroke-[2.5]" />
-                <span className="hidden md:inline">Mouse</span>
+                <span className="hidden md:inline">{a11y.mouse}</span>
               </button>
 
               <button
@@ -627,10 +813,10 @@ export function AccessibilityToolbar() {
               >
                 <Hand className="h-3 w-3 stroke-[2.5]" />
                 <span className="hidden md:inline">
-                  {activeInputMode === "virtual" ? "Air (ON)" : "Air Mouse"}
+                  {activeInputMode === "virtual" ? a11y.airOn : a11y.airMouse}
                 </span>
                 <span className="md:hidden">
-                  {activeInputMode === "virtual" ? "Air: ON" : "Air"}
+                  {activeInputMode === "virtual" ? a11y.airOn : a11y.airMouse}
                 </span>
               </button>
             </div>
@@ -652,7 +838,7 @@ export function AccessibilityToolbar() {
             >
               <Volume2 className="h-3.5 w-3.5 stroke-[2.5]" />
               <span className="hidden lg:inline">
-                {activeListenFirst ? "Listen: ON" : "Listen-First"}
+                {activeListenFirst ? a11y.audioOn : a11y.readAloud}
               </span>
             </button>
 
@@ -667,7 +853,7 @@ export function AccessibilityToolbar() {
               title="Open Elder Accessibility Suite (WCAG AAA Settings)"
             >
               <Sliders className="h-3.5 w-3.5 stroke-[2.5]" />
-              <span className="hidden lg:inline">Settings</span>
+              <span className="hidden lg:inline">{a11y.settings}</span>
             </button>
 
             {/* Circadian Night Mode Toggle */}
@@ -683,7 +869,7 @@ export function AccessibilityToolbar() {
               title="Toggle Circadian Night Mode (Zero Blue Light, Sleep-Safe)"
             >
               <Moon className="h-3.5 w-3.5" />
-              <span className="hidden lg:inline">{activeHighContrast ? "Contrast: ON" : "Contrast Mode"}</span>
+              <span className="hidden lg:inline">{activeHighContrast ? a11y.contrastOn : a11y.contrastMode}</span>
             </button>
 
             {/* Font Size Scaler */}

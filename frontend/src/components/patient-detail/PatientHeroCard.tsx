@@ -1,11 +1,25 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Printer, BookOpen } from "lucide-react";
 import { ClinicalDossierExport } from "@/components/clinical/ClinicalDossierExport";
 import { ClinicalReportExportModal } from "@/components/patient-detail/ClinicalReportExportModal";
 import type { PatientDetailRecord } from "@/types";
+
+const CLINICAL_DOSSIER_BTN_I18N: Record<string, { label: string; title: string }> = {
+  en: { label: "Clinical Research Dossier", title: "View MoCA, ACTIVE Study & W3C COGA Scientific Evidence" },
+  as: { label: "ক্লিনিকেল গৱেষণা নথিপত্ৰ", title: "MoCA, ACTIVE অধ্যয়ন আৰু W3C COGA বৈজ্ঞানিক প্ৰমাণ চাওক" },
+  hi: { label: "नैदानिक शोध डॉसियर", title: "MoCA, ACTIVE अध्ययन एवं W3C COGA वैज्ञानिक साक्ष्य देखें" },
+  bn: { label: "ক্লিনিকাল গবেষণা নথি", title: "MoCA, ACTIVE গবেষণা এবং W3C COGA বৈজ্ঞানিক প্রমাণ দেখুন" },
+  mr: { label: "क्लिनिकल संशोधन अहवाल", title: "MoCA, ACTIVE अभ्यास आणि W3C COGA वैज्ञानिक पुरावे पहा" },
+  ne: { label: "क्लिनिकल अनुसन्धान डसियर", title: "MoCA, ACTIVE अध्ययन र W3C COGA वैज्ञानिक प्रमाण हेर्नुहोस्" },
+  mni: { label: "ক্লিনিকল রিসার্স দোসিয়র", title: "MoCA, ACTIVE স্তদী অমসুং W3C COGA সাইন্টিফিক প্রূফ য়েংবীয়ু" },
+  brx: { label: "क्लिनिकेल बिजिरनाय दस्ताबेज", title: "MoCA, ACTIVE आनजाद आरो W3C COGA बिगियानारि फोरमान नाय" },
+  grt: { label: "Clinical Research Dossier", title: "MoCA, ACTIVE Poraiani aro W3C COGA Sakki Nibo" },
+  kha: { label: "Dossier Jingwad Buit Dawai", title: "Peit ia ka MoCA, ACTIVE Jingpule & W3C COGA Sakhi" },
+  lus: { label: "Damdawi Zirchianna Dossier", title: "MoCA, ACTIVE Zirchianna leh W3C COGA Finfiahna En Rawh" },
+};
 
 interface PatientHeroCardProps {
   patient: PatientDetailRecord | null;
@@ -25,6 +39,9 @@ export function PatientHeroCard({
   onOpenEvidenceModal,
 }: PatientHeroCardProps) {
   const t = useTranslations("patientDetail");
+  const locale = useLocale();
+  const normLocale = locale?.split("-")[0].toLowerCase() || "en";
+  const dossierBtn = CLINICAL_DOSSIER_BTN_I18N[normLocale] || CLINICAL_DOSSIER_BTN_I18N.en;
 
   return (
     <div className="bg-ink border-b-4 border-border px-4 py-6 md:px-8">
@@ -77,10 +94,10 @@ export function PatientHeroCard({
                   type="button"
                   onClick={onOpenEvidenceModal}
                   className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-teal-300 px-3.5 py-2 text-xs font-black text-teal-950 shadow-[2px_2px_0px_#000] hover:bg-teal-200 transition-colors cursor-pointer"
-                  title="View MoCA, ACTIVE Study & W3C COGA Scientific Evidence"
+                  title={dossierBtn.title}
                 >
                   <BookOpen className="h-4 w-4 text-teal-950" />
-                  <span>Clinical Research Dossier</span>
+                  <span>{dossierBtn.label}</span>
                 </button>
               )}
               <ClinicalReportExportModal patient={patient} age={age ?? null} stage={stage} />

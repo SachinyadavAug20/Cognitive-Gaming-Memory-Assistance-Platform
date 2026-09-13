@@ -58,6 +58,11 @@ interface RoutineTranslations {
   aptScheduled: string;
   aptMarkVisited: string;
   aptSpoken: string;
+  // Time Subtitles
+  medTimeSub: string;
+  waterTimeSub: string;
+  actTimeSub: string;
+  aptTimeSub: string;
   allSpoken: string;
 }
 
@@ -94,6 +99,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "2:30 PM • ASHA Notified",
     aptMarkVisited: "Mark as Visited",
     aptSpoken: "You have an appointment today at 2:30 PM at Dispur PHC Health Center with Dr. B. K. Sarma. Your daughter Sunita and the local nurse are notified.",
+    medTimeSub: "8:00 AM • Morning",
+    waterTimeSub: "All Day • 6 Glasses",
+    actTimeSub: "11:00 AM • 15 Mins",
+    aptTimeSub: "2:30 PM • Dispur PHC",
     allSpoken: "Today's Routine. 1: Morning medicine taken with water. 2: Stay hydrated with fresh water. 3: Family memory activity at 11:00 AM. 4: Doctor visit at 2:30 PM at Dispur PHC.",
   },
   as: {
@@ -128,6 +137,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "দুপৰীয়া ২:৩০ বজাত • আশা কৰ্মী জ্ঞাত",
     aptMarkVisited: "সম্পন্ন বুলি চিহ্নিত কৰক",
     aptSpoken: "আজি দুপৰীয়া ২:৩০ বজাত দিছপুৰ প্ৰাথমিক স্বাস্থ্য কেন্দ্ৰত ডাঃ বি কে শৰ্মাৰ সৈতে আপোনাৰ স্বাস্থ্য পৰীক্ষা আছে।",
+    medTimeSub: "পুৱা ৮:০০ বজাত • ৰাতিপুৱা",
+    waterTimeSub: "দিনটোত • ৬ গিলাচ",
+    actTimeSub: "পুৱা ১১:০০ বজাত • ১৫ মিনিট",
+    aptTimeSub: "দুপৰীয়া ২:৩০ বজাত • দিছপুৰ পিএইচচি",
     allSpoken: "আজিৰ দিনচৰ্যা। প্ৰথমতে, পুৱাৰ ঔষধ পানীৰে খাব। দ্বিতীয়তে, দিনটোত ৬ গিলাচ পানী খাব। তৃতীয়তে, ১১ বজাত পুৰণি ফটো চাওক। চতুৰ্থতে, দুপৰীয়া ২:৩০ বজাত দিছপুৰ স্বাস্থ্য কেন্দ্ৰলৈ যাব।",
   },
   hi: {
@@ -162,6 +175,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "दोपहर 2:30 बजे • आशा कार्यकर्ता सूचित",
     aptMarkVisited: "जांच पूरी हुई",
     aptSpoken: "दोपहर 2:30 बजे दिसपुर स्वास्थ्य केंद्र में डॉ. बी. के. शर्मा के साथ आपकी जांच निर्धारित है।",
+    medTimeSub: "सुबह 8:00 बजे • प्रातःकाल",
+    waterTimeSub: "दिन भर • 6 गिलास",
+    actTimeSub: "सुबह 11:00 बजे • 15 मिनट",
+    aptTimeSub: "दोपहर 2:30 बजे • दिसपुर पीएचसी",
     allSpoken: "आज की दिनचर्या। 1: सुबह 8:00 बजे दवाई लें। 2: दिन भर में 6 गिलास पानी पिएं। 3: 11:00 बजे पुरानी तस्वीरें देखें। 4: दोपहर 2:30 बजे दिसपुर स्वास्थ्य केंद्र में डॉक्टर से मिलें।",
   },
   bn: {
@@ -196,6 +213,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "দুপুর ২:৩০ টায় • আশা কর্মী অবহিত",
     aptMarkVisited: "দেখা হয়েছে চিহ্নিত করুন",
     aptSpoken: "দুপুর ২:৩০ টায় দিসপুর প্রাথমিক স্বাস্থ্য কেন্দ্রে ডাঃ বি কে শর্মার সাথে আপনার চেকআপ নির্ধারিত আছে।",
+    medTimeSub: "সকাল ৮:০০ টায় • প্রভাত",
+    waterTimeSub: "সারাদিন • ৬ গ্লাস",
+    actTimeSub: "বেলা ১১:০০ টায় • ১৫ মিনিট",
+    aptTimeSub: "দুপুর ২:৩০ টায় • দিসপুর পিএইচসি",
     allSpoken: "আজকের রুটিন। ১: সকাল ৮:০০ টায় ওষুধ খান। ২: দিনে ৬ গ্লাস জল পান করুন। ৩: বেলা ১১:০০ টায় পুরনো ছবি দেখুন। ৪: দুপুর ২:৩০ টায় দিসপুর স্বাস্থ্য কেন্দ্রে ডাক্তার দেখান।",
   },
   mr: {
@@ -230,6 +251,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "दुपारी २:३० वाजता • आशा सेविका सूचित",
     aptMarkVisited: "झाले म्हणून खूण करा",
     aptSpoken: "दुपारी २:३० वाजता दिसपूर आरोग्य केंद्रात डॉ. शर्मा यांच्याशी भेट आहे.",
+    medTimeSub: "सकाळी ८:०० वाजता • सकाळ",
+    waterTimeSub: "दिवसभरात • ६ ग्लास",
+    actTimeSub: "सकाळी ११:०० वाजता • १५ मिनिटे",
+    aptTimeSub: "दुपारी २:३० वाजता • दिसपूर पीएचसी",
     allSpoken: "आजची दिनचर्या. औषध घ्या, पाणी प्या, फोटो पहा, आणि दुपारी डॉक्टरांना भेटा.",
   },
   ne: {
@@ -264,6 +289,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "दिउँसो २:३० बजे • आशा कार्यकर्ता सूचित",
     aptMarkVisited: "सम्पन्न भएको चिन्ह लगाउनुहोस्",
     aptSpoken: "दिउँसो २:३० बजे दिसपुर स्वास्थ्य केन्द्रमा डा. शर्मासँग तपाईंको जाँच छ।",
+    medTimeSub: "बिहान ८:०० बजे • बिहान",
+    waterTimeSub: "दिनभरि • ६ गिलास",
+    actTimeSub: "बिहान ११:०० बजे • १५ मिनेट",
+    aptTimeSub: "दिउँसो २:३० बजे • दिसपुर पीएचसी",
     allSpoken: "आजको दिनचर्या। बिहान औषधि खानुहोस्, पानी पिउनुहोस्, तस्बिर हेर्नुहोस् र डाक्टरलाई भेट्नुहोस्।",
   },
   mni: {
@@ -298,6 +327,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "পুং ২:৩০ দা • আশা ৱার্করদা পাউ পীখ্রে",
     aptMarkVisited: "য়েংখ্রে হায়না নম্বীয়ু",
     aptSpoken: "নুমিদাংৱাই পুং ২:৩০ দা দিসপুর হকশেল য়াওলদা দোক্তর শৰ্মাগা উনগনি।",
+    medTimeSub: "অয়ুক পুং ৮:০০ • অয়ুক",
+    waterTimeSub: "নুমিৎ চুপ্পা • গ্লাস ৬",
+    actTimeSub: "অয়ুক পুং ১১:০০ • মিনিট ১৫",
+    aptTimeSub: "নুমিদাংৱাই পুং ২:৩০ • দিসপুর পিএইচসি",
     allSpoken: "ঙসিগী থবকশিং। হিদাক চাবীয়ু, ঈশিং থকপীয়ু, ফোতো য়েংবীয়ু অমসুং দোক্তর উনবীয়ু।",
   },
   brx: {
@@ -332,6 +365,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "2:30 रिंगायाव • आसा मिथिबाय",
     aptMarkVisited: "जाबाय होनना लिर",
     aptSpoken: "बेलासिनि 2:30 रिंगायाव दिसपुर पीएचसि आव डाक्टर शर्माजों लोगो हमनांगौ।",
+    medTimeSub: "फुंनि 8:00 रिंगा • फुं",
+    waterTimeSub: "सानसेयाव • 6 ग्लास",
+    actTimeSub: "फुंनि 11:00 रिंगा • 15 मिनिट",
+    aptTimeSub: "बेलासे 2:30 रिंगा • दिसपुर पीएचसि",
     allSpoken: "दिनैनि सानफ्रोमनि बिथांखि। मुलि जा, दै लों, सावगारि नाय आरो डाक्टर लोगो हम।",
   },
   grt: {
@@ -366,6 +403,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "Attam 2:30 bajio • ASHA u·i-aha",
     aptMarkVisited: "Machotaha",
     aptSpoken: "Attam 2:30 bajio Dispur PHC-o Dr. Sarma baksa an·sengani sandiani donga.",
+    medTimeSub: "Pring 8:00 baji • Pring",
+    waterTimeSub: "Salgimik • Glass 6",
+    actTimeSub: "Pring 11:00 baji • Minit 15",
+    aptTimeSub: "Attam 2:30 baji • Dispur PHC",
     allSpoken: "Da·alni kamrang. Sam ring·bo, chi ring·bo, noksa nibo, aro daktarna mesokbo.",
   },
   kha: {
@@ -400,6 +441,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "2:30 janmiet • ASHA la tip",
     aptMarkVisited: "Buh Dak La Dep",
     aptSpoken: "Phi don jingiakynduh doctor ha ka 2:30 janmiet ha Dispur PHC bad Dr. Sarma.",
+    medTimeSub: "8:00 mynstep • Mynstep",
+    waterTimeSub: "Baroh ka sngi • 6 Klat",
+    actTimeSub: "11:00 mynstep • 15 Minit",
+    aptTimeSub: "2:30 janmiet • Dispur PHC",
     allSpoken: "Ka jingbuh por man ka sngi. Dih dawai, dih um, peit dur iing bad leit sha doctor.",
   },
   lus: {
@@ -434,6 +479,10 @@ const ROUTINE_DATA: Record<string, RoutineTranslations> = {
     aptScheduled: "Chawhnu dar 2:30 • ASHA hriattir tawh",
     aptMarkVisited: "Entir tawh tih chhinchhiah",
     aptSpoken: "Chawhnu dar 2:30 ah Dispur PHC ah Dr. Sarma nen inentir tur a ni e.",
+    medTimeSub: "Zing dar 8:00 • Zing",
+    waterTimeSub: "Ni lengin • No 6",
+    actTimeSub: "Chawhma dar 11:00 • Minit 15",
+    aptTimeSub: "Chawhnu dar 2:30 • Dispur PHC",
     allSpoken: "Vawiin tih turte. Damdawi ei la, tui in la, thlalak en la, doctor inentir rawh le.",
   },
 };
@@ -541,7 +590,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
                   <span className="inline-flex items-center rounded-full bg-rose-50 border border-rose-300 px-2.5 py-0.5 text-[11px] font-black uppercase text-rose-900 tracking-wider">
                     {loc.medTag}
                   </span>
-                  <div className="text-xs font-bold text-ink-secondary mt-0.5">8:00 AM • Morning</div>
+                  <div className="text-xs font-bold text-ink-secondary mt-0.5">{loc.medTimeSub}</div>
                 </div>
               </div>
 
@@ -603,7 +652,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
                   <span className="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-300 px-2.5 py-0.5 text-[11px] font-black uppercase text-emerald-900 tracking-wider">
                     {loc.waterTag}
                   </span>
-                  <div className="text-xs font-bold text-ink-secondary mt-0.5">All Day • 6 Glasses</div>
+                  <div className="text-xs font-bold text-ink-secondary mt-0.5">{loc.waterTimeSub}</div>
                 </div>
               </div>
 
@@ -693,7 +742,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
                   <span className="inline-flex items-center rounded-full bg-amber-50 border border-amber-300 px-2.5 py-0.5 text-[11px] font-black uppercase text-amber-900 tracking-wider">
                     {loc.actTag}
                   </span>
-                  <div className="text-xs font-bold text-ink-secondary mt-0.5">11:00 AM • 15 Mins</div>
+                  <div className="text-xs font-bold text-ink-secondary mt-0.5">{loc.actTimeSub}</div>
                 </div>
               </div>
 
@@ -755,7 +804,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
                   <span className="inline-flex items-center rounded-full bg-purple-50 border border-purple-300 px-2.5 py-0.5 text-[11px] font-black uppercase text-purple-900 tracking-wider">
                     {loc.aptTag}
                   </span>
-                  <div className="text-xs font-bold text-ink-secondary mt-0.5">2:30 PM • Dispur PHC</div>
+                  <div className="text-xs font-bold text-ink-secondary mt-0.5">{loc.aptTimeSub}</div>
                 </div>
               </div>
 

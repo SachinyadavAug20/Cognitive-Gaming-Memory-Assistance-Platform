@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "next-intl";
 import {
   FileText,
   Printer,
@@ -13,6 +14,68 @@ import {
 } from "lucide-react";
 import type { PatientDetailRecord } from "@/types";
 
+const DOSSIER_EXPORT_I18N: Record<string, {
+  btnText: string;
+  modalHeader: string;
+  printPdf: string;
+}> = {
+  en: {
+    btnText: "Export Clinical Dossier (PDF)",
+    modalHeader: "Clinical Assessment Dossier // Academic Prototype",
+    printPdf: "Print / Save PDF",
+  },
+  as: {
+    btnText: "ক্লিনিকেল ডছিয়েৰ এক্সপ'ৰ্ট কৰক (PDF)",
+    modalHeader: "ক্লিনিকেল মূল্যায়ন ডছিয়েৰ // শৈক্ষিক আৰ্হি",
+    printPdf: "প্ৰিণ্ট / PDF সংৰক্ষণ কৰক",
+  },
+  hi: {
+    btnText: "नैदानिक डॉसियर निर्यात करें (PDF)",
+    modalHeader: "नैदानिक मूल्यांकन डॉसियर // शैक्षणिक प्रारूप",
+    printPdf: "प्रिंट / PDF सहेजें",
+  },
+  bn: {
+    btnText: "ক্লিনিকাল ডসিয়ার এক্সপোর্ট করুন (PDF)",
+    modalHeader: "ক্লিনিকাল মূল্যায়ন ডসিয়ার // শিক্ষামূলক মডেল",
+    printPdf: "প্রিন্ট / PDF সংরক্ষণ করুন",
+  },
+  mr: {
+    btnText: "क्लिनिकल अहवाल निर्यात करा (PDF)",
+    modalHeader: "क्लिनिकल मूल्यांकन अहवाल // शैक्षणिक प्रारूप",
+    printPdf: "प्रिंट / PDF जतन करा",
+  },
+  ne: {
+    btnText: "क्लिनिकल डसियर निर्यात गर्नुहोस् (PDF)",
+    modalHeader: "क्लिनिकल मूल्याङ्कन डसियर // शैक्षिक नमूना",
+    printPdf: "प्रिन्ट / PDF सुरक्षित गर्नुहोस्",
+  },
+  mni: {
+    btnText: "ক্লিনিকল দোসিয়র এক্সপোর্ত (PDF)",
+    modalHeader: "ক্লিনিকল এসেসমেন্ত দোসিয়র // একাদেমিক প্রোতোতাইপ",
+    printPdf: "প্রিন্ত / PDF সেভ তৌবীয়ু",
+  },
+  brx: {
+    btnText: "क्लिनिकेल दस्ताबेज दिहुन (PDF)",
+    modalHeader: "क्लिनिकेल बिजिरनाय दस्ताबेज // सोलोंथाइआरि नमुना",
+    printPdf: "प्रिन्ट / PDF दोनथुम",
+  },
+  grt: {
+    btnText: "Clinical Dossier Export Ka·bo (PDF)",
+    modalHeader: "Clinical U·iani Lekka // Skiani Model",
+    printPdf: "Chapa Ka·bo / PDF Rakibo",
+  },
+  kha: {
+    btnText: "Export Dossier Dawai (PDF)",
+    modalHeader: "Dossier Jingbishar Dawai // Academic Model",
+    printPdf: "Shon / Buh PDF",
+  },
+  lus: {
+    btnText: "Damdawi Dossier Thawn Chhuak (PDF)",
+    modalHeader: "Damdawi Endikna Dossier // Zirna Model",
+    printPdf: "Chhuah / PDF Vawng Tha Rawh",
+  },
+};
+
 interface ClinicalDossierExportProps {
   patient: PatientDetailRecord;
   age?: number | null;
@@ -20,6 +83,9 @@ interface ClinicalDossierExportProps {
 
 export function ClinicalDossierExport({ patient, age }: ClinicalDossierExportProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const locale = useLocale();
+  const normLocale = locale?.split("-")[0].toLowerCase() || "en";
+  const dossierExport = DOSSIER_EXPORT_I18N[normLocale] || DOSSIER_EXPORT_I18N.en;
 
   const handlePrint = () => {
     window.print();
@@ -39,7 +105,7 @@ export function ClinicalDossierExport({ patient, age }: ClinicalDossierExportPro
         className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-surface px-4 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted cursor-pointer"
       >
         <FileText className="h-4 w-4 text-tea" />
-        <span>Export Clinical Dossier (PDF)</span>
+        <span>{dossierExport.btnText}</span>
       </button>
 
       {isOpen && (
@@ -50,7 +116,7 @@ export function ClinicalDossierExport({ patient, age }: ClinicalDossierExportPro
               <div className="flex items-center gap-2">
                 <Paperclip className="h-4 w-4 text-tea" />
                 <span className="text-xs font-black uppercase tracking-wider text-ink">
-                  Clinical Assessment Dossier // Academic Prototype
+                  {dossierExport.modalHeader}
                 </span>
               </div>
 
@@ -60,7 +126,7 @@ export function ClinicalDossierExport({ patient, age }: ClinicalDossierExportPro
                   onClick={handlePrint}
                   className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-tea px-3.5 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-tea-dark cursor-pointer"
                 >
-                  <Printer className="h-3.5 w-3.5" /> Print / Save PDF
+                  <Printer className="h-3.5 w-3.5" /> {dossierExport.printPdf}
                 </button>
                 <button
                   type="button"

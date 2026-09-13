@@ -156,6 +156,114 @@ export const COGNITIVE_DOMAINS: CognitiveDomainInfo[] = [
   },
 ];
 
+export const LOCALIZED_DOMAIN_LABELS: Record<string, Record<CognitiveDomainKey, string>> = {
+  en: {
+    all: "All Activities",
+    memory: "Memory & Recall",
+    attention: "Attention & Focus",
+    routine: "Daily Routine",
+    patterns: "Patterns & Art",
+    movement: "Hands & Movement",
+    calm: "Calm & Music",
+  },
+  hi: {
+    all: "सभी गतिविधियां",
+    memory: "स्मृति और याददाश्त",
+    attention: "ध्यान और एकाग्रता",
+    routine: "दैनिक दिनचर्या",
+    patterns: "पैटर्न और कला",
+    movement: "हाथ और गति",
+    calm: "शांति और संगीत",
+  },
+  as: {
+    all: "সকলো কাৰ্যকলাপ",
+    memory: "স্মৃতি আৰু সোঁৱৰণ",
+    attention: "মনোযোগ আৰু লক্ষ্য",
+    routine: "দৈনিক নিয়মসূচী",
+    patterns: "নকশা আৰু কলা",
+    movement: "হাত আৰু সঞ্চালন",
+    calm: "শান্তি আৰু সংগীত",
+  },
+  bn: {
+    all: "সকল কার্যকলাপ",
+    memory: "স্মৃতি ও স্মরণ",
+    attention: "মনোযোগ ও লক্ষ্য",
+    routine: "দৈনিক রুটিন",
+    patterns: "নকশা ও শিল্প",
+    movement: "হাত ও সঞ্চালন",
+    calm: "শান্তি ও সঙ্গীত",
+  },
+  mr: {
+    all: "सर्व उपक्रम",
+    memory: "स्मृती आणि आठवण",
+    attention: "लक्ष आणि एकाग्रता",
+    routine: "दैनिक दिनचर्या",
+    patterns: "नक्षी आणि कला",
+    movement: "हात आणि हालचाल",
+    calm: "शांती आणि संगीत",
+  },
+  ne: {
+    all: "सबै गतिविधिहरू",
+    memory: "स्मृति र सम्झना",
+    attention: "ध्यान र एकाग्रता",
+    routine: "दैनिक तालिका",
+    patterns: "ढाँचा र कला",
+    movement: "हात र गति",
+    calm: "शान्ति र संगीत",
+  },
+  mni: {
+    all: "থবক পুম্নমক",
+    memory: "স্মৃতি অমসুং নীংশিংবা",
+    attention: "মিৎয়েং অমসুং পুক্নিং",
+    routine: "নুমিৎ খুদিংগী থবক",
+    patterns: "নকশা অমসুং কলা",
+    movement: "খুত অমসুং খোংজেল",
+    calm: "শান্তি অমসুং খোঞ্জেল",
+  },
+  brx: {
+    all: "गासैबो हाबाफोर",
+    memory: "गोसोखां आरो मिथिंगा",
+    attention: "गोसो होनाय",
+    routine: "सानफ्रोमबोनि बिथांखि",
+    patterns: "महर आरो दानाय",
+    movement: "आखाय आरो खारनाय",
+    calm: "गोजोन आरो सोदोब",
+  },
+  grt: {
+    all: "Salanti Kamrang",
+    memory: "Gisik Ra·ani",
+    attention: "Miksongani",
+    routine: "Salanti Tikat",
+    patterns: "Rong Aro Noksa",
+    movement: "Jakni Kamrang",
+    calm: "Tomi Aro Ring·ani",
+  },
+  kha: {
+    all: "Baroh Ki Jingtrei",
+    memory: "Kynmaw Jingmut",
+    attention: "Jingpyrkhat",
+    routine: "Jingtrei Man Ka Sngi",
+    patterns: "Rukom & Art",
+    movement: "Kti Jingthiah",
+    calm: "Jingsuk Jingmut",
+  },
+  lus: {
+    all: "Hnathawh Zawng Zawng",
+    memory: "Hriatrengna",
+    attention: "Rilru Pekna",
+    routine: "Nitintin Mamawh",
+    patterns: "Cheimawina & Art",
+    movement: "Kut Chezia",
+    calm: "Rilru Hahdamna",
+  },
+};
+
+export function getDomainLabel(key: CognitiveDomainKey, locale = "en"): string {
+  const norm = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const dict = LOCALIZED_DOMAIN_LABELS[norm] || LOCALIZED_DOMAIN_LABELS.en;
+  return dict[key] || LOCALIZED_DOMAIN_LABELS.en[key] || key;
+}
+
 export function getDomainForGame(gameId: string): CognitiveDomainInfo {
   for (const domain of COGNITIVE_DOMAINS) {
     if (domain.key !== "all" && domain.gameIds.includes(gameId)) {

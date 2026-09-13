@@ -35,6 +35,116 @@ const PATIENT_NAV_LABELS: Record<string, { routine: string; games: string }> = {
   lus: { routine: "Ka Tih Tur", games: "Ni Tin Hnathawh" },
 };
 
+const MAIN_NAV_LABELS: Record<string, {
+  home: string;
+  activities: string;
+  kiosk: string;
+  telemetry: string;
+  clinical: string;
+  caregiver: string;
+  tagline: string;
+}> = {
+  en: {
+    home: "Home",
+    activities: "Daily Activities",
+    kiosk: "Kiosk",
+    telemetry: "Telemetry",
+    clinical: "Clinical R&D",
+    caregiver: "Caregiver Portal",
+    tagline: "North East Memory Care",
+  },
+  hi: {
+    home: "होम",
+    activities: "दैनिक गतिविधियां",
+    kiosk: "कियोस्क",
+    telemetry: "टेलीमेट्री",
+    clinical: "चिकित्सा अनुसंधान",
+    caregiver: "देखभालकर्ता पोर्टल",
+    tagline: "पूर्वोत्तर स्मृति सेवा",
+  },
+  as: {
+    home: "গৃহ",
+    activities: "দৈনিক কাৰ্যকলাপ",
+    kiosk: "কিঅ’স্ক",
+    telemetry: "টেলিমেট্ৰী",
+    clinical: "চিকিৎসা গৱেষণা",
+    caregiver: "শুশ্ৰূষাকাৰী প’ৰ্টেল",
+    tagline: "উত্তৰ-পূব স্মৃতি সেৱা",
+  },
+  bn: {
+    home: "হোম",
+    activities: "দৈনিক কার্যকলাপ",
+    kiosk: "কিয়স্ক",
+    telemetry: "টেলিমেট্রি",
+    clinical: "ক্লিনিকাল গবেষণা",
+    caregiver: "কেয়ারগিভার পোর্টাল",
+    tagline: "উত্তর-পূর্ব স্মৃতি সেবা",
+  },
+  mr: {
+    home: "मुख्यपृष्ठ",
+    activities: "दैनिक उपक्रम",
+    kiosk: "किऑस्क",
+    telemetry: "टेलिमेट्री",
+    clinical: "क्लिनिकल संशोधन",
+    caregiver: "काळजीवाहक पोर्टल",
+    tagline: "उत्तर-पूर्व स्मृती सेवा",
+  },
+  ne: {
+    home: "गृह",
+    activities: "दैनिक गतिविधिहरू",
+    kiosk: "कियोस्क",
+    telemetry: "टेलिमेट्री",
+    clinical: "क्लिनिकल अनुसन्धान",
+    caregiver: "हेरचाहकर्ता पोर्टल",
+    tagline: "उत्तर-पूर्व स्मृति सेवा",
+  },
+  mni: {
+    home: "য়ুম",
+    activities: "নুমিৎ খুদিংগী থবক",
+    kiosk: "কিয়োস্ক",
+    telemetry: "তেলিমিত্রি",
+    clinical: "ক্লিনিকল রিসর্চ",
+    caregiver: "য়েন্থোকপী পোর্তেল",
+    tagline: "নোংপোক স্মৃতি সেবা",
+  },
+  brx: {
+    home: "न'खर",
+    activities: "सानफ्रोमबो हाबाफोर",
+    kiosk: "कियस्क",
+    telemetry: "तेलिमेथ्रि",
+    clinical: "क्लिनिकेल गोसोखां",
+    caregiver: "सामलायग्रा पोर्टल",
+    tagline: "सा-सानजा गोसोखां सेवा",
+  },
+  grt: {
+    home: "Nok",
+    activities: "Salanti Kamrang",
+    kiosk: "Kiosk",
+    telemetry: "Telemetry",
+    clinical: "Clinical R&D",
+    caregiver: "Niksenggipani Portal",
+    tagline: "Salgro-Salaram Gisik Ra·ani",
+  },
+  kha: {
+    home: "Iing",
+    activities: "Ki Kam Babha",
+    kiosk: "Kiosk",
+    telemetry: "Telemetry",
+    clinical: "Clinical R&D",
+    caregiver: "Ka Portal Nongsumar",
+    tagline: "North East Jingkynmaw",
+  },
+  lus: {
+    home: "In",
+    activities: "Ni Tin Hnathawh",
+    kiosk: "Kiosk",
+    telemetry: "Telemetry",
+    clinical: "Clinical R&D",
+    caregiver: "Enkawltu Portal",
+    tagline: "North East Hriatrengna Enkawlna",
+  },
+};
+
 function subscribeOnline(callback: () => void) {
   if (typeof window === "undefined") return () => {};
   window.addEventListener("online", callback);
@@ -54,6 +164,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
   const locale = useLocale();
   const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
   const pNav = PATIENT_NAV_LABELS[normLoc] || PATIENT_NAV_LABELS.en;
+  const mNav = MAIN_NAV_LABELS[normLoc] || MAIN_NAV_LABELS.en;
   const pathname = usePathname();
 
   const isOnlineLive = useSyncExternalStore(
@@ -71,11 +182,11 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
         { href: "/patient/games", label: pNav.games, icon: Sparkles, exact: false },
       ]
     : [
-        { href: "/", label: "Home", icon: Home, exact: true },
-        { href: "/patient/games", label: "Daily Activities", icon: Sparkles, exact: false },
-        { href: "/kiosk/login", label: "Kiosk", icon: QrCode, exact: false },
-        { href: "/command-center", label: "Telemetry", icon: Activity, exact: false },
-        { href: "/clinical-evidence", label: "Clinical R&D", icon: BookOpen, exact: false },
+        { href: "/", label: mNav.home, icon: Home, exact: true },
+        { href: "/patient/games", label: mNav.activities, icon: Sparkles, exact: false },
+        { href: "/kiosk/login", label: mNav.kiosk, icon: QrCode, exact: false },
+        { href: "/command-center", label: mNav.telemetry, icon: Activity, exact: false },
+        { href: "/clinical-evidence", label: mNav.clinical, icon: BookOpen, exact: false },
       ];
 
   return (
@@ -105,7 +216,7 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
             </div>
             {!isPatientRoute && (
               <p className="hidden sm:block font-bold text-ink-secondary whitespace-nowrap text-[8.5px] sm:text-[9px]">
-                North East Memory Care
+                {mNav.tagline}
               </p>
             )}
           </div>
@@ -175,8 +286,8 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
               title="Caregiver & Healthcare Worker Portal"
             >
               <ShieldCheck className="h-3.5 w-3.5 text-tea shrink-0" />
-              <span className="hidden lg:inline">Caregiver Portal</span>
-              <span className="lg:hidden">Caregiver</span>
+              <span className="hidden lg:inline">{mNav.caregiver}</span>
+              <span className="lg:hidden">{mNav.caregiver.split(" ")[0]}</span>
             </Link>
           )}
 

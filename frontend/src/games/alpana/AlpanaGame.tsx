@@ -479,7 +479,7 @@ export function AlpanaGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Sacred Floor Art
+                {str.title}
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-purple-900" />

@@ -61,8 +61,23 @@ function GameShell({
   );
 }
 
+const DETECTIVE_I18N: Record<string, { subject: string; of: string; clueTier: string }> = {
+  en: { subject: "Subject", of: "of", clueTier: "Clue Tier" },
+  as: { subject: "বিষয়", of: "ৰ", clueTier: "সূত্ৰ স্তৰ" },
+  hi: { subject: "विषय", of: "का", clueTier: "संकेत स्तर" },
+  bn: { subject: "বিষয়", of: "এর", clueTier: "সূত্র স্তর" },
+  mr: { subject: "विषय", of: "पैकी", clueTier: "संकेत पातळी" },
+  ne: { subject: "विषय", of: "को", clueTier: "संकेत स्तर" },
+  mni: { subject: "হিরম", of: "গী", clueTier: "খুদম স্তোল" },
+  brx: { subject: "आयदा", of: "नि", clueTier: "इसारा थाखो" },
+  grt: { subject: "A∙sel", of: "oni", clueTier: "Masanani Gadang" },
+  kha: { subject: "Ka Bynta", of: "na", clueTier: "Ka Kyrdan Dak" },
+  lus: { subject: "Zirlai", of: "atangin", clueTier: "Hriattirna Dinhmun" },
+};
+
 export function MemoryDetectiveGame() {
   const locale = useLocale();
+  const det = DETECTIVE_I18N[locale] || DETECTIVE_I18N.en;
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
   const level = resolveAdaptiveLevel(patientId, "memory-detective", startLevel(detail));
@@ -255,7 +270,7 @@ export function MemoryDetectiveGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-ink" />
               <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Memory Detective
+                {str.title}
               </span>
             </div>
             <ShieldCheck className="h-4 w-4 text-tea" />
@@ -322,12 +337,12 @@ export function MemoryDetectiveGame() {
             <div className="flex items-center gap-2">
               <Paperclip className="h-4 w-4 text-tea" />
               <span className="text-xs font-black text-ink">
-                Subject {currentTargetIndex + 1} of {targets.length}
+                {det.subject} {currentTargetIndex + 1} {det.of} {targets.length}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] font-bold text-ink-secondary">
-                Clue Tier {clueLevel} / 3
+                {det.clueTier} {clueLevel} / 3
               </span>
               <div className="flex gap-1">
                 {[1, 2, 3].map((num) => (
