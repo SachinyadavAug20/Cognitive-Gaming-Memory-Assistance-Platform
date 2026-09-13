@@ -1,35 +1,27 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import {
   ShoppingBag,
-  Wallet,
-  Store,
   RotateCcw,
-  Music,
-  CheckCircle2,
-  HelpCircle,
-  Trash2,
   Check,
   Sparkles,
-  Volume2,
   ArrowRight,
+  ArrowLeft,
   Plus,
+  Trash2,
 } from "lucide-react";
 import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
-import { AudioPrompt } from "@/components/ui/AudioPrompt";
 import {
   playPress,
   playCorrect,
   playComplete,
   playEncourage,
-  playLifeSong,
-  playTapFeedback,
 } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
@@ -37,20 +29,9 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import type { SupportedLocale } from "@/lib/gameI18n";
-import {
-  calculateVanishingCue,
-  validateMoveErrorless,
-  type ScaffoldingIntensity,
-} from "@/lib/errorlessLearning";
-
-import {
-  BAZAAR_PRODUCTS,
-  BAZAAR_I18N,
-  type BazaarProduct,
-} from "./bazaarI18n";
+import { BAZAAR_PRODUCTS, BAZAAR_I18N } from "./bazaarI18n";
 
 const PAYMENT_NOTES = [10, 20, 50, 100, 200, 500];
-const BUDGET = 500;
 
 function getProduceEmoji(id: string): string {
   switch (id) {
@@ -103,41 +84,14 @@ export function BazaarBuddiesGame() {
   const level = resolveAdaptiveLevel(patientId, "bazaarBuddies", startLevel(detail));
   const rate = speechRate(detail);
 
-  // Game Phases
-  const [phase, setPhase] = useState<"family" | "market" | "cashier" | "change" | "done">("family");
-
-  // Shopping & Basket State
+  // Simple 3-phase flow: Market -> Pay -> Done
+  const [phase, setPhase] = useState<"market" | "pay" | "done">("market");
   const [basket, setBasket] = useState<string[]>([]);
-  const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
-
-  // Currency & Math State
   const [paymentNotes, setPaymentNotes] = useState<number[]>([]);
-  const [changeGiven, setChangeGiven] = useState<number | null>(null);
-  const [hintUsed, setHintUsed] = useState(false);
-  const [changeHesitation, setChangeHesitation] = useState(0);
-  const [changeAttempts, setChangeAttempts] = useState(0);
-  const [softBounceFeedback, setSoftBounceFeedback] = useState<string | null>(null);
 
   // Telemetry
-  const [startedAt, setStartedAt] = useState<string | null>(null);
+  const [startedAt, setStartedAt] = useState<string>(() => new Date().toISOString());
   const [taps, setTaps] = useState(0);
-  const [errors, setErrors] = useState(0);
-
-  // Monitor hesitation during change calculation for Errorless Learning
-  useEffect(() => {
-    if (phase !== "change" || changeGiven !== null) return;
-    const timer = setInterval(() => {
-      setChangeHesitation((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [phase, changeGiven]);
-
-  const vanishingCue = useMemo(() => {
-    if (phase !== "change") {
-      return { intensity: "none" as ScaffoldingIntensity, glowOpacity: 0 };
-    }
-    return calculateVanishingCue(changeHesitation, changeAttempts);
-  }, [phase, changeHesitation, changeAttempts]);
 
   // Calculations
   const total = useMemo(() => {
@@ -151,11 +105,10 @@ export function BazaarBuddiesGame() {
     return paymentNotes.reduce((sum, n) => sum + n, 0);
   }, [paymentNotes]);
 
-  const correctChange = Math.max(0, paidAmount - total);
-  const remainingBudget = BUDGET - total;
-  const score = basket.length * 15 + (phase === "done" ? 100 : 0);
+  const change = Math.max(0, paidAmount - total);
+  const score = basket.length * 20 + (phase === "done" ? 100 : 0);
 
-  // Add / Remove from Basket
+  // Toggle item in basket
   const handleToggleItem = useCallback(
     (id: string) => {
       playPress();
@@ -168,24 +121,32 @@ export function BazaarBuddiesGame() {
 
       if (basket.includes(id)) {
         setBasket((prev) => prev.filter((x) => x !== id));
-        speak(t.itemRemovedVoice(pName), locale, rate);
       } else {
-        if (total + product.price > BUDGET) {
-          playEncourage();
-          return;
-        }
         setBasket((prev) => [...prev, id]);
-        speak(t.itemAddedVoice(pName, product.price), locale, rate);
+        speak(pName, locale, rate);
       }
     },
-    [basket, total, normLocale, locale, rate, t]
+    [basket, normLocale, locale, rate]
   );
 
-  const addNote = useCallback((note: number) => {
-    playPress();
-    setTaps((t) => t + 1);
-    setPaymentNotes((prev) => [...prev, note]);
-  }, []);
+  const addNote = useCallback(
+    (note: number) => {
+      playPress();
+      setTaps((t) => t + 1);
+      setPaymentNotes((prev) => [...prev, note]);
+      speak(`₹${note}`, locale, rate);
+    },
+    [locale, rate]
+  );
+
+  const removeNote = useCallback(
+    (indexToRemove: number) => {
+      playPress();
+      setTaps((t) => t + 1);
+      setPaymentNotes((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    },
+    []
+  );
 
   const clearNotes = useCallback(() => {
     playPress();
@@ -210,104 +171,35 @@ export function BazaarBuddiesGame() {
     }
     setPaymentNotes(notes);
     playCorrect();
-    const sum = notes.reduce((a, b) => a + b, 0);
-    speak(`Selected ₹${sum} notes for cashier.`, locale, rate);
-  }, [total, locale, rate]);
+  }, [total]);
 
-  const submitCashierPayment = useCallback(() => {
+  const handleCompletePayment = useCallback(() => {
     if (paidAmount < total) {
       playEncourage();
-      speak(t.needMoreNotes(total), locale, rate);
       return;
     }
     playCorrect();
+    playComplete();
+    setPhase("done");
 
-    if (paidAmount === total) {
-      setChangeGiven(0);
-      setPhase("done");
-      playComplete();
-      if (startedAt) {
-        recordGameSession(patientId, {
-          gameId: "bazaarBuddies",
-          level,
-          outcome: "completed",
-          score: 100,
-          startedAt,
-          taps: taps + 1,
-          errorCount: errors,
-        });
-      }
-    } else {
-      setPhase("change");
-      setChangeHesitation(0);
-      setChangeAttempts(0);
-      setSoftBounceFeedback(null);
-      speak(t.changePromptAudio(paidAmount, total, correctChange), locale, rate);
-    }
-  }, [paidAmount, total, correctChange, startedAt, patientId, level, taps, errors, locale, rate, t]);
-
-  const submitChange = useCallback(
-    (value: number) => {
-      setTaps((t) => t + 1);
-      const validation = validateMoveErrorless(value, correctChange);
-
-      if (validation.isCorrect) {
-        setChangeGiven(value);
-        setSoftBounceFeedback(null);
-        playCorrect();
-        speak(t.changeCorrect(value), locale, rate);
-        setTimeout(() => {
-          setPhase("done");
-          playComplete();
-          if (startedAt) {
-            recordGameSession(patientId, {
-              gameId: "bazaarBuddies",
-              level,
-              outcome: "completed",
-              score: 100,
-              startedAt,
-              taps: taps + 1,
-              errorCount: errors,
-            });
-          }
-        }, 1200);
-      } else {
-        setErrors((e) => e + 1);
-        setChangeAttempts((a) => a + 1);
-        playEncourage();
-        const hint = t.errorlessHintMsg(correctChange);
-        setSoftBounceFeedback(hint);
-        speak(hint, locale, rate);
-      }
-    },
-    [correctChange, startedAt, patientId, level, taps, errors, locale, rate, t]
-  );
-
-  const showHint = useCallback(() => {
-    playPress();
-    setHintUsed(true);
-    speak(t.errorlessHintMsg(correctChange), locale, rate);
-  }, [correctChange, locale, rate, t]);
+    recordGameSession(patientId, {
+      gameId: "bazaarBuddies",
+      level,
+      outcome: "completed",
+      score: 100,
+      startedAt,
+      taps: taps + 1,
+      errorCount: 0,
+    });
+  }, [paidAmount, total, patientId, level, startedAt, taps]);
 
   const restartGame = useCallback(() => {
     playPress();
-    setPhase("family");
+    setPhase("market");
     setBasket([]);
     setPaymentNotes([]);
-    setChangeGiven(null);
-    setHintUsed(false);
-    setStartedAt(null);
-    setTaps(0);
-    setErrors(0);
-    setChangeHesitation(0);
-    setChangeAttempts(0);
-    setSoftBounceFeedback(null);
-  }, []);
-
-  const startMarketPhase = useCallback(() => {
-    playPress();
-    setPhase("market");
     setStartedAt(new Date().toISOString());
+    setTaps(0);
   }, []);
 
   useSessionGuard({
@@ -316,7 +208,7 @@ export function BazaarBuddiesGame() {
     level,
     startedAt,
     taps,
-    errorCount: errors,
+    errorCount: 0,
   });
 
   if (loading) {
@@ -364,346 +256,208 @@ export function BazaarBuddiesGame() {
         gameId="bazaar-buddies"
       />
 
-      {/* Unified Top Dashboard Bar (Market Title + Financial State) - Only shown during active market phases */}
-      {(phase === "market" || phase === "cashier" || phase === "change") && (
-        <div className="mx-auto max-w-4xl px-4 pt-3">
-          <div className="w-full flex items-center justify-between gap-3 rounded-2xl border-3 border-black bg-surface px-4 py-2.5 shadow-[3px_3px_0px_#000]">
-            {/* Village Stall Title */}
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-black text-ink">
-              <Store className="h-4 w-4 text-tea shrink-0" />
-              <span className="truncate">{t.stallHeading}</span>
-            </div>
-
-            {/* Running Financial State */}
-            <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-black shrink-0">
-              <div className="flex items-center gap-1.5 rounded-xl border border-black/20 bg-amber-50 px-3 py-1 text-ink">
-                <Wallet className="h-4 w-4 text-amber-800" />
-                <span>
-                  {t.remainingLabel}: <strong className="text-amber-900 font-black">₹{remainingBudget}</strong>
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 rounded-xl border border-emerald-900/30 bg-emerald-50 px-3 py-1 text-emerald-950">
-                <ShoppingBag className="h-4 w-4 text-emerald-700" />
-                <span>
-                  {t.totalLabel}: <strong className="text-emerald-800 font-black text-sm">₹{total}</strong>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="mx-auto max-w-4xl px-4 pt-4">
-        {/* ─── PHASE 1: FAMILY PROMPT & AUTOBIOGRAPHICAL MEMORY ANCHOR ─── */}
-        {phase === "family" && (
-          <div className="flex flex-col items-center justify-center py-4 sm:py-6 px-2">
-            <div className="w-full max-w-lg rounded-3xl border-3 border-black bg-[#FAF5EE] p-5 sm:p-6 shadow-[5px_5px_0px_#000] flex flex-col gap-4">
-              {/* Header: Store Icon + Title & Subtitle + Budget Pill */}
-              <div className="flex items-start justify-between gap-3 border-b-2 border-black/10 pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] shrink-0">
-                    <Store className="h-6 w-6 stroke-[2.5]" />
-                  </div>
-                  <div>
-                    <h2 className="font-serif text-lg sm:text-xl font-black text-ink leading-tight">
-                      {t.familyPromptTitle}
-                    </h2>
-                    <p className="text-xs font-semibold text-ink-secondary mt-0.5">
-                      {t.subtitle}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="shrink-0 rounded-xl border-2 border-emerald-900/30 bg-emerald-100 px-3 py-1 text-right">
-                  <span className="block text-[10px] font-black uppercase tracking-wider text-emerald-800">
-                    {t.budgetLabel}
-                  </span>
-                  <span className="text-sm sm:text-base font-black text-emerald-950">
-                    ₹{BUDGET}
-                  </span>
-                </div>
-              </div>
-
-              {/* Loving Family Request Message */}
-              <div className="rounded-2xl border-2 border-amber-900/15 bg-amber-50/70 p-4">
-                <blockquote className="font-serif text-base sm:text-lg font-bold text-ink italic leading-relaxed">
-                  {t.familyMessage}
-                </blockquote>
-              </div>
-
-              {/* Actions: Listen Audio & Enter Market Button */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
-                <div className="sm:w-auto">
-                  <AudioPrompt
-                    text={t.familyAudioText}
-                    label="Listen"
-                    size="md"
-                  />
-                </div>
-                <div className="flex-1">
-                  <ChunkyButton
-                    variant="tea"
-                    size="xl"
-                    onClick={startMarketPhase}
-                    className="w-full justify-center"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      <span>{t.startMarketBtn}</span>
-                      <ArrowRight className="h-5 w-5 stroke-[2.5]" />
-                    </span>
-                  </ChunkyButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ─── PHASE 2: 2D VILLAGE MARKET STALL & PRODUCE GATHERING ─── */}
+      <div className="mx-auto max-w-2xl px-4 pt-4">
+        {/* ─── STEP 1: MARKET (PICK PRODUCE) ─── */}
         {phase === "market" && (
-          <div className="flex flex-col items-center gap-4 py-1">
-            {/* Market Stall Banner & Shelf */}
-            <div className="w-full rounded-3xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 shadow-[4px_4px_0px_#000]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b-2 border-black/15 pb-3 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] shrink-0">
-                    <Store className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black text-ink leading-tight">
-                      {t.stallHeading}
-                    </h3>
-                    <p className="text-xs font-semibold text-ink-secondary">
-                      Tap fresh produce to place it into your cane basket (খৰাহী)
-                    </p>
-                  </div>
+          <div className="flex flex-col gap-4">
+            {/* Small & Simple Visual Cane Basket (খৰাহী / Basket) */}
+            <div className="rounded-2xl border-3 border-black bg-[#FAF5EE] p-3 shadow-[4px_4px_0px_#000] flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-black text-ink text-sm sm:text-base">
+                  <span className="text-xl select-none">🧺</span>
+                  <span>My Basket</span>
+                  <span className="text-xs font-bold text-ink-secondary">
+                    ({basket.length} {basket.length === 1 ? "item" : "items"})
+                  </span>
                 </div>
 
-                <div className="self-start sm:self-center text-xs font-black rounded-xl border-2 border-amber-900/30 bg-amber-100 px-3 py-1.5 text-amber-950 shadow-xs">
-                  {basket.length > 0 ? (
-                    <span>{t.itemsSelectedCount(basket.length)} • ₹{total}</span>
-                  ) : (
-                    <span>Basket Empty</span>
-                  )}
+                <div className="rounded-xl border-2 border-emerald-900/30 bg-emerald-100 px-3 py-0.5 text-emerald-950 font-black text-base shadow-xs">
+                  ₹{total}
                 </div>
               </div>
 
-              {/* 8 Fresh North-Eastern Regional Produce Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {BAZAAR_PRODUCTS.map((product) => {
-                  const inBasket = basket.includes(product.id);
-                  const wouldExceed = total + product.price > BUDGET;
-                  const name = product.name[normLocale] || product.name.en;
-                  const desc = product.categoryDesc[normLocale] || product.categoryDesc.en;
-                  const emoji = getProduceEmoji(product.id);
-
-                  return (
-                    <button
-                      key={product.id}
-                      type="button"
-                      disabled={!inBasket && wouldExceed}
-                      onClick={() => handleToggleItem(product.id)}
-                      className={`btn-tactile flex flex-col justify-between rounded-2xl border-3 border-black p-3 text-left shadow-[3px_3px_0px_#000] transition-all cursor-pointer disabled:opacity-40 min-h-[120px] ${
-                        inBasket
-                          ? "bg-emerald-100 border-emerald-950 ring-3 ring-emerald-600 shadow-[4px_4px_0px_#047857]"
-                          : "bg-white hover:bg-amber-50"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-1 w-full">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-black/20 bg-amber-50 text-2xl select-none">
-                          {emoji}
-                        </div>
-                        <span
-                          className={`px-2.5 py-1 rounded-xl border-2 text-xs sm:text-sm font-black shadow-xs ${
-                            inBasket
-                              ? "bg-emerald-700 text-white border-emerald-950"
-                              : "bg-[#FAF5EE] text-tea border-black/20"
-                          }`}
-                        >
-                          ₹{product.price}
-                        </span>
-                      </div>
-
-                      <div className="mt-2 w-full">
-                        <p className="text-xs sm:text-sm font-black text-ink leading-snug line-clamp-1">
-                          {name}
-                        </p>
-                        <p className="text-[11px] font-semibold text-ink-secondary mt-0.5 line-clamp-1">
-                          {desc}
-                        </p>
-                        <div className="mt-2 pt-1.5 border-t border-black/10 flex items-center justify-between text-[11px] font-black">
-                          {inBasket ? (
-                            <span className="text-emerald-800 flex items-center gap-1">
-                              <Check className="h-3.5 w-3.5 stroke-[3]" /> In Basket
-                            </span>
-                          ) : (
-                            <span className="text-tea flex items-center gap-0.5">
-                              <Plus className="h-3 w-3 stroke-[3]" /> Add to basket
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Cane Basket (খৰাহী) & Direct Checkout Bar */}
-            <div className="w-full rounded-3xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 shadow-[4px_4px_0px_#000]">
-              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
-                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
-                  <ShoppingBag className="h-4 w-4" /> {t.basketTitle}
-                </span>
-                <span className="text-sm sm:text-base font-black text-tea">
-                  ₹{total} ({t.itemsSelectedCount(basket.length)})
-                </span>
-              </div>
-
-              {basket.length === 0 ? (
-                <div className="text-center py-4 space-y-1">
-                  <p className="text-xs sm:text-sm font-bold text-ink-secondary">
-                    {t.basketEmpty}
-                  </p>
-                  <p className="text-xs font-semibold text-amber-800/80">
-                    💡 Tip: Pratima suggested Kaji Nemu lemons & Joha rice!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <div className="flex flex-wrap gap-2">
-                    {basket.map((id) => {
-                      const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
-                      if (!product) return null;
-                      const name = product.name[normLocale] || product.name.en;
-                      const emoji = getProduceEmoji(id);
-
-                      return (
-                        <div
-                          key={id}
-                          className="inline-flex items-center gap-2 rounded-xl border-2 border-black bg-white px-3 py-1.5 shadow-[2px_2px_0px_#000] text-xs sm:text-sm font-black text-ink"
-                        >
-                          <span>{emoji} {name}</span>
-                          <span className="text-tea font-bold">₹{product.price}</span>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleToggleItem(id);
-                            }}
-                            className="text-rose-600 hover:text-rose-800 p-0.5 cursor-pointer ml-1"
-                            title="Remove item"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Prominent Checkout Action */}
-                  <div className="pt-2 border-t border-black/10 flex justify-end">
-                    <ChunkyButton
-                      variant="tea"
-                      size="xl"
-                      onClick={() => {
-                        playPress();
-                        setPhase("cashier");
-                        setPaymentNotes([]);
-                        setChangeGiven(null);
-                        speak(t.cashierAudioPrompt(total), locale, rate);
-                      }}
-                    >
-                      {t.proceedCashierBtn}
-                    </ChunkyButton>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ─── PHASE 3: CASHIER COUNTER & CURRENCY MATH ─── */}
-        {phase === "cashier" && (
-          <div className="flex flex-col items-center gap-4 py-1">
-            {/* Shopkeeper Dialogue Banner */}
-            <div className="w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[4px_4px_0px_#000]">
-              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
-                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
-                  <Store className="h-4 w-4" /> {t.stallHeading}
-                </span>
-                <span className="text-base sm:text-lg font-black text-tea">
-                  {t.totalLabel}: ₹{total}
-                </span>
-              </div>
-
-              <blockquote className="font-serif text-base sm:text-lg font-bold text-ink italic leading-relaxed">
-                {t.cashierGreeting(total)}
-              </blockquote>
-
-              <div className="mt-3 flex flex-wrap gap-2 border-t border-black/10 pt-2.5">
-                {basket.map((id) => {
-                  const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
-                  if (!product) return null;
-                  const name = product.name[normLocale] || product.name.en;
-                  const emoji = getProduceEmoji(id);
-                  return (
-                    <span
-                      key={id}
-                      className="rounded-lg border border-black/20 bg-white/80 px-2 py-0.5 text-xs font-bold text-ink"
-                    >
-                      {emoji} {name} • ₹{product.price}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Rupee Notes Laid on Counter */}
-            <div className="w-full rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
-              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
-                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary">
-                  {t.counterNotesLabel}
-                </span>
-                <span className="text-sm sm:text-base font-black text-ink">
-                  {t.amountPaid}:{" "}
-                  <strong
-                    className={`font-black ${
-                      paidAmount >= total ? "text-emerald-700" : "text-amber-800"
-                    }`}
-                  >
-                    ₹{paidAmount}
-                  </strong>{" "}
-                  / ₹{total}
-                </span>
-              </div>
-
-              <div className="min-h-[64px] rounded-xl border-2 border-amber-800 bg-[#E8DCC9] p-3 shadow-inner flex flex-wrap items-center gap-2">
-                {paymentNotes.length === 0 ? (
-                  <p className="text-xs sm:text-sm font-bold text-amber-900/60 italic w-full text-center py-2">
-                    Tap or air-point to rupee notes below to place them on the counter.
+              {/* Basket Items Visual Slot: Produce chips appearing inside */}
+              <div className="min-h-[46px] rounded-xl border-2 border-dashed border-amber-900/30 bg-white/70 p-1.5 flex items-center gap-1.5 overflow-x-auto">
+                {basket.length === 0 ? (
+                  <p className="text-xs font-semibold text-ink-secondary/70 italic px-2">
+                    Your basket is empty. Tap any vegetable below to put it in!
                   </p>
                 ) : (
-                  paymentNotes.map((note, idx) => (
-                    <div
-                      key={idx}
-                      className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-3 py-1.5 text-base font-black shadow-[2px_2px_0px_#000] animate-fade-in ${noteStyle(
-                        note
-                      )}`}
-                    >
-                      <span>₹{note}</span>
-                    </div>
-                  ))
+                  basket.map((id) => {
+                    const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
+                    if (!product) return null;
+                    const emoji = getProduceEmoji(id);
+                    const name = product.name[normLocale] || product.name.en;
+
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() => handleToggleItem(id)}
+                        className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-50 hover:bg-rose-50 px-2.5 py-1 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all shrink-0 cursor-pointer animate-in zoom-in-75"
+                        title="Tap to remove"
+                      >
+                        <span className="text-base select-none">{emoji}</span>
+                        <span className="truncate max-w-[90px]">{name}</span>
+                        <span className="text-tea font-bold">₹{product.price}</span>
+                        <span className="text-rose-600 font-bold ml-0.5">×</span>
+                      </button>
+                    );
+                  })
                 )}
               </div>
             </div>
 
+            {/* Produce Grid (8 Large, Beautiful Cards - NO Descriptions, NO Fuzz!) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {BAZAAR_PRODUCTS.map((product) => {
+                const inBasket = basket.includes(product.id);
+                const name = product.name[normLocale] || product.name.en;
+                const emoji = getProduceEmoji(product.id);
+
+                return (
+                  <button
+                    key={product.id}
+                    type="button"
+                    onClick={() => handleToggleItem(product.id)}
+                    className={`btn-tactile flex flex-col items-center justify-between rounded-2xl border-3 border-black p-3 text-center shadow-[3px_3px_0px_#000] transition-all cursor-pointer min-h-[130px] ${
+                      inBasket
+                        ? "bg-emerald-100 border-emerald-950 ring-3 ring-emerald-600 shadow-[4px_4px_0px_#047857]"
+                        : "bg-white hover:bg-amber-50"
+                    }`}
+                  >
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-black/20 bg-amber-50 text-3xl select-none">
+                      {emoji}
+                    </div>
+
+                    <div className="my-1 w-full">
+                      <p className="text-xs sm:text-sm font-black text-ink leading-tight line-clamp-1">
+                        {name}
+                      </p>
+                      <p className="text-xs sm:text-sm font-black text-tea mt-0.5">
+                        ₹{product.price}
+                      </p>
+                    </div>
+
+                    <div className="w-full pt-1 border-t border-black/10">
+                      {inBasket ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-800">
+                          <Check className="h-3.5 w-3.5 stroke-[3]" /> Picked
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-ink-secondary">
+                          <Plus className="h-3 w-3 stroke-[3]" /> Tap to pick
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Pay Button */}
+            <div className="pt-2">
+              <ChunkyButton
+                variant="tea"
+                size="xl"
+                disabled={basket.length === 0}
+                onClick={() => {
+                  playPress();
+                  setPaymentNotes([]);
+                  setPhase("pay");
+                }}
+                className="w-full justify-center"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  <span>Pay ₹{total}</span>
+                  <ArrowRight className="h-5 w-5 stroke-[2.5]" />
+                </span>
+              </ChunkyButton>
+            </div>
+          </div>
+        )}
+
+        {/* ─── STEP 2: PAY WITH RUPEE NOTES ─── */}
+        {phase === "pay" && (
+          <div className="flex flex-col gap-4">
+            {/* Bill & Paid Summary Card with Visual Notes on Counter */}
+            <div className="rounded-3xl border-3 border-black bg-[#FAF5EE] p-4 sm:p-5 shadow-[4px_4px_0px_#000] space-y-3">
+              <div className="flex items-center justify-around border-b-2 border-black/10 pb-3 text-center">
+                <div>
+                  <span className="block text-xs font-black uppercase text-ink-secondary">
+                    Total Bill
+                  </span>
+                  <span className="text-2xl sm:text-3xl font-black text-tea">
+                    ₹{total}
+                  </span>
+                </div>
+
+                <div className="h-8 w-0.5 bg-black/15" />
+
+                <div>
+                  <span className="block text-xs font-black uppercase text-ink-secondary">
+                    Paid on Counter
+                  </span>
+                  <span
+                    className={`text-2xl sm:text-3xl font-black ${
+                      paidAmount >= total ? "text-emerald-700" : "text-amber-800"
+                    }`}
+                  >
+                    ₹{paidAmount}
+                  </span>
+                </div>
+              </div>
+
+              {/* Giving Notes on Counter Tray */}
+              <div className="rounded-2xl border-2 border-amber-900/30 bg-[#EFE5D5] p-3 shadow-inner">
+                <div className="flex items-center justify-between pb-1.5 mb-2 border-b border-black/10 text-xs font-black uppercase tracking-wider text-amber-950">
+                  <span className="flex items-center gap-1.5">
+                    <span>💵</span>
+                    <span>Notes Given to Cashier</span>
+                  </span>
+                  <span className="text-[11px] font-bold text-amber-900/70 lowercase">
+                    {paymentNotes.length > 0 ? "tap note to take back" : ""}
+                  </span>
+                </div>
+
+                <div className="min-h-[56px] flex flex-wrap items-center gap-2">
+                  {paymentNotes.length === 0 ? (
+                    <p className="text-xs font-semibold text-amber-950/60 italic w-full text-center py-2">
+                      Tap rupee notes below to place them here on the counter.
+                    </p>
+                  ) : (
+                    paymentNotes.map((note, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => removeNote(idx)}
+                        className={`btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-3 py-1.5 text-base font-black shadow-[2px_2px_0px_#000] cursor-pointer transition-all hover:scale-105 active:scale-95 animate-in zoom-in-75 ${noteStyle(
+                          note
+                        )}`}
+                        title="Tap to take back note"
+                      >
+                        <span>₹{note}</span>
+                        <span className="text-xs opacity-70 ml-0.5">×</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {paidAmount >= total && (
+                <div className="rounded-xl border-2 border-emerald-700 bg-emerald-100 py-2 px-3 text-xs sm:text-sm font-black text-emerald-900 animate-fade-in text-center">
+                  ✓ Paid in full! {change > 0 ? `Change to take back: ₹${change} 🪙` : "Exact amount given!"}
+                </div>
+              )}
+            </div>
+
             {/* Rupee Notes Wallet Picker */}
-            <div className="w-full rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
-              <p className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary mb-3">
-                {t.walletNotesLabel}
+            <div className="rounded-3xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
+              <p className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary text-center mb-3">
+                Tap notes to pay:
               </p>
 
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+              <div className="grid grid-cols-3 gap-2.5">
                 {PAYMENT_NOTES.map((note) => (
                   <button
                     key={note}
@@ -714,220 +468,103 @@ export function BazaarBuddiesGame() {
                     )}`}
                   >
                     <span>₹{note}</span>
-                    <span className="text-[10px] font-bold opacity-80 mt-0.5">+ Add</span>
+                    <span className="text-[10px] font-bold opacity-80 mt-0.5">+ Give</span>
                   </button>
                 ))}
               </div>
 
-              {/* Cashier Helper Actions */}
-              <div className="mt-4 flex flex-wrap gap-2.5 pt-2 border-t border-black/10">
+              {/* Note Action Helpers */}
+              <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-black/10">
                 <button
                   type="button"
                   onClick={clearNotes}
-                  className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-white px-3.5 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-slate-100 cursor-pointer"
+                  className="btn-tactile flex items-center gap-1 rounded-xl border-2 border-black bg-white px-3.5 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-slate-100 cursor-pointer"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  <span>{t.clearNotesBtn}</span>
+                  <span>Clear</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={suggestExactNotes}
-                  className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-amber-600 bg-amber-100 px-3.5 py-2 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
+                  className="btn-tactile flex items-center gap-1 rounded-xl border-2 border-amber-600 bg-amber-100 px-3.5 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-200 cursor-pointer"
                 >
-                  <Sparkles className="h-4 w-4 text-amber-700" />
-                  <span>{t.autoSuggestBtn}</span>
+                  <Sparkles className="h-3.5 w-3.5 text-amber-700" />
+                  <span>Exact Notes</span>
                 </button>
               </div>
             </div>
 
-            {/* Pay Cashier Button */}
-            <ChunkyButton
-              variant="tea"
-              size="xl"
-              onClick={submitCashierPayment}
-              disabled={paidAmount < total}
-            >
-              {t.payCashierBtn}
-            </ChunkyButton>
+            {/* Pay Actions */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  playPress();
+                  setPhase("market");
+                }}
+                className="btn-tactile flex items-center justify-center gap-1.5 rounded-2xl border-2 border-black bg-white px-4 py-3 text-xs sm:text-sm font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-slate-100 cursor-pointer sm:w-auto"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back</span>
+              </button>
+
+              <div className="flex-1">
+                <ChunkyButton
+                  variant="tea"
+                  size="xl"
+                  disabled={paidAmount < total}
+                  onClick={handleCompletePayment}
+                  className="w-full justify-center"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <span>Complete Payment</span>
+                    <Check className="h-5 w-5 stroke-[2.5]" />
+                  </span>
+                </ChunkyButton>
+              </div>
+            </div>
           </div>
         )}
 
-        {/* ─── PHASE 4: CHANGE VERIFICATION & ERRORLESS LEARNING ─── */}
-        {phase === "change" && (
-          <div className="flex flex-col items-center gap-4 py-1">
-            {/* Calculation Equation Card */}
-            <div className="w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[4px_4px_0px_#000]">
-              <div className="flex items-center justify-between border-b-2 border-black/15 pb-2 mb-3">
-                <span className="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-900 flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4" /> {t.changeSelectLabel}
-                </span>
-              </div>
-
-              {/* Large Legible Visual Math Equation */}
-              <div className="p-4 rounded-xl border-2 border-black/20 bg-white flex flex-col sm:flex-row items-center justify-around gap-2 text-center">
-                <div>
-                  <span className="block text-[11px] font-bold text-ink-secondary uppercase">
-                    {t.amountPaid}
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black text-ink">₹{paidAmount}</span>
-                </div>
-                <span className="text-2xl font-black text-ink-secondary">−</span>
-                <div>
-                  <span className="block text-[11px] font-bold text-ink-secondary uppercase">
-                    {t.totalLabel}
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black text-tea">₹{total}</span>
-                </div>
-                <span className="text-2xl font-black text-ink-secondary">=</span>
-                <div className="rounded-xl border-2 border-dashed border-amber-600 bg-amber-50 px-4 py-1">
-                  <span className="block text-[11px] font-bold text-amber-900 uppercase">
-                    Change Due
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black text-amber-900">
-                    {changeGiven !== null ? `₹${changeGiven}` : `₹?`}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Note Picker for Change */}
-            <div className="w-full rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
-              <p className="text-xs sm:text-sm font-black uppercase tracking-wider text-ink-secondary mb-3">
-                {t.changeSelectLabel}
-              </p>
-
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
-                {PAYMENT_NOTES.map((note) => {
-                  const isTarget = note === correctChange;
-                  const isHinted =
-                    isTarget &&
-                    (hintUsed ||
-                      changeAttempts > 0 ||
-                      vanishingCue.intensity !== "none");
-
-                  const cueRing =
-                    isTarget && isHinted
-                      ? "ring-4 ring-amber-400 animate-pulse scale-105 border-amber-600 shadow-[0_0_18px_rgba(245,158,11,0.85)]"
-                      : "";
-
+        {/* ─── STEP 3: CELEBRATION ─── */}
+        {phase === "done" && (
+          <Celebration
+            title={t.celebrationTitle}
+            subtitle={`You bought ${basket.length} item${basket.length === 1 ? "" : "s"} for ₹${total}!`}
+            xpEarned={basket.length * 20 + 50}
+            accuracy="100%"
+          >
+            <div className="flex flex-col items-center gap-4 max-w-sm mx-auto text-center w-full pt-2">
+              <div className="flex flex-wrap items-center justify-center gap-2 py-2">
+                {basket.map((id) => {
+                  const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
+                  if (!product) return null;
+                  const name = product.name[normLocale] || product.name.en;
+                  const emoji = getProduceEmoji(id);
                   return (
-                    <button
-                      key={note}
-                      type="button"
-                      onClick={() => submitChange(note)}
-                      disabled={changeGiven !== null && changeGiven === correctChange}
-                      className={`btn-tactile rounded-2xl border-3 border-black py-3.5 px-2 text-lg font-black shadow-[3px_3px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer disabled:opacity-40 flex flex-col items-center justify-center ${noteStyle(
-                        note
-                      )} ${cueRing}`}
+                    <div
+                      key={id}
+                      className="inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-[#FAF5EE] px-3 py-1 text-xs font-black text-ink shadow-[2px_2px_0px_#000]"
                     >
-                      <span>₹{note}</span>
-                    </button>
+                      <span>{emoji}</span>
+                      <span>{name}</span>
+                    </div>
                   );
                 })}
               </div>
 
-              {softBounceFeedback && (
-                <div className="mt-3 rounded-xl border-2 border-amber-500 bg-amber-50 p-3 text-center animate-fade-in">
-                  <p className="text-xs sm:text-sm font-bold text-amber-950">
-                    {softBounceFeedback}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {!hintUsed && (
-              <button
-                type="button"
-                onClick={showHint}
-                className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 px-4 py-2 text-xs sm:text-sm font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer"
-              >
-                <HelpCircle className="h-4 w-4 text-amber-800" />
-                <span>{t.needHintBtn}</span>
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* ─── PHASE 5: JOYFUL CELEBRATION & RECEIPT ─── */}
-        {phase === "done" && (
-          <Celebration
-            title={t.celebrationTitle}
-            subtitle={t.celebrationSubtitle}
-            xpEarned={basket.length * 15 + 100}
-            accuracy={`${Math.max(0, 100 - errors * 15)}%`}
-          >
-            <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
-              <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
-                <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
-                  <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                    <CheckCircle2 className="h-4 w-4" /> {t.receiptTitle}
-                  </span>
-                  <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
-                    PAID IN FULL
-                  </span>
-                </div>
-
-                <p className="text-xs font-semibold text-ink-secondary mb-3">
-                  {t.receiptSubtitle}
-                </p>
-
-                <div className="space-y-1.5 border-t border-black/10 pt-2 text-xs sm:text-sm font-black">
-                  {basket.map((id) => {
-                    const product = BAZAAR_PRODUCTS.find((p) => p.id === id);
-                    if (!product) return null;
-                    const name = product.name[normLocale] || product.name.en;
-                    const emoji = getProduceEmoji(id);
-                    return (
-                      <div key={id} className="flex items-center justify-between">
-                        <span>{emoji} {name}</span>
-                        <span className="text-tea">₹{product.price}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-3 border-t-2 border-black/15 pt-2 text-xs sm:text-sm font-black space-y-1">
-                  <div className="flex justify-between">
-                    <span>{t.totalLabel}:</span>
-                    <span className="text-tea">₹{total}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>{t.amountPaid}:</span>
-                    <span>₹{paidAmount}</span>
-                  </div>
-                  <div className="flex justify-between text-emerald-800">
-                    <span>Change Returned:</span>
-                    <span>₹{changeGiven ?? correctChange}</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between pt-3 border-t-2 border-black/10">
-                  <button
-                    type="button"
-                    onClick={() => playLifeSong()}
-                    className="btn-tactile flex items-center gap-2 rounded-xl border-2 border-black bg-amber-200 hover:bg-amber-300 px-3.5 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer"
-                  >
-                    <Music className="h-4 w-4" />
-                    <span>{t.playMelodyBtn}</span>
-                  </button>
-                  <span className="text-xs font-bold text-ink-secondary">
-                    {t.itemsSelectedCount(basket.length)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-3 w-full">
+              <div className="flex flex-wrap items-center justify-center gap-3 w-full pt-2">
                 <ChunkyButton variant="tea" size="xl" onClick={restartGame}>
                   <span className="flex items-center gap-2">
-                    <RotateCcw className="h-4 w-4" /> {t.playAgainBtn}
+                    <RotateCcw className="h-4 w-4" /> Shop Again
                   </span>
                 </ChunkyButton>
                 <Link
                   href="/patient/games"
                   className="btn-tactile inline-flex items-center gap-2 rounded-2xl border-2 border-black bg-surface px-5 py-3 text-xs sm:text-sm font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
                 >
-                  {t.backToHubBtn}
+                  Back to Games
                 </Link>
               </div>
             </div>
