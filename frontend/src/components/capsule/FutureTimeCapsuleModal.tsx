@@ -16,10 +16,13 @@ import {
   Image as ImageIcon,
   Plus,
   Check,
+  Upload,
+  Camera,
 } from "lucide-react";
 import { useMemo } from "react";
 import {
   getPatientPhotos,
+  saveCustomPatientPhoto,
   type PatientPhotoItem,
   type PhotoCategory,
 } from "@/data/patientPhotos";
@@ -82,6 +85,10 @@ interface TimeCapsuleModalTexts {
   filterPortraits: string;
   selectThisPhotoBtn: string;
   selectedPhotoLabel: string;
+  uploadPhotoBtn: string;
+  uploadingPhoto: string;
+  uploadedPhotosCategory: string;
+  uploadPhotoHint: string;
 }
 
 const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
@@ -131,6 +138,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "Portraits",
     selectThisPhotoBtn: "Use This Photo",
     selectedPhotoLabel: "Selected Photo",
+    uploadPhotoBtn: "Upload Photo",
+    uploadingPhoto: "Uploading...",
+    uploadedPhotosCategory: "Uploaded",
+    uploadPhotoHint: "Upload photo from your device",
 },
   as: {
     modalTitle: "অহাকালিৰ বাবে মৰমৰ বাৰ্তা",
@@ -178,6 +189,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "প্ৰতিকৃতি",
     selectThisPhotoBtn: "এইখন ফটো বাছক",
     selectedPhotoLabel: "বাছনি কৰা ফটো",
+    uploadPhotoBtn: "ফটো আপলোড কৰক",
+    uploadingPhoto: "আপলোড হৈ আছে...",
+    uploadedPhotosCategory: "আপলোড কৰা",
+    uploadPhotoHint: "ডিভাইচৰ পৰা ফটো আপলোড কৰক",
 },
   hi: {
     modalTitle: "आने वाले कल के लिए स्नेह संदेश",
@@ -225,6 +240,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "तस्वीरें",
     selectThisPhotoBtn: "यह तस्वीर चुनें",
     selectedPhotoLabel: "चुनी गई तस्वीर",
+    uploadPhotoBtn: "तस्वीर अपलोड करें",
+    uploadingPhoto: "अपलोड हो रहा है...",
+    uploadedPhotosCategory: "अपलोड की गई",
+    uploadPhotoHint: "डिवाइस से तस्वीर अपलोड करें",
 },
   bn: {
     modalTitle: "আগামীর জন্য ভালোবাসার বার্তা",
@@ -272,6 +291,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "প্রতিকৃতি",
     selectThisPhotoBtn: "এই ছবিটি বেছে নিন",
     selectedPhotoLabel: "বাছাই করা ছবি",
+    uploadPhotoBtn: "ছবি আপলোড করুন",
+    uploadingPhoto: "আপলোড হচ্ছে...",
+    uploadedPhotosCategory: "আপলোড করা",
+    uploadPhotoHint: "ডিভাইস থেকে ছবি আপলোড করুন",
 },
   mr: {
     modalTitle: "उद्यासाठी प्रेमाचा संदेश",
@@ -319,6 +342,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "व्यक्तिचित्रे",
     selectThisPhotoBtn: "हा फोटो निवडा",
     selectedPhotoLabel: "निवडलेला फोटो",
+    uploadPhotoBtn: "फोटो अपलोड करा",
+    uploadingPhoto: "अपलोड होत आहे...",
+    uploadedPhotosCategory: "अपलोड केलेले",
+    uploadPhotoHint: "डिव्हाइसवरून फोटो अपलोड करा",
 },
   ne: {
     modalTitle: "भोलिको लागि मायालु सन्देशहरू",
@@ -366,6 +393,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "व्यक्तिगत तस्बिरहरू",
     selectThisPhotoBtn: "यो तस्बिर छान्नुहोस्",
     selectedPhotoLabel: "छानिएको तस्बिर",
+    uploadPhotoBtn: "तस्बिर अपलोड गर्नुहोस्",
+    uploadingPhoto: "अपलोड हुँदैछ...",
+    uploadedPhotosCategory: "अपलोड गरिएको",
+    uploadPhotoHint: "उपकरणबाट तस्बिर अपलोड गर्नुहोस्",
 },
   mni: {
     modalTitle: "হয়েংগীদমক নুংশিবা পাউজেলশিং",
@@ -413,6 +444,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "ফোতোশিং",
     selectThisPhotoBtn: "মসিগী ফোতো অসি খনবীয়ু",
     selectedPhotoLabel: "খল্লবা ফোতো",
+    uploadPhotoBtn: "ফোতো অপলোদ তৌবীয়ু",
+    uploadingPhoto: "অপলোদ তৌরি...",
+    uploadedPhotosCategory: "অপলোদ তৌরবা",
+    uploadPhotoHint: "দিভাইসদগী ফোতো অপলোদ তৌবীয়ু",
 },
   brx: {
     modalTitle: "गाबोननि थाखाय अननायनि खौरां",
@@ -460,6 +495,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "पोर्ट्रेट",
     selectThisPhotoBtn: "बे फोटोखौ सायख'",
     selectedPhotoLabel: "सायख'नाय फोटो",
+    uploadPhotoBtn: "फोटो आपलोड खालाम",
+    uploadingPhoto: "आपलोड जाबाय थादों...",
+    uploadedPhotosCategory: "आपलोड खालामनाय",
+    uploadPhotoHint: "दिभाइसनिफ्राय फोटो आपलोड खालाम",
 },
   grt: {
     modalTitle: "Kinaalchina Ka·sani Kattarang",
@@ -507,6 +546,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "Photo-rang",
     selectThisPhotoBtn: "Ia Photo-ko Seokbo",
     selectedPhotoLabel: "Seokgimin Photo",
+    uploadPhotoBtn: "Photo Upload Ka·bo",
+    uploadingPhoto: "Upload ka·enga...",
+    uploadedPhotosCategory: "Upload Ka·gimin",
+    uploadPhotoHint: "Device-oniko photo upload ka·bo",
 },
   kha: {
     modalTitle: "Ki Khubor Maya Sha ka Lawei",
@@ -554,6 +597,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "Ki Dur Briew",
     selectThisPhotoBtn: "Jied ia kane ka Dur",
     selectedPhotoLabel: "Ka Dur ba la Jied",
+    uploadPhotoBtn: "Upload ia ka Dur",
+    uploadingPhoto: "Dang upload...",
+    uploadedPhotosCategory: "Ba la Upload",
+    uploadPhotoHint: "Upload ia ka dur na ka device",
 },
   lus: {
     modalTitle: "Nakin Zela Tan Duatna Thuchah",
@@ -601,6 +648,10 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     filterPortraits: "Hmel Thlalak",
     selectThisPhotoBtn: "He Thlalak Hi Thlang Rawh",
     selectedPhotoLabel: "Thlan Thlalak",
+    uploadPhotoBtn: "Thlalak Upload Rawh",
+    uploadingPhoto: "Upload mek a ni...",
+    uploadedPhotosCategory: "Upload Tawhte",
+    uploadPhotoHint: "Device atangin thlalak upload rawh",
 },
 };
 
@@ -617,10 +668,15 @@ export function FutureTimeCapsuleModal({
   const activeLocale = langCode || currentLocale || "en";
   const t = TIME_CAPSULE_MODAL_I18N[activeLocale] || TIME_CAPSULE_MODAL_I18N.en;
 
+  // File upload state & ref
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [customPhotosVersion, setCustomPhotosVersion] = useState(0);
+
   // Retrieve all photos associated with this patient
   const allPatientPhotos = useMemo(() => {
     return getPatientPhotos(patientId, patientName);
-  }, [patientId, patientName]);
+  }, [patientId, patientName, customPhotosVersion]);
 
   const presetIdeas = useMemo(() => [
     {
@@ -688,6 +744,44 @@ export function FutureTimeCapsuleModal({
     }
     return topChoices;
   }, [allPatientPhotos, selectedPhoto]);
+
+  // Upload handler for adding personal/family photos
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select a valid image file (JPG, PNG, WEBP)");
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+        const newPhotoItem: PatientPhotoItem = {
+          id: `custom-photo-${Date.now()}`,
+          url: dataUrl,
+          label: cleanName.length > 28 ? cleanName.slice(0, 25) + "..." : cleanName,
+          category: "custom",
+          subtext: "Uploaded Custom Photo",
+        };
+
+        saveCustomPatientPhoto(patientId, newPhotoItem);
+        setCustomPhotosVersion((v) => v + 1);
+        setSelectedPhoto(dataUrl);
+        playEncourage();
+        setIsUploadingPhoto(false);
+      }
+    };
+    reader.onerror = () => {
+      setIsUploadingPhoto(false);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
 
   // Voice recording
   const [isRecording, setIsRecording] = useState(false);
@@ -1141,7 +1235,7 @@ export function FutureTimeCapsuleModal({
 
               {/* Step 3: Pick a Familiar Photo */}
               <div>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between gap-2 mb-2">
                   <label className="block text-xs font-black text-ink">
                     {t.step3Title}
                   </label>
@@ -1149,16 +1243,18 @@ export function FutureTimeCapsuleModal({
                     type="button"
                     onClick={() => {
                       playTapFeedback();
-                      setIsPhotoGalleryOpen(true);
+                      fileInputRef.current?.click();
                     }}
-                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 px-3 py-1 text-xs font-black text-ink cursor-pointer shadow-xs"
+                    disabled={isUploadingPhoto}
+                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-white hover:bg-amber-50 px-3 py-1 text-xs font-black text-ink cursor-pointer shadow-xs"
+                    title={t.uploadPhotoHint}
                   >
-                    <ImageIcon className="h-3.5 w-3.5 text-amber-900" />
-                    <span>{t.morePhotosBtn} ({allPatientPhotos.length})</span>
+                    <Upload className="h-3.5 w-3.5 text-tea" />
+                    <span>{isUploadingPhoto ? t.uploadingPhoto : `+ ${t.uploadPhotoBtn}`}</span>
                   </button>
                 </div>
 
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5">
                   {quickPhotos.map((photo) => (
                     <button
                       key={photo.id || photo.url}
@@ -1182,7 +1278,7 @@ export function FutureTimeCapsuleModal({
                       />
                       {selectedPhoto === photo.url && (
                         <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-tea text-white flex items-center justify-center shadow-xs">
-                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          <Check className="h-3.5 w-3.5 stroke-[3]" />
                         </div>
                       )}
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-2.5 text-left">
@@ -1193,7 +1289,7 @@ export function FutureTimeCapsuleModal({
                     </button>
                   ))}
 
-                  {/* "Other..." button card to open gallery popup */}
+                  {/* The Single "All Photos" Card Trigger */}
                   <button
                     type="button"
                     onClick={() => {
@@ -1207,7 +1303,7 @@ export function FutureTimeCapsuleModal({
                       <Plus className="h-4 w-4 text-ink" />
                     </div>
                     <span className="text-[11px] font-black text-ink leading-tight">
-                      {t.otherPhotosCard}
+                      {t.morePhotosBtn}
                     </span>
                     <span className="text-[10px] font-bold text-ink-secondary">
                       ({allPatientPhotos.length})
@@ -1215,32 +1311,21 @@ export function FutureTimeCapsuleModal({
                   </button>
                 </div>
 
-                {/* Selected photo pill feedback */}
+                {/* Selected photo confirmation - Clean informative strip, NO redundant buttons */}
                 {selectedPhotoItem && (
-                  <div className="mt-2 flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl border border-black/15 bg-amber-50/70 text-xs">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[11px] font-bold text-ink-secondary shrink-0">
-                        {t.selectedPhotoLabel}:
+                  <div className="mt-2.5 flex items-center gap-2 px-3 py-1.5 rounded-xl border border-black/15 bg-amber-50/70 text-xs">
+                    <Check className="h-3.5 w-3.5 text-tea shrink-0 stroke-[3]" />
+                    <span className="text-[11px] font-bold text-ink-secondary shrink-0">
+                      {t.selectedPhotoLabel}:
+                    </span>
+                    <span className="font-bold text-ink truncate">
+                      {selectedPhotoItem.label}
+                    </span>
+                    {selectedPhotoItem.subtext && (
+                      <span className="text-[11px] text-ink-muted hidden sm:inline truncate">
+                        • {selectedPhotoItem.subtext}
                       </span>
-                      <span className="font-bold text-ink truncate">
-                        {selectedPhotoItem.label}
-                      </span>
-                      {selectedPhotoItem.subtext && (
-                        <span className="text-[11px] text-ink-muted hidden sm:inline truncate">
-                          • {selectedPhotoItem.subtext}
-                        </span>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        playTapFeedback();
-                        setIsPhotoGalleryOpen(true);
-                      }}
-                      className="text-xs font-black text-tea hover:underline cursor-pointer shrink-0"
-                    >
-                      {t.morePhotosBtn} →
-                    </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -1271,29 +1356,38 @@ export function FutureTimeCapsuleModal({
         </div>
       </div>
 
+      {/* Hidden File Input for Device Photo Uploads */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileUpload}
+      />
+
       {/* ALL PATIENT PHOTOS POPUP MODAL */}
       {isPhotoGalleryOpen && (
         <div
           role="dialog"
           aria-modal="true"
           aria-label={t.photoGalleryTitle}
-          className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
+          className="fixed inset-0 z-60 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-150"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsPhotoGalleryOpen(false);
           }}
         >
-          <div className="relative w-full max-w-2xl max-h-[85vh] rounded-3xl border-3 border-black bg-canvas shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
+          <div className="relative w-full max-w-3xl max-h-[85vh] rounded-3xl border-3 border-black bg-canvas shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
             {/* Modal Header */}
-            <div className="bg-amber-300 border-b-3 border-black p-3.5 sm:p-4 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="h-10 w-10 rounded-2xl border-2 border-black bg-white flex items-center justify-center shrink-0">
+            <div className="bg-amber-300 border-b-3 border-black px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3 shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="h-10 w-10 rounded-2xl border-2 border-black bg-white flex items-center justify-center shrink-0 shadow-[2px_2px_0px_#000]">
                   <ImageIcon className="h-5 w-5 text-amber-800" />
                 </div>
-                <div>
-                  <h3 className="font-serif font-black text-base sm:text-lg text-ink leading-tight">
+                <div className="min-w-0">
+                  <h3 className="font-serif font-black text-base sm:text-lg text-ink leading-tight truncate">
                     {t.photoGalleryTitle}
                   </h3>
-                  <p className="text-xs font-medium text-ink-secondary">
+                  <p className="text-xs font-medium text-ink-secondary truncate mt-0.5">
                     {t.photoGallerySubtitle}
                   </p>
                 </div>
@@ -1301,107 +1395,157 @@ export function FutureTimeCapsuleModal({
               <button
                 type="button"
                 onClick={() => setIsPhotoGalleryOpen(false)}
-                className="btn-tactile h-9 w-9 rounded-xl border-2 border-black bg-white hover:bg-rose-100 flex items-center justify-center cursor-pointer shadow-xs shrink-0"
+                className="btn-tactile h-9 w-9 rounded-xl border-2 border-black bg-white hover:bg-rose-100 flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_#000] shrink-0 active:scale-95"
                 aria-label="Close photo gallery"
               >
                 <X className="h-5 w-5 text-ink" />
               </button>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="border-b-2 border-black/15 bg-amber-50/80 px-3 sm:px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
-              {[
-                { key: "all", label: `${t.filterAll} (${allPatientPhotos.length})` },
-                {
-                  key: "family",
-                  label: `${t.filterFamily} (${allPatientPhotos.filter((p) => p.category === "family").length})`,
-                },
-                {
-                  key: "places",
-                  label: `${t.filterPlaces} (${allPatientPhotos.filter((p) => p.category === "places").length})`,
-                },
-                {
-                  key: "portrait",
-                  label: `${t.filterPortraits} (${allPatientPhotos.filter((p) => p.category === "portrait").length})`,
-                },
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => {
-                    playTapFeedback();
-                    setPhotoCategoryFilter(tab.key as PhotoCategory);
-                  }}
-                  className={`btn-tactile px-3 py-1.5 rounded-xl border-2 text-xs font-black whitespace-nowrap cursor-pointer transition-all ${
-                    photoCategoryFilter === tab.key
-                      ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
-                      : "border-black/20 bg-white text-ink hover:bg-amber-100"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            {/* Filter Tabs & Quick Upload Action */}
+            <div className="border-b-2 border-black/15 bg-amber-50/90 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 overflow-x-auto no-scrollbar shrink-0">
+              <div className="flex items-center gap-2">
+                {[
+                  { key: "all", label: `${t.filterAll} (${allPatientPhotos.length})` },
+                  ...(allPatientPhotos.some((p) => p.category === "custom")
+                    ? [
+                        {
+                          key: "custom",
+                          label: `${t.uploadedPhotosCategory} (${allPatientPhotos.filter((p) => p.category === "custom").length})`,
+                        },
+                      ]
+                    : []),
+                  {
+                    key: "family",
+                    label: `${t.filterFamily} (${allPatientPhotos.filter((p) => p.category === "family").length})`,
+                  },
+                  {
+                    key: "places",
+                    label: `${t.filterPlaces} (${allPatientPhotos.filter((p) => p.category === "places").length})`,
+                  },
+                  {
+                    key: "portrait",
+                    label: `${t.filterPortraits} (${allPatientPhotos.filter((p) => p.category === "portrait").length})`,
+                  },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => {
+                      playTapFeedback();
+                      setPhotoCategoryFilter(tab.key as PhotoCategory);
+                    }}
+                    className={`btn-tactile px-3.5 py-1.5 rounded-xl border-2 text-xs font-black whitespace-nowrap cursor-pointer transition-all ${
+                      photoCategoryFilter === tab.key
+                        ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
+                        : "border-black/25 bg-white text-ink hover:bg-amber-100 hover:border-black shadow-xs"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playTapFeedback();
+                  fileInputRef.current?.click();
+                }}
+                disabled={isUploadingPhoto}
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-300 hover:bg-amber-400 text-amber-950 px-3.5 py-1.5 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer whitespace-nowrap shrink-0 transition-transform active:scale-95"
+                title={t.uploadPhotoHint}
+              >
+                <Upload className="h-3.5 w-3.5 text-amber-950" />
+                <span>{isUploadingPhoto ? t.uploadingPhoto : `+ ${t.uploadPhotoBtn}`}</span>
+              </button>
             </div>
 
-            {/* Photos Grid - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-2">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {filteredPhotos.map((photo) => {
-                  const isSelected = selectedPhoto === photo.url;
-                  return (
-                    <div
-                      key={photo.id}
-                      onClick={() => {
-                        playTapFeedback();
-                        setSelectedPhoto(photo.url);
-                      }}
-                      className={`btn-tactile group relative rounded-2xl border-2 text-left cursor-pointer overflow-hidden transition-all bg-white flex flex-col ${
-                        isSelected
-                          ? "border-tea ring-3 ring-tea shadow-[3px_3px_0px_#000] scale-[1.01]"
-                          : "border-black/30 hover:border-black shadow-xs hover:shadow-[3px_3px_0px_#000]"
-                      }`}
-                    >
-                      <div className="relative aspect-4/3 w-full overflow-hidden bg-stone-100">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={photo.url}
-                          alt={photo.label}
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        />
-                        {isSelected && (
-                          <div className="absolute top-2 right-2 h-7 w-7 rounded-full bg-tea text-white border-2 border-white flex items-center justify-center shadow-md">
-                            <CheckCircle2 className="h-4 w-4" />
-                          </div>
-                        )}
-                        <span className="absolute bottom-2 left-2 rounded-lg bg-black/75 backdrop-blur-xs px-2 py-0.5 text-[10px] font-black text-white uppercase tracking-wider">
-                          {photo.category === "family"
-                            ? t.filterFamily
-                            : photo.category === "places"
-                            ? t.filterPlaces
-                            : t.filterPortraits}
-                        </span>
+            {/* Photos Grid - Balanced padding and clean 16:10 geometry */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 pb-8 space-y-4">
+              {filteredPhotos.length === 0 && photoCategoryFilter === "custom" ? (
+                <div className="rounded-2xl border-2 border-dashed border-black/30 p-8 text-center bg-white space-y-3 my-4">
+                  <div className="h-12 w-12 rounded-2xl border-2 border-black bg-amber-100 flex items-center justify-center mx-auto shadow-xs">
+                    <Upload className="h-6 w-6 text-tea" />
+                  </div>
+                  <p className="font-serif font-bold text-sm text-ink">
+                    No uploaded photos yet
+                  </p>
+                  <p className="text-xs text-ink-secondary">
+                    {t.uploadPhotoHint}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-300 hover:bg-amber-400 px-4 py-2 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer"
+                  >
+                    <Upload className="h-3.5 w-3.5" />
+                    <span>{t.uploadPhotoBtn}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {filteredPhotos.map((photo) => {
+                    const isSelected = selectedPhoto === photo.url;
+                    return (
+                      <div
+                        key={photo.id}
+                        onClick={() => {
+                          playTapFeedback();
+                          setSelectedPhoto(photo.url);
+                        }}
+                        className={`btn-tactile group relative rounded-2xl text-left cursor-pointer overflow-hidden transition-all bg-white flex flex-col ${
+                          isSelected
+                            ? "border-3 border-emerald-800 ring-4 ring-emerald-600/30 shadow-[4px_4px_0px_#064e3b] scale-[1.01]"
+                            : "border-2 border-black/30 hover:border-black shadow-xs hover:shadow-[3px_3px_0px_#000]"
+                        }`}
+                      >
+                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-stone-100">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={photo.url}
+                            alt={photo.label}
+                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                          {/* Top-Left Category Badge */}
+                          <span className="absolute top-2 left-2 rounded-md bg-black/80 backdrop-blur-xs px-2 py-0.5 text-[10px] font-black text-white uppercase tracking-wider shadow-xs">
+                            {photo.category === "family"
+                              ? "👥 " + t.filterFamily
+                              : photo.category === "places"
+                              ? "🏡 " + t.filterPlaces
+                              : photo.category === "custom"
+                              ? "📷 " + t.uploadedPhotosCategory
+                              : "👤 " + t.filterPortraits}
+                          </span>
+                          {/* Top-Right Checkmark Badge when Selected */}
+                          {isSelected && (
+                            <div className="absolute top-2 right-2 h-7 w-7 rounded-full bg-emerald-700 text-white border-2 border-white flex items-center justify-center shadow-md">
+                              <Check className="h-4 w-4 stroke-[3]" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-3.5 flex-1 flex flex-col justify-between min-h-[4rem]">
+                          <h4 className="font-serif font-black text-sm text-ink leading-snug truncate" title={photo.label}>
+                            {photo.label}
+                          </h4>
+                          {photo.subtext && (
+                            <p className="text-xs font-medium text-ink-secondary mt-1 truncate">
+                              {photo.subtext}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <div className="p-2.5 flex-1 flex flex-col justify-between">
-                        <h4 className="font-serif font-black text-xs sm:text-sm text-ink leading-tight">
-                          {photo.label}
-                        </h4>
-                        {photo.subtext && (
-                          <p className="text-[11px] font-medium text-ink-secondary mt-0.5 line-clamp-1">
-                            {photo.subtext}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Modal Footer */}
-            <div className="border-t-3 border-black bg-white p-3 sm:p-3.5 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 min-w-0">
+            <div className="border-t-3 border-black bg-white px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4 shadow-[0px_-2px_10px_rgba(0,0,0,0.05)] shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
                 {selectedPhotoItem && (
-                  <div className="h-10 w-10 rounded-xl border-2 border-black overflow-hidden shrink-0">
+                  <div className="h-12 w-12 rounded-2xl border-2 border-black overflow-hidden shrink-0 shadow-xs bg-stone-100">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={selectedPhotoItem.url}
@@ -1426,9 +1570,10 @@ export function FutureTimeCapsuleModal({
                   playTapFeedback();
                   setIsPhotoGalleryOpen(false);
                 }}
-                className="btn-tactile px-5 py-2.5 rounded-xl border-2 border-black bg-tea hover:bg-emerald-800 text-white text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+                className="btn-tactile inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl border-2 border-black bg-tea hover:bg-emerald-800 text-white text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer shrink-0 active:scale-95 transition-all"
               >
-                {t.selectThisPhotoBtn}
+                <Check className="h-4 w-4 stroke-[3]" />
+                <span>{t.selectThisPhotoBtn}</span>
               </button>
             </div>
           </div>

@@ -1,10 +1,10 @@
-export type PhotoCategory = "all" | "family" | "places" | "portrait";
+export type PhotoCategory = "all" | "family" | "places" | "portrait" | "custom";
 
 export interface PatientPhotoItem {
   id: string;
   url: string;
   label: string;
-  category: "family" | "places" | "portrait";
+  category: "family" | "places" | "portrait" | "custom";
   categoryLabel?: string;
   subtext?: string;
 }
@@ -409,25 +409,58 @@ export const KEVICHUSA_ANGAMI_PHOTOS: PatientPhotoItem[] = [
   },
 ];
 
+const CUSTOM_PHOTOS_KEY = "cognicare_custom_patient_photos";
+
+export function getCustomPatientPhotos(patientId?: number): PatientPhotoItem[] {
+  if (typeof window === "undefined" || !patientId) return [];
+  try {
+    const key = CUSTOM_PHOTOS_KEY + "_" + patientId;
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return [];
+    const list = JSON.parse(raw) as PatientPhotoItem[];
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveCustomPatientPhoto(
+  patientId: number,
+  photo: PatientPhotoItem
+): PatientPhotoItem[] {
+  if (typeof window === "undefined") return [photo];
+  try {
+    const key = CUSTOM_PHOTOS_KEY + "_" + patientId;
+    const existing = getCustomPatientPhotos(patientId);
+    const updated = [photo, ...existing.filter((p) => p.id !== photo.id)];
+    window.localStorage.setItem(key, JSON.stringify(updated));
+    return updated;
+  } catch (e) {
+    console.warn("Could not save custom photo to localStorage:", e);
+    return [photo];
+  }
+}
+
 export function getPatientPhotos(
   patientId?: number,
   patientName?: string
 ): PatientPhotoItem[] {
+  const custom = getCustomPatientPhotos(patientId);
   const name = (patientName || "").toLowerCase();
+  let base: PatientPhotoItem[] = BIREN_BORAH_PHOTOS;
 
   if (patientId === 1 || name.includes("mary") || name.includes("nongrum")) {
-    return MARY_NONGRUM_PHOTOS;
-  }
-  if (patientId === 3 || name.includes("ibochouba") || name.includes("singh")) {
-    return IBOCHOUBA_SINGH_PHOTOS;
-  }
-  if (patientId === 4 || name.includes("sailo") || name.includes("lalhmingmawii")) {
-    return LALHMINGMAWII_SAILO_PHOTOS;
-  }
-  if (patientId === 5 || name.includes("angami") || name.includes("kevichusa")) {
-    return KEVICHUSA_ANGAMI_PHOTOS;
+    base = MARY_NONGRUM_PHOTOS;
+  } else if (patientId === 3 || name.includes("ibochouba") || name.includes("singh")) {
+    base = IBOCHOUBA_SINGH_PHOTOS;
+  } else if (patientId === 4 || name.includes("sailo") || name.includes("lalhmingmawii")) {
+    base = LALHMINGMAWII_SAILO_PHOTOS;
+  } else if (patientId === 5 || name.includes("angami") || name.includes("kevichusa")) {
+    base = KEVICHUSA_ANGAMI_PHOTOS;
   }
 
-  // Default to Biren Borah (patientId 2 or 101 or Assam demo)
-  return BIREN_BORAH_PHOTOS;
+  if (custom.length > 0) {
+    return [...custom, ...base];
+  }
+  return base;
 }
