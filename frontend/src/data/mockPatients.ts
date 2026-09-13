@@ -30,7 +30,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
     "Khasi community; celebrates Shad Suk Mynsiem and Christmas; loves wearing traditional Khasi Jainsem.",
   joyTriggers:
     "Tending to potted orchids on the veranda, listening to Sunday church bells, and holding hands with granddaughter Banylla.",
-  photoUrl: null,
+  photoUrl: "/sample-images/patient_2_mary_nongrum/patient_profile_photo_mary_nongrum.jpg",
   createdAt: "2026-08-29T18:22:22Z",
   lifeStory: {
     occupation: "Retired Senior Head Nurse (Civil Hospital Shillong)",
@@ -111,7 +111,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       relation: "Daughter",
       notes:
         "Lives in Shillong with me; school teacher at St. Mary's; prepares herbal morning tea and organizes medicines.",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/relatives/01_daughter_daphisha_nongrum.jpg",
     },
     {
       id: 2,
@@ -119,7 +119,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       relation: "Spouse",
       notes:
         "Married 45 years; retired forestry officer; loves tending the orchid and hydrangea garden with me.",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/relatives/02_spouse_banker_nongrum.jpg",
     },
     {
       id: 3,
@@ -127,7 +127,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       relation: "Granddaughter",
       notes:
         "Granddaughter; loves reading illustrated Khasi folktales and singing church choir hymns with Kong Mary.",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/relatives/03_grandchild_banylla_nongrum.jpg",
     },
     {
       id: 4,
@@ -135,7 +135,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       relation: "Son",
       notes:
         "Lives in Mawlai; works in state tourism; visits every Wednesday evening and brings traditional Khasi snacks.",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/relatives/04_son_pynskhem_nongrum.jpg",
     },
     {
       id: 5,
@@ -143,7 +143,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       relation: "Sister",
       notes:
         "Younger sister; lives near Police Bazar; knits woollen sweaters with me every Saturday afternoon.",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/relatives/05_sibling_ibadalin_nongrum.jpg",
     },
   ],
   familiarPlaces: [
@@ -154,7 +154,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       description:
         "Where we live — wooden-roof heritage cottage with blooming orchid garden.",
       emoji: "home",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/places/01_home_nongrim_hills_cottage.jpg",
     },
     {
       id: 2,
@@ -163,7 +163,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       description:
         "Where we shop — bakery, fresh fruit stalls, and woollen garment shops.",
       emoji: "market",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/places/02_laitumkhrah_main_market.jpg",
     },
     {
       id: 3,
@@ -172,7 +172,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       description:
         "Place of worship — iconic blue cathedral in Laitumkhrah where she attends Sunday mass.",
       emoji: "temple",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/places/03_cathedral_mary_help_christians.jpg",
     },
     {
       id: 4,
@@ -181,7 +181,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       description:
         "Where I worked for 35 years and get monthly blood pressure checkups.",
       emoji: "hospital",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/places/04_shillong_civil_hospital.jpg",
     },
     {
       id: 5,
@@ -190,7 +190,7 @@ export const MOCK_MARY_NONGRUM_RECORD: PatientDetailRecord = {
       description:
         "Where we stroll — scenic horseshoe lake with wooden bridge, swans, and flowerbeds.",
       emoji: "park",
-      photoUrl: null,
+      photoUrl: "/sample-images/patient_2_mary_nongrum/places/05_wards_lake_nan_polok.jpg",
     },
   ],
   card: {

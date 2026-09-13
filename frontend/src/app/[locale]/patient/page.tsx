@@ -413,7 +413,7 @@ export default function PatientHome() {
   const heroText = `${greeting} ${t("orientation")} ${t("heroPrompt")}`;
   const avatarPhoto = detail?.photoUrl
     ? getMediaUrl(detail.photoUrl)
-    : "/sample-images/patient_1_biren_borah/00_biren_borah.svg";
+    : "/sample-images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg";
   const avatarInitials = rawPatientName ? initialsFrom(rawPatientName) : "B";
 
   const rawJoyTriggers = detail?.joyTriggers?.trim();

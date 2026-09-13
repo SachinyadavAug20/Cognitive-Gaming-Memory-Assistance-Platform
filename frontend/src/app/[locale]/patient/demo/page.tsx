@@ -1166,7 +1166,7 @@ export default function PatientDemoPage() {
             <div className="flex items-center gap-4">
               <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-2xl border-3 border-black bg-amber-100 overflow-hidden shrink-0 shadow-[3px_3px_0px_#000] flex items-center justify-center">
                 <Image
-                  src={p.photoUrl || "/sample-images/patient_1_biren_borah/profile.jpg"}
+                  src={p.photoUrl || "/sample-images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg"}
                   alt={p.name}
                   width={96}
                   height={96}
@@ -1484,7 +1484,7 @@ export default function PatientDemoPage() {
               >
                 <div className="aspect-square w-full rounded-xl border-2 border-black overflow-hidden mb-2 bg-black/5">
                   <Image
-                    src={member.photoUrl || "/sample-images/patient_1_biren_borah/relatives/relative_1.jpg"}
+                    src={member.photoUrl || "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg"}
                     alt={member.name}
                     width={140}
                     height={140}
@@ -1534,7 +1534,7 @@ export default function PatientDemoPage() {
                 <div>
                   <div className="aspect-[4/3] w-full rounded-xl border-2 border-black overflow-hidden mb-2 bg-black/5">
                     <Image
-                      src={place.photoUrl || "/sample-images/patient_1_biren_borah/places/place_1.jpg"}
+                      src={place.photoUrl || "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg"}
                       alt={place.name}
                       width={200}
                       height={150}

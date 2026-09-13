@@ -11,7 +11,7 @@ export const DEMO_PATIENT_RECORD: PatientDetailRecord = {
   preferredLanguage: "as",
   culturalBackground: "Assamese, native of Silpukhuri, Guwahati. Retired Assam State Agricultural Officer.",
   joyTriggers: "Bihu songs by Bhupen Hazarika, tending to terrace orchids, playing carrom with grandson Arnav, morning fresh CTC tea.",
-  photoUrl: "/sample-images/patient_1_biren_borah/00_biren_borah.svg",
+  photoUrl: "/sample-images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg",
   createdAt: "2026-08-01T08:00:00Z",
   familyMembers: [
     {
