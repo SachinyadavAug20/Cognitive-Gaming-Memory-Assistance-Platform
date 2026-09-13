@@ -103,7 +103,8 @@ export function VerifiedStampBadge({
   forceShowUnverifiedInCaregiverMode = true,
 }: VerifiedStampBadgeProps) {
   const locale = useLocale();
-  const t = STAMP_BADGE_I18N[locale] || STAMP_BADGE_I18N.en;
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const t = STAMP_BADGE_I18N[normLoc] || STAMP_BADGE_I18N.en;
   const { isGameVerified, getVerification, caregiverMode } =
     useGameVerificationStore();
 

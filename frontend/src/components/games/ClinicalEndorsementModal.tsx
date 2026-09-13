@@ -344,7 +344,8 @@ export function ClinicalEndorsementModal({
   onOpenEdit,
 }: ClinicalEndorsementModalProps) {
   const locale = useLocale();
-  const t = ENDORSEMENT_MODAL_I18N[locale] || ENDORSEMENT_MODAL_I18N.en;
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const t = ENDORSEMENT_MODAL_I18N[normLoc] || ENDORSEMENT_MODAL_I18N.en;
 
   if (!isOpen || !verification) return null;
 

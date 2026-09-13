@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import * as THREE from "three";
 import gsap from "gsap";
 import {
@@ -55,8 +55,244 @@ const WALK_STOP_COORDS = [
   { z: -10, lookAt: [0, 1, -16] },
 ];
 
+interface MajuliWalkStrings {
+  points: (p: number) => string;
+  stopOf: (c: number, t: number) => string;
+  readForMe: string;
+  unmute: string;
+  mute: string;
+  recognizedToday: string;
+  playBihu: string;
+  mindfulness: string;
+  namgharName: string;
+  namgharDesc: string;
+  namgharOptions: [string, string, string];
+  changGharName: string;
+  changGharDesc: string;
+  changGharOptions: [string, string, string];
+  riverGhatName: string;
+  riverGhatDesc: string;
+  riverGhatOptions: [string, string, string];
+}
+
+const MAJULI_I18N: Record<string, MajuliWalkStrings> = {
+  en: {
+    points: (p) => `+${p} Points`,
+    stopOf: (c, t) => `Stop ${c} of ${t}`,
+    readForMe: "Read for Me",
+    unmute: "Unmute Voice",
+    mute: "Mute Voice",
+    recognizedToday: "Landmarks Recognized Today:",
+    playBihu: "Play Bihu Melody",
+    mindfulness: "Mindfulness Journey",
+    namgharName: "Auniati Satra Namghar",
+    namgharDesc: "Sacred prayer hall with golden finial and brass bell chimes on the left riverbank.",
+    namgharOptions: ["Auniati Satra Namghar", "Modern Highway", "Market Clock Tower"],
+    changGharName: "Mising Bamboo Chang Ghar",
+    changGharDesc: "Traditional raised bamboo stilt cottage built to stay safe above monsoon floods.",
+    changGharOptions: ["Mising Bamboo Chang Ghar", "Brick Factory", "Concrete Apartment"],
+    riverGhatName: "Kamalabari River Ghat",
+    riverGhatDesc: "Peaceful wooden boat jetty overlooking the sunlit Brahmaputra River waters.",
+    riverGhatOptions: ["Kamalabari River Ghat", "Airport Terminal", "Railway Junction"],
+  },
+  as: {
+    points: (p) => `+${p} নম্বৰ`,
+    stopOf: (c, t) => `স্থান ${c} (${t} ৰ ভিতৰত)`,
+    readForMe: "মোৰ বাবে পঢ়ক",
+    unmute: "শব্দ শুনক",
+    mute: "শব্দ বন্ধ কৰক",
+    recognizedToday: "আজি চিনাক্ত কৰা ঐতিহ্যসমূহ:",
+    playBihu: "বিহুৰ সুৰ শুনাওক",
+    mindfulness: "মনৰ প্ৰশান্তিৰ যাত্ৰা",
+    namgharName: "আউনীআটী সত্ৰ নামঘৰ",
+    namgharDesc: "বাওঁহাতে সোণালী কলচী আৰু কাঁহৰ ঘণ্টাৰে শুশোভিত পৱিত্ৰ নামঘৰ।",
+    namgharOptions: ["আউনীআটী সত্ৰ নামঘৰ", "আধুনিক ঘাইপথ", "বজাৰৰ ঘড়ী স্তম্ভ"],
+    changGharName: "মিচিং বাঁহৰ চাং ঘৰ",
+    changGharDesc: "বাৰিষাৰ বানপানীৰ পৰা সুৰক্ষিত ঐতিহ্যবাহী বাঁহৰ ওখ চাং ঘৰ।",
+    changGharOptions: ["মিচিং বাঁহৰ চাং ঘৰ", "ইটাৰ ভাটা", "কংক্ৰিটৰ অট্টালিকা"],
+    riverGhatName: "কমলাবাৰী ফেৰী ঘাট",
+    riverGhatDesc: "ব্ৰহ্মপুত্ৰৰ ৰূপালী জলৰাশিৰ পাৰত শান্ত কাঠৰ নাও ঘাট।",
+    riverGhatOptions: ["কমলাবাৰী ফেৰী ঘাট", "বিমান বন্দৰ", "ৰে'ল ষ্টেচন"],
+  },
+  hi: {
+    points: (p) => `+${p} अंक`,
+    stopOf: (c, t) => `पड़ाव ${c} (${t} में से)`,
+    readForMe: "मेरे लिए पढ़ें",
+    unmute: "आवाज़ चालू करें",
+    mute: "आवाज़ बंद करें",
+    recognizedToday: "आज पहचाने गए स्थल:",
+    playBihu: "बिहू धुन बजाएं",
+    mindfulness: "शांतिपूर्ण स्मृति यात्रा",
+    namgharName: "औनियाती सत्र नामघर",
+    namgharDesc: "बाएँ किनारे पर सुनहरे कलश और पीतल की घंटी वाला पवित्र प्रार्थना स्थल।",
+    namgharOptions: ["औनियाती सत्र नामघर", "आधुनिक राजमार्ग", "बाज़ार घंटाघर"],
+    changGharName: "मिसिंग बांस का चांग घर",
+    changGharDesc: "बाढ़ से सुरक्षित रहने के लिए बांस के खंभों पर बना पारंपरिक ऊंचा घर।",
+    changGharOptions: ["मिसिंग बांस का चांग घर", "ईंट का भट्ठा", "कंक्रीट की इमारत"],
+    riverGhatName: "कमलाबारी नदी घाट",
+    riverGhatDesc: "ब्रह्मपुत्र नदी के शांत पानी को निहारता लकड़ी का नाव घाट।",
+    riverGhatOptions: ["कमलाबारी नदी घाट", "हवाई अड्डा", "रेलवे जंक्शन"],
+  },
+  bn: {
+    points: (p) => `+${p} পয়েন্ট`,
+    stopOf: (c, t) => `বিরতি ${c} (${t}-এর মধ্যে)`,
+    readForMe: "পড়ে শোনান",
+    unmute: "শব্দ চালু",
+    mute: "শব্দ বন্ধ",
+    recognizedToday: "আজকে চিহ্নিত স্থানসমূহ:",
+    playBihu: "বিহু সুর বাজান",
+    mindfulness: "স্মৃতি জাগরণ যাত্রা",
+    namgharName: "আউনিয়াটি সত্র নামঘর",
+    namgharDesc: "বাঁ তীরে সোনালি চূড়া ও কাঁসার ঘণ্টা শোভিত পবিত্র নামঘর।",
+    namgharOptions: ["আউনিয়াটি সত্র নামঘর", "আধুনিক মহাসড়ক", "বাজারের ঘড়ি টাওয়ার"],
+    changGharName: "মিচিং বাঁশের চাং ঘর",
+    changGharDesc: "বন্যার জল থেকে নিরাপদ থাকার জন্য বাঁশের খুঁটিতে তৈরি ঐতিহ্যবাহী ঘর।",
+    changGharOptions: ["মিচিং বাঁশের চাং ঘর", "ইটের ভাটা", "কংক্রিটের বাড়ি"],
+    riverGhatName: "কমলাবাড়ি নদী ঘাট",
+    riverGhatDesc: "শান্ত ব্রহ্মপুত্র নদীর তীরে কাঠের তৈরি সুন্দর নৌকা ঘাট।",
+    riverGhatOptions: ["কমলাবাড়ি নদী ঘাট", "বিমানবন্দর", "রেলওয়ে স্টেশন"],
+  },
+  mr: {
+    points: (p) => `+${p} गुण`,
+    stopOf: (c, t) => `थांबा ${c} (${t} पैकी)`,
+    readForMe: "वाचून दाखवा",
+    unmute: "आवाज सुरू",
+    mute: "आवाज बंद",
+    recognizedToday: "आज ओळखलेली ठिकाणे:",
+    playBihu: "बिहू संगीत ऐका",
+    mindfulness: "शांत स्मरण यात्रा",
+    namgharName: "औनियाती सत्र नामघर",
+    namgharDesc: "डाव्या काठावर सोनेरी कळस आणि पितळी घंटा असलेले पवित्र प्रार्थनास्थळ.",
+    namgharOptions: ["औनियाती सत्र नामघर", "आधुनिक महामार्ग", "बाजार क्लॉक टॉवर"],
+    changGharName: "मिसिंग बांबूचे चांग घर",
+    changGharDesc: "पुराच्या पाण्यापासून सुरक्षित राहण्यासाठी बांबूच्या खांबांवर बांधलेले पारंपरिक घर.",
+    changGharOptions: ["मिसिंग बांबूचे चांग घर", "विटांची भट्टी", "काँक्रीटची इमारत"],
+    riverGhatName: "कमलाबारी नदी घाट",
+    riverGhatDesc: "ब्रह्मपुत्रा नदीच्या शांत पाण्याजवळचा लाकडी बोटीचा घाट.",
+    riverGhatOptions: ["कमलाबारी नदी घाट", "विमानतळ", "रेल्वे जंक्शन"],
+  },
+  ne: {
+    points: (p) => `+${p} अंक`,
+    stopOf: (c, t) => `पडाव ${c} (${t} मध्ये)`,
+    readForMe: "पढेर सुनाउनुहोस्",
+    unmute: "आवाज खोल्नुहोस्",
+    mute: "आवाज बन्द गर्नुहोस्",
+    recognizedToday: "आज पहिचान गरिएका स्थलहरू:",
+    playBihu: "बिहू धुन बजाउनुहोस्",
+    mindfulness: "शान्त स्मृति यात्रा",
+    namgharName: "औनियाती सत्र नामघर",
+    namgharDesc: "देब्रे किनारमा सुनौलो कलश र घण्टीले सजिएको पवित्र नामघर।",
+    namgharOptions: ["औनियाती सत्र नामघर", "आधुनिक राजमार्ग", "बजार घडी टावर"],
+    changGharName: "मिसिङ बाँसको चाङ घर",
+    changGharDesc: "बाढीबाट जोगिन बाँसको अग्लो खम्बामा बनाइएको परम्परागत घर।",
+    changGharOptions: ["मिसिङ बाँसको चाङ घर", "इँटाको भट्टा", "कङ्क्रिटको घर"],
+    riverGhatName: "कमलाबारी नदी घाट",
+    riverGhatDesc: "ब्रह्मपुत्र नदीको किनारमा अवस्थित काठको शान्त डुङ्गा घाट।",
+    riverGhatOptions: ["कमलाबारी नदी घाट", "विमानस्थल", "रेलवे स्टेसन"],
+  },
+  mni: {
+    points: (p) => `+${p} পোইন্ট`,
+    stopOf: (c, t) => `লেপফম ${c} (${t} গী মনুংদা)`,
+    readForMe: "ঐগীদমক পারম্মু",
+    unmute: "খোন্থোক থোকহল্লু",
+    mute: "খোন্থোক লেপ্পু",
+    recognizedToday: "ঙসি খঙদোক্লবা মফমশিং:",
+    playBihu: "বিহু সুর তাউ",
+    mindfulness: "নিংশিং খোঙচৎ",
+    namgharName: "আউনিয়াতি সত্ৰ নামঘর",
+    namgharDesc: "শোণাগী কলস অমসুং পিথ্রাই ঘণ্টা লৈবা শেংলবা নামঘর।",
+    namgharOptions: ["আউনিয়াতি সত্ৰ নামঘর", "মডার্ন হাইৱে", "বাজার ক্লোক্ তাৱার"],
+    changGharName: "মিচিং ৱাগী চাং য়ুম",
+    changGharDesc: "ঈশিং ইচাওদগী ঙাকথোক্নবা ৱাগী য়ুম্বীদা শাশিবা অরিবা য়ুম।",
+    changGharOptions: ["মিচিং ৱাগী চাং য়ুম", "চেক ফাক্টরী", "কনক্রিৎ অপার্টমেন্ট"],
+    riverGhatName: "কমলাবাড়ি তুরেল ঘাট",
+    riverGhatDesc: "ব্রহ্মপুত্র তুরেল নাকন্দা লৈবা নুংশিরবা উগী হী ঘাট।",
+    riverGhatOptions: ["কমলাবাড়ি তুরেল ঘাট", "এয়ারপোর্ট", "রেলৱে জংশন"],
+  },
+  brx: {
+    points: (p) => `+${p} नम्बर`,
+    stopOf: (c, t) => `थाथ'नाय ${c} (${t} नि गेजेराव)`,
+    readForMe: "आंनि थाखाय फराय",
+    unmute: "राव खोनासंनाय",
+    mute: "राव बन्द",
+    recognizedToday: "दिनै सिनायथि जानाय जायगाफोर:",
+    playBihu: "बिहु सुर दाम",
+    mindfulness: "गोसोनि गोजोन दावबायनाय",
+    namgharName: "आउनियाति सत्र नामघर",
+    namgharDesc: "आगसि बारग'आव सनानि कलश आरो फिथ्राय घन्टानि फुंखा थानाय नामघर।",
+    namgharOptions: ["आउनियाति सत्र नामघर", "गोदान राजफार", "बजार घडी टावार"],
+    changGharName: "मिसिं औवानि साङ घर",
+    changGharDesc: "दैबानानिफ्राय रैखा थानो औवानि थामफायाव लुनाय साङ घर।",
+    changGharOptions: ["मिसिं औवानि साङ घर", "इथा बाथा", "कंक्रीट बिल्डिं"],
+    riverGhatName: "कमलाबारी दैमा घाट",
+    riverGhatDesc: "ब्रह्मपुत्र दैमानि सेराव गोजोननाय गंसे दंफां नावनि घाट।",
+    riverGhatOptions: ["कमलाबारी दैमा घाट", "बिरखं जायगा", "रेलवे स्टेसन"],
+  },
+  grt: {
+    points: (p) => `+${p} Point-rang`,
+    stopOf: (c, t) => `Song·dongani ${c} (${t} oni)`,
+    readForMe: "Angna Poraibo",
+    unmute: "Ku·rang Khnaatbo",
+    mute: "Ku·rang Dingtangatbo",
+    recognizedToday: "Da·alo U·itokgipa Song·dongaramrang:",
+    playBihu: "Bihu Git Ringo Dokbo",
+    mindfulness: "Gisik Kakket Re·ani",
+    namgharName: "Auniati Satra Namghar",
+    namgharDesc: "Sonani kalasi aro kanchini gonta donggipa rongtalgipa Namghar.",
+    namgharOptions: ["Auniati Satra Namghar", "Gital Rama", "Market Ghari Killa"],
+    changGharName: "Mising Wa·ani Chang Ghar",
+    changGharDesc: "Chi banoni naljokna wa·a krongchi rikbagipa ku·chotgipa nok.",
+    changGharOptions: ["Mising Wa·ani Chang Ghar", "Itani Karkhana", "Concrete Nok"],
+    riverGhatName: "Kamalabari Chibima Ghat",
+    riverGhatDesc: "Brahmaputra chibima rikam gita bolni ring kadongani ghat.",
+    riverGhatOptions: ["Kamalabari Chibima Ghat", "Eroplane Maljokram", "Rel Station"],
+  },
+  kha: {
+    points: (p) => `+${p} Point`,
+    stopOf: (c, t) => `Jingsangeh ${c} (na ${t})`,
+    readForMe: "Pule ia nga",
+    unmute: "Plie Sur",
+    mute: "Kylliang Sur",
+    recognizedToday: "Ki jaka ba la ithuh mynta:",
+    playBihu: "Tem Sur Bihu",
+    mindfulness: "Jingiaid ban pynshait jingmut",
+    namgharName: "Auniati Satra Namghar",
+    namgharDesc: "Ka jaka duwai Namghar ba don ka dabor ksiar bad ka shakuriaw ha ka rud wah.",
+    namgharOptions: ["Auniati Satra Namghar", "Surok Bah", "Kynton Ktien Ghari"],
+    changGharName: "Mising Iing Siej Chang Ghar",
+    changGharDesc: "Ka iing siej ba tei halor ki rishot ban lait na ka shlem um shlem sngi.",
+    changGharOptions: ["Mising Iing Siej Chang Ghar", "Karkhana Mawit", "Iing Paki"],
+    riverGhatName: "Kamalabari Wah Ghat",
+    riverGhatDesc: "Ka kad lieng dieng ba jem nud harud wah Brahmaputra.",
+    riverGhatOptions: ["Kamalabari Wah Ghat", "Kad Liengsuin", "Station Rel"],
+  },
+  lus: {
+    points: (p) => `+${p} Points`,
+    stopOf: (c, t) => `Chawlhna ${c} (${t} zinga)`,
+    readForMe: "Min chhiarsak rawh",
+    unmute: "Aw ti-chhuak rawh",
+    mute: "Aw ti-tawp rawh",
+    recognizedToday: "Vawiina Hmun Hriatpuite:",
+    playBihu: "Bihu Rimawi Ti-ri rawh",
+    mindfulness: "Hriatna Tiharh Zinchhuahna",
+    namgharName: "Auniati Satra Namghar",
+    namgharDesc: "Vaupuiah rangkachak parthi leh dar thir dar ri hriat theihna in thianghlim.",
+    namgharOptions: ["Auniati Satra Namghar", "Kawngpui Lian", "Bazar Sana In Sang"],
+    changGharName: "Mising Mau Chang Ghar In",
+    changGharDesc: "Tui lian laka him nana mau ban chunga in sawn sanna hlun.",
+    changGharOptions: ["Mising Mau Chang Ghar In", "Lehlawn Siamna Hmun", "Concrete In Pui"],
+    riverGhatName: "Kamalabari Lui Lawng Chawlhna",
+    riverGhatDesc: "Brahmaputra lui kam panga thing lawng chawlhna hmun nuam leh dai.",
+    riverGhatOptions: ["Kamalabari Lui Lawng Chawlhna", "Thlawhna Chawlhhmun", "Rel Chawlhna"],
+  },
+};
+
 export function MajuliWalk3D() {
   const t = useTranslations("games.majuli");
+  const locale = useLocale();
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const m = MAJULI_I18N[normLoc] || MAJULI_I18N.en;
+
   const patient = useAuthStore((s) => s.patient);
   const patientId = patient?.id ?? 0;
 
@@ -85,45 +321,45 @@ export function MajuliWalk3D() {
     return [
       {
         id: "namghar",
-        name: "Auniati Satra Namghar",
+        name: m.namgharName,
         nativeName: "আউনীআটী সত্ৰ নামঘৰ",
-        description: "Sacred prayer hall with golden finial and brass bell chimes on the left riverbank.",
+        description: m.namgharDesc,
         position: [-6, 0, 8],
         side: "left",
         category: "namghar",
         emoji: "namghar",
         question: t("questionNamghar"),
-        correctAnswer: "Auniati Satra Namghar",
-        options: ["Auniati Satra Namghar", "Modern Highway", "Market Clock Tower"],
+        correctAnswer: m.namgharOptions[0],
+        options: m.namgharOptions,
       },
       {
         id: "stilt_house",
-        name: "Mising Bamboo Chang Ghar",
+        name: m.changGharName,
         nativeName: "মিচিং চাং ঘৰ",
-        description: "Traditional raised bamboo stilt cottage built to stay safe above monsoon floods.",
+        description: m.changGharDesc,
         position: [6, 0, -2],
         side: "right",
         category: "stilt_house",
         emoji: "stilt_house",
         question: t("questionChangGhar"),
-        correctAnswer: "Mising Bamboo Chang Ghar",
-        options: ["Mising Bamboo Chang Ghar", "Brick Factory", "Concrete Apartment"],
+        correctAnswer: m.changGharOptions[0],
+        options: m.changGharOptions,
       },
       {
         id: "river_ghat",
-        name: "Kamalabari River Ferry Ghat",
+        name: m.riverGhatName,
         nativeName: "কমলাবাৰী ফেৰী ঘাট",
-        description: "Peaceful wooden boat jetty overlooking the sunlit Brahmaputra River waters.",
+        description: m.riverGhatDesc,
         position: [0, 0, -14],
         side: "center",
         category: "river_ghat",
         emoji: "river_ghat",
         question: t("questionRiverGhat"),
-        correctAnswer: "Kamalabari River Ghat",
-        options: ["Kamalabari River Ghat", "Airport Terminal", "Railway Junction"],
+        correctAnswer: m.riverGhatOptions[0],
+        options: m.riverGhatOptions,
       },
     ];
-  }, [t]);
+  }, [t, m]);
 
   // Three.js Scene Setup (Sunrise, Procedural Terrain, Atmospheric Lighting)
   useEffect(() => {
@@ -432,13 +668,13 @@ export function MajuliWalk3D() {
                     {t("scoreSummary")}
                   </span>
                   <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-black text-emerald-950 border border-emerald-900/30">
-                    +{score} Points
+                    {m.points(score)}
                   </span>
                 </div>
 
                 <div className="space-y-2">
                   <span className="text-xs font-black uppercase text-ink-secondary">
-                    Landmarks Recognized Today:
+                    {m.recognizedToday}
                   </span>
                   {localizedLandmarks.map((lm) => (
                     <div key={lm.id} className="flex items-center gap-2 text-xs font-bold text-ink">
@@ -461,10 +697,10 @@ export function MajuliWalk3D() {
                     className="group flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-3 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] active:translate-y-0.5 cursor-pointer hover:bg-amber-300"
                   >
                     <Music className="h-4 w-4" />
-                    <span>Play Bihu Melody</span>
+                    <span>{m.playBihu}</span>
                   </button>
                   <span className="text-[11px] font-black text-ink-secondary">
-                    Mindfulness Journey
+                    {m.mindfulness}
                   </span>
                 </div>
               </div>
@@ -497,7 +733,7 @@ export function MajuliWalk3D() {
                     {t("currentLandmark")}
                   </span>
                   <div className="text-xs sm:text-sm font-black text-ink">
-                    Stop {currentStopIndex + 1} of {WALK_STOP_COORDS.length}
+                    {m.stopOf(currentStopIndex + 1, WALK_STOP_COORDS.length)}
                   </div>
                 </div>
               </div>
@@ -508,7 +744,7 @@ export function MajuliWalk3D() {
                   type="button"
                   onClick={toggleMute}
                   className="btn-tactile flex items-center gap-1 rounded-xl border-2 border-black bg-surface px-2.5 py-1.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-surface-muted cursor-pointer"
-                  title={isMuted ? "Unmute Voice" : "Mute Voice"}
+                  title={isMuted ? m.unmute : m.mute}
                 >
                   {isMuted ? (
                     <VolumeX className="h-4 w-4 text-rose-600" />
@@ -565,10 +801,10 @@ export function MajuliWalk3D() {
                           type="button"
                           onClick={() => speakVoice(activeLandmark.question)}
                           className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-3 py-1.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-amber-300 active:scale-95"
-                          title="Read for Me"
+                          title={m.readForMe}
                         >
                           <Volume2 className="h-4 w-4" />
-                          <span>Read for Me</span>
+                          <span>{m.readForMe}</span>
                         </button>
                       </div>
                       <p className="font-serif text-base sm:text-lg font-black text-ink leading-snug">

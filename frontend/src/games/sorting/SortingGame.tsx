@@ -33,7 +33,7 @@ import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import { resolveAdaptiveLevel } from "@/lib/telemetry";
-import { getGameStrings } from "@/lib/gameI18n";
+import { getGameStrings, type SupportedLocale } from "@/lib/gameI18n";
 import { calculateVanishingCue } from "@/lib/errorlessLearning";
 
 function GameShell({
@@ -64,7 +64,7 @@ type Category = "kitchen" | "prayer";
 interface SortItem {
   key: string;
   category: Category;
-  labels: { en: string; hi: string; as: string };
+  labels: Record<SupportedLocale, string>;
 }
 
 function renderSortItemIcon(key: string, className = "h-8 w-8") {
@@ -91,15 +91,291 @@ function renderSortItemIcon(key: string, className = "h-8 w-8") {
 }
 
 const ITEMS: SortItem[] = [
-  { key: "teacup", category: "kitchen", labels: { en: "Assam CTC Tea", hi: "असम कड़क चाय", as: "অসমৰ ৰঙা চাহ" } },
-  { key: "sugar", category: "kitchen", labels: { en: "Wild Forest Honey", hi: "जंगली शहद", as: "বনৰীয়া মৌ" } },
-  { key: "lemon", category: "kitchen", labels: { en: "Fragrant Kaji Nemu", hi: "सुगंधित काजी नेमु", as: "সুগন্ধি কাজি নেমু" } },
-  { key: "ginger", category: "kitchen", labels: { en: "Fresh Wild Ginger", hi: "ताज़ा अदरक", as: "কেঁচা আদা" } },
-  { key: "incense", category: "prayer", labels: { en: "Brass Diya (Chaki)", hi: "पीतल का दीया", as: "পিতলৰ চাকি" } },
-  { key: "bell", category: "prayer", labels: { en: "Monastery Bell", hi: "प्रार्थना घंटी", as: "নামঘৰৰ কাঁহৰ ঘণ্টা" } },
-  { key: "japi", category: "prayer", labels: { en: "Bamboo Jaapi Hat", hi: "बांस की जापी", as: "বাঁহৰ ফুলাম জাপি" } },
-  { key: "gamosa", category: "prayer", labels: { en: "Sacred Muga Gamosa", hi: "पवित्र गमोसा", as: "মৰমৰ ফুলাম গামোচা" } },
+  {
+    key: "teacup",
+    category: "kitchen",
+    labels: {
+      en: "Assam CTC Tea",
+      hi: "असम कड़क चाय",
+      as: "অসমৰ ৰঙা চাহ",
+      bn: "আসাম কড়া চা",
+      mr: "आसाम कडक चहा",
+      ne: "आसाम कडा चिया",
+      mni: "অসাম কড়ক চা",
+      brx: "आसामनि साहा",
+      grt: "Assam Cha Ding'gipa",
+      kha: "Sha Kshaid Assam",
+      lus: "Assam Thingpui Hang",
+    },
+  },
+  {
+    key: "sugar",
+    category: "kitchen",
+    labels: {
+      en: "Wild Forest Honey",
+      hi: "जंगली शहद",
+      as: "বনৰীয়া মৌ",
+      bn: "বুনো মধু",
+      mr: "जंगली मध",
+      ne: "जंगली मह",
+      mni: "উমংগী খোইহি",
+      brx: "हाग्रामा मोव",
+      grt: "Buringni Bija",
+      kha: "Ngap Khlaw",
+      lus: "Ram Khawivah",
+    },
+  },
+  {
+    key: "lemon",
+    category: "kitchen",
+    labels: {
+      en: "Fragrant Kaji Nemu",
+      hi: "सुगंधित काजी नेमु",
+      as: "সুগন্ধি কাজি নেমু",
+      bn: "সুগন্ধি কাজী লেবু",
+      mr: "सुवासिक काझी लिंबू",
+      ne: "सुगन्धित काजी कागती",
+      mni: "হৈনু কাজি চম্প্রা",
+      brx: "गोथाव काजि नेमू",
+      grt: "Simil Kaji Thembil",
+      kha: "Soh Kaji Nemu",
+      lus: "Serthlum Kaji Thei",
+    },
+  },
+  {
+    key: "ginger",
+    category: "kitchen",
+    labels: {
+      en: "Fresh Wild Ginger",
+      hi: "ताज़ा अदरक",
+      as: "কেঁচা আদা",
+      bn: "টাটকা আদা",
+      mr: "ताजे आले",
+      ne: "ताजा अदुवा",
+      mni: "নিংথৌশিং শিং",
+      brx: "गोदान हासिं",
+      grt: "Gital E'ching",
+      kha: "Sying Khlaw",
+      lus: "Sawhthing Hring",
+    },
+  },
+  {
+    key: "incense",
+    category: "prayer",
+    labels: {
+      en: "Brass Diya (Chaki)",
+      hi: "पीतल का दीया",
+      as: "পিতলৰ চাকি",
+      bn: "পিতলের প্রদীপ",
+      mr: "पितळी दिवा",
+      ne: "पित्तलको दियो",
+      mni: "পিতলগী চাকি",
+      brx: "पितलनि बाथि",
+      grt: "Rang'ni Diya",
+      kha: "Diat Pityr",
+      lus: "Darte Khawnvar",
+    },
+  },
+  {
+    key: "bell",
+    category: "prayer",
+    labels: {
+      en: "Monastery Bell",
+      hi: "प्रार्थना घंटी",
+      as: "নামঘৰৰ কাঁহৰ ঘণ্টা",
+      bn: "নামঘরের ঘণ্টা",
+      mr: "प्रार्थना घंटा",
+      ne: "प्रार्थना घण्टी",
+      mni: "লাইশঙ ঘণ্টা",
+      brx: "मन्दिरनि घन्टा",
+      grt: "Gilja Kinta",
+      kha: "Klok Iingmane",
+      lus: "Biakin Dar",
+    },
+  },
+  {
+    key: "japi",
+    category: "prayer",
+    labels: {
+      en: "Bamboo Jaapi Hat",
+      hi: "बांस की जापी",
+      as: "বাঁহৰ ফুলাম জাপি",
+      bn: "বাঁশের ফুলাম জাপি",
+      mr: "बांबूची जापी टोपी",
+      ne: "बाँसको जापी टोपी",
+      mni: "ৱাগী জাপি খুপ",
+      brx: "ओवानि जापि खफ",
+      grt: "Wa'ani Jaapi Tupi",
+      kha: "Tupia Jaapi Shken",
+      lus: "Mau Lukhum Jaapi",
+    },
+  },
+  {
+    key: "gamosa",
+    category: "prayer",
+    labels: {
+      en: "Sacred Muga Gamosa",
+      hi: "पवित्र गमोसा",
+      as: "মৰমৰ ফুলাম গামোচা",
+      bn: "পবিত্র মুগা গামোছা",
+      mr: "पवित्र मुगा गमोसा",
+      ne: "पवित्र मुगा गमोसा",
+      mni: "শেংলবা মুগা গামোসা",
+      brx: "पवित्र मुगा गामोसा",
+      grt: "Rongtalgipa Gamosa",
+      kha: "Gamosa Kyntang",
+      lus: "Gamosa Thianghlim",
+    },
+  },
 ];
+
+interface SortingI18nEntry {
+  kitchenTitle: string;
+  prayerTitle: string;
+  thisIs: (item: string) => string;
+  placedCorrectly: (item: string) => string;
+  belongsInHighlight: (item: string) => string;
+  promptPicked: (item: string) => string;
+  promptUnpicked: string;
+  categorizationComplete: string;
+  playFolkMelody: string;
+  assessmentComplete: string;
+}
+
+const SORTING_I18N: Record<SupportedLocale, SortingI18nEntry> = {
+  as: {
+    kitchenTitle: "ৰান্ধনি শাল (Kitchen)",
+    prayerTitle: "নামঘৰ / গোসাঁই ঘৰ (Prayer)",
+    thisIs: (item) => `এইটো হ'ল ${item}।`,
+    placedCorrectly: (item) => `${item} সঠিক পাচিত ৰখা হ'ল!`,
+    belongsInHighlight: (item) => `${item} পোহৰ হৈ থকা পাচিতহে থাকিব। মন দি চাওক।`,
+    promptPicked: (item) => `"${item}" ক উপযুক্ত পাচিত ৰাখক`,
+    promptUnpicked: "তলৰ পৰা বস্তু বাছি ল'বলৈ স্পৰ্শ কৰক",
+    categorizationComplete: "শ্ৰেণীবিভাজন সম্পূৰ্ণ",
+    playFolkMelody: "লোকগীতৰ সুৰ শুনক",
+    assessmentComplete: "মূল্যায়ন সম্পূৰ্ণ",
+  },
+  hi: {
+    kitchenTitle: "रसोई घर (Kitchen)",
+    prayerTitle: "पूजा घर (Prayer)",
+    thisIs: (item) => `यह है ${item}।`,
+    placedCorrectly: (item) => `${item} सही टोकरी में रखा गया!`,
+    belongsInHighlight: (item) => `${item} चमकती हुई टोकरी में आता है। आराम से देखें।`,
+    promptPicked: (item) => `"${item}" को ऊपर सही टोकरी में रखें`,
+    promptUnpicked: "नीचे से कोई भी वस्तु चुनने के लिए टैप करें",
+    categorizationComplete: "वर्गीकरण पूर्ण",
+    playFolkMelody: "लोक धुन सुनें",
+    assessmentComplete: "मूल्यांकन पूर्ण",
+  },
+  en: {
+    kitchenTitle: "Kitchen Pantry",
+    prayerTitle: "Prayer & Culture",
+    thisIs: (item) => `This is ${item}.`,
+    placedCorrectly: (item) => `${item} placed correctly!`,
+    belongsInHighlight: (item) => `${item} belongs in the highlighted basket. Notice the golden beacon.`,
+    promptPicked: (item) => `Place "${item}" into the correct basket above`,
+    promptUnpicked: "Tap an item below to pick it up",
+    categorizationComplete: "Executive Categorization Complete",
+    playFolkMelody: "Play Folk Melody",
+    assessmentComplete: "Assessment Complete",
+  },
+  bn: {
+    kitchenTitle: "রান্নাঘর (Kitchen)",
+    prayerTitle: "পূজোর ঘর (Prayer)",
+    thisIs: (item) => `এটি হল ${item}।`,
+    placedCorrectly: (item) => `${item} সঠিক ঝুড়িতে রাখা হয়েছে!`,
+    belongsInHighlight: (item) => `${item} আলোকিত ঝুড়িতে যাবে। ভালো করে লক্ষ্য করুন।`,
+    promptPicked: (item) => `"${item}" উপরে সঠিক ঝুড়িতে রাখুন`,
+    promptUnpicked: "নিচের যে কোনো জিনিসে স্পর্শ করে তুলে নিন",
+    categorizationComplete: "শ্রেণিবিভাগ সম্পন্ন",
+    playFolkMelody: "লোক সুর শুনুন",
+    assessmentComplete: "মূল্যায়ন সম্পন্ন",
+  },
+  mr: {
+    kitchenTitle: "स्वयंपाकघर (Kitchen)",
+    prayerTitle: "पूजा घर (Prayer)",
+    thisIs: (item) => `हे आहे ${item}.`,
+    placedCorrectly: (item) => `${item} योग्य टोपलीत ठेवले गेले!`,
+    belongsInHighlight: (item) => `${item} चमकणाऱ्या टोपलीत ठेवायचे आहे. लक्षपूर्वक पहा.`,
+    promptPicked: (item) => `"${item}" वरील योग्य टोपलीत ठेवा`,
+    promptUnpicked: "खालील कोणतीही वस्तू उचलण्यासाठी टॅप करा",
+    categorizationComplete: "वर्गीकरण पूर्ण",
+    playFolkMelody: "लोकसंगीत ऐका",
+    assessmentComplete: "मूल्यांकन पूर्ण",
+  },
+  ne: {
+    kitchenTitle: "भान्सा कोठा (Kitchen)",
+    prayerTitle: "पूजा कोठा (Prayer)",
+    thisIs: (item) => `यो हो ${item}।`,
+    placedCorrectly: (item) => `${item} सही टोकरीमा राखियो!`,
+    belongsInHighlight: (item) => `${item} चम्किएको टोकरीमा पर्दछ। ध्यान दिएर हेर्नुहोस्।` ,
+    promptPicked: (item) => `"${item}" लाई माथिको सही टोकरीमा राख्नुहोस्`,
+    promptUnpicked: "तलबाट कुनै पनि वस्तु रोज्न ट्याप गर्नुहोस्",
+    categorizationComplete: "वर्गीकरण सम्पन्न",
+    playFolkMelody: "लोक धुन सुन्नुहोस्",
+    assessmentComplete: "मूल्यांकन पूरा भयो",
+  },
+  mni: {
+    kitchenTitle: "চাকশঙ (Kitchen)",
+    prayerTitle: "লাইনিং শঙ (Prayer)",
+    thisIs: (item) => `মসিদি ${item} নি।`,
+    placedCorrectly: (item) => `${item} চুম্বা লাইথাংদা থমখ্রে!`,
+    belongsInHighlight: (item) => `${item} মঙাল খাইরিবা থাংদা থমগদবনি। য়েংবীয়ু।`,
+    promptPicked: (item) => `"${item}" অসি মথক্কী চুম্বা লাইথাংদা থম্বীয়ু`,
+    promptUnpicked: "মখাগী পোৎ অমা লৌনবা নম্বীয়ু",
+    categorizationComplete: "পোৎ খাঙদোকপা লোইরে",
+    playFolkMelody: "মীয়ামগী ঈশৈ তাবীয়ু",
+    assessmentComplete: "মরী লোইরে",
+  },
+  brx: {
+    kitchenTitle: "संख्रि नो (Kitchen)",
+    prayerTitle: "पुजा नो (Prayer)",
+    thisIs: (item) => `बेयो जाबाय ${item}।`,
+    placedCorrectly: (item) => `${item} गेबें थुरियाव दोनबाय!`,
+    belongsInHighlight: (item) => `${item} सोरां जानाय थुरियाव थानांगौ। गोसो होना नाय।`,
+    promptPicked: (item) => `"${item}" खौ सायाव थानाय गेबें थुरियाव दोन`,
+    promptUnpicked: "गाहायनि बेसादफोरखौ लानो थु",
+    categorizationComplete: "राननाय जोबबाय",
+    playFolkMelody: "हारिमुनि सोदोब दाम",
+    assessmentComplete: "आनजाद जोबबाय",
+  },
+  grt: {
+    kitchenTitle: "Song'chakani (Kitchen)",
+    prayerTitle: "Bi'ani Nok (Prayer)",
+    thisIs: (item) => `Ia ong'a ${item}.`,
+    placedCorrectly: (item) => `${item} kakket kok-o donaha!`,
+    belongsInHighlight: (item) => `${item} teng'sokgipa kok-o donga. Nibo.`,
+    promptPicked: (item) => `"${item}" ko kosakni kakket kok-o donbo`,
+    promptUnpicked: "Ka'mao bastuko ra'na jotbo",
+    categorizationComplete: "Dingtang Dingtang Donani Matchotaha",
+    playFolkMelody: "Songni Gitko Knabo",
+    assessmentComplete: "Parikani Matchotaha",
+  },
+  kha: {
+    kitchenTitle: "Iing Shetsla (Kitchen)",
+    prayerTitle: "Iing Mane (Prayer)",
+    thisIs: (item) => `Kane ka dei ${item}.`,
+    placedCorrectly: (item) => `La buh beit ia ka ${item} ha ka shang kaba dei!`,
+    belongsInHighlight: (item) => `${item} ka hap ha ka shang kaba tyngshaiñ. Peit bha.`,
+    promptPicked: (item) => `Buh ia ka "${item}" ha ka shang kaba dei haneng`,
+    promptUnpicked: "Shon ban shim ia ki tiar harum",
+    categorizationComplete: "Jingpynbynta la dep",
+    playFolkMelody: "Put Sur Tynrai",
+    assessmentComplete: "Jingthew la dep",
+  },
+  lus: {
+    kitchenTitle: "Choka (Kitchen)",
+    prayerTitle: "Biak In (Prayer)",
+    thisIs: (item) => `Hei hi ${item} a ni.`,
+    placedCorrectly: (item) => `${item} bawm dik takah dah a ni ta!`,
+    belongsInHighlight: (item) => `${item} hi bawm eng zawkah khian a awm tur a ni. En rawh.`,
+    promptPicked: (item) => `"${item}" hi a chung a bawm dik zawkah dah rawh`,
+    promptUnpicked: "A hnuai a thil la turin hmet rawh",
+    categorizationComplete: "Thliarhranna Zawh a Ni Ta",
+    playFolkMelody: "Hnam Hla Ngaithla Rawh",
+    assessmentComplete: "Endikna Zawh a Ni Ta",
+  },
+};
 
 function shuffle<T>(arr: T[]): T[] {
   const out = [...arr];
@@ -167,16 +443,17 @@ export function SortingGame() {
 
   useEffect(() => () => stopSpeaking(), []);
 
-  const normLocale = locale === "hi" ? "hi" : locale === "as" ? "as" : "en";
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const sortingUi = SORTING_I18N[normLocale] || SORTING_I18N.en;
   const str = getGameStrings("sorting", locale);
 
   function pickUp() {
     if (!current || done || picked) return;
     playPress();
     setPicked(true);
-    const itemName = current.labels[normLocale];
+    const itemName = current.labels[normLocale] || current.labels.en;
     speak(
-      `${normLocale === "hi" ? "यह है" : normLocale === "as" ? "এইটো হ'ল" : "This is"} ${itemName}. ${str.hudAction}`,
+      `${sortingUi.thisIs(itemName)} ${str.hudAction}`,
       locale,
       rate
     );
@@ -185,7 +462,7 @@ export function SortingGame() {
   function placeIn(category: Category) {
     if (!current || done || !picked) return;
     setTaps((v) => v + 1);
-    const itemName = current.labels[normLocale];
+    const itemName = current.labels[normLocale] || current.labels.en;
     if (category === current.category) {
       playCorrect();
       const items = [...placed, current];
@@ -194,7 +471,7 @@ export function SortingGame() {
       setAttemptCount(0);
       setHesitationSeconds(0);
       speak(
-        `${itemName} ${normLocale === "hi" ? "सही टोकरी में रखा गया!" : normLocale === "as" ? "সঠিক পাচিত ৰখা হ'ল!" : "placed correctly!"}`,
+        sortingUi.placedCorrectly(itemName),
         locale,
         rate
       );
@@ -209,7 +486,7 @@ export function SortingGame() {
       setAttemptCount((a) => a + 1);
       setShakeCat(category);
       speak(
-        `${itemName} ${normLocale === "hi" ? "चमकती हुई टोकरी में आता है। आराम से देखें।" : normLocale === "as" ? "পোহৰ হৈ থকা পাচিতহে থাকিব। মন দি চাওক।" : "belongs in the highlighted basket. Notice the golden beacon."}`,
+        sortingUi.belongsInHighlight(itemName),
         locale,
         rate
       );
@@ -251,7 +528,7 @@ export function SortingGame() {
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
                 <span className="text-xs font-black uppercase tracking-wider text-tea flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" /> {normLocale === "hi" ? "वर्गीकरण पूर्ण" : normLocale === "as" ? "শ্ৰেণীবিভাজন সম্পূৰ্ণ" : "Executive Categorization Complete"}
+                  <CheckCircle2 className="h-4 w-4" /> {sortingUi.categorizationComplete}
                 </span>
                 <span className="text-[10px] font-black uppercase rounded bg-tea text-white px-2 py-0.5">
                   {placed.length}/{queue.length} {str.hudProgress}
@@ -272,10 +549,10 @@ export function SortingGame() {
                   className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
                   <Music className="h-4 w-4 text-ink" />
-                  <span className="text-xs font-black">Play Folk Melody</span>
+                  <span className="text-xs font-black">{sortingUi.playFolkMelody}</span>
                 </button>
                 <span className="text-xs font-bold text-ink-secondary">
-                  Assessment Complete
+                  {sortingUi.assessmentComplete}
                 </span>
               </div>
             </div>
@@ -328,7 +605,7 @@ export function SortingGame() {
                 >
                   <Utensils className="h-10 w-10 text-amber-800" />
                   <span className="text-base sm:text-lg font-black text-amber-950">
-                    {normLocale === "hi" ? "रसोई घर (Kitchen)" : normLocale === "as" ? "ৰান্ধনি শাল (Kitchen)" : "Kitchen Pantry"}
+                    {sortingUi.kitchenTitle}
                   </span>
                   <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
                     {inBasket("kitchen").map((item) => (
@@ -355,7 +632,7 @@ export function SortingGame() {
                 >
                   <DiyaLampIcon className="h-10 w-10 text-emerald-800" />
                   <span className="text-base sm:text-lg font-black text-emerald-950">
-                    {normLocale === "hi" ? "पूजा घर (Prayer)" : normLocale === "as" ? "নামঘৰ / গোসাঁই ঘৰ (Prayer)" : "Prayer & Culture"}
+                    {sortingUi.prayerTitle}
                   </span>
                   <span className="flex min-h-[40px] flex-wrap items-center justify-center gap-1.5">
                     {inBasket("prayer").map((item) => (
@@ -371,8 +648,8 @@ export function SortingGame() {
 
           <p className="text-sm sm:text-base font-black text-ink">
             {picked
-              ? (normLocale === "hi" ? `Place "${current?.labels[normLocale]}" into the correct basket above` : normLocale === "as" ? `"${current?.labels[normLocale]}" ক উপযুক্ত পাচিত ৰাখক` : `Place "${current?.labels[normLocale]}" into the correct basket above`)
-              : (normLocale === "hi" ? "नीचे से कोई भी वस्तु चुनने के लिए टैप करें" : normLocale === "as" ? "তলৰ পৰা বস্তু বাছি ল'বলৈ স্পৰ্শ কৰক" : "Tap an item below to pick it up")}
+              ? sortingUi.promptPicked(current?.labels[normLocale] || current?.labels.en || "")
+              : sortingUi.promptUnpicked}
           </p>
 
           <div className="flex w-full max-w-xl flex-wrap items-center justify-center gap-3">
@@ -401,7 +678,7 @@ export function SortingGame() {
                     {renderSortItemIcon(item.key, "h-8 w-8")}
                   </div>
                   <span className="text-xs font-black text-ink text-center leading-tight">
-                    {item.labels[normLocale]}
+                    {item.labels[normLocale] || item.labels.en}
                   </span>
                 </button>
               );

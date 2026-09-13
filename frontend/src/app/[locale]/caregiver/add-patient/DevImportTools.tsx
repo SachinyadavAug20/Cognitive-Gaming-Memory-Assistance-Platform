@@ -2,12 +2,113 @@
 
 import { useState } from "react";
 import { Wrench, AlertTriangle } from "lucide-react";
+import { useLocale } from "next-intl";
 import { IntakeWizardClient } from "@/components/intake/IntakeWizardClient";
 import { Spinner } from "@/components/ui/Spinner";
 import { mapSampleJsonToFormData } from "@/lib/sampleData";
 import type { IntakeFormData } from "@/types/intake";
 
+const DEV_IMPORT_I18N: Record<string, {
+  summary: string;
+  apply: string;
+  loading: string;
+  clear: string;
+  emptyError: string;
+  failedError: string;
+}> = {
+  en: {
+    summary: "Developer Tools: Import Sample Patient JSON",
+    apply: "Apply Data",
+    loading: "Loading images…",
+    clear: "Clear import",
+    emptyError: "Nothing to import — the textarea is empty. Open one of the files in Data/Patient/example_json/ and paste its contents above.",
+    failedError: "Failed to import JSON.",
+  },
+  as: {
+    summary: "ডেভেলপাৰ সঁজুলি: নমুনা ৰোগী JSON আমদানি কৰক",
+    apply: "তথ্য প্ৰয়োগ কৰক",
+    loading: "ছবিসমূহ লোড হৈ আছে…",
+    clear: "আমদানি মচি পেলাওক",
+    emptyError: "আমদানি কৰিবলৈ একো নাই — স্থানটো খালী। অনুগ্ৰহ কৰি Data/Patient/example_json/ ৰ পৰা JSON পেষ্ট কৰক।",
+    failedError: "JSON আমদানি বিফল হ'ল।",
+  },
+  hi: {
+    summary: "डेवलपर टूल्स: नमूना रोगी JSON आयात करें",
+    apply: "डेटा लागू करें",
+    loading: "चित्र लोड हो रहे हैं…",
+    clear: "आयात साफ़ करें",
+    emptyError: "आयात करने के लिए कुछ नहीं है — बॉक्स खाली है। कृपया Data/Patient/example_json/ से JSON चिपकाएं।",
+    failedError: "JSON आयात विफल रहा।",
+  },
+  bn: {
+    summary: "ডেভেলপার টুলস: নমুনা রোগীর JSON আমদানি করুন",
+    apply: "তথ্য প্রয়োগ করুন",
+    loading: "ছবি লোড হচ্ছে…",
+    clear: "আমদানি সাফ করুন",
+    emptyError: "আমদানি করার জন্য কিছু নেই — ঘরটি খালি। Data/Patient/example_json/ থেকে JSON পেস্ট করুন।",
+    failedError: "JSON আমদানি ব্যর্থ হয়েছে।",
+  },
+  mr: {
+    summary: "डेव्हलपर टूल्स: नमुना रुग्ण JSON आयात करा",
+    apply: "माहिती लागू करा",
+    loading: "चित्रे लोड होत आहेत…",
+    clear: "आयात साफ करा",
+    emptyError: "आयात करण्यासाठी काहीही नाही — बॉक्स रिकामा आहे. कृपया Data/Patient/example_json/ मधील JSON पेस्ट करा.",
+    failedError: "JSON आयात अयशस्वी.",
+  },
+  ne: {
+    summary: "डेभलपर उपकरणहरू: नमूना बिरामी JSON आयात गर्नुहोस्",
+    apply: "तथ्याङ्क लागू गर्नुहोस्",
+    loading: "तस्बिरहरू लोड हुँदैछन्…",
+    clear: "आयात खाली गर्नुहोस्",
+    emptyError: "आयात गर्न केही छैन — बाकस खाली छ। कृपया Data/Patient/example_json/ बाट JSON टाँस्नुहोस्।",
+    failedError: "JSON आयात असफल भयो।",
+  },
+  mni: {
+    summary: "দিভেলপর তুলস: অনাবগী স্যাম্পল JSON ইম্পোর্ট তৌবিয়ু",
+    apply: "পাউ শিজিন্নবিয়ু",
+    loading: "ফোতো লোড তৌরি…",
+    clear: "ইম্পোর্ট তৌখিবা শেংদোকপা",
+    emptyError: "ইম্পোর্ট তৌনবা অমত্তা লৈতে — বক্স অসিমক হাংই। Data/Patient/example_json/ দগী JSON পেস্ট তৌবিয়ু।",
+    failedError: "JSON ইম্পোর্ট তৌবা ঙমদে।",
+  },
+  brx: {
+    summary: "डेभेलपर टुलस: सानेनि स्यामपोल JSON लाबो",
+    apply: "डेटा बाहाय",
+    loading: "फोटो लोड जाबाय थादों…",
+    clear: "लाबोनायखौ खोमोर",
+    emptyError: "लाबोनो थाखाय जेबो गैया — बाक्स'आ लांदां। Data/Patient/example_json/ निफ्राय JSON होना हो।",
+    failedError: "JSON लाबोनो हायाखिसै।",
+  },
+  grt: {
+    summary: "Developer Tools: Sample Patient JSON Ra·bo",
+    apply: "Data Ra·gata",
+    loading: "Noksa gapatenga…",
+    clear: "Ra·baako rongtalatbo",
+    emptyError: "Ra·bana mamungba dongja — baksho bangbanga. Data/Patient/example_json/ oni JSON-ko paste ka·bo.",
+    failedError: "JSON-ko ra·bana amja.",
+  },
+  kha: {
+    summary: "Developer Tools: Wanrah ia ka Sample Patient JSON",
+    apply: "Pyntrei kam ia ka Data",
+    loading: "Dang pynbiang dur…",
+    clear: "Pynkhuid ia ka jingwanrah",
+    emptyError: "Ym don eiei ban wanrah — ka jaka thoh ka thylli. Sngewbha thep ia ka JSON na Data/Patient/example_json/.",
+    failedError: "Jingwanrah JSON ka la pulom.",
+  },
+  lus: {
+    summary: "Developer Hmanrua: Damlo Entirna JSON Dahna",
+    apply: "Data Hman Rawh",
+    loading: "Thlalak dah mek a ni…",
+    clear: "Thian fai rawh",
+    emptyError: "Dah tur a awm lo — a ruak vek e. Data/Patient/example_json/ ami JSON chu a chunga hmun ruakah hian paste rawh.",
+    failedError: "JSON dah theih a ni lo.",
+  },
+};
+
 export function DevImportTools() {
+  const locale = useLocale();
+  const d18n = DEV_IMPORT_I18N[locale] || DEV_IMPORT_I18N.en;
   const [jsonInput, setJsonInput] = useState("");
   const [prefill, setPrefill] = useState<IntakeFormData | null>(null);
   const [prefillKey, setPrefillKey] = useState(0);
@@ -16,9 +117,7 @@ export function DevImportTools() {
 
   const handleApply = async () => {
     if (jsonInput.trim() === "") {
-      setImportError(
-        "Nothing to import — the textarea is empty. Open one of the files in Data/Patient/example_json/ and paste its contents above."
-      );
+      setImportError(d18n.emptyError);
       return;
     }
     setIsImporting(true);
@@ -28,7 +127,7 @@ export function DevImportTools() {
       setPrefill(data);
       setPrefillKey((k) => k + 1);
     } catch (err) {
-      setImportError(err instanceof Error ? err.message : "Failed to import JSON.");
+      setImportError(err instanceof Error ? err.message : d18n.failedError);
     } finally {
       setIsImporting(false);
     }
@@ -47,7 +146,7 @@ export function DevImportTools() {
       >
         <summary className="inline-flex items-center gap-1.5 cursor-pointer select-none px-4 py-2.5 font-bold text-sm text-ink-secondary hover:text-ink">
           <Wrench className="h-4 w-4 text-tea" />
-          <span>Dev Tools: Import JSON</span>
+          <span>{d18n.summary}</span>
         </summary>
         <div className="px-4 pb-4 pt-2 space-y-3">
           <p className="text-xs text-ink-secondary leading-snug">
@@ -89,12 +188,12 @@ export function DevImportTools() {
               {isImporting ? (
                 <span className="inline-flex items-center gap-2">
                   <span className="scale-[0.35] -mx-2">
-                    <Spinner label="Loading images" />
+                    <Spinner label={d18n.loading} />
                   </span>
-                  Loading images…
+                  {d18n.loading}
                 </span>
               ) : (
-                "Apply Data"
+                d18n.apply
               )}
             </button>
             {prefill && (
@@ -103,7 +202,7 @@ export function DevImportTools() {
                 onClick={handleClear}
                 className="min-h-[40px] px-4 rounded-lg border-2 border-border-soft bg-surface text-ink-secondary font-bold text-sm hover:bg-surface-muted transition-colors cursor-pointer"
               >
-                Clear import
+                {d18n.clear}
               </button>
             )}
           </div>

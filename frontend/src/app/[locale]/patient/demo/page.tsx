@@ -1196,7 +1196,7 @@ export default function PatientDemoPage() {
                 </div>
 
                 <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink">
-                  {p.name}
+                  {LOCALIZED_NAMES[p.name]?.[locale] || p.name}
                 </h1>
                 <p className="text-xs sm:text-sm font-semibold text-ink-secondary">
                   {d18n.ageJob}
@@ -1217,13 +1217,10 @@ export default function PatientDemoPage() {
             <div className="flex items-center gap-2 self-end md:self-center shrink-0">
               <button
                 type="button"
-                onClick={() =>
-                  handleSpeak(
-                    `Demo Patient Profile: ${p.name}, seventy-two years old, retired agricultural officer residing in Silpukhuri, Guwahati. Diagnosed with mild cognitive impairment. Joy triggers include Bhupen Hazarika folk songs, terrace orchids, and morning tea.`
-                  )
-                }
+                onClick={() => handleSpeak(extras.profileSpeech)}
                 className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 px-3.5 py-2 text-xs font-black text-ink shadow-[2px_2px_0px_#000] cursor-pointer"
-                title="Listen to Profile Guide"
+                title={extras.listenProfileAria}
+                aria-label={extras.listenProfileAria}
               >
                 <Volume2 className="h-4 w-4 text-amber-900" />
                 <span>{d18n.listenGuide}</span>
@@ -1238,7 +1235,7 @@ export default function PatientDemoPage() {
                 {d18n.joyTriggers}
               </span>
               <p className="font-medium text-ink leading-relaxed">
-                {p.joyTriggers}
+                {LOCALIZED_JOY_TRIGGERS[locale] || p.joyTriggers}
               </p>
             </div>
             <div className="rounded-xl bg-emerald-50/80 p-3 border border-emerald-900/20">
@@ -1246,7 +1243,7 @@ export default function PatientDemoPage() {
                 {d18n.culturalNarrative}
               </span>
               <p className="font-medium text-ink leading-relaxed">
-                {p.culturalBackground}
+                {LOCALIZED_CULTURAL_NARRATIVE[locale] || p.culturalBackground}
               </p>
             </div>
           </div>
@@ -1267,12 +1264,12 @@ export default function PatientDemoPage() {
             </p>
 
             <div className="hidden sm:flex flex-wrap items-center gap-1.5 pt-1 text-[10px] font-black uppercase tracking-wider text-amber-100">
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 1: Morning</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 2: Tea Essentials</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 3: Majuli Walk</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 4: Market Barter</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 5: Courtyard</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Ch 6: Evening Calm</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.ch1}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.ch2}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.ch3}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.ch4}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.ch5}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.ch6}</span>
             </div>
           </div>
 
@@ -1305,19 +1302,20 @@ export default function PatientDemoPage() {
             </p>
 
             <div className="hidden sm:flex flex-wrap items-center gap-1.5 pt-1 text-[10px] font-black uppercase tracking-wider text-teal-200">
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Family Photos</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Peaceful Scenes</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Nature Sounds</span>
-              <span className="rounded-md bg-black/30 px-2 py-0.5">Loving Voices</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.tagPhotos}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.tagScenes}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.tagSounds}</span>
+              <span className="rounded-md bg-black/30 px-2 py-0.5">{extras.tagVoices}</span>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <button
               type="button"
-              onClick={() => handleSpeak("Family Photos and Peaceful Sounds. {d18n.familyPhotosDesc}")}
+              onClick={() => handleSpeak(extras.familyPhotosVoice)}
               className="btn-tactile rounded-2xl border-3 border-black bg-teal-300 p-3.5 text-black shadow-[4px_4px_0px_#000] hover:bg-teal-200 cursor-pointer"
-              title="Listen to Guide"
+              title={extras.listenPhotosAria}
+              aria-label={extras.listenPhotosAria}
             >
               <Volume2 className="h-5 w-5" />
             </button>
@@ -1354,18 +1352,18 @@ export default function PatientDemoPage() {
             <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#2D5A27] to-[#1E3F1A] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
               <div>
                 <span className="rounded-full bg-amber-400 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm inline-flex items-center gap-1 mb-2">
-                  <Footprints className="h-3.5 w-3.5" /> 3D Spatial
+                  <Footprints className="h-3.5 w-3.5" /> {extras.majuliBadge}
                 </span>
                 <h3 className="font-serif text-lg font-black text-white">
-                  Majuli Village Walk
+                  {extras.majuliTitle}
                 </h3>
                 <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                  Stroll along the sunrise path on Majuli Island and recognize sacred landmarks.
+                  {extras.majuliDesc}
                 </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-white/20 flex items-center justify-between gap-2">
-                <span className="text-[10px] font-bold text-white/70">GSAP Camera</span>
+                <span className="text-[10px] font-bold text-white/70">{extras.majuliTech}</span>
                 <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     type="button"
@@ -1377,7 +1375,7 @@ export default function PatientDemoPage() {
                   </button>
                   <VerifiedStampBadge
                     gameId="majuli-walk"
-                    gameTitle="Majuli Village Walk"
+                    gameTitle={extras.majuliTitle}
                     gameDomain="3D Spatial Memory"
                     size="md"
                   />
@@ -1389,18 +1387,18 @@ export default function PatientDemoPage() {
             <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#14532D] to-[#064E3B] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
               <div>
                 <span className="rounded-full bg-emerald-400 px-3 py-1 text-[10px] font-black uppercase text-emerald-950 shadow-sm inline-flex items-center gap-1 mb-2">
-                  <Camera className="h-3.5 w-3.5" /> Motion Vision
+                  <Camera className="h-3.5 w-3.5" /> {extras.teaBadge}
                 </span>
                 <h3 className="font-serif text-lg font-black text-white">
-                  Tea Garden Harvest
+                  {extras.teaTitle}
                 </h3>
                 <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                  Wave your hand in front of the camera to pluck fresh tea buds into your basket.
+                  {extras.teaDesc}
                 </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-white/20 flex items-center justify-between gap-2">
-                <span className="text-[10px] font-bold text-white/70">1:1 Reach</span>
+                <span className="text-[10px] font-bold text-white/70">{extras.teaTech}</span>
                 <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     type="button"
@@ -1412,7 +1410,7 @@ export default function PatientDemoPage() {
                   </button>
                   <VerifiedStampBadge
                     gameId="tea-harvest"
-                    gameTitle="Tea Garden Harvest"
+                    gameTitle={extras.teaTitle}
                     gameDomain="Motion Vision Kinematics"
                     size="md"
                   />
@@ -1424,18 +1422,18 @@ export default function PatientDemoPage() {
             <div className="relative overflow-hidden rounded-3xl border-4 border-black bg-gradient-to-br from-[#78350F] to-[#451A03] p-5 text-white shadow-[6px_6px_0px_#000] flex flex-col justify-between">
               <div>
                 <span className="rounded-full bg-amber-300 px-3 py-1 text-[10px] font-black uppercase text-amber-950 shadow-sm inline-flex items-center gap-1 mb-2">
-                  <Activity className="h-3.5 w-3.5" /> Web Audio Drum
+                  <Activity className="h-3.5 w-3.5" /> {extras.bihuBadge}
                 </span>
                 <h3 className="font-serif text-lg font-black text-white">
-                  Bihu Dhol Beats
+                  {extras.bihuTitle}
                 </h3>
                 <p className="text-xs font-medium text-white/80 mt-1 leading-relaxed">
-                  Tap in sync with traditional Assamese rhythms to stimulate auditory-motor neural synchrony.
+                  {extras.bihuDesc}
                 </p>
               </div>
 
               <div className="mt-4 pt-3 border-t border-white/20 flex items-center justify-between gap-2">
-                <span className="text-[10px] font-bold text-amber-200">Adaptive BPM</span>
+                <span className="text-[10px] font-bold text-amber-200">{extras.bihuTech}</span>
                 <div className="flex items-center gap-2.5 shrink-0">
                   <button
                     type="button"
@@ -1447,7 +1445,7 @@ export default function PatientDemoPage() {
                   </button>
                   <VerifiedStampBadge
                     gameId="bihu-dhol"
-                    gameTitle="Bihu Dhol Beats"
+                    gameTitle={extras.bihuTitle}
                     gameDomain="Auditory-Motor Drum"
                     size="md"
                   />
@@ -1472,37 +1470,43 @@ export default function PatientDemoPage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {p.familyMembers.map((member) => (
-              <div
-                key={member.id}
-                onClick={() => {
-                  setActiveRelative(member.id);
-                  handleSpeak(`${member.name}, ${member.relation}. ${member.notes}`);
-                }}
-                className={`group rounded-2xl border-3 border-black p-2.5 text-center cursor-pointer transition-all shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] ${
-                  activeRelative === member.id ? "bg-amber-100 border-amber-800" : "bg-[#FAF6F0]"
-                }`}
-              >
-                <div className="aspect-square w-full rounded-xl border-2 border-black overflow-hidden mb-2 bg-black/5">
-                  <Image
-                    src={member.photoUrl || "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg"}
-                    alt={member.name}
-                    width={140}
-                    height={140}
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform"
-                  />
+            {p.familyMembers.map((member) => {
+              const locName = LOCALIZED_NAMES[member.name]?.[locale] || member.name;
+              const locRel = LOCALIZED_RELATIONS[member.relation]?.[locale] || member.relation;
+              const locNotes = LOCALIZED_FAMILY_NOTES[member.name]?.[locale] || member.notes;
+
+              return (
+                <div
+                  key={member.id}
+                  onClick={() => {
+                    setActiveRelative(member.id);
+                    handleSpeak(`${locName}, ${locRel}. ${locNotes}`);
+                  }}
+                  className={`group rounded-2xl border-3 border-black p-2.5 text-center cursor-pointer transition-all shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] ${
+                    activeRelative === member.id ? "bg-amber-100 border-amber-800" : "bg-[#FAF6F0]"
+                  }`}
+                >
+                  <div className="aspect-square w-full rounded-xl border-2 border-black overflow-hidden mb-2 bg-black/5">
+                    <Image
+                      src={member.photoUrl || "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg"}
+                      alt={locName}
+                      width={140}
+                      height={140}
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <span className="inline-block rounded-md bg-amber-200 px-1.5 py-0.5 text-[9px] font-black text-amber-950 uppercase mb-0.5">
+                    {locRel}
+                  </span>
+                  <h4 className="font-serif font-black text-xs text-ink truncate">
+                    {locName}
+                  </h4>
+                  <p className="text-[10px] text-ink-secondary line-clamp-2 mt-0.5">
+                    {locNotes}
+                  </p>
                 </div>
-                <span className="inline-block rounded-md bg-amber-200 px-1.5 py-0.5 text-[9px] font-black text-amber-950 uppercase mb-0.5">
-                  {member.relation}
-                </span>
-                <h4 className="font-serif font-black text-xs text-ink truncate">
-                  {member.name}
-                </h4>
-                <p className="text-[10px] text-ink-secondary line-clamp-2 mt-0.5">
-                  {member.notes}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -1521,44 +1525,51 @@ export default function PatientDemoPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-            {p.familiarPlaces.map((place) => (
-              <div
-                key={place.id}
-                onClick={() => {
-                  setActivePlace(place.id);
-                  handleSpeak(`${place.name}. ${place.description}`);
-                }}
-                className={`group rounded-2xl border-3 border-black p-3 cursor-pointer transition-all shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] flex flex-col justify-between ${
-                  activePlace === place.id ? "bg-emerald-50 border-emerald-800" : "bg-[#FAF6F0]"
-                }`}
-              >
-                <div>
-                  <div className="aspect-[4/3] w-full rounded-xl border-2 border-black overflow-hidden mb-2 bg-black/5">
-                    <Image
-                      src={place.photoUrl || "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg"}
-                      alt={place.name}
-                      width={200}
-                      height={150}
-                      className="h-full w-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                  <span className="inline-block rounded-md bg-emerald-200 px-1.5 py-0.5 text-[9px] font-black text-emerald-950 uppercase mb-1">
-                    {place.category}
-                  </span>
-                  <h4 className="font-serif font-black text-xs sm:text-sm text-ink leading-tight">
-                    {place.name}
-                  </h4>
-                  <p className="text-[11px] text-ink-secondary mt-1 line-clamp-3">
-                    {place.description}
-                  </p>
-                </div>
+            {p.familiarPlaces.map((place) => {
+              const locData = LOCALIZED_PLACES[place.name];
+              const locName = locData?.name[locale] || place.name;
+              const locDesc = locData?.desc[locale] || place.description;
+              const locCategory = (place.category && LOCALIZED_CATEGORIES[place.category]?.[locale]) || place.category;
 
-                <div className="mt-2 pt-2 border-t border-black/10 flex items-center justify-between text-[10px] font-black text-emerald-800">
-                  <span>{d18n.tapToHear}</span>
-                  <Volume2 className="h-3 w-3" />
+              return (
+                <div
+                  key={place.id}
+                  onClick={() => {
+                    setActivePlace(place.id);
+                    handleSpeak(`${locName}. ${locDesc}`);
+                  }}
+                  className={`group rounded-2xl border-3 border-black p-3 cursor-pointer transition-all shadow-[2px_2px_0px_#000] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] flex flex-col justify-between ${
+                    activePlace === place.id ? "bg-emerald-50 border-emerald-800" : "bg-[#FAF6F0]"
+                  }`}
+                >
+                  <div>
+                    <div className="aspect-[4/3] w-full rounded-xl border-2 border-black overflow-hidden mb-2 bg-black/5">
+                      <Image
+                        src={place.photoUrl || "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg"}
+                        alt={locName}
+                        width={200}
+                        height={150}
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                      />
+                    </div>
+                    <span className="inline-block rounded-md bg-emerald-200 px-1.5 py-0.5 text-[9px] font-black text-emerald-950 uppercase mb-1">
+                      {locCategory}
+                    </span>
+                    <h4 className="font-serif font-black text-xs sm:text-sm text-ink leading-tight">
+                      {locName}
+                    </h4>
+                    <p className="text-[11px] text-ink-secondary mt-1 line-clamp-3">
+                      {locDesc}
+                    </p>
+                  </div>
+
+                  <div className="mt-2 pt-2 border-t border-black/10 flex items-center justify-between text-[10px] font-black text-emerald-800">
+                    <span>{d18n.tapToHear}</span>
+                    <Volume2 className="h-3 w-3" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -1620,11 +1631,17 @@ export default function PatientDemoPage() {
           {/* Saathi Voice Companion Card */}
           <div className="rounded-3xl border-4 border-black bg-surface p-5 shadow-[6px_6px_0px_#000]">
             <SaathiVoiceCompanion
-              patientName={p.name}
+              patientName={LOCALIZED_NAMES[p.name]?.[locale] || p.name}
               currentLocale={locale}
-              familyMembers={p.familyMembers.map((r) => ({ name: r.name, relation: r.relation }))}
-              familiarPlaces={p.familiarPlaces.map((pl) => ({ name: pl.name }))}
-              joyTriggers={p.joyTriggers ?? undefined}
+              familyMembers={p.familyMembers.map((r) => ({
+                name: LOCALIZED_NAMES[r.name]?.[locale] || r.name,
+                relation: LOCALIZED_RELATIONS[r.relation]?.[locale] || r.relation,
+              }))}
+              familiarPlaces={p.familiarPlaces.map((pl) => {
+                const locPl = LOCALIZED_PLACES[pl.name];
+                return { name: locPl?.name[locale] || pl.name };
+              })}
+              joyTriggers={(LOCALIZED_JOY_TRIGGERS[locale] || p.joyTriggers) ?? undefined}
             />
           </div>
         </div>
@@ -1637,10 +1654,10 @@ export default function PatientDemoPage() {
               setLastMood(m);
               handleSpeak(
                 m === "peaceful"
-                  ? "Feeling peaceful and calm with the sweet sounds of Assam."
+                  ? extras.moodVoicePeaceful
                   : m === "okay"
-                  ? "Feeling steady and balanced today."
-                  : "Caregiver alert noted. Reaching out to Manash."
+                  ? extras.moodVoiceSteady
+                  : extras.moodVoiceHelp
               );
             }}
             title={d18n.moodTitle}

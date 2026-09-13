@@ -11,7 +11,21 @@ import {
 } from "@/lib/sound";
 
 import { useLocale } from "next-intl";
-import { getHubStrings } from "@/lib/gameI18n";
+import { getHubStrings, SupportedLocale } from "@/lib/gameI18n";
+
+const VOLUME_LABEL: Record<SupportedLocale, string> = {
+  en: "Volume",
+  as: "শব্দৰ মাত্ৰা",
+  hi: "ध्वनि स्तर",
+  bn: "শব্দের মাত্রা",
+  mr: "ध्वनि तीव्रता",
+  ne: "आवाज स्तर",
+  mni: "খোনথোক্কী চাং",
+  brx: "खोनानायनि बाहागो",
+  grt: "Gam·ani gadang",
+  kha: "Jingsawa",
+  lus: "Ri thun dan",
+};
 
 const CARD =
   "border-2 border-black rounded-2xl shadow-[3px_3px_0px_rgba(0,0,0,1)]";
@@ -22,7 +36,8 @@ interface AudioToggleProps {
 
 export function AudioToggle({ size = "md" }: AudioToggleProps = {}) {
   const locale = useLocale();
-  const hub = getHubStrings(locale);
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const hub = getHubStrings(normLocale);
   const [volume, setVol] = useState(() => getVolume());
   const [enabled, setEnabled] = useState(() => isEnabled());
   const [showSlider, setShowSlider] = useState(false);
@@ -92,7 +107,7 @@ export function AudioToggle({ size = "md" }: AudioToggleProps = {}) {
             value={Math.round(volume * 100)}
             onChange={changeVolume}
             className="w-full accent-tea cursor-pointer"
-            aria-label="Volume"
+            aria-label={VOLUME_LABEL[normLocale] || VOLUME_LABEL.en}
           />
           <p className="mt-1 text-center text-xs font-bold text-ink-secondary">
             {Math.round(volume * 100)}%

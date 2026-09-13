@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useLocale } from "next-intl";
 import {
   Hand,
   X,
@@ -111,6 +112,526 @@ function findNearestInteractiveTarget(x: number, y: number, snapRadius = 90): Ta
   return bestMatch;
 }
 
+interface AirMouseStrings {
+  restModeBadge: string;
+  pinchBadge: string;
+  snappedBadge: string;
+  pinchToClick: string;
+  pressSpaceEnter: string;
+  snappedToButton: string;
+  raiseHandPrompt: string;
+  resumeClickingBtn: string;
+  restBtn: string;
+  recenterBtn: string;
+  autoSnapBadge: string;
+  useMouseBtn: string;
+  pausedTitle: string;
+  activeTitle: string;
+  initVision: string;
+  pausedStatus: string;
+  noHandStatus: string;
+  pinchStatus: string;
+  dwellingStatus: string;
+  pinchReadyStatus: string;
+  fullscreen100: string;
+  triggerMode: string;
+  reach: string;
+  reachActive: string;
+  smoothingEngine: string;
+  filterName: string;
+  lastClick: string;
+  modeMinimized: string;
+  escToExit: string;
+  toastPhysMouse: string;
+  toastPhysClick: string;
+  toastRecentered: string;
+  toastRecenteredShort: string;
+  titleResume: string;
+  titlePause: string;
+  titleRecenter: string;
+  titleTargetMag: string;
+  titleReturnMouse: string;
+  titleExpandHud: string;
+  titleMinHud: string;
+  titleExitAir: string;
+}
+
+const AIR_MOUSE_I18N: Record<string, AirMouseStrings> = {
+  en: {
+    restModeBadge: "REST MODE (P to resume)",
+    pinchBadge: "PINCH!",
+    snappedBadge: "SNAPPED",
+    pinchToClick: "Pinch to click",
+    pressSpaceEnter: "Press Space/Enter",
+    snappedToButton: "Snapped to button",
+    raiseHandPrompt: "Raise hand in view of camera",
+    resumeClickingBtn: "Resume Clicking (P)",
+    restBtn: "Rest (P)",
+    recenterBtn: "Recenter (C)",
+    autoSnapBadge: "Auto-Snap",
+    useMouseBtn: "Use Mouse",
+    pausedTitle: "Air Mouse (Paused)",
+    activeTitle: "Air Mouse (Active)",
+    initVision: "Initializing Web Vision...",
+    pausedStatus: "PAUSED",
+    noHandStatus: "NO HAND IN VIEW",
+    pinchStatus: "PINCH",
+    dwellingStatus: "DWELLING",
+    pinchReadyStatus: "PINCH READY",
+    fullscreen100: "FULL SCREEN 100%",
+    triggerMode: "Trigger Mode:",
+    reach: "Full Screen Reach:",
+    reachActive: "Active (100%)",
+    smoothingEngine: "Smoothing Engine:",
+    filterName: "1€ Filter (Zero-Lag)",
+    lastClick: "Last click:",
+    modeMinimized: "Mode:",
+    escToExit: "Esc to exit",
+    toastPhysMouse: "Physical mouse detected — switched to standard mouse mode",
+    toastPhysClick: "Physical click detected — returned to physical mouse",
+    toastRecentered: "Cursor Recentered to Screen Center",
+    toastRecenteredShort: "Cursor Recentered",
+    titleResume: "Resume in-air clicking (Key: P)",
+    titlePause: "Pause clicking for arm rest (Key: P)",
+    titleRecenter: "Recenter cursor to center of screen (Key: C)",
+    titleTargetMag: "Target Magnetism: Automatically snaps pointer to nearby buttons",
+    titleReturnMouse: "Return to Physical Mouse",
+    titleExpandHud: "Expand Camera HUD",
+    titleMinHud: "Minimize Camera HUD",
+    titleExitAir: "Exit Virtual Air Mouse (Return to Physical Mouse)",
+  },
+  as: {
+    restModeBadge: "বিৰতি ম'ড (পুনৰ আৰম্ভ কৰিবলৈ P)",
+    pinchBadge: "টিপ মৰা হ'ল!",
+    snappedBadge: "সংলগ্ন",
+    pinchToClick: "ক্লিক কৰিবলৈ টিপক",
+    pressSpaceEnter: "স্পেচ/এণ্টাৰ টিপক",
+    snappedToButton: "বুটামত সংলগ্ন হ'ল",
+    raiseHandPrompt: "কেমেৰাৰ সন্মুখত হাত দাঙক",
+    resumeClickingBtn: "ক্লিক পুনৰাৰম্ভ (P)",
+    restBtn: "বিৰতি (P)",
+    recenterBtn: "কেন্দ্ৰীকৰণ (C)",
+    autoSnapBadge: "স্বয়ং-সংলগ্ন",
+    useMouseBtn: "মাউছ ব্যৱহাৰ",
+    pausedTitle: "এয়াৰ মাউছ (স্থগিত)",
+    activeTitle: "এয়াৰ মাউছ (সক্ৰিয়)",
+    initVision: "কেমেৰা দৃষ্টি আৰম্ভ হৈছে...",
+    pausedStatus: "স্থগিত",
+    noHandStatus: "হাত দেখা পোৱা নাই",
+    pinchStatus: "টিপ",
+    dwellingStatus: "স্থিৰ ক্লিক",
+    pinchReadyStatus: "টিপৰ বাবে প্ৰস্তুত",
+    fullscreen100: "পূৰ্ণ স্ক্ৰিন ১০০%",
+    triggerMode: "ট্ৰিগাৰ ম'ড:",
+    reach: "স্ক্ৰিন পৰিসৰ:",
+    reachActive: "সক্ৰিয় (১০০%)",
+    smoothingEngine: "মসৃণতা ইঞ্জিন:",
+    filterName: "১€ ফিল্টাৰ (বিলম্বহীন)",
+    lastClick: "শেহতীয়া ক্লিক:",
+    modeMinimized: "ম'ড:",
+    escToExit: "ওলাই যাবলৈ Esc",
+    toastPhysMouse: "ভৌতিক মাউছ ধৰা পৰিছে — সাধাৰণ মাউছলৈ পৰিবৰ্তন কৰা হ'ল",
+    toastPhysClick: "ভৌতিক ক্লিক ধৰা পৰিছে — মাউছলৈ ঘূৰি গ'ল",
+    toastRecentered: "কাৰ্ছাৰ স্ক্ৰিনৰ মাজলৈ অনা হ'ল",
+    toastRecenteredShort: "কাৰ্ছাৰ পুনৰ কেন্দ্ৰীকৃত",
+    titleResume: "বায়বীয় ক্লিক পুনৰাৰম্ভ (কী: P)",
+    titlePause: "হাত জিৰণিৰ বাবে ক্লিক স্থগিত (কী: P)",
+    titleRecenter: "কাৰ্ছাৰ স্ক্ৰিনৰ কেন্দ্ৰলৈ আনক (কী: C)",
+    titleTargetMag: "লক্ষ্য চুম্বকত্ব: ওচৰৰ বুটামত স্বয়ংক্ৰিয়ভাৱে সংলগ্ন হয়",
+    titleReturnMouse: "ভৌতিক মাউছলৈ ঘূৰি যাওক",
+    titleExpandHud: "কেমেৰা HUD প্ৰসাৰণ",
+    titleMinHud: "কেমেৰা HUD সংকোচন",
+    titleExitAir: "ভাৰ্চুৱেল এয়াৰ মাউছৰ পৰা ওলাই যাওক",
+  },
+  hi: {
+    restModeBadge: "विश्राम मोड (जारी रखने के लिए P दबाएं)",
+    pinchBadge: "चुटकी क्लिक!",
+    snappedBadge: "स्नैप हुआ",
+    pinchToClick: "क्लिक करने के लिए चुटकी बनाएं",
+    pressSpaceEnter: "Space/Enter दबाएं",
+    snappedToButton: "बटन पर लॉक हुआ",
+    raiseHandPrompt: "कैमरे के सामने हाथ उठाएं",
+    resumeClickingBtn: "क्लिक शुरू करें (P)",
+    restBtn: "विश्राम (P)",
+    recenterBtn: "पुनः केंद्रित (C)",
+    autoSnapBadge: "ऑटो-स्नैप",
+    useMouseBtn: "माउस उपयोग",
+    pausedTitle: "एयर माउस (रोका गया)",
+    activeTitle: "एयर माउस (सक्रिय)",
+    initVision: "वेब दृष्टि आरंभ हो रही है...",
+    pausedStatus: "रोका गया",
+    noHandStatus: "कैमरे में हाथ नहीं दिखा",
+    pinchStatus: "चुटकी",
+    dwellingStatus: "स्थिर क्लिक",
+    pinchReadyStatus: "चुटकी तैयार",
+    fullscreen100: "पूर्ण स्क्रीन 100%",
+    triggerMode: "ट्रिगर मोड:",
+    reach: "स्क्रीन पहुंच:",
+    reachActive: "सक्रिय (100%)",
+    smoothingEngine: "स्मूथिंग इंजन:",
+    filterName: "1€ फ़िल्टर (शून्य विलंब)",
+    lastClick: "अंतिम क्लिक:",
+    modeMinimized: "मोड:",
+    escToExit: "बाहर निकलने के लिए Esc",
+    toastPhysMouse: "भौतिक माउस का पता चला — मानक माउस मोड सक्रिय",
+    toastPhysClick: "भौतिक क्लिक का पता चला — भौतिक माउस पर लौटे",
+    toastRecentered: "कर्सर स्क्रीन के केंद्र में लाया गया",
+    toastRecenteredShort: "कर्सर पुनः केंद्रित हुआ",
+    titleResume: "एयर क्लिक पुनः आरंभ करें (कुंजी: P)",
+    titlePause: "हाथ के आराम के लिए क्लिक रोकें (कुंजी: P)",
+    titleRecenter: "कर्सर स्क्रीन के मध्य लाएं (कुंजी: C)",
+    titleTargetMag: "टारगेट मैग्नेटिज़्म: बटन पर स्वतः आकर्षित होता है",
+    titleReturnMouse: "भौतिक माउस पर लौटें",
+    titleExpandHud: "कैमरा HUD बड़ा करें",
+    titleMinHud: "कैमरा HUD छोटा करें",
+    titleExitAir: "वर्चुअल एयर माउस से बाहर निकलें",
+  },
+  bn: {
+    restModeBadge: "বিশ্রাম মোড (চালু করতে P টিপুন)",
+    pinchBadge: "চিমটি ক্লিক!",
+    snappedBadge: "সংযুক্ত",
+    pinchToClick: "ক্লিক করতে আঙুলের চিমটি কাটুন",
+    pressSpaceEnter: "Space/Enter টিপুন",
+    snappedToButton: "বোতামে সংযুক্ত হয়েছে",
+    raiseHandPrompt: "ক্যামেরার সামনে হাত তুলুন",
+    resumeClickingBtn: "ক্লিক চালু করুন (P)",
+    restBtn: "বিশ্রাম (P)",
+    recenterBtn: "কেন্দ্রীকরণ (C)",
+    autoSnapBadge: "অটো-স্ন্যাপ",
+    useMouseBtn: "মাউস ব্যবহার",
+    pausedTitle: "এয়ার মাউস (স্থগিত)",
+    activeTitle: "এয়ার মাউস (সক্রিয়)",
+    initVision: "ক্যামেরা ভিশন শুরু হচ্ছে...",
+    pausedStatus: "স্থগিত",
+    noHandStatus: "হাত দেখা যাচ্ছে না",
+    pinchStatus: "চিমটি",
+    dwellingStatus: "স্থির ক্লিক",
+    pinchReadyStatus: "চিমটি প্রস্তুত",
+    fullscreen100: "পূর্ণ স্ক্রিন ১০০%",
+    triggerMode: "ট্রিগার মোড:",
+    reach: "স্ক্রিন বিস্তার:",
+    reachActive: "সক্রিয় (১০০%)",
+    smoothingEngine: "মসৃণকরণ ইঞ্জিন:",
+    filterName: "১€ ফিল্টার (শূন্য বিলম্ব)",
+    lastClick: "সর্বশেষ ক্লিক:",
+    modeMinimized: "মোড:",
+    escToExit: "বের হতে Esc",
+    toastPhysMouse: "ভৌত মাউস সনাক্ত হয়েছে — সাধারণ মাউস মোডে পরিবর্তিত",
+    toastPhysClick: "ভৌত ক্লিক সনাক্ত হয়েছে — মাউসে ফিরে আসা হয়েছে",
+    toastRecentered: "কার্সার স্ক্রিনের কেন্দ্রে আনা হয়েছে",
+    toastRecenteredShort: "কার্সার পুনঃকেন্দ্রীকৃত",
+    titleResume: "বাতাসে ক্লিক পুনরায় শুরু (কি: P)",
+    titlePause: "হাতের বিশ্রামের জন্য ক্লিক স্থগিত (কি: P)",
+    titleRecenter: "কার্সার স্ক্রিনের কেন্দ্রে আনুন (কি: C)",
+    titleTargetMag: "টার্গেট চুম্বকত্ব: বোতামে স্বয়ংক্রিয়ভাবে লেগে যায়",
+    titleReturnMouse: "ভৌত মাউসে ফিরে যান",
+    titleExpandHud: "ক্যামেরা HUD প্রসারিত করুন",
+    titleMinHud: "ক্যামেরা HUD সংকুচিত করুন",
+    titleExitAir: "ভার্চুয়াল এয়ার মাউস থেকে প্রস্থান",
+  },
+  mr: {
+    restModeBadge: "विश्रांती मोड (सुरू करण्यासाठी P दाबा)",
+    pinchBadge: "चिमटी क्लिक!",
+    snappedBadge: "जोडले गेले",
+    pinchToClick: "क्लिक करण्यासाठी बोटांची चिमटी करा",
+    pressSpaceEnter: "Space/Enter दाबा",
+    snappedToButton: "बटनावर लॉक झाले",
+    raiseHandPrompt: "कॅमेऱ्यासमोर हात वर करा",
+    resumeClickingBtn: "क्लिक पुन्हा सुरू (P)",
+    restBtn: "विश्रांती (P)",
+    recenterBtn: "पुन्हा मध्यभागी (C)",
+    autoSnapBadge: "ऑटो-स्नॅप",
+    useMouseBtn: "माउस वापरा",
+    pausedTitle: "एअर माउस (थांबवले)",
+    activeTitle: "एअर माउस (सक्रिय)",
+    initVision: "कॅमेरा व्हिजन सुरू होत आहे...",
+    pausedStatus: "थांबवले",
+    noHandStatus: "हात दिसत नाही",
+    pinchStatus: "चिमटी",
+    dwellingStatus: "स्थिर क्लिक",
+    pinchReadyStatus: "चिमटी तयार",
+    fullscreen100: "पूर्ण स्क्रीन १००%",
+    triggerMode: "ट्रिगर मोड:",
+    reach: "स्क्रीन पोहोच:",
+    reachActive: "सक्रिय (१००%)",
+    smoothingEngine: "स्मूथिंग इंजिन:",
+    filterName: "१€ फिल्टर (शून्य विलंब)",
+    lastClick: "शेवटचे क्लिक:",
+    modeMinimized: "मोड:",
+    escToExit: "बाहेर पडण्यासाठी Esc",
+    toastPhysMouse: "भौतिक माउस आढळला — मानक माउस मोड सुरू",
+    toastPhysClick: "भौतिक क्लिक आढळले — मूळ माउसवर परतले",
+    toastRecentered: "कर्सर स्क्रीनच्या मध्यभागी आणला",
+    toastRecenteredShort: "कर्सर पुन्हा मध्यभागी",
+    titleResume: "एअर क्लिक सुरू करा (की: P)",
+    titlePause: "हाताच्या विश्रांतीसाठी क्लिक थांबवा (की: P)",
+    titleRecenter: "कर्सर मध्यभागी आणा (की: C)",
+    titleTargetMag: "लक्ष्य चुंबकत्व: जवळच्या बटनावर आपोआप लॉक होते",
+    titleReturnMouse: "भौतिक माउसवर परत जा",
+    titleExpandHud: "कॅमेरा HUD मोठा करा",
+    titleMinHud: "कॅमेरा HUD लहान करा",
+    titleExitAir: "व्हर्च्युअल एअर माउसमधून बाहेर पडा",
+  },
+  ne: {
+    restModeBadge: "विश्राम मोड (जारी राख्न P थिच्नुहोस्)",
+    pinchBadge: "चिमोटी क्लिक!",
+    snappedBadge: "जोडियो",
+    pinchToClick: "क्लिक गर्न औंलाले चिमोट्नुहोस्",
+    pressSpaceEnter: "Space/Enter थिच्नुहोस्",
+    snappedToButton: "बटनमा जोडियो",
+    raiseHandPrompt: "क्यामेराको अगाडि हात उठाउनुहोस्",
+    resumeClickingBtn: "क्लिक पुन: सुरु (P)",
+    restBtn: "विश्राम (P)",
+    recenterBtn: "केन्द्रमा ल्याउनुहोस् (C)",
+    autoSnapBadge: "स्वत: स्न्याप",
+    useMouseBtn: "माउस प्रयोग",
+    pausedTitle: "एयर माउस (रोकिएको)",
+    activeTitle: "एयर माउस (सक्रिय)",
+    initVision: "क्यामेरा दृष्टि सुरु हुँदैछ...",
+    pausedStatus: "रोकिएको",
+    noHandStatus: "हात देखिएन",
+    pinchStatus: "चिमोटी",
+    dwellingStatus: "स्थिर क्लिक",
+    pinchReadyStatus: "चिमोटी तयार",
+    fullscreen100: "पूरा स्क्रिन १००%",
+    triggerMode: "ट्रिगर मोड:",
+    reach: "स्क्रिन दायरा:",
+    reachActive: "सक्रिय (१००%)",
+    smoothingEngine: "स्मूथिंग इन्जिन:",
+    filterName: "१€ फिल्टर (शून्य ढिलाइ)",
+    lastClick: "पछिल्लो क्लिक:",
+    modeMinimized: "मोड:",
+    escToExit: "निस्कन Esc थिच्नुहोस्",
+    toastPhysMouse: "भौतिक माउस भेटियो — सामान्य माउस मोडमा बदलियो",
+    toastPhysClick: "भौतिक क्लिक भेटियो — माउसमा फर्कियो",
+    toastRecentered: "कर्सर स्क्रिनको केन्द्रमा ल्याइयो",
+    toastRecenteredShort: "कर्सर केन्द्रित भयो",
+    titleResume: "हावामा क्लिक पुन: सुरु गर्नुहोस् (कुञ्जी: P)",
+    titlePause: "हातको विश्रामका लागि क्लिक रोक्नुहोस् (कुञ्जी: P)",
+    titleRecenter: "कर्सर स्क्रिनको केन्द्रमा ल्याउनुहोस् (कुञ्जी: C)",
+    titleTargetMag: "लक्ष्य चुम्बकत्व: नजिकको बटनमा स्वत: जोडिन्छ",
+    titleReturnMouse: "भौतिक माउसमा फर्कनुहोस्",
+    titleExpandHud: "क्यामेरा HUD ठूलो बनाउनुहोस्",
+    titleMinHud: "क्यामेरा HUD सानो बनाउनुहोस्",
+    titleExitAir: "भर्चुअल एयर माउसबाट बाहिर निस्कनुहोस्",
+  },
+  mni: {
+    restModeBadge: "পোথাবা মোদ (হৌদোক্নবা P নম্বিয়ু)",
+    pinchBadge: "পিন্চ ক্লিক!",
+    snappedBadge: "শম্নরে",
+    pinchToClick: "ক্লিক তৌনবা খুৎচাং চিম্বিয়ু",
+    pressSpaceEnter: "Space/Enter নম্বিয়ু",
+    snappedToButton: "বটনদা শম্নরে",
+    raiseHandPrompt: "কেমেরাগী মাংদা খুৎ য়াংখৎলু",
+    resumeClickingBtn: "ক্লিক অমুক হৌবা (P)",
+    restBtn: "পোথাবা (P)",
+    recenterBtn: "ময়ায়দা পুরকপা (C)",
+    autoSnapBadge: "ওতো-স্নেপ",
+    useMouseBtn: "মাউস শিজিন্নবা",
+    pausedTitle: "এয়র মাউস (লেপ্লি)",
+    activeTitle: "এয়র মাউস (চৎলি)",
+    initVision: "কেমেরা ভিজেন হৌরে...",
+    pausedStatus: "লেপ্লি",
+    noHandStatus: "খুৎ উদে",
+    pinchStatus: "পিন্চ",
+    dwellingStatus: "লেপ্পা ক্লিক",
+    pinchReadyStatus: "পিন্চ শেম্লে",
+    fullscreen100: "স্ক্রিন পুম্বা ১০০%",
+    triggerMode: "ট্রিগর মোদ:",
+    reach: "স্ক্রিনগী পন্থ:",
+    reachActive: "চৎলি (১০০%)",
+    smoothingEngine: "স্মুথিং ইঞ্জিন:",
+    filterName: "১€ ফিল্তর (লেগ য়াওদবা)",
+    lastClick: "অরোইবা ক্লিক:",
+    modeMinimized: "মোদ:",
+    escToExit: "থোক্নবা Esc নম্বিয়ু",
+    toastPhysMouse: "মাউস থেংনরে — স্তেন্দর্দ মাউস মোদতা হোংলে",
+    toastPhysClick: "মাউস ক্লিক থেংনরে — মাউসতা হঞ্জিন্লে",
+    toastRecentered: "কর্সর স্ক্রিনগী ময়ায়দা পুরক্লে",
+    toastRecenteredShort: "কর্সর ময়ায়দা হঞ্জিন্লে",
+    titleResume: "হিংলবা ক্লিক অমুক হৌবা (কী: P)",
+    titlePause: "খুৎ পোথানবা ক্লিক লেপ্লি (কী: P)",
+    titleRecenter: "কর্সর ময়ায়দা পুরকপু (কী: C)",
+    titleTargetMag: "টার্গেত মেগনেতিজম: বটনদা মশানা শম্নৈ",
+    titleReturnMouse: "মাউসতা হঞ্জিল্লু",
+    titleExpandHud: "কেমেরা HUD পাকথোকউ",
+    titleMinHud: "কেমেরা HUD অপিকপা তৌ",
+    titleExitAir: "ভর্চুএল এয়র মাউস থাদোকউ",
+  },
+  brx: {
+    restModeBadge: "जिरायनाय म'ड (जाउनायनो P थु)",
+    pinchBadge: "सुनाय क्लिक!",
+    snappedBadge: "फोनांजाबाय",
+    pinchToClick: "क्लिक खालामनो सुनानै हम",
+    pressSpaceEnter: "Space/Enter थु",
+    snappedToButton: "बथामाव फोनांजाबाय",
+    raiseHandPrompt: "केमेरानि सिगाङाव आखाइ देखां",
+    resumeClickingBtn: "क्लिक जागायफिन (P)",
+    restBtn: "जिराय (P)",
+    recenterBtn: "गेजेराव लाबो (C)",
+    autoSnapBadge: "अत'-स्नेप",
+    useMouseBtn: "माउस बाहाय",
+    pausedTitle: "बार माउस (थाथ'नाय)",
+    activeTitle: "बार माउस (मावफुं)",
+    initVision: "केमेरा नुनाय जागायगासिनो...",
+    pausedStatus: "थाथ'नाय",
+    noHandStatus: "आखाइ नुनो मोनाखै",
+    pinchStatus: "सुनाय",
+    dwellingStatus: "थाथनाय क्लिक",
+    pinchReadyStatus: "सुनायनो थियारि",
+    fullscreen100: "गासै स्क्रिन १००%",
+    triggerMode: "ट्रिगार म'ड:",
+    reach: "स्क्रिननि सिमा:",
+    reachActive: "मावफुं (१००%)",
+    smoothingEngine: "स्मूथिंग इन्जिन:",
+    filterName: "१€ फिल्टर (लेट गैयि)",
+    lastClick: "जोबथा क्लिक:",
+    modeMinimized: "म'ड:",
+    escToExit: "ओंखारनो Esc थु",
+    toastPhysMouse: "माउस मोन्दों — सरासनस्रा माउस म'डाव सोलायबाय",
+    toastPhysClick: "माउस क्लिक मोन्दों — माउसाव गिदिंफिनबाय",
+    toastRecentered: "कर्सरखौ स्क्रिननि गेजेराव लाबोबाय",
+    toastRecenteredShort: "कर्सर गेजेराव लाबोबाय",
+    titleResume: "बार क्लिक जागायफिन (P)",
+    titlePause: "आखाइ जिरायनो क्लिक थाथ'हो (P)",
+    titleRecenter: "कर्सरखौ गेजेराव लाबो (C)",
+    titleTargetMag: "थामखि चुम्बकत्व: बथामाव गावआरि फोनांजायो",
+    titleReturnMouse: "माउसाव थांफिन",
+    titleExpandHud: "केमेरा HUD फेहेर",
+    titleMinHud: "केमेरा HUD फिसा खालाम",
+    titleExitAir: "बार माउसनिफ्राय ओंखार",
+  },
+  grt: {
+    restModeBadge: "Neng·takaniko (P ko nang·atbo)",
+    pinchBadge: "Pinch Doka!",
+    snappedBadge: "Nangchaptokaha",
+    pinchToClick: "Dokna jaksi pinch ka·bo",
+    pressSpaceEnter: "Space/Enter ko nang·atbo",
+    snappedToButton: "Button-o nangchaptokaha",
+    raiseHandPrompt: "Camera mikkango jak de·do·bo",
+    resumeClickingBtn: "Dokna A·bachengtaibo (P)",
+    restBtn: "Neng·takbo (P)",
+    recenterBtn: "Jatchio Donbo (C)",
+    autoSnapBadge: "Auto-Snap",
+    useMouseBtn: "Mouse ko Jakkalbo",
+    pausedTitle: "Air Mouse (Dingtangataha)",
+    activeTitle: "Air Mouse (Kam Ka·enga)",
+    initVision: "Web Vision a·bachengenga...",
+    pausedStatus: "DINGTANGATAHA",
+    noHandStatus: "JAK NIKJA",
+    pinchStatus: "PINCH",
+    dwellingStatus: "DWELLING",
+    pinchReadyStatus: "PINCH TARIAHA",
+    fullscreen100: "FULL SCREEN 100%",
+    triggerMode: "Trigger Mode:",
+    reach: "Screen Sokani:",
+    reachActive: "Kam Ka·enga (100%)",
+    smoothingEngine: "Smoothing Engine:",
+    filterName: "1€ Filter (Zero-Lag)",
+    lastClick: "Bon·kamgipa click:",
+    modeMinimized: "Mode:",
+    escToExit: "Ong·katna Esc",
+    toastPhysMouse: "Mouse nikaha — standard mouse mode-ona dingtangataha",
+    toastPhysClick: "Mouse click nikaha — mouse-ona re·bapiltaiaha",
+    toastRecentered: "Cursor-ko screen jatchio ditaiaha",
+    toastRecenteredShort: "Cursor Jatchio Dona",
+    titleResume: "Ku·chotgipa air click a·bachengtaibo (Key: P)",
+    titlePause: "Jak neng·takna click dingtangatbo (Key: P)",
+    titleRecenter: "Cursor-ko jatchio donbo (Key: C)",
+    titleTargetMag: "Target Magnetism: Button-ona nangchapa",
+    titleReturnMouse: "Mouse-ona re·bapilbo",
+    titleExpandHud: "Camera HUD Dal·atbo",
+    titleMinHud: "Camera HUD Chon·atbo",
+    titleExitAir: "Virtual Air Mouse-ko watbo",
+  },
+  kha: {
+    restModeBadge: "Shongthait Mode (P ban bteng)",
+    pinchBadge: "Pinch Shon!",
+    snappedBadge: "La snoh",
+    pinchToClick: "Kti pinch ban shon",
+    pressSpaceEnter: "Shon Space/Enter",
+    snappedToButton: "La snoh ha ka button",
+    raiseHandPrompt: "Rah kti hakhmat camera",
+    resumeClickingBtn: "Bteng ban Shon (P)",
+    restBtn: "Shongthait (P)",
+    recenterBtn: "Pynphai Pdeng (C)",
+    autoSnapBadge: "Auto-Snap",
+    useMouseBtn: "Pyndonkam Mouse",
+    pausedTitle: "Air Mouse (Pynsangeh)",
+    activeTitle: "Air Mouse (Trei kam)",
+    initVision: "Plie Web Vision...",
+    pausedStatus: "PYNSANGEH",
+    noHandStatus: "YM IOHI KTI",
+    pinchStatus: "PINCH",
+    dwellingStatus: "DWELLING",
+    pinchReadyStatus: "PINCH LA KLOI",
+    fullscreen100: "FULL SCREEN 100%",
+    triggerMode: "Trigger Mode:",
+    reach: "Jingkot Screen:",
+    reachActive: "Trei kam (100%)",
+    smoothingEngine: "Smoothing Engine:",
+    filterName: "1€ Filter (Khlem sangeh)",
+    lastClick: "Jingshon ba khatduh:",
+    modeMinimized: "Mode:",
+    escToExit: "Mih noh da Esc",
+    toastPhysMouse: "Shem ia ka mouse — kylla sha standard mouse mode",
+    toastPhysClick: "Shem jingkynjoh mouse — phai sha mouse",
+    toastRecentered: "Kylliang cursor sha pdeng screen",
+    toastRecenteredShort: "Cursor ha Pdeng",
+    titleResume: "Bteng biang ban air click (Key: P)",
+    titlePause: "Pynsangeh ban pynshait kti (Key: P)",
+    titleRecenter: "Pynphai cursor sha pdeng (Key: C)",
+    titleTargetMag: "Target Magnetism: Snoh hi ha ki button",
+    titleReturnMouse: "Phai biang sha Mouse",
+    titleExpandHud: "Pynheh Camera HUD",
+    titleMinHud: "Pynrit Camera HUD",
+    titleExitAir: "Mih na Virtual Air Mouse",
+  },
+  lus: {
+    restModeBadge: "Chawlhhahdam Mode (Chhunzawm nan P hmet rawh)",
+    pinchBadge: "Pinch Click!",
+    snappedBadge: "Betei",
+    pinchToClick: "Click turin kut zung chal leh zungpui chuktuah rawh",
+    pressSpaceEnter: "Space/Enter hmet rawh",
+    snappedToButton: "Button-ah a bet ta",
+    raiseHandPrompt: "Camera hmaah kut phar rawh",
+    resumeClickingBtn: "Click Chhunzawm (P)",
+    restBtn: "Chawlhhahdam (P)",
+    recenterBtn: "Lairila Dah (C)",
+    autoSnapBadge: "Auto-Snap",
+    useMouseBtn: "Mouse Hmang Rawh",
+    pausedTitle: "Air Mouse (Chawlhlawk)",
+    activeTitle: "Air Mouse (A kal mek)",
+    initVision: "Web Vision buatsaih mek...",
+    pausedStatus: "CHAWLHLAWK",
+    noHandStatus: "KUT HMUH A NI LO",
+    pinchStatus: "PINCH",
+    dwellingStatus: "DWELLING",
+    pinchReadyStatus: "PINCH THEIH TAWH",
+    fullscreen100: "FULL SCREEN 100%",
+    triggerMode: "Trigger Mode:",
+    reach: "Screen Phak Chin:",
+    reachActive: "Kal mek (100%)",
+    smoothingEngine: "Smoothing Engine:",
+    filterName: "1€ Filter (Tlai khawmuang lo)",
+    lastClick: "Hmeh hnuhnun ber:",
+    modeMinimized: "Mode:",
+    escToExit: "Chhuah nan Esc",
+    toastPhysMouse: "Mouse hmuh a ni — standard mouse mode-ah thlak a ni",
+    toastPhysClick: "Mouse hmeh a ni — mouse pangngaiah let leh a ni",
+    toastRecentered: "Cursor screen lairil-ah dah a ni",
+    toastRecenteredShort: "Cursor Lairila Dah a ni",
+    titleResume: "Borbanga click chhunzawmna (Hmeh tur: P)",
+    titlePause: "Bana chawlhhahdam nana click chawlhlawk (Hmeh tur: P)",
+    titleRecenter: "Cursor screen lai taka dah nan (Hmeh tur: C)",
+    titleTargetMag: "Target Magnetism: Button hnaiha cursor man bet nghal",
+    titleReturnMouse: "Mouse pangngaiah let leh rawh",
+    titleExpandHud: "Camera HUD Tizau Rawh",
+    titleMinHud: "Camera HUD Tite Rawh",
+    titleExitAir: "Virtual Air Mouse chhuahsan rawh",
+  },
+};
+
 export function VirtualAirMouse({
   active,
   onClose,
@@ -127,6 +648,10 @@ export function VirtualAirMouse({
   onDwellClick,
   onHoverTarget,
 }: VirtualAirMouseProps) {
+  const locale = useLocale();
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const t = AIR_MOUSE_I18N[normLoc] || AIR_MOUSE_I18N.en;
+
   // Cursor Screen Coordinates (Pixels)
   const [pointerPos, setPointerPos] = useState<{ x: number; y: number }>({
     x: typeof window !== "undefined" ? window.innerWidth / 2 : 400,
@@ -248,7 +773,7 @@ export function VirtualAirMouse({
           }
 
           if (accumulatedDist > 120) {
-            setToastMessage("Physical mouse detected — switched to standard mouse mode");
+            setToastMessage(t.toastPhysMouse);
             setTimeout(() => {
               onClose("physical_mouse_moved");
             }, 300);
@@ -279,7 +804,7 @@ export function VirtualAirMouse({
       }
 
       if (handoffPolicy === "auto") {
-        setToastMessage("Physical click detected — returned to physical mouse");
+        setToastMessage(t.toastPhysClick);
         setTimeout(() => {
           onClose("physical_mouse_clicked");
         }, 200);
@@ -299,7 +824,7 @@ export function VirtualAirMouse({
         centerOffsetRef.current = { x: 0, y: 0 };
         currentPosRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         setPointerPos({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-        setToastMessage("Cursor Recentered to Screen Center");
+        setToastMessage(t.toastRecentered);
         setTimeout(() => setToastMessage(null), 1800);
       }
     };
@@ -818,11 +1343,11 @@ export function VirtualAirMouse({
         {/* Live Action Hint / Percentage Badge */}
         {isPaused ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-800 shadow-[2px_2px_0px_#000]">
-            REST MODE (P to resume)
+            {t.restModeBadge}
           </div>
         ) : isPinchingActive ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-emerald-300 px-2 py-0.5 text-[10px] font-black text-emerald-950 shadow-[2px_2px_0px_#000] animate-bounce">
-            PINCH!
+            {t.pinchBadge}
           </div>
         ) : isDwellActive ? (
           <div
@@ -835,18 +1360,18 @@ export function VirtualAirMouse({
             }`}
           >
             {clickMethod === "dwell"
-              ? isSnapped ? `SNAPPED ${dwellProgress}%` : `${dwellProgress}%`
+              ? isSnapped ? `${t.snappedBadge} ${dwellProgress}%` : `${dwellProgress}%`
               : clickMethod === "pinch"
-              ? "Pinch to click"
-              : "Press Space/Enter"}
+              ? t.pinchToClick
+              : t.pressSpaceEnter}
           </div>
         ) : isSnapped ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-sky-100 px-2 py-0.5 text-[10px] font-black text-sky-950 shadow-[2px_2px_0px_#000]">
-            Snapped to button
+            {t.snappedToButton}
           </div>
         ) : !hasHandInView ? (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border-2 border-black bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-950 shadow-[2px_2px_0px_#000] animate-bounce">
-            Raise hand in view of camera
+            {t.raiseHandPrompt}
           </div>
         ) : null}
       </div>
@@ -875,10 +1400,10 @@ export function VirtualAirMouse({
               ? "bg-emerald-400 text-black shadow-xs ring-2 ring-emerald-300"
               : "bg-amber-300 text-black hover:bg-amber-400 shadow-xs"
           }`}
-          title={isPaused ? "Resume in-air clicking (Key: P)" : "Pause clicking for arm rest (Key: P)"}
+          title={isPaused ? t.titleResume : t.titlePause}
         >
           {isPaused ? <Play className="h-3.5 w-3.5 fill-black" /> : <Pause className="h-3.5 w-3.5" />}
-          <span>{isPaused ? "Resume Clicking (P)" : "Rest (P)"}</span>
+          <span>{isPaused ? t.resumeClickingBtn : t.restBtn}</span>
         </button>
 
         <button
@@ -888,22 +1413,22 @@ export function VirtualAirMouse({
             centerOffsetRef.current = { x: 0, y: 0 };
             currentPosRef.current = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
             setPointerPos({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-            setToastMessage("Cursor Recentered");
+            setToastMessage(t.toastRecenteredShort);
             setTimeout(() => setToastMessage(null), 1500);
           }}
           className="flex items-center gap-1 rounded-xl border border-black/40 bg-surface px-2 py-1 text-[11px] font-bold text-ink hover:bg-surface-muted cursor-pointer"
-          title="Recenter cursor to center of screen (Key: C)"
+          title={t.titleRecenter}
         >
           <Crosshair className="h-3 w-3 text-tea" />
-          <span>Recenter (C)</span>
+          <span>{t.recenterBtn}</span>
         </button>
 
         {stickyMagnetism && (
           <span
             className="hidden sm:flex items-center gap-1 text-[10px] font-bold text-tea bg-tea-light rounded-lg px-2 py-0.5 border border-tea/30"
-            title="Target Magnetism: Automatically snaps pointer to nearby buttons"
+            title={t.titleTargetMag}
           >
-            <Magnet className="h-3 w-3 text-sky-600" /> Auto-Snap
+            <Magnet className="h-3 w-3 text-sky-600" /> {t.autoSnapBadge}
           </span>
         )}
 
@@ -914,9 +1439,9 @@ export function VirtualAirMouse({
             onClose("rest_dock_exit");
           }}
           className="flex items-center gap-1 rounded-xl border border-black/40 bg-surface px-2 py-1 text-[11px] font-bold text-ink hover:bg-surface-muted cursor-pointer"
-          title="Return to Physical Mouse"
+          title={t.titleReturnMouse}
         >
-          <span>Use Mouse</span>
+          <span>{t.useMouseBtn}</span>
         </button>
       </div>
 
@@ -941,7 +1466,7 @@ export function VirtualAirMouse({
               />
               <span className="text-xs font-black uppercase text-ink flex items-center gap-1">
                 <Hand className="h-3.5 w-3.5 text-tea" />
-                <span>{isPaused ? "Air Mouse (Paused)" : "Air Mouse (Active)"}</span>
+                <span>{isPaused ? t.pausedTitle : t.activeTitle}</span>
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -952,7 +1477,7 @@ export function VirtualAirMouse({
                   setIsLocalMinimized(!isLocalMinimized);
                 }}
                 className="flex h-6 w-6 items-center justify-center rounded-lg border border-black bg-white text-ink hover:bg-amber-100 cursor-pointer"
-                title={pipViewMode === "minimized" ? "Expand Camera HUD" : "Minimize Camera HUD"}
+                title={pipViewMode === "minimized" ? t.titleExpandHud : t.titleMinHud}
               >
                 {pipViewMode === "minimized" ? (
                   <Maximize2 className="h-3 w-3 stroke-[2.5]" />
@@ -967,7 +1492,7 @@ export function VirtualAirMouse({
                   onClose("close_button");
                 }}
                 className="flex h-6 w-6 items-center justify-center rounded-lg border border-black bg-white text-ink hover:bg-rose-500 hover:text-white cursor-pointer"
-                title="Exit Virtual Air Mouse (Return to Physical Mouse)"
+                title={t.titleExitAir}
               >
                 <X className="h-3 w-3 stroke-[2.5]" />
               </button>
@@ -989,7 +1514,7 @@ export function VirtualAirMouse({
                   <div className="flex h-full w-full flex-col items-center justify-center p-2 text-center text-white">
                     <Hand className="h-8 w-8 animate-bounce text-amber-400" />
                     <span className="mt-1 text-[11px] font-bold">
-                      {cameraError || "Initializing Web Vision..."}
+                      {cameraError || t.initVision}
                     </span>
                   </div>
                 )}
@@ -997,37 +1522,37 @@ export function VirtualAirMouse({
                 {/* Status overlay on camera */}
                 <div className="absolute top-1.5 right-1.5 rounded-md border border-black bg-amber-400 px-1.5 py-0.5 text-[9px] font-black text-black">
                   {isPaused
-                    ? "PAUSED"
+                    ? t.pausedStatus
                     : !hasHandInView
-                    ? "NO HAND IN VIEW"
+                    ? t.noHandStatus
                     : isSnapped
-                    ? "SNAPPED"
+                    ? t.snappedBadge
                     : isPinchingActive
-                    ? "PINCH"
+                    ? t.pinchStatus
                     : isDwellActive
                     ? clickMethod === "dwell"
-                      ? `DWELLING (${dwellProgress}%)`
-                      : "PINCH READY"
-                    : "FULL SCREEN 100%"}
+                      ? `${t.dwellingStatus} (${dwellProgress}%)`
+                      : t.pinchReadyStatus
+                    : t.fullscreen100}
                 </div>
               </div>
 
               <div className="mt-2 space-y-1 text-[10px] font-bold text-ink-secondary">
                 <div className="flex items-center justify-between">
-                  <span>Trigger Mode:</span>
+                  <span>{t.triggerMode}</span>
                   <span className="font-black text-tea uppercase">{clickMethod}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Full Screen Reach:</span>
-                  <span className="font-black text-emerald-600">Active (100%)</span>
+                  <span>{t.reach}</span>
+                  <span className="font-black text-emerald-600">{t.reachActive}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Smoothing Engine:</span>
-                  <span className="font-black text-ink">1€ Filter (Zero-Lag)</span>
+                  <span>{t.smoothingEngine}</span>
+                  <span className="font-black text-ink">{t.filterName}</span>
                 </div>
                 {lastClickedElement && (
                   <div className="truncate rounded bg-amber-100 px-1.5 py-0.5 text-amber-950">
-                    Last click: <span className="font-black">{lastClickedElement}</span>
+                    {t.lastClick} <span className="font-black">{lastClickedElement}</span>
                   </div>
                 )}
               </div>
@@ -1037,8 +1562,8 @@ export function VirtualAirMouse({
           {/* Minimal View Footer */}
           {pipViewMode === "minimized" && (
             <div className="text-[10px] font-bold text-ink-secondary flex items-center justify-between">
-              <span>{isPaused ? "Paused" : "Mode: " + clickMethod.toUpperCase()}</span>
-              <span className="text-black/50">Esc to exit</span>
+              <span>{isPaused ? t.pausedStatus : `${t.modeMinimized} ${clickMethod.toUpperCase()}`}</span>
+              <span className="text-black/50">{t.escToExit}</span>
             </div>
           )}
         </div>

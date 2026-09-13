@@ -13,7 +13,16 @@ import {
   CheckCircle2,
   ArrowLeft,
   MessageCircle,
+  Image as ImageIcon,
+  Plus,
+  Check,
 } from "lucide-react";
+import { useMemo } from "react";
+import {
+  getPatientPhotos,
+  type PatientPhotoItem,
+  type PhotoCategory,
+} from "@/data/patientPhotos";
 import type { FutureTimeCapsule, TimeCapsuleMilestone, TimeCapsuleTheme } from "@/types/capsule";
 import { getFutureTimeCapsules, saveFutureTimeCapsule } from "@/data/defaultCapsules";
 import { playTapFeedback, playEncourage, unlockAudio } from "@/lib/sound";
@@ -63,6 +72,16 @@ interface TimeCapsuleModalTexts {
   preset3Label: string;
   preset3Title: string;
   preset3Text: string;
+  morePhotosBtn: string;
+  otherPhotosCard: string;
+  photoGalleryTitle: string;
+  photoGallerySubtitle: string;
+  filterAll: string;
+  filterFamily: string;
+  filterPlaces: string;
+  filterPortraits: string;
+  selectThisPhotoBtn: string;
+  selectedPhotoLabel: string;
 }
 
 const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
@@ -102,7 +121,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "A Message of Gratitude",
     preset3Title: "Words of Love for Pratima",
     preset3Text: "Pratima, forty-six years together have been my greatest fortune. Even when my memory wanders, my heart always recognizes your warm tea, your footsteps, and your gentle voice. Thank you.",
-  },
+      morePhotosBtn: "Browse All Photos",
+    otherPhotosCard: "Other Photos",
+    photoGalleryTitle: "All Familiar Photos",
+    photoGallerySubtitle: "Choose any photo of loved ones, home, or cherished places",
+    filterAll: "All Photos",
+    filterFamily: "Family & Loved Ones",
+    filterPlaces: "Home & Places",
+    filterPortraits: "Portraits",
+    selectThisPhotoBtn: "Use This Photo",
+    selectedPhotoLabel: "Selected Photo",
+},
   as: {
     modalTitle: "অহাকালিৰ বাবে মৰমৰ বাৰ্তা",
     modalSubtitle: "আপোনাৰ হৃদয়ৰ পৰা কোমল আশ্বাস আৰু শান্ত বচন",
@@ -139,7 +168,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "কৃতজ্ঞতাৰ মৰমৰ বাৰ্তা",
     preset3Title: "প্ৰতিমাৰ বাবে মৰমৰ কথা",
     preset3Text: "প্ৰতিমা, ৪৬ বছৰ একেলগে কটোৱাটোৱেই মোৰ জীৱনৰ আটাইতকৈ ডাঙৰ ভাগ্য। মনত কেতিয়াবা স্মৃতি হেৰালেও মোৰ হৃদয়ে সদায় তোমাৰ হাতৰ চাহ, তোমাৰ খোজৰ শব্দ আৰু তোমাৰ মিঠা মাত চিনি পায়। তোমাক অশেষ ধন্যবাদ।",
-  },
+      morePhotosBtn: "সকলো ফটো চাওক",
+    otherPhotosCard: "অন্যান্য ফটো",
+    photoGalleryTitle: "সকলো চিনাকি ফটো",
+    photoGallerySubtitle: "আপোন মানুহ, ঘৰ বা স্মৃতিজড়িত ঠাইৰ ফটো বাছক",
+    filterAll: "সকলো ফটো",
+    filterFamily: "পৰিয়াল আৰু আপোনজন",
+    filterPlaces: "ঘৰ আৰু ঠাইসমূহ",
+    filterPortraits: "প্ৰতিকৃতি",
+    selectThisPhotoBtn: "এইখন ফটো বাছক",
+    selectedPhotoLabel: "বাছনি কৰা ফটো",
+},
   hi: {
     modalTitle: "आने वाले कल के लिए स्नेह संदेश",
     modalSubtitle: "आपके दिल से कोमल संबल और सांत्वना भरे शब्द",
@@ -176,7 +215,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "कृतज्ञता भरा संदेश",
     preset3Title: "प्रतिमा के लिए प्रेम के शब्द",
     preset3Text: "प्रतिमा, तुम्हारे साथ छियालीस साल का सफर मेरे जीवन का सबसे बड़ा सौभाग्य रहा है। याददाश्त भले ही भटक जाए, मेरा दिल तुम्हारी गर्म चाय, तुम्हारी आहट और तुम्हारी आवाज़ को हमेशा पहचानता है। धन्यवाद।",
-  },
+      morePhotosBtn: "सभी तस्वीरें देखें",
+    otherPhotosCard: "अन्य तस्वीरें",
+    photoGalleryTitle: "सभी परिचित तस्वीरें",
+    photoGallerySubtitle: "परिवार, घर या प्रिय स्थानों की कोई भी तस्वीर चुनें",
+    filterAll: "सभी तस्वीरें",
+    filterFamily: "परिवार और प्रियजन",
+    filterPlaces: "घर और स्थान",
+    filterPortraits: "तस्वीरें",
+    selectThisPhotoBtn: "यह तस्वीर चुनें",
+    selectedPhotoLabel: "चुनी गई तस्वीर",
+},
   bn: {
     modalTitle: "আগামীর জন্য ভালোবাসার বার্তা",
     modalSubtitle: "আপনার হৃদয়ের কোমল আশ্বাস ও শান্তির সান্ত্বনা",
@@ -213,7 +262,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "কৃতজ্ঞতার বার্তা",
     preset3Title: "প্রতিমার জন্য ভালোবাসার কথা",
     preset3Text: "প্রতিমা, ৪৬ বছর একসাথে কাটানো আমার জীবনের সবচেয়ে বড় সৌভাগ্য। স্মৃতি মাঝে মাঝে হারিয়ে গেলেও আমার হৃদয় সবসময় তোমার হাতের চা, পায়ের শব্দ আর মিষ্টি কথা চিনে নেয়। তোমাকে অনেক ধন্যবাদ।",
-  },
+      morePhotosBtn: "সব ছবি দেখুন",
+    otherPhotosCard: "অন্যান্য ছবি",
+    photoGalleryTitle: "সব পরিচিত ছবি",
+    photoGallerySubtitle: "আপনজন, বাড়ি বা স্মৃতিবিজড়িত স্থানের যেকোনো ছবি বেছে নিন",
+    filterAll: "সব ছবি",
+    filterFamily: "পরিবার ও আপনজন",
+    filterPlaces: "বাড়ি ও স্থানসমূহ",
+    filterPortraits: "প্রতিকৃতি",
+    selectThisPhotoBtn: "এই ছবিটি বেছে নিন",
+    selectedPhotoLabel: "বাছাই করা ছবি",
+},
   mr: {
     modalTitle: "उद्यासाठी प्रेमाचा संदेश",
     modalSubtitle: "तुमच्या मनातील आपुलकी आणि धीर देणारे शब्द",
@@ -250,7 +309,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "कृतज्ञतेचा संदेश",
     preset3Title: "प्रतिमासाठी प्रेमाचे शब्द",
     preset3Text: "प्रतिमा, ४६ वर्षे एकत्र राहणे हे माझ्या आयुष्यातील सर्वात मोठे भाग्य आहे. आठवणी कधीकधी विसरल्या तरी माझे हृदय तुझा चहा, तुझी पावले आणि तुझा गोड आवाज नेहमी ओळखते. मनापासून धन्यवाद.",
-  },
+      morePhotosBtn: "सर्व फोटो पहा",
+    otherPhotosCard: "इतर फोटो",
+    photoGalleryTitle: "सर्व परिचयाचे फोटो",
+    photoGallerySubtitle: "कुटुंब, घर किंवा आवडीच्या ठिकाणांचा कोणताही फोटो निवडा",
+    filterAll: "सर्व फोटो",
+    filterFamily: "कुटुंब आणि आप्तेष्ट",
+    filterPlaces: "घर आणि ठिकाणे",
+    filterPortraits: "व्यक्तिचित्रे",
+    selectThisPhotoBtn: "हा फोटो निवडा",
+    selectedPhotoLabel: "निवडलेला फोटो",
+},
   ne: {
     modalTitle: "भोलिको लागि मायालु सन्देशहरू",
     modalSubtitle: "तपाईंको हृदयबाट कोमल ढाडस र सान्त्वनाका शब्दहरू",
@@ -287,7 +356,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "कृतज्ञताको सन्देश",
     preset3Title: "प्रतिमाका लागि मायाका शब्दहरू",
     preset3Text: "प्रतिमा, ४६ वर्ष सँगै बिताउनु मेरो जीवनको सबैभन्दा ठूलो भाग्य हो। सम्झनाहरू हराए पनि मेरो मुटुले तिम्रो चिया, तिम्रो पाइला र तिम्रो मिठो आवाज सधैं चिन्दछ। धेरै धेरै धन्यवाद।",
-  },
+      morePhotosBtn: "सबै तस्बिरहरू हेर्नुहोस्",
+    otherPhotosCard: "अन्य तस्बिरहरू",
+    photoGalleryTitle: "सबै परिचित तस्बिरहरू",
+    photoGallerySubtitle: "परिवार, घर वा प्रिय स्थानहरूको कुनै पनि तस्बिर छान्नुहोस्",
+    filterAll: "सबै तस्बिरहरू",
+    filterFamily: "परिवार र प्रियजन",
+    filterPlaces: "घर र स्थानहरू",
+    filterPortraits: "व्यक्तिगत तस्बिरहरू",
+    selectThisPhotoBtn: "यो तस्बिर छान्नुहोस्",
+    selectedPhotoLabel: "छानिएको तस्बिर",
+},
   mni: {
     modalTitle: "হয়েংগীদমক নুংশিবা পাউজেলশিং",
     modalSubtitle: "নহাক্কী থম্মোয়দগী হৌরকপা নুংশিবা অমসুং তন্থাবা ৱাহৈশিং",
@@ -324,7 +403,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "থাগৎপগী পাউজেল",
     preset3Title: "প্রতিমাগীদমক নুংশিবা ৱাহৈশিং",
     preset3Text: "প্রতিমা, চহি ৪৬ পুন্না লৈমিন্নরকপসি ঐগী পুন্সিগী খ্বাইদগী চাউবা লাইবকনি। ৱাখলদা নীংশিংবা মাংলবসু ঐগী থম্মোয়না নহাক্কী পুথোকপা চা, নহাক্কী খোঙকাপ অমসুং নহাক্কী নুংশিরবা খোঞ্জেল মতম পুম্নমক্তা খঙই। হন্না-হন্না থাগৎচরি।",
-  },
+      morePhotosBtn: "ফোতো পুম্নমক য়েংবীয়ু",
+    otherPhotosCard: "অতোপ্পা ফোতোশিং",
+    photoGalleryTitle: "খঙনবা ফোতো পুম্নমক",
+    photoGallerySubtitle: "ইমুং-মনুং, য়ুম নত্রগা পামজবা মফমগী ফোতো খনবীয়ু",
+    filterAll: "ফোতো পুম্নমক",
+    filterFamily: "ইমুং-মনুং অমসুং নুংশিজবশিং",
+    filterPlaces: "য়ুম অমসুং মফমশিং",
+    filterPortraits: "ফোতোশিং",
+    selectThisPhotoBtn: "মসিগী ফোতো অসি খনবীয়ু",
+    selectedPhotoLabel: "খল্লবা ফোতো",
+},
   brx: {
     modalTitle: "गाबोननि थाखाय अननायनि खौरां",
     modalSubtitle: "नोंथांनि गोसोनिफ्राय गोजोन आरो थुलुंगा होनाय बाथ्रा",
@@ -361,7 +450,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "साबाफोरनि खौरां",
     preset3Title: "प्रतिमानि थाखाय अननायनि बाथ्रा",
     preset3Text: "प्रतिमा, ४६ बोसोर लोगोसे थानाया आंनि जिउनि देरसिन कपालामोन। गोसोखांथिया गोमासाब्लानो आंनि गोसोआ नोंनि साहा आरो नोंनि अनसुला रावखौ सिनायो। रोजा रोजा साबायखर।",
-  },
+      morePhotosBtn: "गासै फोटोखौ नाय",
+    otherPhotosCard: "गुबुन फोटोफोर",
+    photoGalleryTitle: "गासै मिथिनाय फोटोफोर",
+    photoGallerySubtitle: "नखर, न' एबा मोजां मोननाय जायगानि फोटो सायख'",
+    filterAll: "गासै फोटोफोर",
+    filterFamily: "नखर आरो मोजां मोननायफोर",
+    filterPlaces: "न' आरो जायगाफोर",
+    filterPortraits: "पोर्ट्रेट",
+    selectThisPhotoBtn: "बे फोटोखौ सायख'",
+    selectedPhotoLabel: "सायख'नाय फोटो",
+},
   grt: {
     modalTitle: "Kinaalchina Ka·sani Kattarang",
     modalSubtitle: "Ka·dongani aro ka·sachakani ku·rang",
@@ -398,7 +497,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "Mitelpani Katta",
     preset3Title: "Pratima-na Ka·sagipa Katta",
     preset3Text: "Pratima, bilsi 46 apsan dongani rasong ong·a. Gisik gualoba angni ka·tong nang·ni ku·rangko aro cha-ko pangnan u·ia. Mittela.",
-  },
+      morePhotosBtn: "Pilak Photo-ko Nibo",
+    otherPhotosCard: "Gipin Photo-rang",
+    photoGalleryTitle: "Pilak U·igimin Photo-rang",
+    photoGallerySubtitle: "Nokdang, nok ba namnikgimin biaprangni photo-ko seokbo",
+    filterAll: "Pilak Photo-rang",
+    filterFamily: "Nokdang & Ka·sagonangrang",
+    filterPlaces: "Nok & Biaprang",
+    filterPortraits: "Photo-rang",
+    selectThisPhotoBtn: "Ia Photo-ko Seokbo",
+    selectedPhotoLabel: "Seokgimin Photo",
+},
   kha: {
     modalTitle: "Ki Khubor Maya Sha ka Lawei",
     modalSubtitle: "Ki kyntien sngewbha bad jingkyrmen na ka dohnud",
@@ -435,7 +544,17 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "Khubor Jingsngewnguh",
     preset3Title: "Ki Kyntien Ieit sha i Pratima",
     preset3Text: "Pratima, 46 snem ryngkat ka long ka bok kaba khraw. Wat la ka jingmut ka jah, ka dohnud ka sngewthuh ia ka sha, ka sur bad ki kjat jong pha. Khublei shibun.",
-  },
+      morePhotosBtn: "Peit Baroh ki Dur",
+    otherPhotosCard: "Kiwei Pat ki Dur",
+    photoGalleryTitle: "Baroh ki Dur ba Tip Bha",
+    photoGallerySubtitle: "Jied iano iano ki dur jong kiba ieit, ka iing lane ki jaka ba sngewtynnat",
+    filterAll: "Baroh ki Dur",
+    filterFamily: "Ka Iing ka Sem & Kiba Ieit",
+    filterPlaces: "Ka Iing & ki Jaka",
+    filterPortraits: "Ki Dur Briew",
+    selectThisPhotoBtn: "Jied ia kane ka Dur",
+    selectedPhotoLabel: "Ka Dur ba la Jied",
+},
   lus: {
     modalTitle: "Nakin Zela Tan Duatna Thuchah",
     modalSubtitle: "Rilru chhungril atanga thlamuanna leh duhsakna thute",
@@ -472,27 +591,20 @@ const TIME_CAPSULE_MODAL_I18N: Record<string, TimeCapsuleModalTexts> = {
     preset3Label: "Lawmthu Sawi Thuchah",
     preset3Title: "Pratima Tan Duatna Thu",
     preset3Text: "Pratima, kum 46 chhung kan chengdun hi ka vannei takzet. Ka thil theihnghilh chang pawhin, ka thinlung hian i thingpui lum, i kalsawm leh i aw nem chu a hre reng thin. Ka lawm e.",
-  },
+      morePhotosBtn: "Thlalak Zawng Zawng En Rawh",
+    otherPhotosCard: "Thlalak Dangte",
+    photoGalleryTitle: "Hmelhriat Thlalak Zawng Zawng",
+    photoGallerySubtitle: "Chhungkua, in, emaw hmun ngainat thlalak thlang rawh",
+    filterAll: "Thlalak Zawng Zawng",
+    filterFamily: "Chhungkua leh Duhtakte",
+    filterPlaces: "In leh Hmun Hrang Hrang",
+    filterPortraits: "Hmel Thlalak",
+    selectThisPhotoBtn: "He Thlalak Hi Thlang Rawh",
+    selectedPhotoLabel: "Thlan Thlalak",
+},
 };
 
-const PHOTO_CHOICES = [
-  {
-    url: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
-    label: "Our Home Verandah",
-  },
-  {
-    url: "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
-    label: "Son Manash",
-  },
-  {
-    url: "/sample-images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.jpg",
-    label: "Wife Pratima",
-  },
-  {
-    url: "/sample-images/patient_1_biren_borah/places/03_silpukhuri_hari_namghar.jpg",
-    label: "Namghar Prayer Hall",
-  },
-];
+// Dynamically uses getPatientPhotos(patientId, patientName)
 
 export function FutureTimeCapsuleModal({
   patientId,
@@ -505,14 +617,19 @@ export function FutureTimeCapsuleModal({
   const activeLocale = langCode || currentLocale || "en";
   const t = TIME_CAPSULE_MODAL_I18N[activeLocale] || TIME_CAPSULE_MODAL_I18N.en;
 
-  const presetIdeas = [
+  // Retrieve all photos associated with this patient
+  const allPatientPhotos = useMemo(() => {
+    return getPatientPhotos(patientId, patientName);
+  }, [patientId, patientName]);
+
+  const presetIdeas = useMemo(() => [
     {
       theme: "identity" as TimeCapsuleTheme,
       icon: "🏡",
       title: t.preset1Title,
       label: t.preset1Label,
       text: t.preset1Text,
-      photoUrl: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
+      photoUrl: allPatientPhotos[0]?.url || "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
     },
     {
       theme: "family_love" as TimeCapsuleTheme,
@@ -520,7 +637,7 @@ export function FutureTimeCapsuleModal({
       title: t.preset2Title,
       label: t.preset2Label,
       text: t.preset2Text,
-      photoUrl: "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
+      photoUrl: allPatientPhotos[2]?.url || allPatientPhotos[1]?.url || "/sample-images/patient_1_biren_borah/relatives/01_son_manash_borah.jpg",
     },
     {
       theme: "gratitude" as TimeCapsuleTheme,
@@ -528,9 +645,9 @@ export function FutureTimeCapsuleModal({
       title: t.preset3Title,
       label: t.preset3Label,
       text: t.preset3Text,
-      photoUrl: "/sample-images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.jpg",
+      photoUrl: allPatientPhotos[1]?.url || "/sample-images/patient_1_biren_borah/relatives/02_spouse_pratima_borah.jpg",
     },
-  ];
+  ], [t, allPatientPhotos]);
 
   const [activeTab, setActiveTab] = useState<"messages" | "create">("messages");
   const [capsules, setCapsules] = useState<FutureTimeCapsule[]>(() =>
@@ -545,6 +662,32 @@ export function FutureTimeCapsuleModal({
   const [messageText, setMessageText] = useState(t.preset1Text);
   const [selectedPhoto, setSelectedPhoto] = useState(presetIdeas[0].photoUrl);
   const [selectedTheme, setSelectedTheme] = useState<TimeCapsuleTheme>("identity");
+
+  // Photo Gallery Popup state
+  const [isPhotoGalleryOpen, setIsPhotoGalleryOpen] = useState(false);
+  const [photoCategoryFilter, setPhotoCategoryFilter] = useState<PhotoCategory>("all");
+
+  const filteredPhotos = useMemo(() => {
+    if (photoCategoryFilter === "all") return allPatientPhotos;
+    return allPatientPhotos.filter((p) => p.category === photoCategoryFilter);
+  }, [allPatientPhotos, photoCategoryFilter]);
+
+  // Active photo item info
+  const selectedPhotoItem = useMemo(() => {
+    return allPatientPhotos.find((p) => p.url === selectedPhoto);
+  }, [allPatientPhotos, selectedPhoto]);
+
+  // Quick photos: top 4 familiar photos, ensuring currently selected photo is visible
+  const quickPhotos = useMemo(() => {
+    const topChoices = allPatientPhotos.slice(0, 4);
+    if (selectedPhoto && !topChoices.some((p) => p.url === selectedPhoto)) {
+      const chosen = allPatientPhotos.find((p) => p.url === selectedPhoto);
+      if (chosen) {
+        return [chosen, ...topChoices.slice(0, 3)];
+      }
+    }
+    return topChoices;
+  }, [allPatientPhotos, selectedPhoto]);
 
   // Voice recording
   const [isRecording, setIsRecording] = useState(false);
@@ -996,15 +1139,29 @@ export function FutureTimeCapsuleModal({
                 )}
               </div>
 
-              {/* Step 3: Pick a Photo */}
+              {/* Step 3: Pick a Familiar Photo */}
               <div>
-                <label className="block text-xs font-black text-ink mb-1.5">
-                  {t.step3Title}
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {PHOTO_CHOICES.map((photo, i) => (
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-black text-ink">
+                    {t.step3Title}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapFeedback();
+                      setIsPhotoGalleryOpen(true);
+                    }}
+                    className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-100 hover:bg-amber-200 px-3 py-1 text-xs font-black text-ink cursor-pointer shadow-xs"
+                  >
+                    <ImageIcon className="h-3.5 w-3.5 text-amber-900" />
+                    <span>{t.morePhotosBtn} ({allPatientPhotos.length})</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                  {quickPhotos.map((photo) => (
                     <button
-                      key={i}
+                      key={photo.id || photo.url}
                       type="button"
                       onClick={() => {
                         playTapFeedback();
@@ -1013,8 +1170,9 @@ export function FutureTimeCapsuleModal({
                       className={`relative rounded-xl border-2 overflow-hidden transition-all cursor-pointer aspect-square ${
                         selectedPhoto === photo.url
                           ? "border-tea ring-3 ring-tea/50 scale-102 shadow-xs"
-                          : "border-black/30 opacity-70 hover:opacity-100"
+                          : "border-black/30 opacity-75 hover:opacity-100"
                       }`}
+                      title={photo.label}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -1023,13 +1181,68 @@ export function FutureTimeCapsuleModal({
                         className="w-full h-full object-cover"
                       />
                       {selectedPhoto === photo.url && (
-                        <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-tea text-white flex items-center justify-center">
+                        <div className="absolute top-1 right-1 h-5 w-5 rounded-full bg-tea text-white flex items-center justify-center shadow-xs">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                         </div>
                       )}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-2.5 text-left">
+                        <p className="text-[10px] font-bold text-white truncate leading-tight">
+                          {photo.label}
+                        </p>
+                      </div>
                     </button>
                   ))}
+
+                  {/* "Other..." button card to open gallery popup */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playTapFeedback();
+                      setIsPhotoGalleryOpen(true);
+                    }}
+                    className="relative rounded-xl border-2 border-dashed border-black bg-amber-50 hover:bg-amber-100 flex flex-col items-center justify-center p-2 text-center transition-all cursor-pointer aspect-square shadow-xs group"
+                    title={t.morePhotosBtn}
+                  >
+                    <div className="h-7 w-7 rounded-full border-2 border-black bg-amber-300 group-hover:scale-110 flex items-center justify-center mb-1 transition-transform">
+                      <Plus className="h-4 w-4 text-ink" />
+                    </div>
+                    <span className="text-[11px] font-black text-ink leading-tight">
+                      {t.otherPhotosCard}
+                    </span>
+                    <span className="text-[10px] font-bold text-ink-secondary">
+                      ({allPatientPhotos.length})
+                    </span>
+                  </button>
                 </div>
+
+                {/* Selected photo pill feedback */}
+                {selectedPhotoItem && (
+                  <div className="mt-2 flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl border border-black/15 bg-amber-50/70 text-xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-[11px] font-bold text-ink-secondary shrink-0">
+                        {t.selectedPhotoLabel}:
+                      </span>
+                      <span className="font-bold text-ink truncate">
+                        {selectedPhotoItem.label}
+                      </span>
+                      {selectedPhotoItem.subtext && (
+                        <span className="text-[11px] text-ink-muted hidden sm:inline truncate">
+                          • {selectedPhotoItem.subtext}
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTapFeedback();
+                        setIsPhotoGalleryOpen(true);
+                      }}
+                      className="text-xs font-black text-tea hover:underline cursor-pointer shrink-0"
+                    >
+                      {t.morePhotosBtn} →
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Save Button */}
@@ -1057,6 +1270,170 @@ export function FutureTimeCapsuleModal({
           )}
         </div>
       </div>
+
+      {/* ALL PATIENT PHOTOS POPUP MODAL */}
+      {isPhotoGalleryOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t.photoGalleryTitle}
+          className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsPhotoGalleryOpen(false);
+          }}
+        >
+          <div className="relative w-full max-w-2xl max-h-[85vh] rounded-3xl border-3 border-black bg-canvas shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="bg-amber-300 border-b-3 border-black p-3.5 sm:p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="h-10 w-10 rounded-2xl border-2 border-black bg-white flex items-center justify-center shrink-0">
+                  <ImageIcon className="h-5 w-5 text-amber-800" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-base sm:text-lg text-ink leading-tight">
+                    {t.photoGalleryTitle}
+                  </h3>
+                  <p className="text-xs font-medium text-ink-secondary">
+                    {t.photoGallerySubtitle}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPhotoGalleryOpen(false)}
+                className="btn-tactile h-9 w-9 rounded-xl border-2 border-black bg-white hover:bg-rose-100 flex items-center justify-center cursor-pointer shadow-xs shrink-0"
+                aria-label="Close photo gallery"
+              >
+                <X className="h-5 w-5 text-ink" />
+              </button>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="border-b-2 border-black/15 bg-amber-50/80 px-3 sm:px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
+              {[
+                { key: "all", label: `${t.filterAll} (${allPatientPhotos.length})` },
+                {
+                  key: "family",
+                  label: `${t.filterFamily} (${allPatientPhotos.filter((p) => p.category === "family").length})`,
+                },
+                {
+                  key: "places",
+                  label: `${t.filterPlaces} (${allPatientPhotos.filter((p) => p.category === "places").length})`,
+                },
+                {
+                  key: "portrait",
+                  label: `${t.filterPortraits} (${allPatientPhotos.filter((p) => p.category === "portrait").length})`,
+                },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => {
+                    playTapFeedback();
+                    setPhotoCategoryFilter(tab.key as PhotoCategory);
+                  }}
+                  className={`btn-tactile px-3 py-1.5 rounded-xl border-2 text-xs font-black whitespace-nowrap cursor-pointer transition-all ${
+                    photoCategoryFilter === tab.key
+                      ? "border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
+                      : "border-black/20 bg-white text-ink hover:bg-amber-100"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Photos Grid - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {filteredPhotos.map((photo) => {
+                  const isSelected = selectedPhoto === photo.url;
+                  return (
+                    <div
+                      key={photo.id}
+                      onClick={() => {
+                        playTapFeedback();
+                        setSelectedPhoto(photo.url);
+                      }}
+                      className={`btn-tactile group relative rounded-2xl border-2 text-left cursor-pointer overflow-hidden transition-all bg-white flex flex-col ${
+                        isSelected
+                          ? "border-tea ring-3 ring-tea shadow-[3px_3px_0px_#000] scale-[1.01]"
+                          : "border-black/30 hover:border-black shadow-xs hover:shadow-[3px_3px_0px_#000]"
+                      }`}
+                    >
+                      <div className="relative aspect-4/3 w-full overflow-hidden bg-stone-100">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={photo.url}
+                          alt={photo.label}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        {isSelected && (
+                          <div className="absolute top-2 right-2 h-7 w-7 rounded-full bg-tea text-white border-2 border-white flex items-center justify-center shadow-md">
+                            <CheckCircle2 className="h-4 w-4" />
+                          </div>
+                        )}
+                        <span className="absolute bottom-2 left-2 rounded-lg bg-black/75 backdrop-blur-xs px-2 py-0.5 text-[10px] font-black text-white uppercase tracking-wider">
+                          {photo.category === "family"
+                            ? t.filterFamily
+                            : photo.category === "places"
+                            ? t.filterPlaces
+                            : t.filterPortraits}
+                        </span>
+                      </div>
+                      <div className="p-2.5 flex-1 flex flex-col justify-between">
+                        <h4 className="font-serif font-black text-xs sm:text-sm text-ink leading-tight">
+                          {photo.label}
+                        </h4>
+                        {photo.subtext && (
+                          <p className="text-[11px] font-medium text-ink-secondary mt-0.5 line-clamp-1">
+                            {photo.subtext}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t-3 border-black bg-white p-3 sm:p-3.5 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                {selectedPhotoItem && (
+                  <div className="h-10 w-10 rounded-xl border-2 border-black overflow-hidden shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={selectedPhotoItem.url}
+                      alt={selectedPhotoItem.label}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <span className="text-[10px] sm:text-[11px] font-black text-tea-dark uppercase tracking-wide block">
+                    {t.selectedPhotoLabel}
+                  </span>
+                  <p className="text-xs sm:text-sm font-black text-ink truncate">
+                    {selectedPhotoItem?.label || "Selected Photo"}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  playTapFeedback();
+                  setIsPhotoGalleryOpen(false);
+                }}
+                className="btn-tactile px-5 py-2.5 rounded-xl border-2 border-black bg-tea hover:bg-emerald-800 text-white text-xs sm:text-sm font-black shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+              >
+                {t.selectThisPhotoBtn}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

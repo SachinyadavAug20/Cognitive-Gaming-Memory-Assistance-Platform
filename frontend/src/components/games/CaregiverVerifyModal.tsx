@@ -450,7 +450,8 @@ export function CaregiverVerifyModal({
   gameDomain,
 }: CaregiverVerifyModalProps) {
   const locale = useLocale();
-  const t = VERIFY_MODAL_I18N[locale] || VERIFY_MODAL_I18N.en;
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const t = VERIFY_MODAL_I18N[normLoc] || VERIFY_MODAL_I18N.en;
 
   const { getVerification, setVerification, removeVerification } =
     useGameVerificationStore();

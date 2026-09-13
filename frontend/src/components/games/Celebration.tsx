@@ -168,7 +168,8 @@ export function Celebration({
   children,
 }: CelebrationProps) {
   const locale = useLocale();
-  const c18n = CELEBRATION_I18N[locale] || CELEBRATION_I18N.en;
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const c18n = CELEBRATION_I18N[normLoc] || CELEBRATION_I18N.en;
   const resolvedSubtitle = subtitle || c18n.defaultSubtitle;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [xpDisplay, setXpDisplay] = useState(0);

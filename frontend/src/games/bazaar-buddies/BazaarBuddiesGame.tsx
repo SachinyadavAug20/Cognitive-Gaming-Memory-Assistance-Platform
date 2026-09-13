@@ -39,11 +39,112 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import type { SupportedLocale } from "@/lib/gameI18n";
 import {
   calculateVanishingCue,
   validateMoveErrorless,
   type ScaffoldingIntensity,
 } from "@/lib/errorlessLearning";
+
+interface BazaarFeedbackStrings {
+  autoSuggestBtn: string;
+  playMelody: string;
+  exactNotesSelected: (total: number, sum: number) => string;
+  needMoreNotes: (total: number) => string;
+  changeHint: (paid: number, total: number, change: number) => string;
+  shopkeeperReturn: (change: number) => string;
+}
+
+const BAZAAR_FEEDBACK_I18N: Record<SupportedLocale, BazaarFeedbackStrings> = {
+  en: {
+    autoSuggestBtn: "Auto-Suggest Notes",
+    playMelody: "Play Melody",
+    exactNotesSelected: (_total, sum) => `Selected exact notes totaling ₹${sum}`,
+    needMoreNotes: (total) => `The total is ₹${total}. Please add another note.`,
+    changeHint: (paid, total, change) => `Almost there! ₹${paid} minus ₹${total} equals ₹${change}. Let's select the glowing ₹${change} note.`,
+    shopkeeperReturn: (change) => `The shopkeeper returns ₹${change}. Select the ₹${change} note.`,
+  },
+  as: {
+    autoSuggestBtn: "সঠিক নোট বাচক",
+    playMelody: "সুৰ শুনক",
+    exactNotesSelected: (_total, sum) => `দোকানীৰ বাবে ₹${sum} টকাৰ নোট বাচি লোৱা হ'ল`,
+    needMoreNotes: (total) => `মুঠ ₹${total} হৈছে। অনুগ্ৰহ কৰি আৰু কিছু নোট যোগ কৰক।`,
+    changeHint: (paid, total, change) => `প্ৰায় মিলিছিল! ₹${paid} টকাৰ পৰা ₹${total} টকা বাদ দিলে সঠিক ভাঙতি হ'ব ₹${change}। উজ্বল নোটটো বাচক।`,
+    shopkeeperReturn: (change) => `দোকানীয়ে আপোনাক ₹${change} ঘূৰাই দিব। ₹${change} টকাৰ নোটটো বাচক।`,
+  },
+  hi: {
+    autoSuggestBtn: "सही नोट चुनें",
+    playMelody: "धुन सुनें",
+    exactNotesSelected: (_total, sum) => `दुकानदार को देने के लिए ₹${sum} के नोट तैयार हैं`,
+    needMoreNotes: (total) => `कुल ₹${total} है। कृपया कुछ और नोट जोड़ें।`,
+    changeHint: (paid, total, change) => `बहुत करीब! ₹${paid} में से ₹${total} घटाएं तो सही छुट्टा है ₹${change}। चमकते नोट को चुनें।`,
+    shopkeeperReturn: (change) => `दुकानदार आपको ₹${change} वापस करेगा। ₹${change} का नोट चुनें।`,
+  },
+  bn: {
+    autoSuggestBtn: "সঠিক নোট বাছুন",
+    playMelody: "সুর শুনুন",
+    exactNotesSelected: (_total, sum) => `দোকানিকে দেওয়ার জন্য ₹${sum} টাকার নোট তৈরি`,
+    needMoreNotes: (total) => `মোট ₹${total} হয়েছে। দয়া করে আরো কিছু নোট দিন।`,
+    changeHint: (paid, total, change) => `প্রায় সঠিক! ₹${paid} টাকা থেকে ₹${total} বাদ দিলে ফেরত হবে ₹${change}। জ্বলজ্বলে নোটটি বেছে নিন।`,
+    shopkeeperReturn: (change) => `দোকানি আপনাকে ₹${change} ফেরত দেবেন। ₹${change} টাকার নোটটি নির্বাচন করুন।`,
+  },
+  mr: {
+    autoSuggestBtn: "योग्य नोटा निवडा",
+    playMelody: "सूर ऐका",
+    exactNotesSelected: (_total, sum) => `दुकानदाराला देण्यासाठी ₹${sum} च्या नोटा तयार आहेत`,
+    needMoreNotes: (total) => `एकूण ₹${total} आहे. कृपया आणखी काही नोटा जोडा.`,
+    changeHint: (paid, total, change) => `जवळपास बरोबर! ₹${paid} मधून ₹${total} वजा केल्यास सुट्टे ₹${change} मिळतील. चमकणारी नोट निवडा.`,
+    shopkeeperReturn: (change) => `दुकानदार तुम्हाला ₹${change} परत देईल. ₹${change} ची नोट निवडा.`,
+  },
+  ne: {
+    autoSuggestBtn: "सहि नोट छान्नुहोस्",
+    playMelody: "धुन सुन्नुहोस्",
+    exactNotesSelected: (_total, sum) => `पसलेलाई दिन ₹${sum} को नोट तयार छ`,
+    needMoreNotes: (total) => `जम्मा ₹${total} भयो। कृपया अरू नोट थप्नुहोस्।`,
+    changeHint: (paid, total, change) => `झन्डै मिल्यो! ₹${paid} बाट ₹${total} घटाउँदा बाँकी ₹${change} हुन्छ। चम्किलो नोट छान्नुहोस्।`,
+    shopkeeperReturn: (change) => `पसलेले तपाईंलाई ₹${change} फिर्ता दिनेछ। ₹${change} को नोट छान्नुहोस्।`,
+  },
+  mni: {
+    autoSuggestBtn: "চুম্বা শেনেক খনবীয়ু",
+    playMelody: "সুরা তারসি",
+    exactNotesSelected: (_total, sum) => `দোকানদারদা পীনবা ₹${sum} গী শেনেক শেম-শারে`,
+    needMoreNotes: (total) => `অপুনবা ₹${total} নি। চানবীদুনা অতোপ্পা শেনেক হাপ্পীয়ু।`,
+    changeHint: (paid, total, change) => `নকশিনরে! ₹${paid} দগী ₹${total} হন্থরগা অচুম্বা পোৎ চেঞ্জ ₹${change} নি। ঙাল্লিবা শেনেক খনবীয়ু।`,
+    shopkeeperReturn: (change) => `দোকানদারনা নহাকপু ₹${change} হনগনি। ₹${change} গী শেনেক খনবীয়ু।`,
+  },
+  brx: {
+    autoSuggestBtn: "गेबें नोट सायख'",
+    playMelody: "दामनाय खोनासोन",
+    exactNotesSelected: (_total, sum) => `दुकानदारनो होनो ₹${sum} नि नोट थियारि जाबाय`,
+    needMoreNotes: (total) => `गासै ₹${total} जादों। अननानै गुबुन नोट होबाव।`,
+    changeHint: (paid, total, change) => `खाथियाव जाबाय! ₹${paid} निफ्राय ₹${total} खौ दाखारब्ला ₹${change} जासिगोन। सायख' नोटखौ।`,
+    shopkeeperReturn: (change) => `दुकानदारा नोंनो ₹${change} फिथाय होगोन। ₹${change} नि नोटखौ सायख'।`,
+  },
+  grt: {
+    autoSuggestBtn: "Tik ong·gipa note-ko seokbo",
+    playMelody: "Surko knabo",
+    exactNotesSelected: (_total, sum) => `Dokanina on·na ₹${sum} note tariaha`,
+    needMoreNotes: (total) => `Gimik ₹${total} ong·a. Note-ko aro sonangdapbo.`,
+    changeHint: (paid, total, change) => `Sepangaha! ₹${paid}oni ₹${total}ko matchotahaon, tangka ₹${change} ong·a. Ching·gipa noteko seokbo.`,
+    shopkeeperReturn: (change) => `Dokanigipa nang·na ₹${change} on·pilgen. ₹${change} noteko seokbo.`,
+  },
+  kha: {
+    autoSuggestBtn: "Jied ia ki note ba thik",
+    playMelody: "Sngap jingrwai",
+    exactNotesSelected: (_total, sum) => `La pynkhreh ia ki note ₹${sum} ban ai ia u dukan`,
+    needMoreNotes: (total) => `Ka jinglut baroh ka long ₹${total}. Sngewbha theh sa kawei ka note.`,
+    changeHint: (paid, total, change) => `La jan dep! ₹${paid} minus ₹${total} ka long ₹${change}. Jied ia ka note ₹${change} ba tyngshain.`,
+    shopkeeperReturn: (change) => `U dukan un ai pat ₹${change}. Jied ia ka note ₹${change}.`,
+  },
+  lus: {
+    autoSuggestBtn: "Pawisa note dik thlang rawh",
+    playMelody: "Rimawi ngaihtlakna",
+    exactNotesSelected: (_total, sum) => `Duhsak taka pek turin ₹${sum} note buatsaih a ni`,
+    needMoreNotes: (total) => `A vaiin ₹${total} a ni. Khawngaihin note dang thlak belh rawh.`,
+    changeHint: (paid, total, change) => `I hnaih tawh hle mai! ₹${paid} atanga ₹${total} paihin ₹${change} a bang. Note eng lai kha hmet rawh le.`,
+    shopkeeperReturn: (change) => `Dawr nei tun ₹${change} a pe kir ang che. ₹${change} note thlang rawh.`,
+  },
+};
 
 function GameShell({
   title,
@@ -303,7 +404,8 @@ export function BazaarBuddiesGame() {
     return calculateVanishingCue(changeHesitation, changeAttempts);
   }, [phase, changeHesitation, changeAttempts]);
 
-  const localeKey = locale ?? "en";
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const fb = BAZAAR_FEEDBACK_I18N[normLocale] || BAZAAR_FEEDBACK_I18N.en;
 
   const total = basket.reduce((sum, id) => {
     const p = PRODUCTS.find((pr) => pr.id === id);
@@ -315,7 +417,7 @@ export function BazaarBuddiesGame() {
   const remaining = BUDGET - total;
   const score = basket.length * 12 + (phase === "done" ? 100 : 0);
 
-  const productName = (p: Product) => (p.name as Record<string, string>)[localeKey] ?? p.name.en;
+  const productName = (p: Product) => (p.name as Record<string, string>)[normLocale] ?? p.name.en;
 
   const addToBasket = useCallback(
     (id: string) => {
@@ -379,26 +481,19 @@ export function BazaarBuddiesGame() {
     }
     setPaymentNotes(notes);
     playCorrect();
+    const sum = notes.reduce((a, b) => a + b, 0);
     speak(
-      locale === "hi"
-        ? `दुकानदार को देने के लिए ₹${total} के नोट तैयार हैं`
-        : locale === "as"
-        ? `দোকানীৰ বাবে ₹${total} টকাৰ নোট বাচি লোৱা হ'ল`
-        : `Selected exact notes totaling ₹${notes.reduce((a, b) => a + b, 0)}`,
+      fb.exactNotesSelected(total, sum),
       locale,
       rate
     );
-  }, [total, locale, rate]);
+  }, [total, locale, rate, fb]);
 
   const submitPayment = useCallback(() => {
     if (paidAmount < total) {
       playEncourage();
       speak(
-        locale === "hi"
-          ? `कुल ₹${total} है। कृपया कुछ और नोट जोड़ें।`
-          : locale === "as"
-          ? `মুঠ ₹${total} হৈছে। অনুগ্ৰহ কৰি আৰু কিছু নোট যোগ কৰক।`
-          : `The total is ₹${total}. Please add another note.`,
+        fb.needMoreNotes(total),
         locale,
         rate
       );
@@ -410,7 +505,7 @@ export function BazaarBuddiesGame() {
     setChangeHesitation(0);
     setChangeAttempts(0);
     setSoftBounceFeedback(null);
-  }, [paidAmount, total, locale, rate]);
+  }, [paidAmount, total, locale, rate, fb]);
 
   const submitChange = useCallback(
     (value: number) => {
@@ -441,32 +536,23 @@ export function BazaarBuddiesGame() {
         // Errorless Learning Soft-Blocking: Absorbs mistake gently, preserves self-efficacy
         setChangeAttempts((a) => a + 1);
         playEncourage();
-        const hintMsg =
-          locale === "hi"
-            ? `बहुत करीब! ₹${paidAmount} में से ₹${total} घटाएं तो सही छुट्टा है ₹${correctChange}। चमकते नोट को चुनें।`
-            : locale === "as"
-            ? `প্ৰায় মিলিছিল! ₹${paidAmount} টকাৰ পৰা ₹${total} টকা বাদ দিলে সঠিক ভাঙতি হ'ব ₹${correctChange}। উজ্বল নোটটো বাচক।`
-            : `Almost there! ₹${paidAmount} minus ₹${total} equals ₹${correctChange}. Let's select the glowing ₹${correctChange} note.`;
+        const hintMsg = fb.changeHint(paidAmount, total, correctChange);
         setSoftBounceFeedback(hintMsg);
         speak(hintMsg, locale, rate);
       }
     },
-    [correctChange, paidAmount, total, startedAt, patientId, level, taps, errors, locale, rate, t]
+    [correctChange, paidAmount, total, startedAt, patientId, level, taps, errors, locale, rate, t, fb]
   );
 
   const showHint = useCallback(() => {
     playPress();
     setHintUsed(true);
     speak(
-      locale === "hi"
-        ? `दुकानदार आपको ₹${correctChange} वापस करेगा। ₹${correctChange} का नोट चुनें।`
-        : locale === "as"
-        ? `দোকানীয়ে আপোনাক ₹${correctChange} ঘূৰাই দিব। ₹${correctChange} টকাৰ নোটটো বাচক।`
-        : `The shopkeeper returns ₹${correctChange}. Select the ₹${correctChange} note.`,
+      fb.shopkeeperReturn(correctChange),
       locale,
       rate
     );
-  }, [correctChange, locale, rate]);
+  }, [correctChange, locale, rate, fb]);
 
   const restartGame = useCallback(() => {
     playPress();
@@ -746,7 +832,7 @@ export function BazaarBuddiesGame() {
               className="btn-tactile flex items-center justify-center gap-1.5 rounded-xl border-2 border-amber-600 bg-amber-100 px-3.5 py-2.5 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-200 transition-transform active:translate-y-0.5 cursor-pointer"
             >
               <Sparkles className="h-4 w-4 text-amber-700" />
-              <span>{locale === "hi" ? "सही नोट चुनें" : locale === "as" ? "সঠিক নোট বাচক" : "Auto-Suggest Notes"}</span>
+              <span>{fb.autoSuggestBtn}</span>
             </button>
             <ChunkyButton
               variant="tea"
@@ -888,7 +974,7 @@ export function BazaarBuddiesGame() {
                   className="group flex items-center gap-2 rounded-xl border-2 border-black bg-marigold-light px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
                   <Music className="h-4 w-4 text-ink" />
-                  <span className="text-xs font-black">Play Melody</span>
+                  <span className="text-xs font-black">{fb.playMelody}</span>
                 </button>
                 <span className="text-base font-bold text-ink-secondary">
                   {t("complete")}

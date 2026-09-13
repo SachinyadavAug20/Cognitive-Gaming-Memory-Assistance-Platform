@@ -81,7 +81,8 @@ const CAREGIVER_TOGGLE_I18N: Record<string, {
 
 export function CaregiverModeToggle() {
   const locale = useLocale();
-  const t = CAREGIVER_TOGGLE_I18N[locale] || CAREGIVER_TOGGLE_I18N.en;
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const t = CAREGIVER_TOGGLE_I18N[normLoc] || CAREGIVER_TOGGLE_I18N.en;
   const { caregiverMode, toggleCaregiverMode } = useGameVerificationStore();
 
   return (

@@ -1,5 +1,6 @@
 import type { AmbientSoundType } from "@/types/capsule";
 import { pickVoice, ensureAudioContext } from "./sound";
+import { LOCALE_MAP } from "./i18n";
 
 let _ambientMasterGain: GainNode | null = null;
 let _spatialPanner: StereoPannerNode | null = null;
@@ -477,7 +478,7 @@ let _currentVoiceUtterance: SpeechSynthesisUtterance | null = null;
 
 export function playFamilyVoiceNote(
   text: string,
-  locale = "as",
+  locale = "en",
   onStart?: () => void,
   onEnd?: () => void,
   audioUrl?: string | null,
@@ -532,7 +533,7 @@ function fallbackSpeak(
   const matchedVoice = pickVoice(locale);
   if (matchedVoice) utterance.voice = matchedVoice;
 
-  utterance.lang = locale;
+  utterance.lang = matchedVoice ? matchedVoice.lang : (LOCALE_MAP[locale] ?? "en-IN");
   utterance.rate = 0.82; // Warm, deliberate, gentle dementia-calibrated cadence
   utterance.pitch = 1.05; // Friendly, affectionate, reassuring tone
   utterance.volume = 1.0;

@@ -13,6 +13,7 @@ interface Capsule3DSceneProps {
   coords?: { x: number; y: number };
   colorFilter?: MemoryColorFilter;
   autopilot?: boolean;
+  zenMode?: boolean;
   onPointerMove?: (coords: { x: number; y: number }) => void;
   onHotspotActive?: (hotspot: MemoryHotspot | null) => void;
   onHotspotClick?: (hotspot: MemoryHotspot) => void;
@@ -36,6 +37,9 @@ function getCachedTexture(
     url,
     (texture) => {
       texture.colorSpace = THREE.SRGBColorSpace;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
       _textureCache.set(url, texture);
       onLoaded(texture);
     },
@@ -50,6 +54,7 @@ export function Capsule3DScene({
   coords,
   colorFilter = "natural",
   autopilot = false,
+  zenMode = false,
   onPointerMove,
   onHotspotActive,
   onHotspotClick,
@@ -59,6 +64,7 @@ export function Capsule3DScene({
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const photoMeshRef = useRef<THREE.Mesh | null>(null);
+  const frameMeshRef = useRef<THREE.Mesh | null>(null);
   const photoMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
   const sunLightRef = useRef<THREE.DirectionalLight | null>(null);
   const ambientLightRef = useRef<THREE.AmbientLight | null>(null);
@@ -67,6 +73,7 @@ export function Capsule3DScene({
   const animFrameRef = useRef<number | null>(null);
   const targetLookRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const activeHotspotIdRef = useRef<string | null>(null);
+  const resizeHandlerRef = useRef<(() => void) | null>(null);
 
   // Storing callbacks and values in refs so they never cause effect re-runs
   const onPointerMoveRef = useRef(onPointerMove);
@@ -95,39 +102,91 @@ export function Capsule3DScene({
     if (!sunLightRef.current || !ambientLightRef.current || !sceneRef.current) return;
 
     if (colorFilter === "golden_hour") {
-      sceneRef.current.background = new THREE.Color(0x18120b);
+      sceneRef.current.background = new THREE.Color(0x0c0d14);
       ambientLightRef.current.color.setHex(0xfde68a);
-      ambientLightRef.current.intensity = 0.92;
+      ambientLightRef.current.intensity = 0.95;
       sunLightRef.current.color.setHex(0xf59e0b);
       sunLightRef.current.intensity = 1.35;
     } else if (colorFilter === "monsoon_emerald") {
       sceneRef.current.background = new THREE.Color(0x041918);
       ambientLightRef.current.color.setHex(0xa7f3d0);
-      ambientLightRef.current.intensity = 0.88;
+      ambientLightRef.current.intensity = 0.90;
       sunLightRef.current.color.setHex(0x6ee7b7);
-      sunLightRef.current.intensity = 1.20;
+      sunLightRef.current.intensity = 1.25;
     } else if (colorFilter === "kodachrome") {
-      sceneRef.current.background = new THREE.Color(0x160f0d);
+      sceneRef.current.background = new THREE.Color(0x120e0c);
       ambientLightRef.current.color.setHex(0xffedd5);
-      ambientLightRef.current.intensity = 0.95;
+      ambientLightRef.current.intensity = 0.98;
       sunLightRef.current.color.setHex(0xfb923c);
       sunLightRef.current.intensity = 1.40;
     } else if (colorFilter === "twilight") {
-      sceneRef.current.background = new THREE.Color(0x0e1424);
+      sceneRef.current.background = new THREE.Color(0x0a0c18);
       ambientLightRef.current.color.setHex(0xc084fc);
-      ambientLightRef.current.intensity = 0.78;
+      ambientLightRef.current.intensity = 0.82;
       sunLightRef.current.color.setHex(0x818cf8);
-      sunLightRef.current.intensity = 1.05;
+      sunLightRef.current.intensity = 1.10;
     } else {
       sceneRef.current.background = new THREE.Color(0x0a0f1d);
       ambientLightRef.current.color.setHex(0xffffff);
-      ambientLightRef.current.intensity = 0.88;
+      ambientLightRef.current.intensity = 0.92;
       sunLightRef.current.color.setHex(0xfef3c7);
-      sunLightRef.current.intensity = 1.20;
+      sunLightRef.current.intensity = 1.25;
     }
   }, [colorFilter]);
 
-  // Update texture & hotspots in-place when capsule changes (ZERO WebGL teardown / flicker!)
+  // Helper to recompute framing size to fill viewport while preserving photo aspect ratio
+  const updatePlaneFraming = () => {
+    if (!photoMeshRef.current || !cameraRef.current) return;
+    const tex = photoMatRef.current?.map;
+    const img = tex?.image as HTMLImageElement | undefined;
+    const imgAspect = img && img.width && img.height ? img.width / img.height : 1.5;
+
+    const cam = cameraRef.current;
+    const vFOV = THREE.MathUtils.degToRad(cam.fov);
+    const distance = cam.position.z;
+    const visibleHeight = 2 * Math.tan(vFOV / 2) * distance;
+    const visibleWidth = visibleHeight * cam.aspect;
+
+    // Occupy generous proportion of screen without cropping or warping
+    const marginFactor = zenMode ? 0.88 : 0.82;
+    const maxH = visibleHeight * marginFactor;
+    const maxW = visibleWidth * marginFactor;
+
+    let planeW = maxW;
+    let planeH = planeW / imgAspect;
+
+    if (planeH > maxH) {
+      planeH = maxH;
+      planeW = planeH * imgAspect;
+    }
+
+    photoMeshRef.current.scale.set(planeW, planeH, 1);
+    if (frameMeshRef.current) {
+      frameMeshRef.current.scale.set(planeW * 1.025 + 0.04, planeH * 1.025 + 0.04, 1);
+    }
+
+    // Position Hotspots correctly scaled
+    const group = hotspotsGroupRef.current;
+    if (group) {
+      const hotspots = capsuleRef.current.hotspots || [];
+      group.children.forEach((subGroup, idx) => {
+        const h = hotspots[idx];
+        if (h) {
+          subGroup.position.set((h.x * planeW) * 0.48, (h.y * planeH) * 0.48, 0.04);
+        }
+      });
+    }
+  };
+
+  // Trigger resize & re-framing when zenMode changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      resizeHandlerRef.current?.();
+    }, 60);
+    return () => clearTimeout(timer);
+  }, [zenMode]);
+
+  // Update texture & hotspots in-place when capsule changes
   useEffect(() => {
     if (!photoMatRef.current || !sceneRef.current) return;
 
@@ -138,26 +197,28 @@ export function Capsule3DScene({
         if (photoMatRef.current) {
           photoMatRef.current.map = tex;
           photoMatRef.current.needsUpdate = true;
+          updatePlaneFraming();
         }
       },
       () => {
         // Fallback procedural canvas
         const canvas = document.createElement("canvas");
-        canvas.width = 512;
-        canvas.height = 340;
+        canvas.width = 640;
+        canvas.height = 420;
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.fillStyle = "#1E5136";
-          ctx.fillRect(0, 0, 512, 340);
+          ctx.fillRect(0, 0, 640, 420);
           ctx.fillStyle = "#FAF3E0";
-          ctx.font = "bold 24px serif";
+          ctx.font = "bold 28px serif";
           ctx.textAlign = "center";
-          ctx.fillText(capsule.title, 256, 170);
+          ctx.fillText(capsule.title, 320, 210);
         }
         const fallbackTex = new THREE.CanvasTexture(canvas);
         if (photoMatRef.current) {
           photoMatRef.current.map = fallbackTex;
           photoMatRef.current.needsUpdate = true;
+          updatePlaneFraming();
         }
       }
     );
@@ -165,7 +226,6 @@ export function Capsule3DScene({
     // Rebuild Hotspots in the group without touching scene
     const group = hotspotsGroupRef.current;
     if (group) {
-      // Clear previous children
       while (group.children.length > 0) {
         const obj = group.children[0];
         group.remove(obj);
@@ -175,9 +235,9 @@ export function Capsule3DScene({
       const hotspots = capsule.hotspots || [];
       hotspots.forEach((h) => {
         const sub = new THREE.Group();
-        sub.position.set(h.x * 1.55, h.y * 1.05, 0.08);
+        sub.position.set(h.x * 1.55, h.y * 1.05, 0.04);
 
-        const ringGeo = new THREE.RingGeometry(0.065, 0.085, 32);
+        const ringGeo = new THREE.RingGeometry(0.06, 0.08, 32);
         const ringMat = new THREE.MeshBasicMaterial({
           color: 0xf59e0b,
           side: THREE.DoubleSide,
@@ -201,6 +261,7 @@ export function Capsule3DScene({
         sub.add(coreMesh);
         group.add(sub);
       });
+      updatePlaneFraming();
     }
   }, [capsule.id, capsule.photoUrl]);
 
@@ -217,8 +278,8 @@ export function Capsule3DScene({
     scene.background = new THREE.Color(0x0a0f1d);
     sceneRef.current = scene;
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0, 4.2);
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+    camera.position.set(0, 0, 3.8);
     cameraRef.current = camera;
 
     // 2. High-Performance WebGL Renderer
@@ -230,38 +291,32 @@ export function Capsule3DScene({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 1.05;
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     // 3. Dynamic Atmospheric & Sunlight Rig
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.88);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.92);
     scene.add(ambientLight);
     ambientLightRef.current = ambientLight;
 
-    const sunLight = new THREE.DirectionalLight(0xfef3c7, 1.20);
+    const sunLight = new THREE.DirectionalLight(0xfef3c7, 1.25);
     sunLight.position.set(3, 4, 3);
     scene.add(sunLight);
     sunLightRef.current = sunLight;
 
-    const warmFill = new THREE.PointLight(0xf59e0b, 0.75, 12);
+    const warmFill = new THREE.PointLight(0xf59e0b, 0.70, 12);
     warmFill.position.set(-2.5, -1, 2);
     scene.add(warmFill);
 
-    // 4. Spatial Curved Concave Mesh for True 3D Holographic Presence
-    const planeGeo = new THREE.PlaneGeometry(3.6, 2.4, 32, 32);
-    const posAttr = planeGeo.attributes.position;
-    for (let i = 0; i < posAttr.count; i++) {
-      const px = posAttr.getX(i);
-      const py = posAttr.getY(i);
-      const distSq = (px * px) / 3.24 + (py * py) / 1.44;
-      posAttr.setZ(i, -distSq * 0.14 + 0.03);
-    }
-    planeGeo.computeVertexNormals();
-
+    // 4. Clean, Unwarped Flat High-Res Photo Plane (Faithful Real-World Photo)
+    const planeGeo = new THREE.PlaneGeometry(1, 1);
     const meshMaterial = new THREE.MeshStandardMaterial({
-      roughness: 0.28,
-      metalness: 0.04,
+      roughness: 0.35,
+      metalness: 0.02,
       side: THREE.FrontSide,
     });
     photoMatRef.current = meshMaterial;
@@ -271,12 +326,25 @@ export function Capsule3DScene({
     scene.add(photoMesh);
     photoMeshRef.current = photoMesh;
 
+    // Subtle Framed Matting Backing Plate
+    const frameGeo = new THREE.PlaneGeometry(1, 1);
+    const frameMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.85,
+      metalness: 0.05,
+    });
+    const frameMesh = new THREE.Mesh(frameGeo, frameMat);
+    frameMesh.position.set(0, 0, -0.015);
+    scene.add(frameMesh);
+    frameMeshRef.current = frameMesh;
+
     // Load initial texture
     getCachedTexture(
       capsuleRef.current.photoUrl,
       (tex) => {
         meshMaterial.map = tex;
         meshMaterial.needsUpdate = true;
+        updatePlaneFraming();
       },
       () => {}
     );
@@ -287,7 +355,7 @@ export function Capsule3DScene({
     hotspotsGroupRef.current = hotspotsGroup;
 
     // 6. Multi-Layer Atmospheric Particle System (Gentle, non-dizzying motes)
-    const particleCount = 180;
+    const particleCount = 120;
     const particleGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
@@ -295,19 +363,19 @@ export function Capsule3DScene({
     for (let i = 0; i < particleCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * 6.5;
       positions[i * 3 + 1] = (Math.random() - 0.5) * 4.2;
-      positions[i * 3 + 2] = Math.random() * 2.5 + 0.2;
+      positions[i * 3 + 2] = Math.random() * 2.2 + 0.1;
 
-      velocities[i * 3] = (Math.random() - 0.5) * 0.002;
-      velocities[i * 3 + 1] = -0.006 - Math.random() * 0.006;
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.002;
+      velocities[i * 3] = (Math.random() - 0.5) * 0.0015;
+      velocities[i * 3 + 1] = -0.004 - Math.random() * 0.004;
+      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.0015;
     }
     particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     const particleMat = new THREE.PointsMaterial({
       color: 0xfde68a,
-      size: 0.05,
+      size: 0.045,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.50,
       blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(particleGeo, particleMat);
@@ -315,7 +383,7 @@ export function Capsule3DScene({
     particlesMeshRef.current = particles;
 
     // 7. Background Parallax Dust
-    const bgStarCount = 90;
+    const bgStarCount = 70;
     const bgStarGeo = new THREE.BufferGeometry();
     const bgStarPos = new Float32Array(bgStarCount * 3);
     for (let i = 0; i < bgStarCount; i++) {
@@ -326,12 +394,15 @@ export function Capsule3DScene({
     bgStarGeo.setAttribute("position", new THREE.BufferAttribute(bgStarPos, 3));
     const bgStarMat = new THREE.PointsMaterial({
       color: 0x64748b,
-      size: 0.035,
+      size: 0.03,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.30,
     });
     const bgStars = new THREE.Points(bgStarGeo, bgStarMat);
     scene.add(bgStars);
+
+    // Initial scale calculation
+    updatePlaneFraming();
 
     // 8. Animation Loop with Gentle Damping (Elderly-Friendly Calm Response)
     const startTime = performance.now();
@@ -343,8 +414,8 @@ export function Capsule3DScene({
       const time = (now - startTime) * 0.001;
 
       if (autopilotRef.current) {
-        const autoX = Math.sin(time * 0.22) * 0.45;
-        const autoY = Math.cos(time * 0.15) * 0.25;
+        const autoX = Math.sin(time * 0.22) * 0.35;
+        const autoY = Math.cos(time * 0.15) * 0.20;
         curX += (autoX - curX) * 0.032;
         curY += (autoY - curY) * 0.032;
       } else {
@@ -353,24 +424,20 @@ export function Capsule3DScene({
       }
 
       if (cameraRef.current) {
-        cameraRef.current.position.x = curX * 0.65;
-        cameraRef.current.position.y = -curY * 0.40;
-        cameraRef.current.position.z = 4.2 - Math.abs(curX) * 0.15;
+        // Very subtle camera shift to prevent disorientation
+        cameraRef.current.position.x = curX * 0.35;
+        cameraRef.current.position.y = -curY * 0.22;
+        cameraRef.current.position.z = 3.8;
         cameraRef.current.lookAt(0, 0, 0);
       }
 
-      if (sunLightRef.current) {
-        sunLightRef.current.position.x = 2.5 + curX * 1.5;
-        sunLightRef.current.position.y = 3.5 - curY * 1.0;
-      }
-
       if (photoMeshRef.current) {
-        photoMeshRef.current.rotation.y = curX * 0.10 + Math.sin(time * 0.6) * 0.008;
-        photoMeshRef.current.rotation.x = -curY * 0.07 + Math.cos(time * 0.4) * 0.006;
+        photoMeshRef.current.rotation.y = curX * 0.05;
+        photoMeshRef.current.rotation.x = -curY * 0.035;
       }
-
-      bgStars.position.x = curX * 0.2;
-      bgStars.position.y = -curY * 0.1;
+      if (frameMeshRef.current && photoMeshRef.current) {
+        frameMeshRef.current.rotation.copy(photoMeshRef.current.rotation);
+      }
 
       // Pulse Hotspot Rings
       if (hotspotsGroupRef.current) {
@@ -422,10 +489,10 @@ export function Capsule3DScene({
           posArr[i * 3 + 1] += velocities[i * 3 + 1];
           posArr[i * 3 + 2] += velocities[i * 3 + 2];
 
-          if (posArr[i * 3 + 1] < -2.4) posArr[i * 3 + 1] = 2.4;
-          if (posArr[i * 3 + 1] > 2.4) posArr[i * 3 + 1] = -2.4;
-          if (posArr[i * 3] < -3.6) posArr[i * 3] = 3.6;
-          if (posArr[i * 3] > 3.6) posArr[i * 3] = -3.6;
+          if (posArr[i * 3 + 1] < -2.2) posArr[i * 3 + 1] = 2.2;
+          if (posArr[i * 3 + 1] > 2.2) posArr[i * 3 + 1] = -2.2;
+          if (posArr[i * 3] < -3.4) posArr[i * 3] = 3.4;
+          if (posArr[i * 3] > 3.4) posArr[i * 3] = -3.4;
         }
         particlesMeshRef.current.geometry.attributes.position.needsUpdate = true;
       }
@@ -441,10 +508,10 @@ export function Capsule3DScene({
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
       const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
       const normX = Math.max(-1, Math.min(1, ((clientX - rect.left) / rect.width) * 2 - 1));
       const normY = Math.max(-1, Math.min(1, ((clientY - rect.top) / rect.height) * 2 - 1));
 
-      // Direct in-engine update for jitter-free 60fps/120fps WebGL rendering
       targetLookRef.current = { x: normX, y: normY };
 
       if (onPointerMoveRef.current) {
@@ -468,26 +535,39 @@ export function Capsule3DScene({
     container.addEventListener("click", handleClick);
     container.addEventListener("touchmove", handlePointerMove, { passive: true });
 
-    // Window Resize Observer
+    // Robust Resize Observer: Handles both Window Resize and Container Dimension Changes (Zen Mode)
     const handleResize = () => {
       if (!container || !rendererRef.current || !cameraRef.current) return;
       const nw = container.clientWidth;
       const nh = container.clientHeight;
+      if (nw <= 0 || nh <= 0) return;
+
       cameraRef.current.aspect = nw / nh;
       cameraRef.current.updateProjectionMatrix();
       rendererRef.current.setSize(nw, nh);
+      updatePlaneFraming();
     };
+    resizeHandlerRef.current = handleResize;
+
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+    resizeObserver.observe(container);
+
     window.addEventListener("resize", handleResize);
 
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      resizeObserver.disconnect();
       window.removeEventListener("resize", handleResize);
       container.removeEventListener("mousemove", handlePointerMove);
       container.removeEventListener("click", handleClick);
       container.removeEventListener("touchmove", handlePointerMove);
 
       planeGeo.dispose();
+      frameGeo.dispose();
       meshMaterial.dispose();
+      frameMat.dispose();
       particleGeo.dispose();
       particleMat.dispose();
       bgStarGeo.dispose();
@@ -497,7 +577,7 @@ export function Capsule3DScene({
         renderer.domElement.parentNode.removeChild(renderer.domElement);
       }
     };
-  }, []); // Mounted once: no re-renders or canvas teardowns!
+  }, []);
 
   return (
     <div

@@ -4,7 +4,21 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, Award, Paperclip, Volume2 } from "lucide-react";
 import { AudioToggle } from "@/components/ui/AudioToggle";
 import { speakText, stopSpeaking, unlockAudio } from "@/lib/sound";
-import { getGameStrings, getHubStrings } from "@/lib/gameI18n";
+import { getGameStrings, getHubStrings, SupportedLocale } from "@/lib/gameI18n";
+
+const AUDIO_GUIDE_TOOLTIP: Record<SupportedLocale, string> = {
+  en: "Listen to Spoken Audio Guide (Key: V)",
+  as: "কথাৰে নিৰ্দেশনা শুনক (Key: V)",
+  hi: "ऑडियो निर्देश सुनें (Key: V)",
+  bn: "কথা শুনে নির্দেশ জানুন (Key: V)",
+  mr: "ऑडिओ मार्गदर्शन ऐका (Key: V)",
+  ne: "अडियो निर्देशन सुन्नुहोस् (Key: V)",
+  mni: "ৱাফম তাবা ঙসি (Key: V)",
+  brx: "खोनाशोननाय राहा (Key: V)",
+  grt: "Kna·gipa aganachi (Key: V)",
+  kha: "Sngap ia ki jingbatai (Key: V)",
+  lus: "Aw hmanga hriattirna (Key: V)",
+};
 
 interface GameHeaderProps {
   title: string;
@@ -24,7 +38,8 @@ export function GameHeader({
   gameId,
 }: GameHeaderProps) {
   const locale = useLocale();
-  const hub = getHubStrings(locale);
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const hub = getHubStrings(normLocale);
   const t = useTranslations("game");
   const rawBack = t("back") || hub.back;
   const cleanBack = rawBack.replace(/^[←\s]+/, "").trim();
@@ -32,7 +47,7 @@ export function GameHeader({
 
   const promptText =
     audioPrompt ||
-    (gameId ? getGameStrings(gameId, locale).audioPrompt : undefined);
+    (gameId ? getGameStrings(gameId, normLocale).audioPrompt : undefined);
 
   const handlePlayGuide = useCallback(() => {
     if (!promptText) return;
@@ -77,8 +92,8 @@ export function GameHeader({
                   ? "bg-amber-400 text-black shadow-[2px_2px_0px_#000] ring-2 ring-white animate-pulse"
                   : "bg-white/20 text-white hover:bg-white/30 shadow-[2px_2px_0px_#000]"
               }`}
-              title="Listen to Spoken Audio Guide (Key: V)"
-              aria-label="Listen to Audio Guide"
+              title={AUDIO_GUIDE_TOOLTIP[normLocale] || AUDIO_GUIDE_TOOLTIP.en}
+              aria-label={hub.listenGuide}
             >
               <Volume2 className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">

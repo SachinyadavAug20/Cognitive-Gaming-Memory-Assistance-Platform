@@ -4,18 +4,38 @@ import dynamic from "next/dynamic";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { PortalCard } from "@/components/home/PortalCard";
 import { Sun, QrCode } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+
+const LOADING_HERO_I18N: Record<string, string> = {
+  en: "Loading 3D Brahmaputra Heritage Biome...",
+  as: "৩ডি ব্ৰহ্মপুত্ৰ ঐতিহ্য দৃশ্যপট লোড হৈ আছে...",
+  hi: "3D ब्रह्मपुत्र सांस्कृतिक परिदृश्य लोड हो रहा है...",
+  bn: "3D ব্রহ্মপুত্র ঐতিহ্যবাহী পরিবেশ লোড হচ্ছে...",
+  mr: "3D ब्रह्मपुत्रा वारसा देखावा लोड होत आहे...",
+  ne: "3D ब्रह्मपुत्र सम्पदा परिदृश्य लोड हुँदैछ...",
+  mni: "3D ব্রহ্মপুত্র পুন্সী লৈফম লোড তৌরি...",
+  brx: "3D ब्रह्मपुत्र हाजोमा दाफुंथाय लोड जाबाय थादों...",
+  grt: "3D Brahmaputra Heritage Biome gapatenga...",
+  kha: "Dang pynbiang 3D Brahmaputra...",
+  lus: "3D Brahmaputra Heritage Biome dah mek a ni...",
+};
+
+function Hero3DLoader() {
+  const locale = useLocale();
+  const msg = LOADING_HERO_I18N[locale] || LOADING_HERO_I18N.en;
+  return (
+    <div className="w-full h-[380px] sm:h-[460px] md:h-[500px] rounded-3xl border-3 border-black bg-surface-muted animate-pulse flex flex-col items-center justify-center gap-2 text-xs font-black text-ink-secondary shadow-[6px_6px_0px_#000]">
+      <div className="w-8 h-8 rounded-full border-3 border-tea border-t-transparent animate-spin" />
+      <span>{msg}</span>
+    </div>
+  );
+}
 
 const Hero3DLandscape = dynamic(
   () => import("@/components/home/Hero3DLandscape").then((mod) => mod.Hero3DLandscape),
   {
     ssr: false,
-    loading: () => (
-      <div className="w-full h-[380px] sm:h-[460px] md:h-[500px] rounded-3xl border-3 border-black bg-surface-muted animate-pulse flex flex-col items-center justify-center gap-2 text-xs font-black text-ink-secondary shadow-[6px_6px_0px_#000]">
-        <div className="w-8 h-8 rounded-full border-3 border-tea border-t-transparent animate-spin" />
-        <span>Loading 3D Brahmaputra Heritage Biome...</span>
-      </div>
-    ),
+    loading: () => <Hero3DLoader />,
   }
 );
 

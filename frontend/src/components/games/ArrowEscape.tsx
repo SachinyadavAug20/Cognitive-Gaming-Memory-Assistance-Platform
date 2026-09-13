@@ -434,7 +434,8 @@ const I18N = {
 
 export function ArrowEscape() {
   const locale = useLocale();
-  const strings = I18N[locale as keyof typeof I18N] || I18N.en;
+  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const strings = I18N[normLoc as keyof typeof I18N] || I18N.en;
 
   const {
     level,

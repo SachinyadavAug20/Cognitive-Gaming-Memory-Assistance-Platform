@@ -42,12 +42,31 @@ import {
 } from "lucide-react";
 
 import dynamic from "next/dynamic";
+import { useLocale } from "next-intl";
+import type { SupportedLocale } from "@/lib/gameI18n";
+
+const LOADER_I18N: Record<SupportedLocale, string> = {
+  en: "Loading activity...",
+  as: "কাৰ্যকলাপ লোড হৈ আছে...",
+  hi: "गतिविधि लोड हो रही है...",
+  bn: "কার্যকলাপ লোড হচ্ছে...",
+  mr: "क्रियाकलाप लोड होत आहे...",
+  ne: "क्रियाकलाप लोड हुँदैछ...",
+  mni: "থবক লোড তৌরি...",
+  brx: "हाबाया ल'ड जाबाय दं...",
+  grt: "Kamrangko ra·baenga...",
+  kha: "Dang pynkhreh...",
+  lus: "Hnathawh a inbuatsaih mek...",
+};
 
 function GameLoaderFallback() {
+  const locale = useLocale();
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const label = LOADER_I18N[normLocale] || LOADER_I18N.en;
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
       <div className="h-14 w-14 animate-spin rounded-full border-4 border-emerald-600 border-t-transparent" />
-      <p className="text-base font-semibold text-ink-secondary">Loading activity...</p>
+      <p className="text-base font-semibold text-ink-secondary">{label}</p>
     </div>
   );
 }

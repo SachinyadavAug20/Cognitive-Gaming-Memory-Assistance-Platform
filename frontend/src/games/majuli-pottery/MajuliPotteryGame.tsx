@@ -22,7 +22,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { startLevel } from "@/games/config";
-import { getGameStrings } from "@/lib/gameI18n";
+import { getGameStrings, SupportedLocale } from "@/lib/gameI18n";
 
 function GameShell({
   title,
@@ -46,6 +46,219 @@ function GameShell({
     </section>
   );
 }
+
+interface PotteryUiStrings {
+  clinicalTitle: string;
+  benefit1: string;
+  benefit2: string;
+  benefit3: string;
+  pressInward: string;
+  flareOutward: string;
+  sacredKiln: string;
+  terracottaReady: string;
+  targetMatch: (score: number) => string;
+  riverFlute: string;
+  vessels: {
+    doiHari: { name: string; desc: string };
+    saki: { name: string; desc: string };
+  };
+  points: {
+    rim: string;
+    neck: string;
+    belly: string;
+    base: string;
+  };
+}
+
+const POTTERY_I18N: Record<SupportedLocale, PotteryUiStrings> = {
+  en: {
+    clinicalTitle: "Clinical Benefits:",
+    benefit1: "Bilateral fine-motor pressure calibration & finger dexterity",
+    benefit2: "Constructional shape recognition & visual-spatial matching",
+    benefit3: "Centering meditation and soothing sensory lathe rotation",
+    pressInward: "Press Inward",
+    flareOutward: "Flare Outward",
+    sacredKiln: "Clay Fired in Sacred Kiln",
+    terracottaReady: "Terracotta Vessel Ready",
+    targetMatch: (score) => `Artisanal Form: ${score}% Target Match`,
+    riverFlute: "Play Majuli River Flute",
+    vessels: {
+      doiHari: { name: "Assamese Doi Hari (Curd Vessel)", desc: "A wide-bellied traditional earthen pot crafted for cool curd fermentation on Majuli Island." },
+      saki: { name: "Sacred Bihu Clay Lamp (Mati Saki)", desc: "An open, flared earthen oil lamp lighted during Kati Bihu harvest prayers." },
+    },
+    points: { rim: "Smooth Top Rim", neck: "Curved Neck", belly: "Wide Round Belly", base: "Stable Solid Base" },
+  },
+  as: {
+    clinicalTitle: "চিকিৎসাজনিত উপকাৰিতা:",
+    benefit1: "হাতৰ আঙুলিৰ সূক্ষ্ম সঞ্চালন আৰু স্পৰ্শ অনুভূতি উন্নত কৰে",
+    benefit2: "আকৃতি আৰু স্থানিক ভাৰসাম্য চিনাক্তকৰণত সহায় কৰে",
+    benefit3: "চকা ঘূৰোৱাৰ প্ৰশান্তিদায়ক অনুভূতিয়ে মন স্থিৰ ৰাখে",
+    pressInward: "ভিতৰলৈ চাপক",
+    flareOutward: "বাহিৰলৈ বহলাওক",
+    sacredKiln: "আৱেলিৰ পৱিত্ৰ শালিত মাটিৰ পাত্ৰ পুৰা হ'ল",
+    terracottaReady: "মাটিৰ পাত্ৰ প্ৰস্তুত",
+    targetMatch: (score) => `শিল্পকলাৰ নিখুঁততা: ${score}% মিল পাইছে`,
+    riverFlute: "মাজুলীৰ বাঁহীৰ সুৰ শুনক",
+    vessels: {
+      doiHari: { name: "মাজুলীৰ দৈৰ হাড়ি", desc: "মাজুলীৰ কুমাৰসকলে দৈ গোটাবলৈ বনোৱা পৰম্পৰাগত মাটিৰ বহল পাত্ৰ।" },
+      saki: { name: "কাতি বিহুৰ মাটিৰ চাকি", desc: "কাতি বিহুত পথাৰত আৰু তুলসীৰ তলত জ্বলোৱা পৱিত্ৰ মাটিৰ চাকি।" },
+    },
+    points: { rim: "পাত্ৰৰ ওপৰৰ মুখ", neck: "সুন্দৰ ডিঙি", belly: "গোল ডাঙৰ পেট", base: "দৃঢ় মজবুত তলনি" },
+  },
+  hi: {
+    clinicalTitle: "चिकित्सीय लाभ:",
+    benefit1: "उंगलियों की सूक्ष्म गतिशीलता और दबाव नियंत्रण में सुधार",
+    benefit2: "स्थानिक दृष्टि और आकार पहचानने की क्षमता मजबूत करता है",
+    benefit3: "चाक का घूमना मन को शांत और एकाग्र बनाता है",
+    pressInward: "अंदर की ओर दबाएं",
+    flareOutward: "बाहर की ओर फैलाएं",
+    sacredKiln: "पवित्र भट्टी में मिट्टी का बर्तन पक गया",
+    terracottaReady: "मिट्टी का सुंदर बर्तन तैयार",
+    targetMatch: (score) => `शिल्पकला का मिलान: ${score}% सटीक`,
+    riverFlute: "माजुली की बांसुरी की धुन सुनें",
+    vessels: {
+      doiHari: { name: "माजुली की दही की हांडी", desc: "माजुली द्वीप पर दही जमाने के लिए बनाई जाने वाली पारंपरिक मिट्टी की हांडी।" },
+      saki: { name: "पवित्र बिहू मिट्टी का दीया", desc: "काति बिहू पर जलाया जाने वाला पारंपरिक पवित्र मिट्टी का दीया।" },
+    },
+    points: { rim: "ऊपरी किनारा", neck: "मुड़ी हुई गर्दन", belly: "गोल चौड़ा पेट", base: "मजबूत तल" },
+  },
+  bn: {
+    clinicalTitle: "চিকিৎসাগত উপকারিতা:",
+    benefit1: "আঙুলের সূক্ষ্ম সঞ্চালন ও স্পর্শ অনুভূতির উন্নতি ঘটায়",
+    benefit2: "স্থানিক দৃষ্টি ও আকৃতি মেলানোর ক্ষমতা বাড়ায়",
+    benefit3: "চাকার ঘূর্ণন মনকে শান্ত ও একাগ্র রাখে",
+    pressInward: "ভেতরে চাপুন",
+    flareOutward: "বাইরে ছড়ান",
+    sacredKiln: "পবিত্র ভাঁটিতে পোড়ানো সম্পন্ন",
+    terracottaReady: "পোড়ামাটির পাত্র প্রস্তুত",
+    targetMatch: (score) => `শিল্পকলার নিখুঁত রূপ: ${score}% মিল`,
+    riverFlute: "মাজুলীর বাঁশির সুর শুনুন",
+    vessels: {
+      doiHari: { name: "মাজুলীর দইয়ের হাঁড়ি", desc: "মাজুলী দ্বীপে সুস্বাদু দই পাতার জন্য তৈরি ঐতিহ্যবাহী মাটির হাঁড়ি।" },
+      saki: { name: "পবিত্র মাটির প্রদীপ (সাকি)", desc: "বিহু উৎসবে প্রজ্বলিত শুভ মাটির মঙ্গল প্রদীপ।" },
+    },
+    points: { rim: "মসৃণ উপরের মুখ", neck: "বাঁকানো গলা", belly: "প্রশস্ত গোল পেট", base: "দৃঢ় ভারী তলা" },
+  },
+  mr: {
+    clinicalTitle: "उपचारात्मक फायदे:",
+    benefit1: "बोटांच्या हालचाली आणि दाबावर नियंत्रण वाढवते",
+    benefit2: "आकार ओळख आणि अवकाशीय अचूकता सुधारते",
+    benefit3: "चाकाची मंद गती मनाला शांतता प्रदान करते",
+    pressInward: "आत दाबा",
+    flareOutward: "बाहेर पसरा",
+    sacredKiln: "मातीचे भांडे भट्टीत भाजून तयार",
+    terracottaReady: "मातीचे सुंदर भांडे तयार",
+    targetMatch: (score) => `कलात्मक आकार: ${score}% अचूकता`,
+    riverFlute: "माजुली बासरीचे सूर ऐका",
+    vessels: {
+      doiHari: { name: "माजुली दह्याची मटकी", desc: "माजुली बेटावर थंडगार दही लावण्यासाठी बनवली जाणारी पारंपरिक मातीची मटकी." },
+      saki: { name: "मातीचा पवित्र दिवा", desc: "उत्सवात लावला जाणारा पारंपरिक मातीचा दिवा." },
+    },
+    points: { rim: "वरचा काठ", neck: "वळणदार मान", belly: "रुंद गोल पोट", base: "भक्कम तळ" },
+  },
+  ne: {
+    clinicalTitle: "उपचारात्मक फाइदाहरू:",
+    benefit1: "औंलाहरूको सूक्ष्म गतिशीलता र दबाब सन्तुलन सुधार्छ",
+    benefit2: "आकार पहिचान र स्थानिक तालमेल बलियो बनाउँछ",
+    benefit3: "घुम्ने चक्रले मनलाई शान्त र ध्यानमग्न बनाउँछ",
+    pressInward: "भित्र थिच्नुहोस्",
+    flareOutward: "बाहिर फैलाउनुहोस्",
+    sacredKiln: "भट्टीमा माटोको भाँडो तयार भयो",
+    terracottaReady: "माटोको भाँडो तयार",
+    targetMatch: (score) => `कलात्मक रूप: ${score}% मिलेको`,
+    riverFlute: "माजुलीको बाँसुरी सुन्नुहोस्",
+    vessels: {
+      doiHari: { name: "माजुली दहीको हाँडी", desc: "माजुली टापुमा दही जमाउन बनाइने परम्परागत माटोको भाँडो।" },
+      saki: { name: "पवित्र माटोको दियो", desc: "पूजा तथा चाडपर्वमा बालिने परम्परागत माटोको दियो।" },
+    },
+    points: { rim: "माथिल्लो किनारा", neck: "घुमेको घाँटी", belly: "फराकिलो पेट", base: "बलियो पिँध" },
+  },
+  mni: {
+    clinicalTitle: "লাইয়েংগী কান্নবশিং:",
+    benefit1: "খুৎশাগী খোঙজেল অমসুং চপ চাবা ফগৎহল্লি",
+    benefit2: "মওং মতৌ খঙদোকপা অমসুং য়েংবা ফগৎহল্লি",
+    benefit3: "চাক্কা খোঙবা উবদা পুক্নিং শান্ত ওইহল্লি",
+    pressInward: "মনুংদা নমথীয়ু",
+    flareOutward: "মপান্দা পাকথোকউ",
+    sacredKiln: "লৈপাক পুখম শাবা লোইশিনখ্রে",
+    terracottaReady: "লৈপাক্কী পুখম শেম-শারে",
+    targetMatch: (score) => `মওং মান্নবা: ${score}% চপ চারে`,
+    riverFlute: "মাজুলীগী তৌরেল ইশৈ তারসি",
+    vessels: {
+      doiHari: { name: "মাজুলীগী শঙ্গোম পুখম", desc: "মাজুলী দ্বীপতা শঙ্গোম থম্বদা শীজিন্নবা লৈপাক্কী পুখম।" },
+      saki: { name: "বিহুগী লৈপাক্কী থাবা", desc: "কাতি বিহুগী চাকুন্না থাবদা শীজিন্নবা লৈপাক থাবা।" },
+    },
+    points: { rim: "মথক্কী লোইশিনফম", neck: "ঙাক্লম", belly: "পাকপা পুম", base: "কনবা মখা" },
+  },
+  brx: {
+    clinicalTitle: "फाहामनायनि मुलाम्फा:",
+    benefit1: "आसिफोरनि दावबायनाय आरो थुनायखौ मोजां खालामो",
+    benefit2: "महोरखौ मिथिनो आरो रोखोम सायख'नो हाहोयो",
+    benefit3: "चाक्का गिदिंनाया गोसोखौ गोजोन होयो",
+    pressInward: "सिंआव थु",
+    flareOutward: "बायजोआव फेहेर",
+    sacredKiln: "हायानि थाइखौ सावनाय जाबाय",
+    terracottaReady: "हायानि थाइ थियारि",
+    targetMatch: (score) => `शिल्पनि महोर: ${score}% मिलिदों`,
+    riverFlute: "माजुलिनि बांहि खोनासोन",
+    vessels: {
+      doiHari: { name: "माजुलिनि दहि हादुर", desc: "माजुलियाव दहि दोननो बाहायनाय हायानि हादुर।" },
+      saki: { name: "साखि बाथि", desc: "काति बिहुआव सावनो बाहायनाय हायानि साखि।" },
+    },
+    points: { rim: "सायाव थानाय सिमा", neck: "गिदिंनाय गलो", belly: "गुवार उदौ", base: "गोरा हासा" },
+  },
+  grt: {
+    clinicalTitle: "Nama·atna namgipa:",
+    benefit1: "Jakkolchini kam aro rim·aniko namatani",
+    benefit2: "Bimang aro gadangko u·iani",
+    benefit3: "Wheel wilwilani gisikko tom·tomatani",
+    pressInward: "Ning·china sinjetbo",
+    flareOutward: "A·palchina dal·atbo",
+    sacredKiln: "A·ani sam·dikko wa·alo song·aha",
+    terracottaReady: "A·ani Sam·dik Tariaha",
+    targetMatch: (score) => `Bimang: ${score}% matchotaha`,
+    riverFlute: "Majuli buringni bangsi knabo",
+    vessels: {
+      doiHari: { name: "Majulini Dahi Dikte", desc: "Majulio dahi donchakani a·ani dikte." },
+      saki: { name: "Kati Bihuni Seng·gipa Saki", desc: "Kati Bihuo so·gipa a·ani saki." },
+    },
+    points: { rim: "Kosakni Riking", neck: "Gittok", belly: "Ok Dal·gipa", base: "Mangrakgipa Ja·pang" },
+  },
+  kha: {
+    clinicalTitle: "Ki jingmyntoi ba pynbait:",
+    benefit1: "Pynbha ia ka bor kti bad ki shympriah kti",
+    benefit2: "Ka jingbatai dur bad ka jingthikna kti",
+    benefit3: "Ka jingshad ka shaka ka wanrah jingjai-jai",
+    pressInward: "Khem shapoh",
+    flareOutward: "Pyniar shabar",
+    sacredKiln: "U Khiew Khyndew La Shet Bha",
+    terracottaReady: "U Khiew Khyndew La Biang",
+    targetMatch: (score) => `Ka Dur Kti: ${score}% Ba Iasyndam`,
+    riverFlute: "Sngap sharati Majuli",
+    vessels: {
+      doiHari: { name: "Khiew Doi Majuli", desc: "U khiew khyndew ba shna ha Majuli ban pynkhriat ia ka doi." },
+      saki: { name: "Ka Sharak Khyndew Bihu", desc: "Ka sharak khyndew ba thang ha ka por Bihu." },
+    },
+    points: { rim: "Ka Rud Bahalor", neck: "Ka Ryndang", belly: "Ka Kpoh Ba Heh", base: "Ka Trai Ba Khlain" },
+  },
+  lus: {
+    clinicalTitle: "Taksa tana hlawkna:",
+    benefit1: "Kutzung chetdan leh hmeh nat zawng vawn dikna",
+    benefit2: "Hmunhma leh thil awm dan hriatpawh theihna",
+    benefit3: "Thil vir hian rilru a tithawveng",
+    pressInward: "Chhung lamah hmet lut rawh",
+    flareOutward: "Pawn lamah zauh rawh",
+    sacredKiln: "Hlum bel chu rawh hmin a ni ta",
+    terracottaReady: "Hlum Bel A Inpeih Ta",
+    targetMatch: (score) => `A pian dan: ${score}% a inmil`,
+    riverFlute: "Majuli phenglawng ri ngaihthlakna",
+    vessels: {
+      doiHari: { name: "Majuli Dahi Bel", desc: "Majuli thliarkara dahi siam nana hlum bel lian an siam thin." },
+      saki: { name: "Bihu Khawnvar Hlum", desc: "Kati Bihu laia khawnvar hlum an chhit thin chu." },
+    },
+    points: { rim: "A Kam Chunglam", neck: "A Nghawng Kual", belly: "A Pum Lian", base: "A Mawng Nghet" },
+  },
+};
 
 interface ContourPoint {
   id: string;
@@ -79,6 +292,8 @@ const POTTERY_VESSELS = [
 
 export function MajuliPotteryGame() {
   const locale = useLocale();
+  const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
+  const potteryUi = POTTERY_I18N[normLocale] || POTTERY_I18N.en;
   const { detail, loading, error, reload, patientId } = usePatientDetail();
 
   const level = resolveAdaptiveLevel(patientId, "majuli-pottery", startLevel(detail));
@@ -282,7 +497,8 @@ export function MajuliPotteryGame() {
   if (loading) return <GameShell title={str.title} score={0}><GameLoading /></GameShell>;
   if (error) return <GameShell title={str.title} score={0}><GameError onRetry={reload} /></GameShell>;
 
-  const currentVessel = POTTERY_VESSELS[vesselIdx];
+  const vesselKey = vesselIdx === 0 ? "doiHari" : "saki";
+  const currentVessel = potteryUi.vessels[vesselKey];
 
   return (
     <GameShell title={str.title} score={accuracyScore}>
@@ -314,20 +530,20 @@ export function MajuliPotteryGame() {
           {/* Clinical Benefits */}
           <div className="w-full max-w-md rounded-2xl border-3 border-black bg-surface p-4 text-left shadow-[4px_4px_0px_#000]">
             <span className="text-xs font-black uppercase tracking-wider text-amber-900 block mb-2">
-              Clinical Benefits:
+              {potteryUi.clinicalTitle}
             </span>
             <div className="space-y-2 text-xs font-bold text-ink">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-amber-800" />
-                <span>Bilateral fine-motor pressure calibration & finger dexterity</span>
+                <span>{potteryUi.benefit1}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-tea" />
-                <span>Constructional shape recognition & visual-spatial matching</span>
+                <span>{potteryUi.benefit2}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-marigold" />
-                <span>Centering meditation and soothing sensory lathe rotation</span>
+                <span>{potteryUi.benefit3}</span>
               </div>
             </div>
           </div>
@@ -350,7 +566,7 @@ export function MajuliPotteryGame() {
               <Sparkles className="h-4 w-4 text-amber-700" /> {str.hudProgress}: {accuracyScore}%
             </span>
             <span className="text-[11px] font-bold text-amber-900">
-              {currentVessel.name.split("(")[0]}
+              {currentVessel.name.split("(")[0].trim()}
             </span>
           </div>
 
@@ -371,32 +587,35 @@ export function MajuliPotteryGame() {
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {contour.map((pt, idx) => (
-                <div
-                  key={pt.id}
-                  className="flex items-center justify-between gap-2 p-2 rounded-xl border-2 border-black bg-amber-50"
-                >
-                  <span className="text-xs font-bold text-ink truncate">{pt.label}</span>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => adjustRadius(idx, -0.06)}
-                      className="btn-tactile flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black bg-amber-200 font-black text-sm text-ink shadow-xs cursor-pointer"
-                      title="Press Inward"
-                    >
-                      -
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => adjustRadius(idx, 0.06)}
-                      className="btn-tactile flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black bg-amber-400 font-black text-sm text-ink shadow-xs cursor-pointer"
-                      title="Flare Outward"
-                    >
-                      +
-                    </button>
+              {contour.map((pt, idx) => {
+                const ptLabel = potteryUi.points[pt.id as keyof typeof potteryUi.points] || pt.label;
+                return (
+                  <div
+                    key={pt.id}
+                    className="flex items-center justify-between gap-2 p-2 rounded-xl border-2 border-black bg-amber-50"
+                  >
+                    <span className="text-xs font-bold text-ink truncate">{ptLabel}</span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => adjustRadius(idx, -0.06)}
+                        className="btn-tactile flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black bg-amber-200 font-black text-sm text-ink shadow-xs cursor-pointer"
+                        title={potteryUi.pressInward}
+                      >
+                        -
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => adjustRadius(idx, 0.06)}
+                        className="btn-tactile flex h-8 w-8 items-center justify-center rounded-lg border-2 border-black bg-amber-400 font-black text-sm text-ink shadow-xs cursor-pointer"
+                        title={potteryUi.flareOutward}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -412,15 +631,15 @@ export function MajuliPotteryGame() {
             <div className="relative w-full rounded-2xl border-3 border-black bg-[#FAF5EE] p-5 shadow-[5px_5px_0px_#000] text-ink select-none">
               <div className="flex items-center justify-between border-b-2 border-black pb-2 mb-3">
                 <span className="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4" /> Clay Fired in Sacred Kiln
+                  <CheckCircle2 className="h-4 w-4" /> {potteryUi.sacredKiln}
                 </span>
                 <span className="text-[10px] font-black uppercase rounded bg-amber-800 text-white px-2 py-0.5">
-                  Terracotta Vessel Ready
+                  {potteryUi.terracottaReady}
                 </span>
               </div>
 
               <h3 className="font-serif text-xl font-black text-ink">
-                Artisanal Form: {accuracyScore}% Target Match
+                {potteryUi.targetMatch(accuracyScore)}
               </h3>
               <p className="text-xs font-semibold text-ink-secondary mt-1">
                 {currentVessel.desc}
@@ -433,7 +652,7 @@ export function MajuliPotteryGame() {
                   className="group flex items-center gap-2 rounded-xl border-2 border-black bg-amber-100 px-3 py-1.5 text-ink shadow-[2px_2px_0px_#000] transition-transform active:translate-y-0.5 cursor-pointer"
                 >
                   <Flame className="h-4 w-4 text-amber-900" />
-                  <span className="text-xs font-black">Play Majuli River Flute</span>
+                  <span className="text-xs font-black">{potteryUi.riverFlute}</span>
                 </button>
               </div>
             </div>

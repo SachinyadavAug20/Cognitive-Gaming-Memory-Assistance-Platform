@@ -27,6 +27,7 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import { getGameStrings } from "@/lib/gameI18n";
 import type { LifeEventItem } from "@/types";
 
 function yearValue(event: LifeEventItem): number {
@@ -110,6 +111,7 @@ export function TimelineGame() {
 
   const level = resolveAdaptiveLevel(patientId, "timeline", startLevel(detail));
   const rate = speechRate(detail);
+  const str = getGameStrings("timeline", locale);
 
   const journey = useMemo<LifeEventItem[]>(() => {
     const events = detail?.lifeStory?.lifeEvents ?? [];
@@ -286,7 +288,7 @@ export function TimelineGame() {
             href="/patient/games"
             className="rounded-xl border-2 border-border bg-surface px-4 py-2 text-lg font-bold text-ink"
           >
-            ← {t("backToHub")}
+            {str.backToHub}
           </Link>
         </div>
       </GameShell>
@@ -430,14 +432,14 @@ export function TimelineGame() {
             <ChunkyButton variant="tea" size="xl" onClick={resetGame}>
               <span className="flex items-center gap-2">
                 <RotateCcw className="h-4 w-4" />
-                <span>{locale === "hi" ? "जीवन यात्रा फिर से देखें" : locale === "as" ? "জীৱন যাত্ৰা পুনৰ চাওক" : "Walk Timeline Again"}</span>
+                <span>{str.playAgainButton}</span>
               </span>
             </ChunkyButton>
             <Link
               href="/patient/games"
               className="btn-tactile inline-flex items-center gap-2 rounded-xl border-2 border-border bg-surface px-6 py-3 font-bold text-ink shadow-[2px_2px_0px_#000]"
             >
-              {locale === "hi" ? "← थेरेपी केंद्र" : locale === "as" ? "← থেৰাপী কক্ষ" : "← Back to Therapy Suite"}
+              {str.backToHub}
             </Link>
           </div>
         </Celebration>
