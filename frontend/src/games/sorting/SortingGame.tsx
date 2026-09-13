@@ -52,6 +52,7 @@ function GameShell({
         score={score}
         backHref="/patient/games"
         bgColor="bg-tea"
+        gameId="sorting"
       />
       <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
     </section>

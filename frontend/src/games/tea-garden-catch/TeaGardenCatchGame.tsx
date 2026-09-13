@@ -326,20 +326,20 @@ export function TeaGardenCatchGame() {
 
   if (loading)
     return (
-      <GameShell title={str.title} score={0}>
+      <GameShell title={str.title} score={0} gameId="tea-garden-catch">
         <GameLoading />
       </GameShell>
     );
 
   if (error)
     return (
-      <GameShell title={str.title} score={0}>
+      <GameShell title={str.title} score={0} gameId="tea-garden-catch">
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title={str.title} score={score}>
+    <GameShell title={str.title} score={score} gameId="tea-garden-catch">
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-4 text-center">
           {/* Government Paperclip Header */}

@@ -141,7 +141,13 @@ export function RhythmHillsGame() {
   if (error)
     return (
       <section className="pb-12">
-        <GameHeader title="Rhythm of the Hills" score={0} backHref="/patient/games" bgColor="bg-tea" />
+        <GameHeader
+          title="Rhythm of the Hills"
+          score={0}
+          backHref="/patient/games"
+          bgColor="bg-tea"
+          gameId="rhythm-hills"
+        />
         <div className="mx-auto max-w-3xl px-4 pt-6">
           <GameError onRetry={reload} />
         </div>
@@ -150,7 +156,13 @@ export function RhythmHillsGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title="Rhythm of the Hills" score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader
+        title="Rhythm of the Hills"
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-tea"
+        gameId="rhythm-hills"
+      />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">

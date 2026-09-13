@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -43,6 +43,11 @@ import { recordGameSession, resolveAdaptiveLevel } from "@/lib/telemetry";
 import { useSessionGuard } from "@/games/useSessionGuard";
 import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
+import {
+  calculateVanishingCue,
+  validateMoveErrorless,
+  type ScaffoldingIntensity,
+} from "@/lib/errorlessLearning";
 
 function GameShell({
   title,
@@ -60,6 +65,7 @@ function GameShell({
         score={score}
         backHref="/patient/games"
         bgColor="bg-[#C2410C]"
+        gameId="memory-road"
       />
       <div className="mx-auto max-w-2xl px-4 pt-5">{children}</div>
     </section>
@@ -388,6 +394,21 @@ export function MemoryRoadGame() {
   const [startedAt, setStartedAt] = useState<string | null>(null);
   const [taps, setTaps] = useState(0);
   const [errors, setErrors] = useState(0);
+  const [hesitationSeconds, setHesitationSeconds] = useState(0);
+
+  // Monitor hesitation for Errorless Learning vanishing cues (Clare & Jones, 2008)
+  useEffect(() => {
+    if (phase !== "playing") return;
+    const timer = setInterval(() => {
+      setHesitationSeconds((h) => h + 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phase, foundCount, currentLevelIdx]);
+
+  const vanishingCue = useMemo(() => {
+    if (phase !== "playing") return { intensity: "none" as ScaffoldingIntensity, glowOpacity: 0 };
+    return calculateVanishingCue(hesitationSeconds, errors);
+  }, [phase, hesitationSeconds, errors]);
 
   const localeKey = locale ?? "en";
 
@@ -411,6 +432,7 @@ export function MemoryRoadGame() {
     setScore(0);
     setErrors(0);
     setTaps(0);
+    setHesitationSeconds(0);
     setHintUsed(false);
     setStartedAt(new Date().toISOString());
     setPhase("playing");
@@ -462,21 +484,24 @@ export function MemoryRoadGame() {
           const newFound = foundCount + 1;
           setFoundCount(newFound);
           setScore((s) => s + 25);
+          setHesitationSeconds(0);
           speak(t("found"), locale, rate);
 
           if (newFound >= levelConfig.count) {
             setTimeout(completeLevel, 600);
           }
         } else {
+          // Errorless Scaffolding: Soft harmonic bounce without harsh failure
           playEncourage();
           setErrors((e) => e + 1);
+          setHesitationSeconds(8); // Instantly prompts vanishing cue on target tile
           const targetName = localizedName(targetObj);
           speak(
             locale === "hi"
-              ? `आइए ध्यान से ${targetName} को ढूंढते हैं।`
+              ? `आराम से! आइए ध्यान से चमकते हुए ${targetName} को ढूंढते हैं।`
               : locale === "as"
-              ? `আহক মন দি ${targetName} বিচাৰোঁ।`
-              : `Take your time. Let's look for the ${targetName}.`,
+              ? `লাহেকৈ কৰক! আহক উজ্বল হৈ থকা ${targetName} বিচাৰোঁ।`
+              : `Take your time. Notice the glowing ${targetName}.`,
             locale,
             rate
           );
@@ -490,7 +515,7 @@ export function MemoryRoadGame() {
         return next;
       });
     },
-    [phase, foundCount, levelConfig, completeLevel, locale, rate, localizedName, targetObj]
+    [phase, foundCount, levelConfig, completeLevel, locale, rate, localizedName, targetObj, t]
   );
 
   const nextLevel = useCallback(() => {
@@ -500,6 +525,7 @@ export function MemoryRoadGame() {
     setCurrentLevelIdx(nextIdx);
     setTiles(buildBoard(config));
     setFoundCount(0);
+    setHesitationSeconds(0);
     setHintUsed(false);
     setPhase("playing");
     const nextTarget = OBJECTS.find((o) => o.id === config.targetId)!;
@@ -520,6 +546,7 @@ export function MemoryRoadGame() {
     setScore(0);
     setFoundCount(0);
     setCurrentLevelIdx(0);
+    setHesitationSeconds(0);
     setHintUsed(false);
     setStartedAt(null);
     setTaps(0);
@@ -640,7 +667,14 @@ export function MemoryRoadGame() {
             }`}
           >
             {tiles.map((tile) => {
-              const isTargetHinted = hintUsed && tile.object.id === levelConfig.targetId && !tile.found;
+              const isTarget = tile.object.id === levelConfig.targetId && !tile.found;
+              const isTargetHinted = isTarget && (hintUsed || vanishingCue.intensity !== "none");
+              const cueClass = isTarget && isTargetHinted
+                ? vanishingCue.intensity === "guided_highlight"
+                  ? "ring-4 ring-amber-400 animate-pulse bg-amber-100 border-amber-600 scale-105 shadow-[0_0_16px_rgba(245,158,11,0.85)]"
+                  : "ring-2 ring-amber-300 animate-pulse bg-amber-50 border-amber-500 scale-102"
+                : "";
+
               return (
                 <button
                   key={tile.uid}
@@ -651,7 +685,7 @@ export function MemoryRoadGame() {
                     tile.found
                       ? "bg-tea-light border-tea ring-2 ring-tea"
                       : isTargetHinted
-                      ? "ring-4 ring-amber-400 animate-pulse bg-amber-100 border-amber-600 scale-105"
+                      ? cueClass
                       : tile.wrongFlash
                       ? "bg-amber-100 border-amber-500 animate-shake"
                       : "bg-surface hover:bg-tea-light/40"

@@ -274,7 +274,13 @@ export function HeritageKitchenGame() {
   if (error)
     return (
       <section className="pb-12">
-        <GameHeader title={str.title} score={0} backHref="/patient/games" bgColor="bg-tea" />
+        <GameHeader
+          title={str.title}
+          score={0}
+          backHref="/patient/games"
+          bgColor="bg-tea"
+          gameId="heritage-kitchen"
+        />
         <div className="mx-auto max-w-3xl px-4 pt-6">
           <GameError onRetry={reload} />
         </div>
@@ -283,7 +289,13 @@ export function HeritageKitchenGame() {
 
   return (
     <section className="pb-12">
-      <GameHeader title={str.title} score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader
+        title={str.title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-tea"
+        gameId="heritage-kitchen"
+      />
       <div className="mx-auto max-w-3xl px-4 pt-6">
         {phase === "intro" ? (
           <div className="flex flex-col items-center gap-6 py-8 text-center">

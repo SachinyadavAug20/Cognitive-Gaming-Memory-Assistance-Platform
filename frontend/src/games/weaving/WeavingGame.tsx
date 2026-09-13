@@ -90,7 +90,13 @@ function GameShell({
 }) {
   return (
     <section className="pb-12">
-      <GameHeader title={title} score={score} backHref="/patient/games" bgColor="bg-tea" />
+      <GameHeader
+        title={title}
+        score={score}
+        backHref="/patient/games"
+        bgColor="bg-tea"
+        gameId="weaving"
+      />
       <div className="mx-auto max-w-3xl px-4 pt-6">{children}</div>
     </section>
   );

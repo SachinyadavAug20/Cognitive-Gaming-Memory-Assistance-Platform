@@ -437,10 +437,43 @@ export function getReferencesForGame(gameId: string): ClinicalReference[] {
     case "bihu-dhol":
     case "drum":
     case "tuned-drum":
+    case "rhythm-hills":
       return [
         REFERENCE_BY_ID["cst-cochrane-2012"],
         REFERENCE_BY_ID["cst-jamda-meta-2017"],
         REFERENCE_BY_ID["active-dementia-2017"],
+      ].filter(Boolean);
+    case "brahmaputra-boat":
+    case "memory-road":
+    case "arrow-escape":
+    case "majuli-walk":
+    case "wayfinding":
+      return [
+        REFERENCE_BY_ID["sea-hero-quest-natcomm-2019"],
+        REFERENCE_BY_ID["sea-hero-quest-nature-2022"],
+        REFERENCE_BY_ID["moca-nasreddine-2005"],
+      ].filter(Boolean);
+    case "jigsaw":
+    case "majuli-pottery":
+    case "lotus-painter":
+    case "alpana":
+    case "weaving":
+    case "loom":
+      return [
+        REFERENCE_BY_ID["moca-nasreddine-2005"],
+        REFERENCE_BY_ID["nih-statpearls-dementia-2022"],
+        REFERENCE_BY_ID["optale-vr-flow-2010"],
+        REFERENCE_BY_ID["errorless-clare-2008"],
+      ].filter(Boolean);
+    case "hornbill-flight":
+    case "tea-harvest":
+    case "tea-garden-catch":
+    case "butterfly-sanctuary":
+      return [
+        REFERENCE_BY_ID["finger-lancet-2015"],
+        REFERENCE_BY_ID["active-jama-2002"],
+        REFERENCE_BY_ID["active-dementia-2017"],
+        REFERENCE_BY_ID["nih-statpearls-dementia-2022"],
       ].filter(Boolean);
     case "family-emotions":
       return [
@@ -451,12 +484,24 @@ export function getReferencesForGame(gameId: string): ClinicalReference[] {
       ].filter(Boolean);
     case "memory-garden":
     case "grandchild-chat":
+    case "companion":
     case "timeline":
     case "radio":
+    case "memory-detective":
+    case "storybook":
       return [
         REFERENCE_BY_ID["cst-cochrane-2012"],
         REFERENCE_BY_ID["cst-jamda-meta-2017"],
         REFERENCE_BY_ID["errorless-clare-2008"],
+        REFERENCE_BY_ID["practical-neurology-kataki-2021"],
+      ].filter(Boolean);
+    case "daily-routine":
+    case "sorting":
+      return [
+        REFERENCE_BY_ID["active-jag-2014"],
+        REFERENCE_BY_ID["errorless-clare-2008"],
+        REFERENCE_BY_ID["moca-nasreddine-2005"],
+        REFERENCE_BY_ID["nih-statpearls-dementia-2022"],
       ].filter(Boolean);
     default:
       return [

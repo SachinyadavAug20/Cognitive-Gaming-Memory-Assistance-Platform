@@ -379,7 +379,7 @@ export function FamilyEmotionsGame() {
 
   if (loading) {
     return (
-      <GameShell title="Family Emotions & Social Warmth" score={0}>
+      <GameShell title="Family Emotions & Social Warmth" score={0} gameId="family-emotions">
         <GameLoading />
       </GameShell>
     );
@@ -387,7 +387,7 @@ export function FamilyEmotionsGame() {
 
   if (error) {
     return (
-      <GameShell title="Family Emotions & Social Warmth" score={0}>
+      <GameShell title="Family Emotions & Social Warmth" score={0} gameId="family-emotions">
         <GameError onRetry={reload} />
       </GameShell>
     );
@@ -403,6 +403,7 @@ export function FamilyEmotionsGame() {
           : "Family Emotions & Social Warmth"
       }
       score={score}
+      gameId="family-emotions"
     >
       {phase === "intro" ? (
         <div className="flex flex-col items-center gap-6 py-6 text-center">

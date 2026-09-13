@@ -178,13 +178,13 @@ export function MakeMyTeaGame() {
   if (loading) return <GameLoading />;
   if (error)
     return (
-      <GameShell title={t("dailyTasks.title")} score={progress}>
+      <GameShell title={t("dailyTasks.title")} score={progress} gameId="daily-tasks">
         <GameError onRetry={reload} />
       </GameShell>
     );
 
   return (
-    <GameShell title={t("dailyTasks.title")} score={progress}>
+    <GameShell title={t("dailyTasks.title")} score={progress} gameId="daily-tasks">
       {done ? (
         <Celebration icon={ClayKulharIcon} title={t("dailyTasks.complete")}>
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-left w-full">
