@@ -1024,6 +1024,10 @@
       "finalDayCompleteDesc": "You completed the entire 6-chapter journey alongside Saathi with flying colors.",
       "reliveDayButton": "Relive the Day Again"
     },
+    "teaGardenMatch": {
+      "title": "Tea Garden Bloom (Chah Bagisha)",
+      "desc": "Match gentle tea leaves, orchids, and cane baskets to harvest the garden."
+    },
     "bazaarBuddies": {
       "title": "Going to the Market",
       "desc": "Pick fresh vegetables at the market stall and check your coins.",

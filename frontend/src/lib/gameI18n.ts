@@ -29,6 +29,50 @@ export type SupportedLocale =
   | "lus";
 
 export const GAME_I18N_STRINGS: Record<string, Partial<Record<SupportedLocale, GameLocalizedStrings>>> = {
+  "tea-garden-match": {
+    en: {
+      title: "Tea Garden Bloom (Chah Bagisha)",
+      introTitle: "Tea Garden Bloom",
+      introSubtitle: "Match 3 regional items in a row to harvest your tea basket peacefully.",
+      audioPrompt: "Welcome to the Tea Garden. Tap a tile, then tap an adjacent tile to swap and match.",
+      startButton: "Enter Tea Garden",
+      listenLabel: "Read for Me",
+      playAgainButton: "Play Again",
+      backToHub: "← Back to Games",
+      celebrationTitle: "Tea Harvest Complete!",
+      celebrationSubtitle: "You gathered fresh tea leaves and orchids with gentle focus.",
+      hudProgress: "Items Harvested",
+      hudAction: "Match 3 in a row",
+    },
+    as: {
+      title: "চাহ বাগিচা (Tea Garden Match)",
+      introTitle: "চাহ বাগিচা খেল",
+      introSubtitle: "একে ধৰণৰ তিনিটা চাহ পাত বা কপৌ ফুল মিলাই খৰাহী ভৰাওক।",
+      audioPrompt: "চাহ বাগিচালৈ স্বাগতম। এটা বস্তু চুই তাৰ কাষৰ বস্তুৰ সৈতে সলনি কৰি মিলাওক।",
+      startButton: "খেল আৰম্ভ কৰক",
+      listenLabel: "মোক পঢ়ি শুনাওক",
+      playAgainButton: "পুনৰ খেলক",
+      backToHub: "← খেললৈ উভতি যাওক",
+      celebrationTitle: "চাহ সংগ্ৰহ সম্পূৰ্ণ হ'ল!",
+      celebrationSubtitle: "আপুনি অতি সুন্দৰভাৱে সকলো চাহ পাত আৰু কপৌ ফুল সংগ্ৰহ কৰিলে।",
+      hudProgress: "সংগ্ৰহ কৰা বস্তু",
+      hudAction: "তিনিটা বস্তু মিলাওক",
+    },
+    hi: {
+      title: "चाय बागान (Tea Garden Match)",
+      introTitle: "चाय बागान खेल",
+      introSubtitle: "एक जैसे 3 चाय पत्ती या फूल मिलाकर अपनी टोकरी भरें।",
+      audioPrompt: "चाय बागान में स्वागत है। एक वस्तु को छूकर बगल वाली वस्तु से बदलकर 3 का मेल बनाएं।",
+      startButton: "खेल शुरू करें",
+      listenLabel: "मुझे पढ़कर सुनाएं",
+      playAgainButton: "फिर से खेलें",
+      backToHub: "← खेलों पर वापस",
+      celebrationTitle: "चाय संकलन पूर्ण!",
+      celebrationSubtitle: "आपने एकाग्रता और आनंद के साथ सभी पत्तियां संकलित कीं।",
+      hudProgress: "संकलित वस्तुएं",
+      hudAction: "3 का मेल बनाएं",
+    },
+  },
   "family-emotions": {
     en: {
       title: "Family Emotions & Social Warmth",

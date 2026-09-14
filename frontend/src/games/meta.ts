@@ -17,6 +17,7 @@ const RAW: Array<[string, string, string, string]> = [
   ["lotus-painter", "lotusPainter.title", "lotusPainter.desc", "Lotus Mandala Art"],
   ["butterfly-sanctuary", "butterflySanctuary.title", "butterflySanctuary.desc", "Butterfly Gentle Perch"],
   ["tea-garden-catch", "teaGardenCatch.title", "teaGardenCatch.desc", "Tea Garden Plucking"],
+  ["tea-garden-match", "teaGardenMatch.title", "teaGardenMatch.desc", "Tea Garden Bloom Match"],
   ["alpana", "alpana.title", "alpana.desc", "Sacred Floor Art"],
   ["river-lanterns", "riverLanterns.title", "riverLanterns.desc", "Peaceful River Lanterns"],
   ["loom", "loom.title", "loom.desc", "Traditional Loom Weaving"],

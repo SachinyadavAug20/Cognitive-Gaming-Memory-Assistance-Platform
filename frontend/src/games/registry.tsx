@@ -110,6 +110,7 @@ const RhythmHillsGame = dynamic(() => import("./rhythm-hills/RhythmHillsGame").t
 const WeavingGame = dynamic(() => import("./weaving/WeavingGame").then((m) => m.WeavingGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const AncestralHerbalistGame = dynamic(() => import("./ancestral-herbalist/AncestralHerbalistGame").then((m) => m.AncestralHerbalistGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const FamilyEmotionsGame = dynamic(() => import("./family-emotions/FamilyEmotionsGame").then((m) => m.FamilyEmotionsGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const TeaGardenMatchGame = dynamic(() => import("./tea-garden-match/TeaGardenMatchGame").then((m) => m.TeaGardenMatchGame), { loading: () => <GameLoaderFallback />, ssr: false });
 
 export type ClinicalDomain = "reminiscence" | "vision-3d" | "attention" | "iadl" | "calm";
 
@@ -569,6 +570,17 @@ export const GAMES: GameDef[] = [
     category: "reminiscence",
     recommended: true,
     component: FamilyEmotionsGame,
+  },
+  {
+    id: "tea-garden-match",
+    icon: Sparkles,
+    titleKey: "teaGardenMatch.title",
+    descKey: "teaGardenMatch.desc",
+    accent: "bg-[#065F46]",
+    domain: "Tea Garden Bloom (Match-3 Harvest)",
+    category: "attention",
+    recommended: true,
+    component: TeaGardenMatchGame,
   },
 ];
 
