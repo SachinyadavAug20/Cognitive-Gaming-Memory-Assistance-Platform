@@ -468,6 +468,7 @@ export function getReferencesForGame(gameId: string): ClinicalReference[] {
     case "hornbill-flight":
     case "tea-harvest":
     case "tea-garden-catch":
+    case "tea-garden-match":
     case "butterfly-sanctuary":
       return [
         REFERENCE_BY_ID["finger-lancet-2015"],

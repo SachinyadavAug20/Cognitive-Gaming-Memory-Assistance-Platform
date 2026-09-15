@@ -29,6 +29,8 @@ import { usePatientDetail } from "@/games/usePatientDetail";
 import { speechRate, startLevel } from "@/games/config";
 import type { SupportedLocale } from "@/lib/gameI18n";
 import { BAZAAR_PRODUCTS, BAZAAR_I18N, BazaarProduct } from "./bazaarI18n";
+import { useErrorlessScaffold } from "@/hooks/useErrorlessScaffold";
+import { CaregiverCoPlayPrompt } from "@/components/ui/CaregiverCoPlayPrompt";
 
 function getProduceEmoji(id: string): string {
   switch (id) {
@@ -209,6 +211,22 @@ export function BazaarBuddiesGame() {
 
   const score = basket.length * 20 + (changeCalculated ? 60 : 0);
 
+  const scaffold = useErrorlessScaffold({
+    stepKey: `${phase}-${givenNote ?? "none"}-${basket.length}`,
+    hesitationThresholdSec: 8,
+    caregiverCoPlayHint:
+      phase === "market"
+        ? "Ask Baba: 'Which fresh item from our village haat should we put in our basket next?'"
+        : givenNote === null
+        ? `Ask Baba: 'Which note is enough to pay our ₹${total} bill together?'`
+        : `Ask Baba: 'If we pay ₹${givenNote} for ₹${total}, how much change should the shopkeeper give back?'`,
+    onAutoSpokenHint: () => {
+      if (phase === "cashier" && givenNote !== null && !changeCalculated) {
+        speak(`Take your time. How much change from ₹${givenNote} for a ₹${total} bill?`, locale, rate);
+      }
+    },
+  });
+
   // Announce shopping request on game start
   useEffect(() => {
     if (targetProducts.length > 0 && phase === "market" && basket.length === 0) {
@@ -231,6 +249,8 @@ export function BazaarBuddiesGame() {
 
       if (!isTarget) {
         playEncourage();
+        setErrorCount((e) => e + 1);
+        scaffold.recordAttempt(false);
         const missing = targetProducts.filter((p) => !basket.includes(p.id));
         const missingNames = missing
           .map((p) => getShortName(p, normLocale))
@@ -244,12 +264,13 @@ export function BazaarBuddiesGame() {
         setBasket((prev) => prev.filter((x) => x !== product.id));
         speak(`Removed ${name}`, locale, rate);
       } else {
+        scaffold.recordAttempt(true);
         setBasket((prev) => [...prev, product.id]);
         playCorrect();
         speak(`Picked ${name}`, locale, rate);
       }
     },
-    [targetIds, targetProducts, basket, normLocale, locale, rate]
+    [targetIds, targetProducts, basket, normLocale, locale, rate, scaffold]
   );
 
   const handleRemoveFromBasket = useCallback(
@@ -309,19 +330,21 @@ export function BazaarBuddiesGame() {
       if (choice === expectedChange) {
         playCorrect();
         playComplete();
+        scaffold.recordAttempt(true);
         setChangeCalculated(true);
         setWrongAttempt(null);
         setFeedbackMsg(null);
         speak(`Correct! ₹${expectedChange} change.`, locale, rate);
       } else {
         playEncourage();
+        scaffold.recordAttempt(false);
         setWrongAttempt(choice);
         setErrorCount((e) => e + 1);
         setFeedbackMsg(`Try again: ₹${givenNote} − ₹${total}`);
         speak(`What is ₹${givenNote} minus ₹${total}?`, locale, rate);
       }
     },
-    [expectedChange, givenNote, total, locale, rate]
+    [expectedChange, givenNote, total, locale, rate, scaffold]
   );
 
   const handleFinishShopping = useCallback(() => {
@@ -524,6 +547,7 @@ export function BazaarBuddiesGame() {
                 const isTarget = targetIds.includes(product.id);
                 const name = getShortName(product, normLocale);
                 const emoji = getProduceEmoji(product.id);
+                const isScaffolded = scaffold.isGuiding && isTarget && !inBasket;
 
                 return (
                   <button
@@ -533,8 +557,12 @@ export function BazaarBuddiesGame() {
                     className={`btn-tactile flex flex-col items-center justify-center rounded-2xl border-3 p-3 text-center transition-all cursor-pointer relative min-h-[110px] ${
                       inBasket
                         ? "bg-emerald-100 border-emerald-950 shadow-[3px_3px_0px_#047857] ring-2 ring-emerald-600"
+                        : isScaffolded
+                        ? "bg-amber-100 border-amber-600 shadow-[3px_3px_0px_#D97706] ring-4 ring-amber-400/80 animate-pulse"
                         : isTarget
                         ? "bg-[#FFFDF5] border-amber-600 shadow-[3px_3px_0px_#D97706] hover:bg-amber-50"
+                        : scaffold.shouldDimOthers
+                        ? "bg-white/60 border-black/20 opacity-50 shadow-xs"
                         : "bg-white border-black/30 shadow-[2px_2px_0px_#000] opacity-80 hover:opacity-100"
                     }`}
                   >
@@ -581,6 +609,11 @@ export function BazaarBuddiesGame() {
                 </span>
               </ChunkyButton>
             </div>
+
+            {/* Caregiver Co-Play Guidance */}
+            {scaffold.caregiverTip && (
+              <CaregiverCoPlayPrompt tip={scaffold.caregiverTip} className="mt-1" />
+            )}
           </div>
         )}
 
@@ -740,15 +773,21 @@ export function BazaarBuddiesGame() {
                 <div className="grid grid-cols-4 gap-2 pt-1">
                   {changeChoices.map((choice) => {
                     const isWrong = wrongAttempt === choice;
+                    const isCorrectChoice = choice === expectedChange;
+                    const isScaffolded = scaffold.isGuiding && isCorrectChoice;
                     return (
                       <button
                         key={choice}
                         type="button"
                         onClick={() => handleSelectChangeChoice(choice)}
-                        className={`btn-tactile rounded-xl border-2 border-black py-3 text-center text-xl font-black shadow-[2px_2px_0px_#000] transition-all cursor-pointer ${
+                        className={`btn-tactile rounded-xl border-2 py-3 text-center text-xl font-black shadow-[2px_2px_0px_#000] transition-all cursor-pointer ${
                           isWrong
                             ? "bg-rose-100 border-rose-600 text-rose-800 animate-shake"
-                            : "bg-white hover:bg-amber-100 text-ink active:scale-95"
+                            : isScaffolded
+                            ? "bg-amber-100 border-amber-600 text-amber-950 ring-4 ring-amber-400/80 animate-pulse shadow-[0_0_12px_rgba(245,158,11,0.6)]"
+                            : scaffold.shouldDimOthers && !isCorrectChoice
+                            ? "bg-white/60 border-black/30 text-ink/60"
+                            : "bg-white border-black hover:bg-amber-100 text-ink active:scale-95"
                         }`}
                       >
                         ₹{choice}
@@ -778,11 +817,16 @@ export function BazaarBuddiesGame() {
                   )}
 
                   {feedbackMsg && (
-                    <div className="mt-1 rounded-lg border border-rose-500 bg-rose-50 p-1 text-xs font-bold text-rose-900 animate-fade-in w-full">
+                    <div className="mt-1.5 rounded-lg border border-rose-500 bg-rose-50 p-1.5 text-center text-xs font-bold text-rose-900 animate-fade-in w-full">
                       {feedbackMsg}
                     </div>
                   )}
                 </div>
+
+                {/* Caregiver Co-Play Guidance */}
+                {scaffold.caregiverTip && (
+                  <CaregiverCoPlayPrompt tip={scaffold.caregiverTip} className="mt-2 text-left" />
+                )}
               </div>
             )}
 

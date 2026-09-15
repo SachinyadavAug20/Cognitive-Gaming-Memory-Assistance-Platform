@@ -18,6 +18,7 @@ import { GameHeader } from "@/components/layout/GameHeader";
 import { GameError, GameLoading } from "@/components/games/GameState";
 import { Celebration } from "@/components/games/Celebration";
 import { ChunkyButton } from "@/components/ui/ChunkyButton";
+import { CaregiverCoPlayPrompt } from "@/components/ui/CaregiverCoPlayPrompt";
 import {
   playPress,
   playCorrect,
@@ -906,6 +907,18 @@ export function TeaGardenMatchGame() {
                   ? "उंगली से स्वाइप करें या दो पास की वस्तुएं छूकर बदलें।"
                   : "Swipe or tap two adjacent items to swap and match 3!"}
               </p>
+
+              {/* Caregiver / Family Co-Play Guidance (CST) */}
+              <CaregiverCoPlayPrompt
+                tip={
+                  locale === "as"
+                    ? "যত্নকৰ্তাৰ পৰামৰ্শ: বাবাৰ সৈতে একেলগে ৩টা একে ৰঙৰ ফুল বা পাত বিচাৰক।"
+                    : locale === "hi"
+                    ? "देखभालकर्ता सुझाव: बड़े-बुजुर्गों के साथ मिलकर एक ही रंग की 3 पत्तियां या फूल खोजें।"
+                    : "Caregiver Co-Play Tip: Point out 3 matching tea leaves or orchids in a row together to encourage calm visual search."
+                }
+                className="mt-3"
+              />
             </div>
           </>
         )}
