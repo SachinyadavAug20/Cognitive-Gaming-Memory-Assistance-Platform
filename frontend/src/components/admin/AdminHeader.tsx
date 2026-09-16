@@ -1,80 +1,73 @@
 "use client";
 
 import React from "react";
-import { Link } from "@/i18n/navigation";
-import {
-  RefreshCw,
-  Paperclip,
-  ShieldCheck,
-  Building2,
-} from "lucide-react";
+import { Activity, RefreshCw, Building2, Lock, ShieldAlert } from "lucide-react";
+import type { AdminHeaderTexts } from "@/lib/adminI18n";
 
 interface AdminHeaderProps {
-  onRefresh: () => void;
-  refreshing: boolean;
+  headerTexts: AdminHeaderTexts;
+  lastRefreshedAt: Date;
+  autoRefresh: boolean;
+  isRefreshing: boolean;
+  onToggleAutoRefresh: () => void;
+  onRefreshTelemetry: () => void;
 }
 
-export function AdminHeader({ onRefresh, refreshing }: AdminHeaderProps) {
+export function AdminHeader({
+  headerTexts,
+  lastRefreshedAt,
+  autoRefresh,
+  isRefreshing,
+  onToggleAutoRefresh,
+  onRefreshTelemetry,
+}: AdminHeaderProps) {
   return (
-    <div className="space-y-4">
-      {/* Official Government Memorandum Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-3 border-black bg-[#EFE9DF] p-4 shadow-[4px_4px_0px_#000]">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-black bg-tea text-white">
-            <Building2 className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <Paperclip className="h-3.5 w-3.5 text-ink" />
-              <span className="text-[11px] font-black uppercase tracking-wider text-ink">
-                Govt of India // MDoNER Track • ICMR Surveillance Registry
-              </span>
-            </div>
-            <p className="text-xs font-bold text-ink-secondary">
-              North Eastern Regional Cognitive Digital Therapeutics Administration & Clinical Governance
-            </p>
-          </div>
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border-4 border-black bg-surface p-6 shadow-[6px_6px_0px_#000]">
+      <div>
+        <div className="flex flex-wrap items-center gap-2 mb-2">
+          <span className="inline-flex items-center gap-1 rounded-full border-2 border-emerald-900/40 bg-emerald-100 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-emerald-950">
+            <Building2 className="h-3 w-3 text-emerald-700" />
+            {headerTexts.mdonerBadge}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full border-2 border-rose-900/40 bg-rose-100 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-rose-950">
+            <Lock className="h-3 w-3 text-rose-700" />
+            {headerTexts.confidentialBadge}
+          </span>
+          <span suppressHydrationWarning className="text-[11px] font-bold text-ink-secondary">
+            {headerTexts.updatedLabel} {lastRefreshedAt.toLocaleTimeString()}
+          </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border-2 border-black bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-950">
-            <ShieldCheck className="h-4 w-4 text-emerald-700" />
-            <span>DISHA / ABDM Level-3 Certified</span>
-          </span>
-          <Link
-            href="/caregiver"
-            className="btn-tactile rounded-xl border-2 border-black bg-surface px-3 py-1.5 text-xs font-black text-ink hover:bg-surface-muted shadow-[2px_2px_0px_#000]"
-          >
-            Caregiver Portal →
-          </Link>
-        </div>
+        <h1 className="font-serif text-2xl sm:text-3xl font-black text-ink flex items-center gap-2.5">
+          <ShieldAlert className="h-8 w-8 text-tea shrink-0" />
+          {headerTexts.title}
+        </h1>
+        <p className="text-xs sm:text-sm font-semibold text-ink-secondary mt-1">
+          {headerTexts.subtitle}
+        </p>
       </div>
 
-      {/* Main Title & Action Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-black text-ink tracking-tight flex items-center gap-3">
-            <span>CogniCare Command Matrix</span>
-            <span className="rounded-xl border-2 border-black bg-tea px-2.5 py-0.5 text-xs font-black uppercase text-white shadow-[2px_2px_0px_#000]">
-              ADMIN v2.6
-            </span>
-          </h1>
-          <p className="text-sm font-semibold text-ink-secondary mt-1">
-            Centralized epidemiological surveillance, AI telemetry, Tele-MANAS triage, and PHC edge fleet orchestration across 8 North Eastern States.
-          </p>
-        </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={onToggleAutoRefresh}
+          className={`btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black px-3.5 py-2 text-xs font-black shadow-[2px_2px_0px_#000] cursor-pointer transition-colors ${
+            autoRefresh ? "bg-emerald-200 text-emerald-950" : "bg-surface text-ink-secondary"
+          }`}
+        >
+          <Activity className={`h-4 w-4 ${autoRefresh ? "text-emerald-700 animate-pulse" : ""}`} />
+          <span>{headerTexts.autoSyncLabel} {autoRefresh ? headerTexts.on30s : headerTexts.off}</span>
+        </button>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onRefresh}
-            disabled={refreshing}
-            className="btn-tactile flex items-center gap-2 rounded-2xl border-3 border-black bg-surface px-4 py-2.5 text-xs font-black text-ink shadow-[3px_3px_0px_#000] hover:bg-surface-muted cursor-pointer disabled:opacity-50"
-          >
-            <RefreshCw className={`h-4 w-4 text-tea ${refreshing ? "animate-spin" : ""}`} />
-            <span>{refreshing ? "Synchronizing Telemetry..." : "Refresh Live Feed"}</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onRefreshTelemetry}
+          disabled={isRefreshing}
+          className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-amber-200 px-4 py-2 text-xs font-black text-amber-950 shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer active:translate-y-0.5 disabled:opacity-50"
+        >
+          <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+          <span>{isRefreshing ? headerTexts.syncingBtn : headerTexts.refreshBtn}</span>
+        </button>
       </div>
     </div>
   );
