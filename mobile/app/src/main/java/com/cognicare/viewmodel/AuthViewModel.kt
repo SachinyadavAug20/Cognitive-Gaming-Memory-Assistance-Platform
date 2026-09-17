@@ -22,11 +22,30 @@ data class AuthState(
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val authRepository: AuthRepository = ServiceLocator.provideAuthRepository()
+    private val authRepository: AuthRepository = ServiceLocator.provideAuthRepository(application)
     private val db: AppDatabase = ServiceLocator.provideDatabase(application)
+    private val tokenManager = ServiceLocator.provideTokenManager(application)
 
     private val _authState = MutableStateFlow(AuthState())
     val authState: StateFlow<AuthState> = _authState
+
+    init {
+        if (tokenManager.isLoggedIn) {
+            val patient = Patient(
+                id = tokenManager.patientId,
+                name = tokenManager.patientName,
+                age = 0,
+                gender = "",
+                state = "",
+                language = tokenManager.language
+            )
+            _authState.value = AuthState(
+                isLoggedIn = true,
+                patient = patient,
+                token = tokenManager.token
+            )
+        }
+    }
 
     fun kioskScan(qrData: String) {
         viewModelScope.launch {
@@ -103,6 +122,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             state = "Assam",
             language = "as"
         )
+        tokenManager.patientId = localPatient.id
+        tokenManager.patientName = localPatient.name
+        tokenManager.language = localPatient.language
         viewModelScope.launch {
             db.patientDao().insertPatient(localPatient)
         }
@@ -116,6 +138,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun logout() {
+        authRepository.logout()
         _authState.value = AuthState()
     }
 

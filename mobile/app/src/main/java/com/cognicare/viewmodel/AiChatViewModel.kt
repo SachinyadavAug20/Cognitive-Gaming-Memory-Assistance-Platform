@@ -1,6 +1,7 @@
 package com.cognicare.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.cognicare.data.remote.AiChatRequest
 import com.cognicare.data.remote.AiChatResponse
@@ -18,9 +19,9 @@ data class AiChatState(
     val lastResponse: AiChatResponse? = null
 )
 
-class AiChatViewModel : ViewModel() {
+class AiChatViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: AiRepository = ServiceLocator.provideAiRepository()
+    private val repository: AiRepository = ServiceLocator.provideAiRepository(application)
 
     private val _state = MutableStateFlow(AiChatState())
     val state: StateFlow<AiChatState> = _state

@@ -4,14 +4,71 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-
-    <!-- Green circle background -->
+    <!-- Golden border ring matching frontend #FBBF24 -->
     <path
-        android:fillColor="#2D6A4F"
-        android:pathData="M54,54m-44,0a44,44 0,1 1,88 0a44,44 0,1 1,-88 0" />
+        android:strokeColor="#FBBF24"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:pathData="M12,12h84v84h-84z" />
 
-    <!-- Brain icon (simplified) -->
+    <!-- Brain silhouette (left hemisphere) -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,30c-6,0 -11,2.5 -14,6.5c-2,-1.5 -4.5,-2.5 -7,-2.5c-5.5,0 -10,4.5 -10,10c0,2 0.6,3.8 1.7,5.3C22.5,51.5 21,54 21,57c0,5 4,9 9,9c1.5,0 3,-0.4 4.2,-1c2,3 5.3,5 9,5h0.8c0.3,1.5 1,2.8 2,3.8V78c0,2 1.5,3.5 3.5,3.5s3.5,-1.5 3.5,-3.5v-3h4v3c0,2 1.5,3.5 3.5,3.5s3.5,-1.5 3.5,-3.5v-3.2c1,-1 1.7,-2.3 2,-3.8H63c3.7,0 7,-2 9,-5c1.2,0.6 2.7,1 4.2,1c5,0 9,-4 9,-9c0,-3 -1.5,-5.5 -3.7,-7.3c1.1,-1.5 1.7,-3.3 1.7,-5.3c0,-5.5 -4.5,-10 -10,-10c-2.5,0 -5,1 -7,2.5c-3,-4 -8,-6.5 -14,-6.5zM38,53c-1.7,0 -3,-1.3 -3,-3s1.3,-3 3,-3s3,1.3 3,3s-1.3,3 -3,3zM70,53c-1.7,0 -3,-1.3 -3,-3s1.3,-3 3,-3s3,1.3 3,3s-1.3,3 -3,3z" />
+        android:fillColor="#166534"
+        android:fillAlpha="0.4"
+        android:pathData="M54,32 C44,20 24,26 24,44 C24,50 27,54 30,57 C24,62 21,70 24,80 C27,90 36,96 48,93 C51,92 53,90 54,87"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Brain silhouette (right hemisphere) -->
+    <path
+        android:fillColor="#166534"
+        android:fillAlpha="0.4"
+        android:pathData="M54,32 C64,20 84,26 84,44 C84,50 81,54 78,57 C84,62 87,70 84,80 C81,90 72,96 60,93 C57,92 55,90 54,87"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+
+    <!-- Golden vertical divider line -->
+    <path
+        android:strokeColor="#FBBF24"
+        android:strokeWidth="4"
+        android:fillColor="#00000000"
+        android:pathData="M54,32 L54,87" />
+
+    <!-- Synapse node top-left -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M38,47m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+    <!-- Synapse node top-right -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M70,47m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+    <!-- Synapse node bottom-left -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M35,70m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+    <!-- Synapse node bottom-right -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M73,70m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+
+    <!-- Neural connection left -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M38,47 Q46,58 35,70" />
+
+    <!-- Neural connection right -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000"
+        android:pathData="M70,47 Q62,58 73,70" />
 </vector>

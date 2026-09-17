@@ -1,6 +1,7 @@
 package com.cognicare.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.cognicare.data.remote.*
 import com.cognicare.di.ServiceLocator
@@ -19,10 +20,10 @@ data class DashboardState(
     val error: String? = null
 )
 
-class DashboardViewModel : ViewModel() {
+class DashboardViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val patientRepository: PatientRepository = ServiceLocator.providePatientRepository()
-    private val gameSessionRepository: GameSessionRepository = ServiceLocator.provideGameSessionRepository()
+    private val patientRepository: PatientRepository = ServiceLocator.providePatientRepository(application)
+    private val gameSessionRepository: GameSessionRepository = ServiceLocator.provideGameSessionRepository(application)
 
     private val _state = MutableStateFlow(DashboardState())
     val state: StateFlow<DashboardState> = _state

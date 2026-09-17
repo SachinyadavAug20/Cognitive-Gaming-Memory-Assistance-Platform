@@ -45,12 +45,7 @@ fun CogniCareApp() {
     val context = androidx.compose.ui.platform.LocalContext.current
     val application = context.applicationContext as android.app.Application
     val authViewModel: AuthViewModel = viewModel(
-        factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return ServiceLocator.provideAuthViewModel(application) as T
-            }
-        }
+        factory = ServiceLocator.provideAuthViewModelFactory(application)
     )
     val authState by authViewModel.authState.collectAsState()
 

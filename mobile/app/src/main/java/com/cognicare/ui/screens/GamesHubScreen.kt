@@ -1,7 +1,10 @@
 package com.cognicare.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -11,21 +14,31 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cognicare.ui.components.CogniCareDrawerContent
 import com.cognicare.ui.components.DomainFilterChip
-import com.cognicare.ui.components.FloatingCallCaregiverButton
 import com.cognicare.ui.games.*
 import com.cognicare.ui.theme.*
+import kotlinx.coroutines.launch
+
+private val Ink = Color(0xFF16120E)
+private val InkSecondary = Color(0xFF4A4036)
+private val Canvas = Color(0xFFFAF7F2)
+private val TeaGreen = Color(0xFF1B663E)
+private val Marigold = Color(0xFFE66A00)
+private val Brick = Color(0xFFC5221F)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +46,15 @@ fun GamesHubScreen(
     onGameClick: (String) -> Unit,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    var fontSize by remember { mutableFloatStateOf(18f) }
+    var language by remember { mutableStateOf("en") }
+    var readAloudEnabled by remember { mutableStateOf(false) }
+    var nightModeEnabled by remember { mutableStateOf(false) }
+
     var selectedDomain by remember { mutableStateOf<CognitiveDomain?>(null) }
     val allGames = remember { GameRegistry.getAllGames() }
 
@@ -41,7 +63,6 @@ fun GamesHubScreen(
         else allGames.filter { it.domain == selectedDomain }
     }
 
-    // Domain filter chips matching website
     val domainFilters = listOf(
         Triple(null, "All Activities", allGames.size),
         Triple(CognitiveDomain.MEMORY, "Memory & Recall", allGames.count { it.domain == CognitiveDomain.MEMORY }),
@@ -54,7 +75,27 @@ fun GamesHubScreen(
         Triple(CognitiveDomain.ADVANCED, "Advanced 3D", allGames.count { it.domain == CognitiveDomain.ADVANCED }),
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            CogniCareDrawerContent(
+                currentFontSize = fontSize,
+                onFontSizeChange = { fontSize = it },
+                currentLanguage = language,
+                onLanguageChange = { language = it },
+                isReadAloudEnabled = readAloudEnabled,
+                onReadAloudToggle = { readAloudEnabled = it },
+                isNightModeEnabled = nightModeEnabled,
+                onNightModeToggle = { nightModeEnabled = it },
+                onCaregiverClick = { },
+                onSosClick = {
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
+                    context.startActivity(intent)
+                },
+                onLogout = { }
+            )
+        }
+    ) {
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -62,18 +103,20 @@ fun GamesHubScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .size(32.dp)
+                                    .size(36.dp)
+                                    .shadow(3.dp, CircleShape)
                                     .clip(CircleShape)
-                                    .background(Color.White.copy(alpha = 0.2f)),
+                                    .background(Color.White)
+                                    .border(2.dp, Ink, CircleShape),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "\uD83E\uDDE0", fontSize = 16.sp)
+                                Text(text = "\uD83E\uDDE0", fontSize = 18.sp)
                             }
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(10.dp))
                             Text(
                                 text = "CogniCare",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Black
                             )
                         }
                     },
@@ -82,8 +125,41 @@ fun GamesHubScreen(
                             Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
                         }
                     },
+                    actions = {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Brick,
+                            modifier = Modifier
+                                .shadow(3.dp, RoundedCornerShape(12.dp))
+                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                                .clickable {
+                                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
+                                    context.startActivity(intent)
+                                }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Filled.Phone,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "SOS",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Green40,
+                        containerColor = TeaGreen,
                         titleContentColor = Color.White
                     )
                 )
@@ -93,32 +169,34 @@ fun GamesHubScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .background(WarmWhite)
+                    .background(Canvas)
             ) {
                 // Page header
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Green40)
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .background(TeaGreen)
+                        .border(4.dp, Ink)
+                        .padding(horizontal = 20.dp, vertical = 16.dp)
                 ) {
                     Text(
                         text = "\u2728 Daily Activities",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Black,
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Choose a game to exercise your brain",
-                        fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.7f)
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.8f)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                // Domain filter chips (scrollable horizontal)
+                // Domain filter chips
                 LazyRow(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -146,7 +224,7 @@ fun GamesHubScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Game grid (2-column matching website)
+                // Game grid
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -154,7 +232,7 @@ fun GamesHubScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(filteredGames) { game ->
-                        WebsiteGameCard(
+                        HubGameCard(
                             game = game,
                             onClick = { onGameClick(game.id) }
                         )
@@ -164,35 +242,33 @@ fun GamesHubScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-
-        // Floating Call Caregiver button
-        FloatingCallCaregiverButton(
-            onClick = { },
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 24.dp)
-        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WebsiteGameCard(
+private fun HubGameCard(
     game: GameConfig,
     onClick: () -> Unit
 ) {
+    val cardColor = when (game.domain) {
+        CognitiveDomain.CALM -> Color(0xFF1362B8)
+        CognitiveDomain.EXECUTIVE, CognitiveDomain.ATTENTION -> Marigold
+        CognitiveDomain.MEMORY -> Color(0xFF9D246C)
+        CognitiveDomain.REMINISCENCE -> Color(0xFFBE123C)
+        CognitiveDomain.ADVANCED -> Color(0xFFEA580C)
+        else -> TeaGreen
+    }
+
     Card(
         onClick = onClick,
-        modifier = Modifier.height(200.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = when (game.domain) {
-                CognitiveDomain.CALM -> ChurchBlue
-                CognitiveDomain.EXECUTIVE, CognitiveDomain.ATTENTION -> CardOrange
-                else -> CardGreen
-            }
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier
+            .height(210.dp)
+            .shadow(5.dp, RoundedCornerShape(20.dp))
+            .border(3.dp, Ink, RoundedCornerShape(20.dp)),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
@@ -200,53 +276,41 @@ private fun WebsiteGameCard(
                 .padding(14.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Title + speaker icon row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = game.title,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        maxLines = 2
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = game.domain.label.uppercase(),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White.copy(alpha = 0.7f),
-                        letterSpacing = 1.sp
-                    )
-                }
-                Surface(
-                    shape = CircleShape,
-                    color = Color.White.copy(alpha = 0.2f),
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(text = "\uD83D\uDD0A", fontSize = 14.sp)
-                    }
-                }
+            // Title + domain tag
+            Column {
+                Text(
+                    text = game.title,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color.White,
+                    maxLines = 2,
+                    lineHeight = 20.sp
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = game.domain.label.uppercase(),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color(0xFFFFF0DB),
+                    letterSpacing = 1.sp
+                )
             }
 
-            // Game emoji icon
+            // Game emoji in white box
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .size(72.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .size(80.dp)
+                    .shadow(3.dp, RoundedCornerShape(20.dp))
+                    .clip(RoundedCornerShape(20.dp))
+                    .border(3.dp, Ink, RoundedCornerShape(20.dp))
                     .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = game.emoji, fontSize = 40.sp)
+                Text(text = game.emoji, fontSize = 44.sp)
             }
 
-            // Action button
+            // Start button
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -254,10 +318,10 @@ private fun WebsiteGameCard(
                 onClick = onClick
             ) {
                 Text(
-                    text = "Start ${game.title.split(" ").first()} \u2192",
+                    text = "Start \u2192",
                     modifier = Modifier.padding(vertical = 10.dp),
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )

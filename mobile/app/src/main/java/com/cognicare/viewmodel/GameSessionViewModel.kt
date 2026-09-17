@@ -1,6 +1,7 @@
 package com.cognicare.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.cognicare.data.remote.GameSessionRequest
 import com.cognicare.di.ServiceLocator
@@ -15,9 +16,9 @@ data class GameSessionState(
     val error: String? = null
 )
 
-class GameSessionViewModel : ViewModel() {
+class GameSessionViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: GameSessionRepository = ServiceLocator.provideGameSessionRepository()
+    private val repository: GameSessionRepository = ServiceLocator.provideGameSessionRepository(application)
 
     private val _state = MutableStateFlow(GameSessionState())
     val state: StateFlow<GameSessionState> = _state

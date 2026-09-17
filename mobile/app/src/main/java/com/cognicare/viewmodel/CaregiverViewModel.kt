@@ -55,7 +55,6 @@ class CaregiverViewModel(
                 repository.processSos(
                     patientId = patientId,
                     sos = CaregiverSosDto(
-                        id = 0,
                         patientId = patientId,
                         patientLat = lat,
                         patientLng = lng,
