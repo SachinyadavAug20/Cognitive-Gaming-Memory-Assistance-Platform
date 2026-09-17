@@ -1,4 +1,4 @@
-package com.cognicare.data
+package com.cognicare.data.local
 
 import android.content.Context
 import androidx.room.Database

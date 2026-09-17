@@ -68,7 +68,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
 
     LaunchedEffect(phase) {
         if (phase == "memorize") {
-            kotlinx.coroutines.delay(2000 + level * 500)
+            kotlinx.coroutines.delay((2000 + level * 500).toLong())
             phase = "pick"
         }
     }

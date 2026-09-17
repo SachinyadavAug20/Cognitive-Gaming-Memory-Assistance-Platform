@@ -1,4 +1,4 @@
-package com.cognicare.data
+package com.cognicare.data.local
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow

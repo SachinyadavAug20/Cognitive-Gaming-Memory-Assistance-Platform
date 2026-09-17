@@ -1,6 +1,7 @@
 package com.cognicare.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -14,15 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.data.Patient
-import com.cognicare.ui.theme.Green40
-import com.cognicare.ui.theme.DeepGreen
-import com.cognicare.ui.theme.SoftGreen
-import com.cognicare.ui.theme.SuccessGreen
+import com.cognicare.data.local.Patient
+import com.cognicare.ui.components.FloatingCallCaregiverButton
+import com.cognicare.ui.components.FloatingTalkSaathiButton
+import com.cognicare.ui.components.NeoBrutalistCard
+import com.cognicare.ui.theme.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,327 +34,449 @@ fun PatientDashboardScreen(
     onCaregiverClick: () -> Unit,
     onLogout: () -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(
-                            text = "Namaste!",
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.8f)
-                        )
-                        Text(
-                            text = patient.name,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onLogout) {
-                        Icon(
-                            Icons.Default.Logout,
-                            contentDescription = "Logout",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Green40
-                )
-            )
-        }
-    ) { padding ->
+    val today = remember {
+        val sdf = SimpleDateFormat("EEEE, MMM d", Locale.US)
+        sdf.format(Date())
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .background(SoftGreen.copy(alpha = 0.3f)),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .background(WarmWhite),
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
-            // Welcome card
+            // Green header with greeting (matching website)
             item {
-                WelcomeCard(patient)
-            }
-
-            // Quick Actions
-            item {
-                Text(
-                    text = "What would you like to do?",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-            }
-
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(DeepGreen, Green40)
+                            )
+                        )
+                        .statusBarsPadding()
+                        .padding(horizontal = 24.dp, vertical = 20.dp)
                 ) {
-                    QuickActionCard(
-                        icon = Icons.Default.Gamepad,
-                        title = "Play Games",
-                        subtitle = "8 fun brain games",
-                        color = Green40,
-                        onClick = onGamesClick,
-                        modifier = Modifier.weight(1f)
-                    )
-                    QuickActionCard(
-                        icon = Icons.Default.Favorite,
-                        title = "My Health",
-                        subtitle = "Wellness score",
-                        color = SuccessGreen,
-                        onClick = { },
-                        modifier = Modifier.weight(1f)
-                    )
+                    Column {
+                        // Top bar: CogniCare logo + SOS
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.White.copy(alpha = 0.2f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(text = "\uD83E\uDDE0", fontSize = 18.sp)
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "CogniCare",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Surface(
+                                    shape = RoundedCornerShape(16.dp),
+                                    color = Color.White.copy(alpha = 0.15f)
+                                ) {
+                                    Text(
+                                        text = "\uD83D\uDCC5 $today",
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                        fontSize = 12.sp,
+                                        color = Color.White
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(16.dp),
+                                    color = SOSRed
+                                ) {
+                                    Text(
+                                        text = "\uD83D\uDE91 SOS HELP",
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Patient greeting
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            // Avatar
+                            Box(
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFFE07A3A))
+                                    .border(3.dp, Color.White, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = patient.name.first().toString(),
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column {
+                                Text(
+                                    text = "Good Day,",
+                                    fontSize = 16.sp,
+                                    color = Color.White.copy(alpha = 0.8f)
+                                )
+                                Text(
+                                    text = "${patient.name}!",
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "You are safe at home with your family today.",
+                                    fontSize = 14.sp,
+                                    color = Color.White.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Read for Me + Sound On buttons
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = { },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.White
+                                ),
+                                border = ButtonDefaults.outlinedButtonBorder.copy(
+                                    brush = Brush.horizontalGradient(listOf(Color.White.copy(alpha = 0.5f), Color.White.copy(alpha = 0.5f)))
+                                )
+                            ) {
+                                Text(text = "\uD83D\uDD0A", fontSize = 16.sp)
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(text = "Read for Me", fontSize = 14.sp)
+                            }
+                            OutlinedButton(
+                                onClick = { },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    contentColor = Color.White
+                                ),
+                                border = ButtonDefaults.outlinedButtonBorder.copy(
+                                    brush = Brush.horizontalGradient(listOf(Color.White.copy(alpha = 0.5f), Color.White.copy(alpha = 0.5f)))
+                                )
+                            ) {
+                                Text(text = "\uD83D\uDD0A", fontSize = 16.sp)
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(text = "Sound On", fontSize = 14.sp)
+                            }
+                        }
+                    }
                 }
             }
 
+            // Family Photos & Peaceful Sounds card
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    QuickActionCard(
-                        icon = Icons.Default.People,
-                        title = "Family",
-                        subtitle = "Photo album",
-                        color = Color(0xFF42A5F5),
-                        onClick = onCaregiverClick,
-                        modifier = Modifier.weight(1f)
-                    )
-                    QuickActionCard(
-                        icon = Icons.Default.History,
-                        title = "History",
-                        subtitle = "Past sessions",
-                        color = Color(0xFFFF9800),
-                        onClick = { },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-            }
-
-            // Today's Progress
-            item {
-                Text(
-                    text = "Today's Progress",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-            }
-
-            item {
-                ProgressCard(
-                    title = "Games Completed",
-                    value = 3,
-                    max = 5,
-                    color = Green40
-                )
-            }
-
-            item {
-                ProgressCard(
-                    title = "Time Spent",
-                    value = 25,
-                    max = 30,
-                    color = Color(0xFF42A5F5),
-                    unit = "min"
-                )
-            }
-
-            item {
-                ProgressCard(
-                    title = "Score Today",
-                    value = 150,
-                    max = 200,
-                    color = Color(0xFFFF9800)
-                )
-            }
-
-            // Motivational message
-            item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = SuccessGreen.copy(alpha = 0.1f)),
-                    shape = RoundedCornerShape(16.dp)
+                Spacer(modifier = Modifier.height(20.dp))
+                NeoBrutalistCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    backgroundColor = DeepGreen
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "\uD83C\uDF1F", fontSize = 36.sp)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color.White.copy(alpha = 0.15f),
+                            modifier = Modifier.size(56.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(text = "\uD83D\uDCBC", fontSize = 28.sp)
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Great progress today!",
-                                fontSize = 18.sp,
+                                text = "Family Photos &\nPeaceful Sounds",
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = SuccessGreen
+                                color = Color.White,
+                                lineHeight = 26.sp
                             )
                             Text(
-                                text = "Your memory is getting stronger every day.",
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                                text = "Look at family pictures and listen to gentle music",
+                                fontSize = 13.sp,
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Surface(
+                                shape = CircleShape,
+                                color = CardOrange,
+                                modifier = Modifier.size(40.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(text = "\uD83D\uDD0A", fontSize = 18.sp)
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "\u25B6 Play",
+                                fontSize = 12.sp,
+                                color = Color.White
                             )
                         }
                     }
                 }
             }
 
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-        }
-    }
-}
-
-@Composable
-fun WelcomeCard(patient: Patient) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(Green40, DeepGreen)
-                    )
-                )
-                .padding(20.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Avatar
-                Box(
+            // Daily Activities section
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
                     modifier = Modifier
-                        .size(72.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = patient.name.first().toString(),
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        text = "\u2728 Daily Activities",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "View All",
+                        fontSize = 14.sp,
+                        color = Green40,
+                        fontWeight = FontWeight.Medium
                     )
                 }
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
-                Spacer(modifier = Modifier.width(16.dp))
+            // Game cards (2-column, matching website style)
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ActivityGameCard(
+                        emoji = "\uD83E\uDDE9",
+                        title = "Picture Puzzle",
+                        color = CardGreen,
+                        onClick = { },
+                        modifier = Modifier.weight(1f)
+                    )
+                    ActivityGameCard(
+                        emoji = "\uD83C\uDFEA",
+                        title = "Going to the Market",
+                        color = CardOrange,
+                        onClick = { },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
 
-                Column {
-                    Text(
-                        text = "Good day,",
-                        fontSize = 14.sp,
-                        color = Color.White.copy(alpha = 0.8f)
+            item { Spacer(modifier = Modifier.height(12.dp)) }
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    ActivityGameCard(
+                        emoji = "\uD83C\uDF3F",
+                        title = "Picking Tea Leaves",
+                        color = CardGreen,
+                        onClick = { },
+                        modifier = Modifier.weight(1f)
                     )
-                    Text(
-                        text = patient.name,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
+                    ActivityGameCard(
+                        emoji = "\uD83D\uDCDA",
+                        title = "School Days",
+                        color = CardOrange,
+                        onClick = { },
+                        modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.LocationOn,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = Color.White.copy(alpha = 0.7f)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
+                }
+            }
+
+            // Reminiscence & Comfort section
+            item {
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = "\uD83E\uDDE1 Reminiscence & Comfort",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // Memory of the Day card
+            item {
+                NeoBrutalistCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = "${patient.state} • Age ${patient.age}",
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.7f)
+                            text = "\uD83E\uDDE1 Memory of the Day",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
                         )
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = CardOrange.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                text = "Family Keepsake",
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = CardOrange
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(SoftGreen),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "\uD83D\uDC68", fontSize = 40.sp)
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = CardOrange.copy(alpha = 0.15f)
+                            ) {
+                                Text(
+                                    text = "\uD83D\uDC65 Son",
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                    fontSize = 11.sp,
+                                    color = CardOrange,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "Manash Borah",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Eldest son, mechanical engineer\nin Guwahati. Visits every\nSunday morning.",
+                                fontSize = 13.sp,
+                                color = Color.Gray,
+                                lineHeight = 18.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = { },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(text = "\uD83D\uDD0A Read memory for me", fontSize = 13.sp)
+                        }
+                        OutlinedButton(
+                            onClick = { },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(text = "\u2728 Show another memory", fontSize = 13.sp)
+                        }
                     }
                 }
             }
+
+            // Bottom padding for floating buttons
+            item { Spacer(modifier = Modifier.height(32.dp)) }
+        }
+
+        // Floating buttons (matching website bottom corners)
+        Box(modifier = Modifier.fillMaxSize()) {
+            FloatingCallCaregiverButton(
+                onClick = onCaregiverClick,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 16.dp, bottom = 24.dp)
+            )
+            FloatingTalkSaathiButton(
+                onClick = { },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 24.dp)
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuickActionCard(
-    icon: ImageVector,
+private fun ActivityGameCard(
+    emoji: String,
     title: String,
-    subtitle: String,
     color: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         onClick = onClick,
-        modifier = modifier.height(110.dp),
+        modifier = modifier.height(180.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(color.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    icon,
-                    contentDescription = null,
-                    tint = color,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = subtitle,
-                fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-            )
-        }
-    }
-}
-
-@Composable
-fun ProgressCard(
-    title: String,
-    value: Int,
-    max: Int,
-    color: Color,
-    unit: String = ""
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -362,25 +486,30 @@ fun ProgressCard(
                 Text(
                     text = title,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = "$value$unit / $max$unit",
-                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = color
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
                 )
+                Surface(
+                    shape = CircleShape,
+                    color = Color.White.copy(alpha = 0.2f),
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(text = "\uD83D\uDD0A", fontSize = 14.sp)
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(
-                progress = { (value.toFloat() / max).coerceIn(0f, 1f) },
+
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(10.dp)
-                    .clip(RoundedCornerShape(5.dp)),
-                color = color,
-                trackColor = color.copy(alpha = 0.12f)
-            )
+                    .size(72.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = emoji, fontSize = 40.sp)
+            }
         }
     }
 }

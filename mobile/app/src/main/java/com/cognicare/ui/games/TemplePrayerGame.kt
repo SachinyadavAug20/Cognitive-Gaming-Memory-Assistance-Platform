@@ -177,9 +177,10 @@ fun TemplePrayerGame(onBack: () -> Unit) {
                                                 } else {
                                                     // No match — flip back
                                                     val prev = firstSelection!!
+                                                    val mismatchId = pair.id
+                                                    val prevId = prev.id
                                                     firstSelection = null
-                                                    kotlinx.coroutines.delay(500)
-                                                    revealed = revealed - pair.id - prev.id
+                                                    revealed = revealed - mismatchId - prevId
                                                 }
                                             }
                                         }

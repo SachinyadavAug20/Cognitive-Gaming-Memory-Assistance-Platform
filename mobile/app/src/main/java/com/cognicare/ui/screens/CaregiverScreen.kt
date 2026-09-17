@@ -17,10 +17,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.data.Patient
-import com.cognicare.ui.theme.Green40
-import com.cognicare.ui.theme.SoftGreen
-import com.cognicare.ui.theme.SuccessGreen
+import com.cognicare.data.local.Patient
+import com.cognicare.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +29,21 @@ fun CaregiverScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Caregiver Dashboard") },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.2f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "\uD83E\uDDE0", fontSize = 16.sp)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Caregiver Dashboard")
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
@@ -45,28 +57,28 @@ fun CaregiverScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(SoftGreen.copy(alpha = 0.3f)),
+                .background(WarmWhite),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Patient summary
+            // Patient summary card
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Green40)
+                    colors = CardDefaults.cardColors(containerColor = DeepGreen)
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(64.dp)
                                 .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.2f)),
+                                .background(Color(0xFFE07A3A)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -85,9 +97,9 @@ fun CaregiverScreen(
                                 color = Color.White
                             )
                             Text(
-                                text = "${patient.age} years • ${patient.state}",
+                                text = "${patient.age} years \u2022 ${patient.state}",
                                 fontSize = 14.sp,
-                                color = Color.White.copy(alpha = 0.8f)
+                                color = Color.White.copy(alpha = 0.7f)
                             )
                         }
                     }
@@ -120,7 +132,7 @@ fun CaregiverScreen(
                         title = "Time",
                         value = "25 min",
                         icon = Icons.Default.Timer,
-                        color = Color(0xFF42A5F5),
+                        color = CardOrange,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -135,14 +147,14 @@ fun CaregiverScreen(
                         title = "Score",
                         value = "150",
                         icon = Icons.Default.Star,
-                        color = Color(0xFFFF9800),
+                        color = SaathiYellow,
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
                         title = "Streak",
                         value = "3 days",
                         icon = Icons.Default.LocalFireDepartment,
-                        color = Color(0xFFE53935),
+                        color = SOSRed,
                         modifier = Modifier.weight(1f)
                     )
                 }
