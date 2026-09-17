@@ -45,7 +45,7 @@ graph TD
 | `mobile/` | Native Android mobile & tablet application (Kotlin) — hardware camera, regional TTS, haptics, kiosk mode |
 | `omkar/` | Standalone sub-project demo games (A-Day-in-My-World, Bazaar Buddies, Memory Garden, Memory Road) |
 
-> **Detailed technical references:** `frontend/INFO.md` and `backend/INFO.md`.
+> **Detailed technical references:** `frontend/INFO.md`, `backend/INFO.md`, and `mobile/INFO.md`.
 
 ---
 
@@ -98,6 +98,7 @@ graph TD
 ### Prerequisites
 - **Node.js** 18+ & **JDK** 17+
 - **Ollama**: `ollama pull qwen2.5:1.5b` (optional `llama3.2:3b`)
+- **Android Studio** (for mobile app)
 
 ### Running the Full System
 
@@ -146,6 +147,10 @@ npm run lint && npx tsc --noEmit && npm run build
 # Backend
 cd backend
 ./mvnw -o compile
+
+# Mobile (requires Android SDK)
+cd mobile
+./gradlew assembleDebug
 ```
 
 ---
