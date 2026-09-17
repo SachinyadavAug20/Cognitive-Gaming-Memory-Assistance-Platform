@@ -3,6 +3,7 @@
 import React from "react";
 import { Users, QrCode, Cpu, Database } from "lucide-react";
 import type { AdminOverview, AdminAiDiagnostics, AdminOfflineQueue } from "@/types/admin";
+import { useSystemStatus } from "@/hooks/useSystemStatus";
 
 interface AdminOverviewCardsProps {
   loading: boolean;
@@ -17,6 +18,11 @@ export function AdminOverviewCards({
   aiDiag,
   offlineQueue,
 }: AdminOverviewCardsProps) {
+  const systemStatus = useSystemStatus();
+  const isAiOnline = systemStatus.isLlmOnline || overview?.ollamaStatus === "UP";
+  const displayModel = aiDiag?.defaultModel || systemStatus.llmModel || "llama3.2:3b";
+  const displayLatency = aiDiag?.latencyMs ?? systemStatus.llmLatencyMs ?? 35;
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Card 1: Registered Patients */}
@@ -67,17 +73,17 @@ export function AdminOverviewCards({
           <div className="flex items-center gap-2">
             <span
               className={`inline-block h-3.5 w-3.5 rounded-full border border-black ${
-                overview?.ollamaStatus === "UP"
+                isAiOnline
                   ? "bg-emerald-500 animate-pulse"
                   : "bg-rose-500"
               }`}
             />
             <span className="font-serif text-2xl font-black text-ink">
-              {overview?.ollamaStatus === "UP" ? "ONLINE" : "OFFLINE"}
+              {isAiOnline ? "ONLINE" : "OFFLINE"}
             </span>
           </div>
           <p className="text-[11px] font-bold text-ink-secondary mt-0.5">
-            {aiDiag?.defaultModel ?? "llama3.2:3b"} • {aiDiag?.latencyMs ?? 35}ms
+            {isAiOnline ? `${displayModel} • ${displayLatency}ms` : "Offline • Rule-Based Fallback"}
           </p>
         </div>
       </div>

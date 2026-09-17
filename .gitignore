@@ -15,15 +15,6 @@ node_modules/
 **/dist/
 **/build/
 
-# Android and Gradle
-**/.gradle/
-**/android/app/build/
-**/android/build/
-**/android/.gradle/
-local.properties
-*.apk
-*.aab
-
 # Java / Spring Boot Backend
 **/target/
 *.class

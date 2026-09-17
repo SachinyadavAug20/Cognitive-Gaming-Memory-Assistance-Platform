@@ -42,7 +42,7 @@ graph TD
 |---|---|
 | `frontend/` | Next.js 16.3.3 application — patient/caregiver/admin experience, games, i18n, SEO |
 | `backend/` | Spring Boot 4.1 REST service — patient records, JWT auth, PDF clinical extraction, surveillance/SOS, admin mission-control |
-| `application/` | Native Android mobile & tablet application (Capacitor 7) — hardware camera, regional TTS, haptics, kiosk mode |
+| `mobile/` | Native Android mobile & tablet application (Kotlin) — hardware camera, regional TTS, haptics, kiosk mode |
 | `omkar/` | Standalone sub-project demo games (A-Day-in-My-World, Bazaar Buddies, Memory Garden, Memory Road) |
 
 > **Detailed technical references:** `frontend/INFO.md` and `backend/INFO.md`.
@@ -87,6 +87,7 @@ graph TD
 |---|---|---|
 | **Frontend** | Next.js 16.3.3, React 19.2, TypeScript 5, Tailwind 4, Three.js, recharts 3, next-intl 4, zustand, MediaPipe tasks-vision, html5-qrcode, gsap | Zero-flicker i18n, Web Audio/TTS, 3D kinematics, SSR + `next/dynamic` code splitting |
 | **Backend** | Spring Boot 4.1, Java 17, Spring Data JPA, Hibernate, Apache PDFBox 3.0.3, hand-rolled HS256 JWT | REST API, multipart upload, JWT auth (fail-open on `/patients/**`), surveillance/SOS |
+| **Mobile** | Kotlin, Android SDK 35, Jetpack Compose, CameraX, ML Kit, ExoPlayer | Native Android kiosk mode, QR scanner, offline TTS, haptic feedback |
 | **AI / LLM** | Ollama (`qwen2.5:1.5b` / `llama3.2:3b`) | Offline-first clinical report analysis + conversational reminiscence |
 | **Database** | MariaDB (default) / H2 file-backed (demo profile) | Multi-patient medical schemas, family albums, biomarker/surveillance history |
 
@@ -154,9 +155,4 @@ cd backend
 - **SEO/Performance**: unique per-route metadata + canonical/hreflang for all 11 locales, centralized `SITE_URL`, cache headers (`immutable`, 1yr) for `/wasm`, `/models`, `/sample-images`, lazy-loaded Three.js/recharts via `next/dynamic`, `550` sitemap URLs.
 - **Offline-first**: AI/LLM and patient data never leave the clinic/devices; media cached for reuse.
 - *SIH 2026 — Problem Statement SIH26003.*
-
-
-chromium \
-  --unsafely-treat-insecure-origin-as-secure="http://192.168.0.101:3000" \
-  --user-data-dir=/tmp/chromium-dev
 

@@ -7,8 +7,9 @@ import { ChunkyButton } from "@/components/ui/ChunkyButton";
 import { useTranslations, useLocale } from "next-intl";
 import { api } from "@/lib/api";
 import { AudioToggle } from "@/components/ui/AudioToggle";
-import { CreditCard, FileText, BookOpen, ExternalLink, ShieldCheck } from "lucide-react";
+import { CreditCard, FileText, BookOpen, ExternalLink, ShieldCheck, Radio, WifiOff } from "lucide-react";
 import type { PatientSummary } from "@/types";
+import { useSystemStatus } from "@/hooks/useSystemStatus";
 
 import { getAllPatientSummaries } from "@/data/mockPatients";
 
@@ -186,6 +187,7 @@ export function CaregiverContent() {
   const t = useTranslations("caregiver");
   const locale = useLocale();
   const c18n = CAREGIVER_EXTRA_I18N[locale] || CAREGIVER_EXTRA_I18N.en;
+  const systemStatus = useSystemStatus();
 
   // Immediately initialize with all patient summaries - zero loading delay
   const [patients, setPatients] = useState<PatientSummary[]>(() => getAllPatientSummaries());
@@ -239,6 +241,25 @@ export function CaregiverContent() {
             <p className="text-ink-inverse/60 text-xs mt-0.5">{t("subtitle")}</p>
           </div>
           <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2">
+              <div
+                suppressHydrationWarning
+                className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-2.5 py-1 text-xs font-black shadow-[2px_2px_0px_#000] ${
+                  systemStatus.isSpringOnline
+                    ? "bg-emerald-100 text-emerald-950"
+                    : "bg-rose-100 text-rose-950"
+                }`}
+                title={systemStatus.isSpringOnline ? "Spring Backend Online" : "Spring Backend Offline"}
+              >
+                {systemStatus.isSpringOnline ? (
+                  <Radio className="h-3 w-3 text-emerald-700 animate-pulse" />
+                ) : (
+                  <WifiOff className="h-3 w-3 text-rose-700" />
+                )}
+                <span>{systemStatus.isSpringOnline ? "Spring Online" : "Spring Offline"}</span>
+              </div>
+            </div>
+
             <AudioToggle />
             <Link
               href="/clinical-evidence"

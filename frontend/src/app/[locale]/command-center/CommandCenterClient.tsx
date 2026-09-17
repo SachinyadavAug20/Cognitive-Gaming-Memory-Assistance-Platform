@@ -18,7 +18,11 @@ import {
   BookOpen,
   ExternalLink,
   FileText,
+  Cpu,
+  Radio,
+  WifiOff,
 } from "lucide-react";
+import { useSystemStatus } from "@/hooks/useSystemStatus";
 
 interface StateTelemetry {
   id: string;
@@ -387,6 +391,8 @@ export function CommandCenterClient() {
   const c18n = CC_I18N[locale] || CC_I18N.en;
   const [selectedStateId, setSelectedStateId] = useState<string>("assam");
 
+  const { isSpringOnline, isLlmOnline, llmModel, springLatencyMs } = useSystemStatus();
+
   const activeState = NE_STATES_DATA.find((s) => s.id === selectedStateId) || NE_STATES_DATA[0];
 
   const totalPatients = NE_STATES_DATA.reduce((acc, s) => acc + s.registeredPatients, 0);
@@ -415,7 +421,37 @@ export function CommandCenterClient() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Spring Boot Indicator */}
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-3 py-1.5 text-xs font-black shadow-[2px_2px_0px_#000] ${
+                isSpringOnline ? "bg-tea-light text-tea" : "bg-rose-100 text-rose-800"
+              }`}
+              title={isSpringOnline ? `Spring Boot Backend: Online (${springLatencyMs ? `${springLatencyMs}ms` : "Port 8080"})` : "Spring Boot Backend: Offline"}
+            >
+              {isSpringOnline ? (
+                <Radio className="h-3.5 w-3.5 animate-pulse" />
+              ) : (
+                <WifiOff className="h-3.5 w-3.5 text-rose-700" />
+              )}
+              <span>Spring: {isSpringOnline ? "ONLINE" : "OFFLINE"}</span>
+            </span>
+
+            {/* Local LLM Indicator */}
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-3 py-1.5 text-xs font-black shadow-[2px_2px_0px_#000] ${
+                isLlmOnline ? "bg-purple-100 text-purple-900" : "bg-neutral-100 text-neutral-600"
+              }`}
+              title={
+                isLlmOnline
+                  ? `Ollama Neural LLM: Online (${llmModel || "Local Model"})`
+                  : "Ollama Neural LLM: Offline (Rule-based Fallback Active)"
+              }
+            >
+              <Cpu className={`h-3.5 w-3.5 ${isLlmOnline ? "text-purple-700 animate-pulse" : "text-neutral-500"}`} />
+              <span>LLM: {isLlmOnline ? "ONLINE" : "OFFLINE"}</span>
+            </span>
+
             <span className="inline-flex items-center gap-1.5 rounded-xl border-2 border-black bg-green-100 px-3 py-1.5 text-xs font-black text-green-900 shadow-[2px_2px_0px_#000]">
               <span className="h-2.5 w-2.5 rounded-full bg-green-600 animate-pulse" />
               <span>{c18n.connectedBadge}</span>
@@ -458,13 +494,25 @@ export function CommandCenterClient() {
             <span className="text-[10px] font-bold text-ink-secondary mt-1 block">{c18n.ashaNodes}</span>
           </div>
 
-          <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] text-left">
-            <div className="flex items-center justify-between text-ink-secondary mb-1">
-              <span className="text-xs font-black uppercase tracking-wider">{c18n.activeModules}</span>
-              <Brain className="h-4 w-4 text-purple-700" />
+          <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[3px_3px_0px_#000] text-left flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between text-ink-secondary mb-1">
+                <span className="text-xs font-black uppercase tracking-wider">{c18n.activeModules}</span>
+                <Brain className="h-4 w-4 text-purple-700" />
+              </div>
+              <div className="font-serif text-2xl font-black text-purple-900">{c18n.cdtxSuite}</div>
             </div>
-            <div className="font-serif text-2xl font-black text-purple-900">{c18n.cdtxSuite}</div>
-            <span className="text-[10px] font-bold text-tea mt-1 block">{c18n.localTech}</span>
+            <div className="mt-2 pt-2 border-t border-black/10 flex items-center justify-between">
+              <span className="text-[10px] font-bold text-tea">{c18n.localTech}</span>
+              <span
+                className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-black border border-black/20 ${
+                  isLlmOnline ? "bg-purple-50 text-purple-800" : "bg-neutral-100 text-neutral-600"
+                }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${isLlmOnline ? "bg-emerald-500 animate-pulse" : "bg-rose-500"}`} />
+                {isLlmOnline ? "LLM READY" : "LLM OFFLINE"}
+              </span>
+            </div>
           </div>
         </div>
 

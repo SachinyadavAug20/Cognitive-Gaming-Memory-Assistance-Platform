@@ -121,7 +121,7 @@ Built to run on a basic Android tablet and a single clinic computer — no expen
 - AI — small on-device models for clinical-record analysis and conversational reminiscence; they run on the device's CPU without internet and keep patient data local.
 - Backend — one lightweight Java/Spring REST server, installable on a single clinic PC.
 - Data — a local database on that same PC holding all patients, families, biomarkers, and history; tablets sync with it over the clinic's own Wi-Fi (LAN).
-- Native app — a Capacitor Android build that uses each tablet's camera, text-to-speech, haptics, and kiosk controls.
+- Native app — a Kotlin Android build that uses each tablet's camera, text-to-speech, haptics, and kiosk controls.
 
 Everything runs offline: one tablet per patient, one PC per clinic — and nothing else.
 

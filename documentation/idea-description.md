@@ -110,7 +110,7 @@ For a dementia patient, familiarity is therapeutic. This is the engagement insig
 ## 10. Offline-First, Low-Connectivity Architecture — Meeting Requirement (g)
 
 - **On-device intelligence** — the clinical AI and adaptivity run locally; core therapy has no cloud dependency.
-- **Native app** — the platform is packaged as a native Android tablet/mobile app with hardware bridges (camera, text-to-speech, haptics, screen keep-awake kiosk mode, safe back-button handling) and pre-seeded local assets.
+- **Native app** — the platform is packaged as a native Kotlin Android tablet/mobile app with hardware bridges (camera, text-to-speech, haptics, screen keep-awake kiosk mode, safe back-button handling) and pre-seeded local assets.
 - **Local-first storage & LAN sync** — a clinic-local server keeps all records on-site, syncing only within the clinic network.
 - **Graceful degradation** — if speech or network services are unavailable the platform falls back seamlessly; even the login path supports a fully functional offline session.
 
@@ -142,7 +142,7 @@ This is not a standard enterprise dashboard — it is a calm, dignified, one-thu
 | **AI / LLM** | Local on-device models for clinical extraction and conversational reminiscence |
 | **Backend** | A robust Java/Spring-based REST service with secure auth and media handling |
 | **Data** | Clinic-local relational storage, demo-friendly alternative, multi-patient schemas with family and biomarker history |
-| **Native app** | Capacitor-packaged Android build exposing hardware capabilities |
+| **Native app** | Native Kotlin Android build exposing hardware capabilities |
 
 The entire platform builds and verifies reproducibly from source across all layers.
 

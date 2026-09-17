@@ -232,7 +232,7 @@ This is not a standard enterprise dashboard — it is a calm, dignified, one-thu
   ("AI / LLM", "Local on-device models for clinical extraction and conversational reminiscence"),
   ("Backend", "A robust Java/Spring-based REST service with secure auth and media handling"),
   ("Data", "Clinic-local relational storage, demo-friendly alternative, multi-patient schemas with family and biomarker history"),
-  ("Native app", "Capacitor-packaged Android build exposing hardware capabilities"),
+  ("Native app", "Native Kotlin Android build exposing hardware capabilities"),
 )
 
 #table(

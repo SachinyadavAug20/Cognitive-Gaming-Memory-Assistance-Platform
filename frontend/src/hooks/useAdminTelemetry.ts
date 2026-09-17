@@ -166,8 +166,8 @@ export function useAdminTelemetry() {
         totalPatients: 5,
         activeCards: 4,
         totalSessions: 18,
-        ollamaStatus: "UP",
-        dbStatus: "UP",
+        ollamaStatus: "DOWN",
+        dbStatus: "DOWN",
       });
       setAiTuning((prev) => prev ?? {
         baselineReactionLatencyMs: 850,
@@ -262,8 +262,8 @@ export function useAdminTelemetry() {
             totalPatients: 5,
             activeCards: 4,
             totalSessions: 18,
-            ollamaStatus: "UP",
-            dbStatus: "UP",
+            ollamaStatus: "DOWN",
+            dbStatus: "DOWN",
           });
           setLoading(false);
         }

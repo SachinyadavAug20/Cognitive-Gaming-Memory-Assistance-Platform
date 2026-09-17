@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { Activity, RefreshCw, Building2, Lock, ShieldAlert } from "lucide-react";
+import { Activity, RefreshCw, Building2, Lock, ShieldAlert, Radio, WifiOff, Cpu } from "lucide-react";
 import type { AdminHeaderTexts } from "@/lib/adminI18n";
+import { useSystemStatus } from "@/hooks/useSystemStatus";
 
 interface AdminHeaderProps {
   headerTexts: AdminHeaderTexts;
@@ -21,6 +22,8 @@ export function AdminHeader({
   onToggleAutoRefresh,
   onRefreshTelemetry,
 }: AdminHeaderProps) {
+  const systemStatus = useSystemStatus();
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border-4 border-black bg-surface p-6 shadow-[6px_6px_0px_#000]">
       <div>
@@ -32,6 +35,32 @@ export function AdminHeader({
           <span className="inline-flex items-center gap-1 rounded-full border-2 border-rose-900/40 bg-rose-100 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider text-rose-950">
             <Lock className="h-3 w-3 text-rose-700" />
             {headerTexts.confidentialBadge}
+          </span>
+          <span
+            suppressHydrationWarning
+            className={`inline-flex items-center gap-1 rounded-full border-2 border-black px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+              systemStatus.isSpringOnline
+                ? "bg-emerald-100 text-emerald-950"
+                : "bg-rose-100 text-rose-950"
+            }`}
+          >
+            {systemStatus.isSpringOnline ? (
+              <Radio className="h-2.5 w-2.5 text-emerald-700 animate-pulse" />
+            ) : (
+              <WifiOff className="h-2.5 w-2.5 text-rose-700" />
+            )}
+            {systemStatus.isSpringOnline ? "Spring Online" : "Spring Offline"}
+          </span>
+          <span
+            suppressHydrationWarning
+            className={`inline-flex items-center gap-1 rounded-full border-2 border-black px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider ${
+              systemStatus.isLlmOnline
+                ? "bg-purple-100 text-purple-950"
+                : "bg-neutral-100 text-neutral-700"
+            }`}
+          >
+            <Cpu className={`h-2.5 w-2.5 ${systemStatus.isLlmOnline ? "text-purple-700 animate-pulse" : "text-neutral-500"}`} />
+            {systemStatus.isLlmOnline ? `LLM Online (${systemStatus.llmModel || "Local"})` : "LLM Offline"}
           </span>
           <span suppressHydrationWarning className="text-[11px] font-bold text-ink-secondary">
             {headerTexts.updatedLabel} {lastRefreshedAt.toLocaleTimeString()}

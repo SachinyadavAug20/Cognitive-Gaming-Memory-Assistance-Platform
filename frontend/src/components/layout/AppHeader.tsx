@@ -15,7 +15,9 @@ import {
   Activity,
   Home,
   BookOpen,
+  WifiOff,
 } from "lucide-react";
+import { useSystemStatus } from "@/hooks/useSystemStatus";
 
 interface AppHeaderProps {
   isOnline?: boolean;
@@ -145,20 +147,6 @@ const MAIN_NAV_LABELS: Record<string, {
   },
 };
 
-function subscribeOnline(callback: () => void) {
-  if (typeof window === "undefined") return () => {};
-  window.addEventListener("online", callback);
-  window.addEventListener("offline", callback);
-  return () => {
-    window.removeEventListener("online", callback);
-    window.removeEventListener("offline", callback);
-  };
-}
-
-function getOnlineSnapshot(): boolean {
-  return typeof navigator !== "undefined" ? navigator.onLine : true;
-}
-
 export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
   const t = useTranslations("nav");
   const locale = useLocale();
@@ -167,13 +155,8 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
   const mNav = MAIN_NAV_LABELS[normLoc] || MAIN_NAV_LABELS.en;
   const pathname = usePathname();
 
-  const isOnlineLive = useSyncExternalStore(
-    subscribeOnline,
-    getOnlineSnapshot,
-    () => true
-  );
-
-  const online = forcedOnline !== undefined ? forcedOnline : isOnlineLive;
+  const systemStatus = useSystemStatus();
+  const online = forcedOnline !== undefined ? forcedOnline : systemStatus.isSpringOnline;
 
   const isPatientRoute = pathname ? pathname.startsWith("/patient") : false;
   const navLinks = isPatientRoute
@@ -258,19 +241,27 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
 
         {/* Right: Actions, Language, Caregiver Portal, and Emergency SOS */}
         <div className={`flex items-center shrink-0 ${isPatientRoute ? "gap-1.5 sm:gap-2.5" : "gap-1 sm:gap-2"}`}>
-          {/* Live Connectivity Badge */}
+          {/* Live Spring Backend Connectivity Badge */}
           <div
             suppressHydrationWarning
-            className={`hidden md:flex items-center rounded-xl border-2 border-black shadow-[2px_2px_0px_#000] shrink-0 ${
+            className={`flex items-center rounded-xl border-2 border-black shadow-[2px_2px_0px_#000] shrink-0 ${
               isPatientRoute
                 ? "gap-1.5 px-2.5 py-1.5 text-xs sm:text-sm font-black"
                 : "gap-1.5 px-2 py-1 text-xs font-black"
             } ${
-              online ? "bg-tea-light text-tea" : "bg-marigold-light text-marigold"
+              online ? "bg-tea-light text-tea" : "bg-rose-100 text-rose-800"
             }`}
-            title={online ? "Online (Server Connected)" : "Offline Mode (Local Storage Synced)"}
+            title={
+              online
+                ? `Spring Backend Online (${systemStatus.springLatencyMs ? `${systemStatus.springLatencyMs}ms` : "Port 8080"})`
+                : "Spring Backend Offline (Service Unreachable)"
+            }
           >
-            <Radio className={`${isPatientRoute ? "h-3.5 w-3.5" : "h-3 w-3"} animate-pulse`} />
+            {online ? (
+              <Radio className={`${isPatientRoute ? "h-3.5 w-3.5" : "h-3 w-3"} animate-pulse`} />
+            ) : (
+              <WifiOff className={`${isPatientRoute ? "h-3.5 w-3.5" : "h-3 w-3"} text-rose-700`} />
+            )}
             <span suppressHydrationWarning>{online ? t("online") : t("offline")}</span>
           </div>
 
