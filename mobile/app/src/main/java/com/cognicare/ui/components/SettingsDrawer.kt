@@ -10,40 +10,34 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.ui.theme.*
+import com.cognicare.util.LocalizationManager
+
+private val Ink = Color(0xFF16120E)
+private val InkSecondary = Color(0xFF4A4036)
+private val Canvas = Color(0xFFFAF7F2)
+private val TeaGreen = Color(0xFF1B663E)
+private val Marigold = Color(0xFFE66A00)
+private val Brick = Color(0xFFC5221F)
+private val WarmSurface = Color(0xFFF8F5EE)
 
 data class FontSizeOption(val label: String, val size: Float, val displaySize: String)
 
 val fontSizeOptions = listOf(
-    FontSizeOption("Small (A)", 14f, "A-"),
-    FontSizeOption("Medium (A)", 18f, "A"),
-    FontSizeOption("Large (A+)", 22f, "A+")
-)
-
-val availableLanguages = listOf(
-    "en" to "English",
-    "hi" to "Hindi",
-    "as" to "Assamese",
-    "bn" to "Bengali",
-    "mni" to "Manipuri",
-    "lus" to "Mizo",
-    "kha" to "Khasi",
-    "grt" to "Garo",
-    "brx" to "Bodo",
-    "ne" to "Nepali",
-    "mr" to "Marathi"
+    FontSizeOption("Small", 14f, "A-"),
+    FontSizeOption("Medium", 18f, "A"),
+    FontSizeOption("Large", 22f, "A+")
 )
 
 @Composable
@@ -56,291 +50,343 @@ fun CogniCareDrawerContent(
     onReadAloudToggle: (Boolean) -> Unit,
     isNightModeEnabled: Boolean,
     onNightModeToggle: (Boolean) -> Unit,
+    patientName: String = "Biren Borah",
+    patientState: String = "Assam",
+    onDashboardClick: () -> Unit = {},
+    onGamesClick: () -> Unit = {},
+    onEchoesClick: () -> Unit = {},
     onCaregiverClick: () -> Unit,
     onSosClick: () -> Unit,
     onLogout: () -> Unit
 ) {
-    Column(
+    ModalDrawerSheet(
+        drawerContainerColor = Canvas,
         modifier = Modifier
+            .width(320.dp)
             .fillMaxHeight()
-            .width(300.dp)
-            .background(WarmWhite)
-            .statusBarsPadding()
+            .border(width = 3.dp, color = Ink)
     ) {
-        // Header
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(colors = listOf(DeepGreen, Green40))
-                )
-                .padding(24.dp)
-        ) {
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.2f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "\uD83E\uDDE0", fontSize = 24.sp)
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(
-                            text = "CogniCare",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                        Text(
-                            text = "North East Memory Care",
-                            fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.7f)
-                        )
-                    }
-                }
-            }
-        }
-
-        // Scrollable content
         Column(
             modifier = Modifier
-                .weight(1f)
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
         ) {
-            // Accessibility Section
-            DrawerSectionHeader(text = "\u2699\uFE0F Accessibility Settings")
-
-            // Font Size
-            DrawerSubHeader(text = "Font Size")
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Header Profile Card
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(TeaGreen)
+                    .border(width = 3.dp, color = Ink)
+                    .padding(20.dp)
             ) {
-                fontSizeOptions.forEach { option ->
-                    FilterChip(
-                        selected = currentFontSize == option.size,
-                        onClick = { onFontSizeChange(option.size) },
-                        label = {
-                            Text(
-                                text = option.displaySize,
-                                fontWeight = if (currentFontSize == option.size) FontWeight.Bold else FontWeight.Normal
-                            )
-                        },
-                        modifier = Modifier.weight(1f),
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Green40,
-                            selectedLabelColor = Color.White
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Read-Aloud Toggle
-            DrawerToggleItem(
-                icon = Icons.Filled.VolumeUp,
-                title = "Listen-First Narration",
-                subtitle = "Read content aloud on tap",
-                checked = isReadAloudEnabled,
-                onCheckedChange = onReadAloudToggle
-            )
-
-            // Night Mode Toggle
-            DrawerToggleItem(
-                icon = Icons.Filled.DarkMode,
-                title = "Night Mode",
-                subtitle = "High-contrast dark theme",
-                checked = isNightModeEnabled,
-                onCheckedChange = onNightModeToggle
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-
-            // Language Section
-            DrawerSectionHeader(text = "\uD83C\uDF10 Language")
-
-            var languageExpanded by remember { mutableStateOf(false) }
-            val currentLangName = availableLanguages.find { it.first == currentLanguage }?.second ?: "English"
-
-            Surface(
-                onClick = { languageExpanded = !languageExpanded },
-                shape = RoundedCornerShape(12.dp),
-                color = Color.White,
-                border = ButtonDefaults.outlinedButtonBorder
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Filled.Language,
-                            contentDescription = null,
-                            tint = Green40,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(text = currentLangName, fontWeight = FontWeight.Medium)
+                        Box(
+                            modifier = Modifier
+                                .size(54.dp)
+                                .shadow(3.dp, CircleShape)
+                                .clip(CircleShape)
+                                .background(Color.White)
+                                .border(2.5.dp, Ink, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "👴", fontSize = 28.sp)
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column {
+                            Text(
+                                text = patientName,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Black,
+                                fontFamily = FontFamily.Serif,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "Elderly Care • $patientState",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFFFF0DB)
+                            )
+                        }
                     }
-                    Icon(
-                        if (languageExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                }
-            }
 
-            if (languageExpanded) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color.White,
-                    border = ButtonDefaults.outlinedButtonBorder
-                ) {
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        availableLanguages.forEach { (code, name) ->
-                            Surface(
-                                onClick = {
-                                    onLanguageChange(code)
-                                    languageExpanded = false
-                                },
-                                color = if (currentLanguage == code) Green40.copy(alpha = 0.1f) else Color.Transparent,
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 12.dp, vertical = 10.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (currentLanguage == code) {
-                                        Icon(
-                                            Icons.Filled.Check,
-                                            contentDescription = null,
-                                            tint = Green40,
-                                            modifier = Modifier.size(16.dp)
-                                        )
-                                    } else {
-                                        Spacer(modifier = Modifier.width(16.dp))
-                                    }
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = name,
-                                        fontSize = 14.sp,
-                                        color = if (currentLanguage == code) Green40 else Color.Black
-                                    )
-                                }
-                            }
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // ABDM / SIH Health Badge
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = Color.Black.copy(alpha = 0.25f),
+                        modifier = Modifier.border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(text = "🇮🇳", fontSize = 14.sp)
+                            Text(
+                                text = "Ayushman Bharat ABDM Connected",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.White
+                            )
                         }
                     }
                 }
             }
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+            Column(modifier = Modifier.padding(16.dp)) {
+                // Navigation Quick Links
+                DrawerSectionHeader(text = "📌 " + LocalizationManager.t("home.patient.subtitle"))
 
-            // Navigation Section
-            DrawerSectionHeader(text = "\uD83D\uDD17 Quick Links")
+                DrawerNeoButton(
+                    icon = Icons.Filled.Home,
+                    title = LocalizationManager.t("home.patient.title"),
+                    subtitle = "Main Patient Care Portal",
+                    onClick = onDashboardClick
+                )
 
-            DrawerNavItem(
-                icon = Icons.Filled.Shield,
-                title = "Caregiver Portal",
-                onClick = {
-                    onCaregiverClick()
-                }
-            )
+                DrawerNeoButton(
+                    icon = Icons.Filled.SportsEsports,
+                    title = LocalizationManager.t("patient.moreGames.title"),
+                    subtitle = "43 Cognitive CDTx Games",
+                    badge = "43 Games",
+                    onClick = onGamesClick
+                )
 
-            DrawerNavItem(
-                icon = Icons.Filled.SportsEsports,
-                title = "All Games",
-                onClick = { }
-            )
+                DrawerNeoButton(
+                    icon = Icons.Filled.AutoAwesome,
+                    title = "Echoes of Home 3D",
+                    subtitle = "3D Interactive Time Capsule & River",
+                    badge = "3D WebGL",
+                    accentColor = Marigold,
+                    onClick = onEchoesClick
+                )
 
-            DrawerNavItem(
-                icon = Icons.Filled.Favorite,
-                title = "Echoes of Home",
-                subtitle = "Family photos & peaceful sounds",
-                onClick = { }
-            )
+                DrawerNeoButton(
+                    icon = Icons.Filled.HealthAndSafety,
+                    title = LocalizationManager.t("home.caregiver.title"),
+                    subtitle = "Vitals, Telemetry & Adherence",
+                    onClick = onCaregiverClick
+                )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Ink.copy(alpha = 0.2f), thickness = 2.dp)
 
-            // SOS Button
-            Surface(
-                onClick = onSosClick,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                color = SOSRed
-            ) {
+                // Accessibility Settings
+                DrawerSectionHeader(text = "⚙️ Accessibility & Clinical Settings")
+
+                // Font Size
+                Text(
+                    text = "Text Size",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Ink,
+                    modifier = Modifier.padding(bottom = 6.dp)
+                )
                 Row(
-                    modifier = Modifier.padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        Icons.Filled.Phone,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Emergency SOS (108)",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
+                    fontSizeOptions.forEach { opt ->
+                        val isSelected = currentFontSize == opt.size
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) TeaGreen else Color.White,
+                            modifier = Modifier
+                                .weight(1f)
+                                .shadow(2.dp, RoundedCornerShape(10.dp))
+                                .border(2.dp, Ink, RoundedCornerShape(10.dp))
+                                .clickable { onFontSizeChange(opt.size) }
+                        ) {
+                            Box(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = opt.displaySize,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = if (isSelected) Color.White else Ink
+                                )
+                            }
+                        }
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            // Logout
-            Surface(
-                onClick = onLogout,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                color = Color(0xFFFEE2E2)
-            ) {
-                Row(
-                    modifier = Modifier.padding(14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                // Listen-First Narration
+                DrawerToggleCard(
+                    icon = Icons.Filled.VolumeUp,
+                    title = "Listen-First Audio",
+                    subtitle = "Speaks text aloud automatically",
+                    checked = isReadAloudEnabled,
+                    onCheckedChange = onReadAloudToggle
+                )
+
+                // Night Mode
+                DrawerToggleCard(
+                    icon = Icons.Filled.DarkMode,
+                    title = "High-Contrast Mode",
+                    subtitle = "Optimized for visual impairment",
+                    checked = isNightModeEnabled,
+                    onCheckedChange = onNightModeToggle
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Ink.copy(alpha = 0.2f), thickness = 2.dp)
+
+                // Language Section
+                DrawerSectionHeader(text = "🌐 Regional Languages (11 North East)")
+
+                var langExpanded by remember { mutableStateOf(false) }
+                val currentLangName = LocalizationManager.getLanguageNativeName(currentLanguage)
+
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(2.5.dp, RoundedCornerShape(12.dp))
+                        .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                        .clickable { langExpanded = !langExpanded }
                 ) {
-                    Icon(
-                        Icons.Filled.Logout,
-                        contentDescription = null,
-                        tint = ErrorRed,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Logout",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = ErrorRed
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Text(text = "🗣️", fontSize = 18.sp)
+                            Text(
+                                text = "$currentLangName (${currentLanguage.uppercase()})",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Ink
+                            )
+                        }
+                        Text(text = if (langExpanded) "▲" else "▼", fontSize = 12.sp, fontWeight = FontWeight.Black, color = Ink)
+                    }
                 }
+
+                if (langExpanded) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White, RoundedCornerShape(12.dp))
+                            .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                            .padding(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        LocalizationManager.availableLanguages.forEach { (code, names) ->
+                            val isSelected = currentLanguage == code
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = if (isSelected) TeaGreen else Color.Transparent,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        onLanguageChange(code)
+                                        LocalizationManager.setLanguage(code)
+                                        langExpanded = false
+                                    }
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = "${names.first} • ${names.second}",
+                                        fontSize = 13.sp,
+                                        fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
+                                        color = if (isSelected) Color.White else Ink
+                                    )
+                                    if (isSelected) {
+                                        Text(text = "✓", fontWeight = FontWeight.Black, color = Color.White)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 14.dp), color = Ink.copy(alpha = 0.2f), thickness = 2.dp)
+
+                // SOS Button
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = Brick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(3.dp, RoundedCornerShape(14.dp))
+                        .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                        .clickable { onSosClick() }
+                ) {
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Filled.Phone,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = LocalizationManager.t("nav.sos") + " (108)",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Logout Button
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = Color(0xFFFEE2E2),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(2.dp, RoundedCornerShape(14.dp))
+                        .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                        .clickable { onLogout() }
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(Icons.Filled.Logout, null, tint = Brick, modifier = Modifier.size(20.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Switch User / Logout",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Brick
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Ministry of DoNER • SIH 2026\nCognitive Gaming Memory Platform",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = InkSecondary,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    lineHeight = 14.sp
+                )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Footer
-            Text(
-                text = "Ministry of DoNER \u2022 SIH 2026",
-                fontSize = 11.sp,
-                color = Color.Gray,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
         }
     }
 }
@@ -349,26 +395,75 @@ fun CogniCareDrawerContent(
 private fun DrawerSectionHeader(text: String) {
     Text(
         text = text,
-        fontSize = 13.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.Gray,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Black,
+        color = InkSecondary,
         modifier = Modifier.padding(bottom = 8.dp, top = 4.dp)
     )
 }
 
 @Composable
-private fun DrawerSubHeader(text: String) {
-    Text(
-        text = text,
-        fontSize = 14.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = Color.Black,
-        modifier = Modifier.padding(bottom = 6.dp)
-    )
+private fun DrawerNeoButton(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    badge: String? = null,
+    accentColor: Color = TeaGreen,
+    onClick: () -> Unit
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
+            .shadow(2.dp, RoundedCornerShape(12.dp))
+            .border(2.dp, Ink, RoundedCornerShape(12.dp))
+            .clickable { onClick() }
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(accentColor.copy(alpha = 0.12f))
+                    .border(1.5.dp, Ink, RoundedCornerShape(10.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, null, tint = accentColor, modifier = Modifier.size(22.dp))
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink)
+                    if (badge != null) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Surface(
+                            shape = RoundedCornerShape(6.dp),
+                            color = Color(0xFFFEF3C7),
+                            modifier = Modifier.border(1.dp, Ink, RoundedCornerShape(6.dp))
+                        ) {
+                            Text(
+                                text = badge,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Ink,
+                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
+                Text(text = subtitle, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = InkSecondary)
+            }
+        }
+    }
 }
 
 @Composable
-private fun DrawerToggleItem(
+private fun DrawerToggleCard(
     icon: ImageVector,
     title: String,
     subtitle: String,
@@ -378,71 +473,30 @@ private fun DrawerToggleItem(
     Surface(
         shape = RoundedCornerShape(12.dp),
         color = Color.White,
-        border = ButtonDefaults.outlinedButtonBorder
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)
+            .shadow(2.dp, RoundedCornerShape(12.dp))
+            .border(2.dp, Ink, RoundedCornerShape(12.dp))
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = Green40,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
+            Icon(icon, null, tint = TeaGreen, modifier = Modifier.size(22.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                Text(text = subtitle, fontSize = 11.sp, color = Color.Gray)
+                Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink)
+                Text(text = subtitle, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = InkSecondary)
             }
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = Green40,
+                    checkedTrackColor = TeaGreen,
                     checkedThumbColor = Color.White
                 )
             )
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
 }
-
-@Composable
-private fun DrawerNavItem(
-    icon: ImageVector,
-    title: String,
-    subtitle: String? = null,
-    onClick: () -> Unit
-) {
-    Surface(
-        onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        color = Color.Transparent
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = Green40,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                if (subtitle != null) {
-                    Text(text = subtitle, fontSize = 11.sp, color = Color.Gray)
-                }
-            }
-        }
-    }
-}
-
-private val Brush = androidx.compose.ui.graphics.Brush

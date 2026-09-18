@@ -90,6 +90,7 @@ fun CogniCareApp() {
             PatientDashboardScreen(
                 patient = patient,
                 onGamesClick = { navController.navigate(Screen.GamesHub.route) },
+                onEchoesClick = { navController.navigate(Screen.EchoesOfHome3D.route) },
                 onCaregiverClick = { navController.navigate(Screen.Caregiver.route) },
                 onLogout = {
                     authViewModel.logout()
@@ -97,6 +98,14 @@ fun CogniCareApp() {
                         popUpTo(0) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable(Screen.EchoesOfHome3D.route) {
+            val patient = authState.patient ?: return@composable
+            EchoesOfHome3DScreen(
+                patient = patient,
+                onBack = { navController.popBackStack() }
             )
         }
 

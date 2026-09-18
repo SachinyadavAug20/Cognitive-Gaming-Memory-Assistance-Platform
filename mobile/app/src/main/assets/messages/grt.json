@@ -1,0 +1,1159 @@
+{
+  "home": {
+    "greeting": "Chamerican!",
+    "ready": "Nana sisikrak na game akanchinggo?",
+    "subtitle": "CogniCare",
+    "description": "AI-tanchi nawa",
+    "nerInitiative": "MDoNER chiklik",
+    "comingSoon": "Sengba re·baenga",
+    "routine": {
+      "title": "Salanti kam dakani",
+      "label": "Salanti kam",
+      "morning_medicine": "Pringni Sam (BP & Vitamin)",
+      "water_reminder": "Rongtal chimko ringbo",
+      "doctor_appointment": "Doctor-na re·angani",
+      "family_photos": "Nokdangni photo & gisik ra·ani",
+      "medicine_time": "8:00 AM • Sam 1 chiko ringbo",
+      "water_count": "Salanti glass 6-oni 4",
+      "appointment_time": "Dr. B. K. Sarma • Dispur PHC",
+      "memories_count": "Sunita baksa gisik ra·ani 12",
+      "now": "Da·o"
+    },
+    "patient": {
+      "title": "Anga sa·gipa mande",
+      "subtitle": "Sa·gipani Portal",
+      "description": "Salanti gisik ra·ani kal·aniko a·bachengbo aro silroraaniko nibo.",
+      "cta": "DA·ONI KAL·ANIKO A·BACHENGBO →"
+    },
+    "caregiver": {
+      "title": "Naljokgipa & An·sengbalgipa",
+      "subtitle": "ASHA / PHC Portal",
+      "description": "Silroraaniko nibo, photo upload ka·bo, samko chalibo.",
+      "cta": "DASHBOARD PLIEBO",
+      "patients": "Sa·giparang",
+      "sessions": "Salanti Kal·ani",
+      "alerts": "Mikrakatanirang"
+    },
+    "kiosk": {
+      "title": "Kiosk Check-In",
+      "subtitle": "QR Scanner Station",
+      "description": "Sa·gipani QR health card-ko scan ka·e check-in ka·bo.",
+      "cta": "SCANNER PLIEBO",
+      "showCard": "QR health card-ko mesokbo",
+      "scan": "Kiosk-o scan ka·bo",
+      "start": "Check in ka·e a·bachengbo"
+    }
+  },
+  "kiosk": {
+    "title": "CogniCare galo chibainawa",
+    "subtitle": "Apa Health Card kamera tate chiklik.",
+    "loading": "Chikna...",
+    "error": {
+      "invalid": "Card-ko chikna nawa!",
+      "generic": "Sangming dikkhat. H mani chiklak.",
+      "retry": "QR code chiklik."
+    }
+  },
+  "patient": {
+    "listen": "Angna porie knatimatbo",
+    "speaking": "Katha nikla...",
+    "greeting": "Nana sisikrak, Dadu!",
+    "greetingName": "Nana sisikrak, {name}!",
+    "orientation": "Nana apa saikrak mepa sa galginni.",
+    "heroPrompt": "Game tamba phi nangtai.",
+    "back": "← Saikrak galginni",
+    "backToRoutine": "Daily galginni",
+    "wellbeing": {
+      "title": "Chiklik & Angan",
+      "moodTitle": "Nana ki angan nikla?",
+      "moodPeaceful": "Angan",
+      "moodOkay": "Chiklo",
+      "moodCare": "Enkawl tur",
+      "moodThanks": "Chiklik phi nangtai, {name}.",
+      "moodFeedback": {
+        "peaceful": "Nana angan nikla si kan ngaita!",
+        "okay": "Chiklo. Mi apa galginni, te game chiklak.",
+        "caretaker": "Enkawl phi u chiklikna. Mitanchi ngaita."
+      },
+      "memoryListen": "Angna gisik ra·ani porie knatimatbo",
+      "calmListen": "Angna tom·tomaniko porie knatimatbo",
+      "familyTitle": "Nokdang Gisik Ra·ani",
+      "familyEmpty": "Nokdangni photorang sengmange hangne mikromgen.",
+      "memoryTitle": "Salanti Gisik Ra·ani",
+      "memoryAnother": "Gipin gisik ra·aniko mesokbo",
+      "memoryView": "Gisik ra·aniko nibo",
+      "memoryEmpty": "Gisik ra·ani da·o mesokgen.",
+      "calmTitle": "Tom·tomaniko Man·chakani",
+      "calmHint": "Nokko gisik ra·atgipa git aro surang.",
+      "calmTriggers": "Tom·tomaniko am·on, {triggers}-ko gisik ra·bo.",
+      "calmMusic": "Namnikgipa gitrang: {music}.",
+      "calmFallbackTriggers": "pringo ding·gipa cha ringani",
+      "calmPlay": "Tom·toma gitko ringbo",
+      "moodDear": "ripeng"
+    },
+    "date": "Budbar, 26 August",
+    "schedule": "Salanti Kamrang",
+    "waterToday": "Salanti Chi",
+    "moreGames": {
+      "label": "Gipin Kal·anirang",
+      "title": "Kal·ani & Kamni Dam",
+      "desc": "Salanti kam, dingtangatanirang aro kusi ripeng.",
+      "cta": "Kal·ani Dam Pliebo"
+    },
+    "audio": {
+      "greeting": "Namgipa pring, Dadu! Budbar, 26th August ong·a. Da·al kam 2 donga.",
+      "greetingName": "Namgipa pring, {name}! Budbar, 26th August ong·a. Da·al kam 2 donga.",
+      "todayIs": "Da·al {date} ong·a.",
+      "close": "Chipbo"
+    },
+    "gamesTitle": "Salanti Gisikni Kal·anirang",
+    "cards": {
+      "memory": {
+        "title": "Nokdangni Gisik Ra·ani",
+        "desc": "Nokdangni {count} manderangni photo baksa kal·bo",
+        "descZero": "Nokdangni photorang baksa kal·bo"
+      },
+      "jigsaw": {
+        "title": "Nokdang Mikkang Puzzle",
+        "desc": "Bakrangko nangdimat-e mikkangko taribo"
+      },
+      "timeline": {
+        "title": "Janggi Tangani Re·ani",
+        "desc": "Kusi gisik ra·anirangko ryntih dake buhbo"
+      },
+      "wayfinding": {
+        "title": "Songjinma Rama Re·ani",
+        "desc": "Songni ramako ja·rike nokona re·babo"
+      },
+      "dailyTasks": {
+        "title": "Pringni Cha Taribo",
+        "desc": "Gitchak cha ringgipako step-by-step taribo"
+      },
+      "exploreAll": "Gipin Kal·anirangko Nibo"
+    },
+    "exercise": {
+      "title": "Salanti Kamrang",
+      "teaTime": "Pringni cha taribo",
+      "sorting": "Song·chakani & Bi·chakani Tiar",
+      "companion": "Saathi baksa agangrikbo",
+      "breathing": "Pringo tom·tome rang·sitbo",
+      "done": "Matchotba",
+      "start": "A·bachengbo",
+      "inProgress": "Dang ka·enga",
+      "daily": {
+        "label": "Salanti Kal·ani",
+        "title": "Da·alni Gisik Kal·aniko Kal·bo",
+        "desc": "Level 2 • Minit 5 • Nokdang photo baksa",
+        "cta": "A·bachengbo"
+      },
+      "bonus": {
+        "label": "Bonus Kal·ani",
+        "title": "Ramako Gisik Ra·bo",
+        "desc": "Songni ramarangko re·e nibo. Minit 8.",
+        "cta": "Rama Re·bo"
+      }
+    }
+  },
+  "games": {
+    "memory": {
+      "title": "Family Memory",
+      "preview": "Sikpiang chiklik...",
+      "start": "Tamba",
+      "complete": "Angan! Chiklik tham!",
+      "desc": "Nokdangni mikkangrangko nangdimatbo",
+      "previewNote": "Mikkang sakantiko gisik ra·na jotton ka·bo.",
+      "pairs": "Nangdimatgipa jorako am·bo.",
+      "matched": "Ia {name}, nang·ni {relation} ong·a.",
+      "matchedCount": "{total}-oni {matched} matchotaha",
+      "hintShow": "Hint mesokbo",
+      "hintHide": "Hint donnu·bo",
+      "cardHidden": "Donnugimin card"
+    },
+    "sorting": {
+      "title": "Fag-Siang Sorting",
+      "complete": "Angan!",
+      "desc": "Song·chakani aro bi·chakani tiarrangko dingtangatbo.",
+      "intro": "Nokni tiarrangko dingtangatna re·babo.",
+      "pickItem": "Tiarko de·na krakbo.",
+      "pickBasket": "Ia badia kokona re·anggen?",
+      "kitchen": "Song·chakani kok",
+      "prayer": "Bi·chakani kok",
+      "correctName": "Namgipa! {item} unon donga.",
+      "wrongSpeech": "Daktaina. {item} ua {category} koko donga.",
+      "items": {
+        "incense": "Dhoop",
+        "bell": "Ghanti",
+        "teacup": "Cha cup",
+        "sugar": "Chini dabbi",
+        "clock": "Ghori",
+        "japi": "Japi tupi"
+      }
+    },
+    "dailyTasks": {
+      "title": "Ka tea chiklak",
+      "complete": "Angan!",
+      "desc": "Gitchak cha ringgipako step-by-step taribo",
+      "intro": "Da·al namnikgipa bostuko tarigen: {activity}।",
+      "defaultJoy": "ding·gipa gitchak cha",
+      "step": "Step {current} na {total}",
+      "ready": "Da·o ringani somoi!",
+      "completeSpeech": "Nang·ni {activity} matchotaha. Ringbo!",
+      "actions": {
+        "water": "Chiko so·omatsotbo",
+        "leaves": "Cha bijkoko on·bo",
+        "milk": "Dud on·titi on·bo",
+        "sugar": "Chiniko on·bo",
+        "cup": "Cup-o cha rutebo"
+      },
+      "items": {
+        "cup": "Cha cup",
+        "water": "Chi",
+        "leaves": "Cha bijak",
+        "milk": "Dud",
+        "sugar": "Chini"
+      }
+    },
+    "grandchildChat": {
+      "title": "Su·gipa Baksa Cha Ringani & Golpo",
+      "desc": "Pringni cha ringe su·gipa baksa namgipa golpo aro gisik ra·anirangko agangrikbo"
+    },
+    "memoryDetective": {
+      "title": "Noksik Detective (Nokdang U·iani)",
+      "desc": "Dakmesokaniko knae nokdangni manderangko noksao u·ie sandibo"
+    },
+    "storybook": {
+      "title": "Janggi Tangani Golpo Ki·tap",
+      "desc": "Salgro-Salgipeng A·dokni fajarang aro gisik ra·anirangko golpo dake nina"
+    },
+    "jigsaw": {
+      "title": "Nokdang Noksa Puzzle",
+      "desc": "Noksani bakrangko nangdimate nokdangni mikkangko taribo",
+      "pick": "Sani photoko nangdimatgen?",
+      "pickSpeech": "Photoko tarina saksa photo-ko seokbo.",
+      "startSpeech": "{name}-ni photoko tarina re·babo.",
+      "guidance": "{name}-ni photoko matchotatbo.",
+      "guidanceSpeech": "Bakko nangdimatbo. Anga dakchakgen.",
+      "piece": "Puzzle bak",
+      "playAgain": "Kal·taibo",
+      "noPhoto": "Nokdangni photoko upload ka·bo.",
+      "intro": "Photoko tarina re·babo. Photo {count} donga.",
+      "face": "Mikkang {current} na {total}: {name}",
+      "landmark": "Biap {current} na {total}: {name}",
+      "nextCta": "Ja·manko photo: {name}",
+      "peek": "Peek",
+      "playing": "Back to puzzle",
+      "peeking": "Peeking at the picture...",
+      "tapPrompt": "Tap one piece, then tap the place it belongs.",
+      "complete": "Wonderful! {name}'s picture is ready!",
+      "completeSpeech": "Wonderful! That is {name}, your {relation}.",
+      "placeComplete": "Wonderful! {name} is ready!",
+      "placeCompleteSpeech": "Wonderful! That is {name}. {description}",
+      "start": "Start Puzzle",
+      "allComplete": "You made all your familiar pictures! Wonderful!",
+      "allCompleteSpeech": "Every familiar face and place is here with you today. What a beautiful story!",
+      "allCompletePlacesSpeech": "You rebuilt all your familiar landmarks today. What wonderful memories!",
+      "notesEmpty": "A memory your family wrote for you.",
+      "viewPicture": "View picture",
+      "categoryFamily": "‍ ‍ Family Members",
+      "categoryPlaces": "Familiar Places",
+      "guideOn": "Guide: ON",
+      "guideOff": "Guide: OFF",
+      "levelGentle": "2×2 Easy (4 pcs)",
+      "levelClassic": "3×3 Classic (9 pcs)",
+      "levelMaster": "4×4 Master (16 pcs)",
+      "music": "Play familiar tune",
+      "musicHint": "A gentle melody, like the songs you love."
+    },
+    "wayfinding": {
+      "title": "Songjinma Rama Re·ani",
+      "desc": "U·igimin songni ramako ja·rike an·tangni nokona re·babo",
+      "modeScenic": "Scenic Walk",
+      "modeRecall": "Find the Way",
+      "startJourney": "Begin Your Walk",
+      "currentLocation": "You are at {name}",
+      "nextDestination": "Next destination: {name}",
+      "stepCounter": "Station {current} of {total}",
+      "signpostPrompt": "Which path leads towards {target}?",
+      "landmarkMemory": "Familiar Memory",
+      "viewScrapbook": "Open Landmark View",
+      "listenGuide": "Hear Guide",
+      "walkButton": "Walk Along Path",
+      "hintWhisper": "Look closely — the path to {name} is right ahead!",
+      "congratulations": "Welcome Back Home!",
+      "completedJourneyDesc": "You navigated through {count} familiar landmarks and reached {home} safely.",
+      "postcardTitle": "Hometown Walk Postcard",
+      "musicCta": "Play Hometown Tune",
+      "walkAgain": "Walk Another Route",
+      "speechIntro": "Welcome to your village walk. Let us begin at {start} and walk together towards {home}.",
+      "speechArrived": "We have arrived at {name}. {description}",
+      "speechTurn": "Which path should we take to reach {target}?",
+      "speechSuccess": "Wonderful! You remembered the way to {name}.",
+      "speechFinish": "Welcome home! You successfully walked the entire village trail today.",
+      "explore": "Let's walk this route...",
+      "step": "Step {current} of {total}",
+      "walkTo": "Walk to {name}",
+      "towards": "Walk towards {name}.",
+      "then": "then to",
+      "arrive": "You arrive home!",
+      "listenDirections": "Listen to directions",
+      "reached": "I remember the way!",
+      "recallStart": "Now, where do we go next?",
+      "recallLabel": "Where do we go next?",
+      "recallDesc": "After {prev}, where do we go?",
+      "correct": "Correct! You remembered!",
+      "wrong": "Take your time, you can try again.",
+      "viewPhoto": "View photo",
+      "complete": "You reached home! Wonderful!"
+    },
+    "weaving": {
+      "title": "Dandik Bara Dokani",
+      "desc": "Dakmanda aro muga kilko doke rongchinggipa noksako taribo"
+    },
+    "teaHarvest": {
+      "title": "Cha Bijak Chimongani (Motion Vision)",
+      "subtitle": "Jakko mo·ate bijak gni aro ku·dimba sako chimonge kokona chipbo.",
+      "cameraPermission": "Kamera on·ani on·bo",
+      "waveToPluck": "Jak mo·ate bijak chimongbo",
+      "leavesPlucked": "Chimongimin bijak: {count}",
+      "basketFull": "Kok gital bijakrangchi gapaha!",
+      "gentleHint": "Tom·tome jakko mo·ate tangsek bijakko nina jotton kabo.",
+      "encouragement": "Namen namgipa! Jakko tom·tome donbo.",
+      "playAgain": "Gital cha bijkoko khetbo",
+      "backToHub": "← Kal·ani damona re·angbo",
+      "welcomeSpeech": "Cha khetaniona rimnapbaaha. Bijak 2 aro 1 muurko khetbo."
+    },
+    "radio": {
+      "title": "Akashvani Gitcham Radio",
+      "desc": "Gitcham ring·anirang aro Akashvanini surna radioko tune kabo"
+    },
+    "kitchen": {
+      "title": "Ambi Riti Song·chakram",
+      "desc": "A·dokni moslarangko rone cha·aniko song·bo"
+    },
+    "rhythmHills": {
+      "title": "A·bri Dama & Bangsi Dokani",
+      "desc": "A·chigipa Dama aro bangsi surna dokatbo"
+    },
+    "rootBridge": {
+      "title": "Janggi Tanggipa Ja·dil Jalang",
+      "desc": "Chibima kosako bolni ja·dilko nangdimate jalangko taribo"
+    },
+    "riverLanterns": {
+      "title": "३D Chiring & Gisik Ra·ani Wal·ku",
+      "desc": "Jakko mo·ate ३D chiringo bal·rorogipa wal·kurangko sepangona rimbabo"
+    },
+    "loom": {
+      "title": "३D Dokmanda & Ba·ra Dokani",
+      "desc": "३D makkoko sale Dokmanda ba·rani nitogipa rongrangko dokbo"
+    },
+    "drum": {
+      "title": "३D Dama & Kram Surna Dokani",
+      "desc": "Wangala damana jak gipin gipinba dokatbo"
+    },
+    "tunedDrum": {
+      "title": "Auto-tune Dama Ringmini",
+      "desc": "Dama dokatbo webcam ong·a katchiniko — auto-tuner sakna gita un bewalko dokatchim"
+    },
+    "majuli": {
+      "title": "Majuli Rama Re·ani (३D Spatial Memory)",
+      "subtitle": "Brahmaputra chibima rikam re·e Namghar aro chang ghar noksako u·ie sandibo.",
+      "walkingPrompt": "Pringni tom·toma ramako re·bo",
+      "lookAround": "Jakasi jakra nina Namghar u·ie sandibo",
+      "questionNamghar": "Namghar nok bano nina man·a?",
+      "questionChangGhar": "Majuli a·songni bol nok bano?",
+      "correctFeedback": "Nama! Nang·ni u·iani kakket ong·a.",
+      "retryFeedback": "Gipin biapoba nina jotton kabo.",
+      "scoreSummary": "Spatial Memory Kakket: {score}%",
+      "playAgain": "Majuliona re·bapilbo",
+      "backToHub": "← Therapy nokona re·bapilbo",
+      "speakPromptNamghar": "Namgharona re·ba",
+      "speakPromptChangGhar": "Bol nokona nibo",
+      "speakPromptRiverGhat": "Chibima ghato sokba",
+      "walking": "Ramagita re·angenga...",
+      "lookLeft": "Jaksi gipinko nibo",
+      "lookAhead": "Mikkangko nibo",
+      "lookRight": "Jakrachiko nibo",
+      "currentLandmark": "Da·oni biap",
+      "spatialPrompt": "Biapko gisik ra·ani sing·ani:",
+      "questionRiverGhat": "Chiring rama chiko bano rim·baha?",
+      "welcomeSpeech": "Majuli a·songona rimnapbaaha. Sal re·baani ramako re·bo."
+    },
+    "bihuDhol": {
+      "title": "Dama Dokani & Surna Rona (Tom·tomani)",
+      "subtitle": "A·dokni dama surna jakchi tap dake dokatbo.",
+      "tapPrompt": "Dama surna tap kabo",
+      "tempoCalm": "Surni gong·ani: {bpm} BPM (Tom·tom)",
+      "perfectBeat": "Kakket sur!",
+      "gentleRhythm": "Tom·tome sur rona...",
+      "calmTitle": "Gisik tom·tom aro an·sengaha!",
+      "calmSubtitle": "Nang·ni jakni sur damani gam·ani baksa nange dingtangmancha nama.",
+      "playAgain": "Dama doktapbo",
+      "backToHub": "← Therapy nokona re·bapilbo",
+      "bpmText": "Ta·rak: {bpm} BPM",
+      "goodRhythm": "Namgipa dokani",
+      "gentleTouch": "Ka·sine krakbo",
+      "rhythmScore": "Dokani score: {score}%",
+      "calmComplete": "Dokani kal·ani matchotaha"
+    },
+    "dayInMyWorld": {
+      "title": "Ang·ni A·gilsakni Sal Sa (३D Story Campaign)",
+      "subtitle": "Saathi baksa pringoni attamona bak 6-o janggi tangani gisik ra·aniko man·chapbo.",
+      "welcomeTitle": "Gisik Ra·ani Pring",
+      "welcomeDesc": "Kuturo pringni sal ching·baaha. Saathi salgimik nang·ni re·chakatgipa ong·gen.",
+      "beginDayButton": "Pringni re·aniko a·bachengbo",
+      "backToHub": "← Therapy nokona re·bapilbo",
+      "saathiWakeup": "Pring namgipa! Kenna nangja, an·ching manderang salna gisik ra·gen. Tebilo lekkako nibo.",
+      "ch1Title": "Pringni Gisik Ra·ani",
+      "ch1MemorizeTitle": "Ia Bostu Gittamko Gisik Ra·bo",
+      "ch1MemorizeDesc": "Kuturoni ong·katna skang chabi, tupi aro ba·ra jholako name nibo.",
+      "ch1ReadyButton": "Anga gisik ra·aha",
+      "ch1FindTitle": "Noko Bostu 3-ko Sandie Rakkibo",
+      "ch1FindPrompt": "Da·oni salna chabi, tupi aro jholako sandibo.",
+      "ch1Complete": "Nama! Na·a bostu gittamkon man·aha.",
+      "ch2Title": "Gima·gimin Noksa",
+      "ch2Intro": "Ong·katna skang, nokdangni kakket noksako albumo donbo.",
+      "ch2Prompt": "Albumna nokdang noksako seokbo",
+      "ch2Subtext": "Nokdangni noksako nibo aro seokbo.",
+      "ch2Correct": "Nama! Nokdang album chu·sokaha.",
+      "ch2Retry": "Nokdang noksako name nibo.",
+      "ch3Title": "Anti Rama",
+      "ch3Intro": "Chibima rikam gita songjinma antiona re·na.",
+      "ch3WalkPrompt": "Antiona re·angbo",
+      "ch3RoadClosed": "Chibima rama chipaha! Namghar ramagita re·angna.",
+      "ch3Arrived": "Kakket rama! An·ching antiona sokaha.",
+      "ch4Title": "Antio Breani",
+      "ch4Intro": "₹500 tangkachi gital bosturangko breani sal sokaha.",
+      "ch4MarketTitle": "₹500-ni ning·o bostu 3-ko seokbo",
+      "ch4OverBudget": "₹500-na bateaha. Name seokbo.",
+      "ch4ChangePrompt": "Na·a ₹500 tangka on·aha. Dokangipa badita tangka on·pilgen?",
+      "ch4RetryChange": "On·pilani tangkako hisap katapbo.",
+      "ch4Complete": "Kakket hisap! Nang·ni jhola gital bosturango gapaha.",
+      "ch5Title": "Attamni Nok Kam",
+      "ch5Intro": "Nokona re·bapile kam 3-ko matchotna.",
+      "ch5Complete": "Namduga! Nokni kamrang chu·sokaha.",
+      "ch6Title": "Attamni Gisik Ra·ani",
+      "ch6Intro": "Sal napbaon, pringoni attamona re·aniko gisik ra·bo.",
+      "ch6Complete": "Tom·toma sal matchotaha! Na·a pilak gisik ra·aniko name u·iaha.",
+      "finalDayCompleteTitle": "Re·ani Matchotaha: Gisik Ra·ani Gital Ong·aha",
+      "finalDayCompleteDesc": "Na·a Saathi baksa bak 6-ko name matchotaha.",
+      "reliveDayButton": "Iano salo re·bapilbo",
+      "ch2Success": "Kakket! Nokdangni album matchotaha.",
+      "ch3Question": "Chiring rikam ramako seokbo",
+      "ch3Success": "Namgipa rama! Antiona re·baha.",
+      "ch4Prompt": "Tangkako hisap ka·bo",
+      "ch4Success": "Kakket hisap! Bosta gital bostu donga.",
+      "ch5Prompt": "Attamo neng·takbo aro chi ringbo",
+      "ch5Success": "Namen namgipa! Na·a tom·tomaha.",
+      "ch6Prompt": "Da·alni gisik ra·aniko ryntih dake buhbo",
+      "finalDayComplete": "Tom·tomgipa sal matchotaha! Kusi ong·e re·aha."
+    },
+    "bazaarBuddies": {
+      "title": "Anti Rorim·gipa (Budget & Tangka Hisap)",
+      "desc": "₹500 budgetchi bostu brebo aro on·pilani tangkako name sandibo.",
+      "welcome": "Songjinma Anti",
+      "instruction": "₹500-na batatgija bostu brebo aro on·pilani tangkako u·ibo.",
+      "shopNow": "Antiona napbo",
+      "remaining": "Dongkugipa Budget",
+      "total": "Pilak Gimik",
+      "basketEmpty": "Kok bangbanga. Bostu on·dapna tap kabo.",
+      "payment": "Dokangipana tangka on·bo",
+      "paid": "On·gimin tangka",
+      "change": "On·pilani tangka",
+      "clearBtn": "I·patbo",
+      "hintBtn": "Dakchakani nanga?",
+      "hint": "On·pilani tangka ₹{amount} ong·a",
+      "added": "Bostu on·dapaha",
+      "removed": "Bostu wataha",
+      "correct": "Kakket hisap!",
+      "wrong": "Tangkako name nina jotton kabo",
+      "complete": "Breani matchotaha!",
+      "playAgain": "Brechapbo",
+      "backToHub": "Therapy nokona re·bapilbo"
+    },
+    "memoryGarden": {
+      "title": "Gisik Ra·ani Buring (Kal·ani Suite)",
+      "desc": "Bibal jora sandibo, dingtanganiko u·ibo aro sur gita tap kabo.",
+      "subgames": {
+        "memoryMatch": {
+          "name": "Bibal Jora",
+          "desc": "Bibal jora sandibo"
+        },
+        "whatChanged": {
+          "name": "Mai Dingtangaha?",
+          "desc": "Dingtang ko u·ibo"
+        },
+        "sequence": {
+          "name": "Rikongko Gisik Ra·bo",
+          "desc": "Rikong gita tap kabo"
+        }
+      },
+      "memoryMatch": {
+        "name": "Bibal Jora",
+        "look": "Card-rangko name nibo.",
+        "find": "Jora sandina card-ko dingtangatbo.",
+        "match": "Nama jora!",
+        "mismatch": "Jottontapbo.",
+        "complete": "Pilak jora man·aha!"
+      },
+      "whatChanged": {
+        "name": "Mai Dingtangaha?",
+        "look": "Buringko name nibo.",
+        "find": "Dingtanggipa bostuo tap kabo!",
+        "correct": "Seng·gipa mikron! Na·a dingtanganiko man·aha.",
+        "wrong": "Buringko name nitapbo."
+      },
+      "sequence": {
+        "name": "Rikongko Gisik Ra·bo",
+        "look": "Rikongko nibo.",
+        "find": "Mesokgimin rikong gita tap kabo!",
+        "correct": "Kakket rikong!",
+        "wrong": "Skangni rikongko gisik ra·na jotton kabo."
+      },
+      "result": {
+        "excellent": "Nitogipa gisik ra·ani!",
+        "good": "Namgipa jotton!",
+        "tryAgain": "Kal·tapna!"
+      },
+      "stats": {
+        "score": "Buring Score"
+      },
+      "playAgain": "Kal·tapbo",
+      "backToHub": "Therapy nokona re·bapilbo"
+    },
+    "memoryRoad": {
+      "title": "Gisik Ra·ani Rama (Rama Niam Sandiani)",
+      "desc": "Songjinma ramao traffic sign, zebra crossing aro hospital chinrangko sandibo.",
+      "welcome": "Rama Niam Sandiani",
+      "instruction": "Ramao iako sandibo:",
+      "startBtn": "Rama sandiani a·bachengbo",
+      "found": "Man·aha!",
+      "wrong": "Ia gipin ong·a, kakket chinko sandibo.",
+      "levelComplete": "Rama level matchotaha!",
+      "nextLevel": "Gipin Level",
+      "hintBtn": "Dakchakani nina",
+      "hint": "Ramao {target}-ko sandibo.",
+      "gameComplete": "Seng·gipa Re·gipa: Pilak ramako matchotaha!",
+      "playAgain": "Rama sanditapbo",
+      "backToHub": "Therapy nokona re·bapilbo"
+    },
+    "listen": "Angna porie knatimatbo",
+    "title": "Salanti Gisikni Kal·anirang",
+    "subtitle": "Gisik ra·ani aro kusini gimin seng·gipa kal·anirang.",
+    "backToRoutine": "← Routine-ona re·angbo",
+    "backToHub": "← Kal·ani Dam",
+    "listening": "Agangrikenge...",
+    "recommended": "Balgipa",
+    "level": "Level {level}",
+    "plays": "{count} chang kal·aha",
+    "score": "Score: {score}",
+    "lightbox": {
+      "close": "Chipbo",
+      "listen": "Gisik ra·aniko knatimatbo"
+    },
+    "loading": "Kal·aniko tarisenga...",
+    "loadError": "Banggipa donga.",
+    "retry": "Daktaina",
+    "notFound": {
+      "title": "Sengba re·baenga",
+      "desc": "Ia kal·aniko tarienga. Gipin kal·bo!"
+    },
+    "timeline": {
+      "title": "Janggi Tangani Re·ani",
+      "desc": "Janggi tangani kusi gisik ra·anirangko re·bo",
+      "intro": "Nang·ni janggi tangani kusi ong·gipa gisik ra·anirang donga.",
+      "introSpeech": "Nang·ni janggi tangani kusi gisik ra·anirangko ka·sin ka·sine re·bo.",
+      "occupation": "Na·a skango {occupation} kam ka·ahachim.",
+      "favoriteMusic": "Na·a {favoriteMusic} gitko namnika.",
+      "start": "Re·aniko a·bachengbo",
+      "promptYear": "Bilsi {year}-o...",
+      "promptYearLongAgo": "Skango...",
+      "question": "Ua somoini nang·ni gisik ra·ani badia?",
+      "promptSpeech": "{year} bilsio nang·ni janggio mai ong·aha?",
+      "promptSpeechLongAgo": "Ua somoio mai ong·aha?",
+      "correct": "Kakket ong·a!",
+      "correctSpeech": "Namgipa! Bilsi {year}-o, {event}.",
+      "wrongSpeech": "Gipin gisik ra·aniko nibo.",
+      "music": "Tom·toma gitko ringbo",
+      "musicHint": "Nang·ni namnikgipa git gita.",
+      "nextCta": "Gipin gisik ra·ani",
+      "finish": "Matchotatbo",
+      "complete": "Nang·ni golpoko re·matchotaha! Mittan!",
+      "completeSpeech": "Nang·ni janggi tangani nitogipa ong·a. Mittan.",
+      "memoriesShared": "gisik ra·anirangko sualanirang",
+      "longAgo": "skang chengo",
+      "moreSoon": "Gipin gisik ra·ani re·baenga.",
+      "moreSoonHint": "Nokdang gipin gisik ra·aniko upload ka·na man·gen.",
+      "generic": {
+        "one": "Nokdangni kusi chimongani",
+        "two": "Chiring rikamgita attamo re·ama",
+        "three": "Ka·sagiparang baksa cha ringani",
+        "four": "Gitcham gitko ring·langani",
+        "five": "Noko salakkim kusi sal"
+      }
+    },
+    "companion": {
+      "desc": "Ripeng baksa agangrikbo.",
+      "hello": "Salam {name}! Angko krakbo aro salam inbo!",
+      "wave": "Pringanti salam inbo",
+      "tapMe": "Agangrikna krakbo",
+      "chat": "Ang baksa agangrikbo",
+      "games": "Kal·aniko kal·bo",
+      "prompts": [
+        "Na·a namen namgipa ong·a!",
+        "Anga kusi ong·aha!",
+        "Ta·raken kal·taigen!",
+        "Da·al na·a angni namnikbatsranggipa ripeng!"
+      ],
+      "title": "Friendly Chat with Saathi"
+    },
+    "alpana": {
+      "title": "Alpana & Rangoli",
+      "desc": "A·chik dakbewal gita nambegipa noksa"
+    },
+    "hornbill": {
+      "title": "Do·reng Bilani",
+      "desc": "A·bri kosakgita bilbo aro nibo"
+    },
+    "pottery": {
+      "title": "Majuli A·a Samdik",
+      "desc": "A·ako taribo aro jakko chalibo"
+    },
+    "monasteryBell": {
+      "title": "Monastery Ghanti Gam·ani",
+      "desc": "Ghanti gam·aniko gisik ra·bo"
+    },
+    "boat": {
+      "title": "Brahmaputra Ring Choani",
+      "desc": "Chiko cho·e re·pakbo aro biapko gisik ra·bo"
+    },
+    "botanist": {
+      "title": "Dzukou A·bri Bibal",
+      "desc": "A·brini nambegipa bibalrangko u·ibo"
+    },
+    "ancestralHerbalist": {
+      "title": "A·chik Sam U·iani",
+      "desc": "Sam bijakrangko u·ibo aro gisik ra·bo"
+    },
+    "dailyRoutine": {
+      "title": "Salanti Kamrang",
+      "desc": "Pringoni attamona namgipa kam"
+    }
+  },
+  "nav": {
+    "online": "Online",
+    "offline": "Offline",
+    "sos": "SOS DAKCHAKANI"
+  },
+  "common": {
+    "required": "*",
+    "edit": "I·patbo",
+    "save": "Rikibo",
+    "cancel": "Chi·bo",
+    "remove": "Watabo",
+    "add": "On·bo",
+    "upload": "Upload",
+    "analyzing": {
+      "label": "Report aganme...",
+      "desc": "Minit 30 laggibo"
+    },
+    "maxSize": "Dal·gipa {size}MB",
+    "pdfOnly": "PDF mache",
+    "imagesOnly": "Noksa mache"
+  },
+  "game": {
+    "back": "← Re·bapilbo",
+    "score": "Score",
+    "complete": "Nama! Matchotaha!",
+    "playAgain": "Kal·taibo",
+    "soundOn": "Sound On",
+    "soundOff": "Sound Off",
+    "listen": "Angna porie knatimatbo"
+  },
+  "puzzle": {
+    "title": "Gisik Puzzle",
+    "subtitle": "Bimangko chimongbo",
+    "start": "A·bachengbo",
+    "wellDone": "Matchotaha!",
+    "presentation": "Ia photoko gisik on·e nibo",
+    "puzzle": {
+      "label": "Photoko nangdimatbo!",
+      "desc": "Ka·mao donggipako neng·rake krakbo, nangdimatbo."
+    },
+    "pieces": "Bakrang",
+    "howToPlay": "Maika·e kal·gen",
+    "recognition": "U·ima?",
+    "correct": "Kakket ong·a!",
+    "incorrect": "Daktaina",
+    "backHome": "Nokona re·angbo",
+    "hint": {
+      "show": "Hint mesokbo",
+      "hide": "Hint donnu·bo"
+    }
+  },
+  "wayfinding": {
+    "title": "Songjinmani Rama",
+    "subtitle": "Nokona re·angbo",
+    "start": "A·bachengbo",
+    "landmark": "Biap",
+    "reached": "Nokona sokaha!",
+    "explore": "Ia rama gita re·angna...",
+    "step": "Step {current} na {total}",
+    "listen": "Skianiko knatimatbo",
+    "walkTo": "{name} ona re·angbo",
+    "recall": {
+      "label": "Da·o bano re·anggen?",
+      "desc": "{prev} ja·man, bano re·anggen?"
+    },
+    "complete": "Nokona re·baha! Kusi ong·a!",
+    "score": "Score: {score}"
+  },
+  "caregiver": {
+    "title": "Ni-rokgipani Portal",
+    "dashboard": "Dashboard",
+    "home": "Nok",
+    "patients": "Sagiparang",
+    "yourStudents": "Nang·ni sagiparang",
+    "sessions": "Salanti Kal·ani",
+    "alerts": "Alerts",
+    "telemetry": "Telemetry",
+    "addPatient": "Sagipa Gital",
+    "loadingPatients": "Sagiparang loading...",
+    "loadError": "Sagiparang load nawa. Server-ko nibo.",
+    "emptyTitle": "Sagipa nawa",
+    "emptyList": "Sagipa nawa. 'Sagipa Gital' tap kabo.",
+    "retry": "Fintapbo",
+    "age": "Bilsi {age}",
+    "ageUnknown": "Bilsi goware",
+    "language": "Ku·sik",
+    "medicalProfile": "Sam-Bikro",
+    "familyPhotos": "Nokgipani Photo",
+    "save": "Rikibo",
+    "subtitle": "Sa·giparangko nitimani aro gisik dakchakani",
+    "yourPatients": "Your Patients"
+  },
+  "intake": {
+    "step": "Step {current} of {total}",
+    "back": "← Re·bapilbo",
+    "continue": "Chalaibo →",
+    "submit": "Sagipa Profile Bikbo",
+    "creating": "AI-n report aganme...",
+    "wizard": {
+      "personal": "Mitamni",
+      "medical": "Report",
+      "family": "Nok",
+      "life": "Jang",
+      "places": "Song",
+      "review": "Nibo"
+    },
+    "complete": {
+      "title": "Sagipa profile bikaha!",
+      "desc": "{name} nang·ni sagiparangao on·aha. Game aro kal·ani bikahai.",
+      "dashboard": "Dashboard-ona re·bapilbo"
+    },
+    "personal": {
+      "title": "Sagipa nang·cha",
+      "subtitle": "Sagipani profile bikbo aro game chiklik ka dakchak.",
+      "name": {
+        "label": "Biming Gital",
+        "placeholder": "Jekhane, Ramesh Dutta"
+      },
+      "dob": "Bithar Man·gi",
+      "gender": "Me·asa/Me·chik",
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "Jekhane, 9876543210"
+      },
+      "relationship": "Nana a·form chiklikon?"
+    },
+    "medical": {
+      "title": "Report",
+      "subtitle": "Nang·ni report upload kabo. AI-n chinko agange.",
+      "upload": {
+        "label": "PDF donbo, pawh on·bo",
+        "desc": "Nang·ni report (MMSE, MoCA) upload kabo"
+      },
+      "analyze": "Report Aganbo",
+      "skip": "Report nawa, bak bo",
+      "continue": "Report nawa chalaibo",
+      "extracted": "Chinko on·aha",
+      "replace": "Report finko on·bo",
+      "diagnosis": "Report",
+      "date": "Man·gi",
+      "score": "Score",
+      "medications": "Damdawi",
+      "notes": "Daktar nisik",
+      "physician": "Daktar",
+      "subscales": "Score Dal·dal",
+      "assessment": "6-Song Assessment",
+      "assessmentDesc": "AI-n chinko agange",
+      "intact": "A·chiklo",
+      "impaired": "A·songsoha",
+      "retained": "{pct}% on·aha",
+      "clinicalSummary": "Tangni Katta",
+      "activePrescriptions": "Damdawi ({count})",
+      "categoryCognitive": "Gisik Ra·ani",
+      "categoryIadls": "Salanti Kam",
+      "categoryBehavioral": "Chiklik Angan"
+    },
+    "family": {
+      "title": "Nok",
+      "subtitle": "Sagipa nokdangko nibo on·bo nokgipa photo.",
+      "add": "Nok Gital",
+      "empty": "Nok kawei on·bo.",
+      "remove": "He nokko watbo",
+      "name": {
+        "placeholder": "Biming (Jekhane, Meena)"
+      },
+      "notes": {
+        "placeholder": "Guwahati, shanibar nobo"
+      }
+    },
+    "life": {
+      "title": "Jang & Rikong",
+      "subtitle": "Bostu gittam game bikbo dakchakbo.",
+      "occupation": {
+        "label": "Kam",
+        "placeholder": "Jekhane, saang gipaba, ril chicbo"
+      },
+      "events": {
+        "label": "Jang Man·gi",
+        "add": "+ Jang Gital",
+        "event": {
+          "placeholder": "Jang"
+        },
+        "year": {
+          "placeholder": "Bilsi"
+        }
+      },
+      "interests": "Rikong",
+      "music": {
+        "label": "Song",
+        "placeholder": "Jekhane, Bhupen Hazarika song"
+      },
+      "culture": {
+        "label": "A·dok",
+        "placeholder": "Jekhane, Garo a·dok"
+      },
+      "language": "Ku·sik",
+      "joy": {
+        "label": "Mai nang·ni angan?",
+        "placeholder": "Noksako nino maha angan ong·a..."
+      }
+    },
+    "places": {
+      "title": "Songjinma",
+      "subtitle": "Sagipani song on·bo. Game dah a hmang dawn.",
+      "add": "Song Gital",
+      "empty": "Song 3 on·bo.",
+      "icon": "Icon seokbo",
+      "name": {
+        "placeholder": "Biming (Jekhane, Kamakhya Temple)"
+      },
+      "desc": {
+        "placeholder": "Jekhane, an·sengaha song"
+      }
+    },
+    "review": {
+      "title": "Nibo",
+      "subtitle": "Profile bikbo skang nibo.",
+      "edit": "I·patbo",
+      "personal": "Biming",
+      "medical": "Report",
+      "family": "Nok",
+      "life": "Jang",
+      "places": "Song",
+      "noReport": "Report nawa",
+      "noFamily": "Nok nawa",
+      "fieldName": "Biming",
+      "fieldDob": "Bithar Man·gi",
+      "fieldGender": "Me·asa/Me·chik",
+      "fieldPhone": "Phone",
+      "fieldRelationship": "Sambandha",
+      "fieldDiagnosis": "Report",
+      "fieldDate": "Man·gi",
+      "fieldScore": "Score",
+      "fieldMedications": "Damdawi",
+      "fieldPhysician": "Daktar",
+      "fieldOccupation": "Kam",
+      "fieldLanguage": "Ku·sik",
+      "fieldInterests": "Rikong",
+      "fieldMusic": "Song",
+      "fieldLifeEvents": "Jang",
+      "fieldJoy": "Angan",
+      "noneSelected": "Nawa",
+      "notSpecified": "Dikkhat nawa",
+      "fieldStage": "Clinical Stage",
+      "fieldSeverity": "Severity",
+      "fieldScores": "Cognitive Scores",
+      "noMedical": "Medical report dongja — standard profile tariha"
+    },
+    "validation": {
+      "nameMinLength": "Biming kum 2 a ngai tawngah",
+      "dobRequired": "Bithar man·gi on·bo",
+      "genderRequired": "Me·asa/Me·chik on·bo",
+      "phoneMinLength": "Phone kum 10 a ngai tawngah",
+      "relationshipRequired": "Sambandha seokbo",
+      "familyMinCount": "Nok kawei on·bo",
+      "placesMinCount": "Song 3 on·bo Game thlen turin",
+      "submitFailed": "Profile bik nawa. Fintapbo."
+    },
+    "photoPicker": {
+      "tooLarge": "Noksa 5MB a palan hle",
+      "viewPhotoFor": "{label} noksako nibo",
+      "viewPhoto": "Noksako nibo",
+      "previewThumb": "Noksako preview",
+      "view": "Nibo",
+      "removePhoto": "Noksako watbo",
+      "uploadPhoto": "Noksako upload",
+      "preview": "Noksa: {label}",
+      "previewDefault": "Noksako preview",
+      "closeViewer": "Noksako nibo chipbo",
+      "fullPreview": "Noksa takne nibo",
+      "changePhoto": "🔄 Noksako sih",
+      "remove": "🗑 Watbo"
+    },
+    "fileUpload": {
+      "tooLarge": "File a palan hle. Dal·gipa {maxSizeMB}MB.",
+      "pdfOnly": "PDF file on·bo.",
+      "imageOnly": "Noksa file on·bo.",
+      "preview": "Nibo",
+      "uploadedReplace": "✓ Upload ahaha — click sih ong·a"
+    },
+    "progress": {
+      "ariaLabel": "Form lama",
+      "step": "Step",
+      "of": "of"
+    },
+    "dynamicList": {
+      "removeItem": "Bostu {index} watbo"
+    },
+    "domainMatrix": {
+      "heading": "6-Song Clinical Assessment",
+      "desc": "AI-n gisik aro kam chinko aganbo",
+      "empty": "Reportao songso nawa",
+      "domains": {
+        "memory": "Gisik Ra·ani",
+        "attention": "Nibo Shai",
+        "executiveFunction": "Kam Bikbo",
+        "orientation": "Song Hriat",
+        "language": "Ku·sik",
+        "visuospatial": "Noksako Nibo",
+        "decisionMaking": "Khein Bo",
+        "medicationManagement": "Damdawi Enkawl",
+        "financialManagement": "Tangka Enkawl",
+        "navigation": "Rama Hriat",
+        "mealPreparation": "A·mang Bikbo",
+        "driving": "Kar Thildan",
+        "householdTasks": "Nokni Kam",
+        "apathy": "Bik nang nawa",
+        "agitation": "Gualaha",
+        "socialWithdrawal": "Chipbo Nokao"
+      },
+      "severity": {
+        "severe": "A·songsoha dal·gipa",
+        "moderate": "Tla",
+        "mild": "Tla taka",
+        "intact": "A·chiklo"
+      }
+    },
+    "diagnosis": {
+      "notSpecified": "Dikkhat nawa",
+      "icdPrefix": "ICD-10: ",
+      "mtaPrefix": "MRI MTA: ",
+      "fazekasPrefix": "Fazekas: "
+    }
+  },
+  "options": {
+    "title": "Settings",
+    "fontSize": "Dal·gipa Font",
+    "contrast": "High Contrast",
+    "airMouse": "Virtual Air Mouse",
+    "listenFirst": "Ku·rang Knatimani",
+    "gender": {
+      "male": "Me·asa",
+      "female": "Me·chik",
+      "other": "Dang·gipa"
+    },
+    "relationship": {
+      "spouse": "Jugni",
+      "child": "Chikko",
+      "sibling": "Sagipa",
+      "parent": "Apa/Ama",
+      "self": "Anga",
+      "other": "Dang·gipa"
+    },
+    "relativeRelationship": {
+      "daughter": "Me·chik chikko",
+      "son": "Me·asa chikko",
+      "spouse": "Jugni",
+      "grandchild": "Chikko chikko",
+      "sibling": "Sagipa",
+      "friend": "Mit",
+      "other": "Dang·gipa"
+    },
+    "interests": {
+      "music": "Song",
+      "sports": "Sport",
+      "cooking": "A·mang bikbo",
+      "gardening": "Zauhna",
+      "reading": "Lekka nibo",
+      "travel": "Re·bo",
+      "religious": "Kristien",
+      "art": "Art",
+      "other": "Dang·gipa"
+    },
+    "status": {
+      "done": "Matchotaha",
+      "now": "Da·o",
+      "later": "Fini ong·a"
+    },
+    "metrics": {
+      "memory": "Gisik Ra·ani",
+      "spatial": "Song",
+      "reaction": "Kam Na·ani",
+      "lastSession": "Skangni session"
+    }
+  },
+  "audio": {
+    "welcome": "CogniCare-ona namchapbeona.",
+    "guide": "Tom·tome gisik kal·aniko a·bachengbo.",
+    "listen": "Angna porie knatimatbo",
+    "howToPlay": "Mai Kho·chi Game",
+    "listenToStory": "Golpo Knatimbo",
+    "listenToDirections": "Damdawi ni chinko knatimbo"
+  },
+  "idcard": {
+    "heading": "Sagipa ID Card",
+    "desc": "QR Health Card print kabo aro download kabo. Kiosk-ona scan kabo.",
+    "regenerate": "Card fintapbo",
+    "download": "PNG Download",
+    "print": "Card Print",
+    "backToProfile": "Sagipa Profile-ona re·bapilbo",
+    "error": {
+      "fetch": "Card load nawa. Fintapbo.",
+      "regenerate": "Card fintapbo nawa. Fintapbo."
+    },
+    "badge": {
+      "label": "Health Card",
+      "hint": "QR scan kabo",
+      "footer": "QR-Only Passkey"
+    }
+  },
+  "patientDetail": {
+    "loading": "Clinical telemetry loading...",
+    "notFound": {
+      "title": "Sagipa nawa.",
+      "desc": "Sagipani record wat ha, natin link gualaha."
+    },
+    "hero": {
+      "backToDashboard": "Dashboard-ona re·bapilbo",
+      "stage": "Stage",
+      "patientId": "Sagipa #{id}",
+      "age": "Bilsi {age}",
+      "filledBy": "{relationship} bikaha",
+      "printCard": "ID Card Print"
+    },
+    "vitals": {
+      "cognitiveScore": "Score",
+      "mmse": "MMSE",
+      "clinicalStage": "Clinical Stage",
+      "gameLevel": "Game Level {difficulty}",
+      "brainBiomarkers": "Thluak Biomarkers",
+      "mta": "MTA:",
+      "fazekas": "Fazekas:",
+      "icd": "ICD: {code}",
+      "biomarkerBaseline": "Biomarker a hmaa",
+      "qrHealthCard": "QR Health Card",
+      "activeReady": "Tlawngin ong·a",
+      "viewPrintBadge": "Badge Nibo / Print"
+    },
+    "biomarkers": {
+      "title": "Thluak Biomarkers & Kam Kawm",
+      "subtitle": "Kam leh gisik a inmilna",
+      "activeTelemetry": "Telemetry Tlawng"
+    },
+    "lightbox": {
+      "close": "Chipbo",
+      "listen": "Angna gisik ra·ani porie knatimatbo",
+      "speaking": "Aganme..."
+    },
+    "clinicalSummary": {
+      "title": "Damdawi & Report",
+      "subtitle": "Gisik aganbo, report, aro daktar nisik",
+      "diagnosisIcd": "Report & ICD Code",
+      "diagnosisFallback": "Gisik sangna a hmaa",
+      "physician": "Daktar",
+      "physicianFallback": "Daktar",
+      "hospitalDate": "Hospital & Man·gi",
+      "hospitalFallback": "Hospital",
+      "summaryHeading": "Tangni Katta & Enkawltu guidance:",
+      "medications": "Damdawi",
+      "subscaleBreakdown": "Gisik Score",
+      "deficits": "Songso & Dakchakani"
+    },
+    "family": {
+      "title": "Nok & Enkawltu",
+      "subtitle": "Nokgipa photo Game atan",
+      "saved": "Rikibo ahaha",
+      "empty": "Nok nawa.",
+      "view": "{name} Nibo"
+    },
+    "places": {
+      "title": "Songjinma",
+      "subtitle": "Rama hriat & kam",
+      "landmarks": "Song",
+      "empty": "Song nawa.",
+      "view": "{name} Nibo"
+    },
+    "lifeStory": {
+      "title": "Jang & Gisik",
+      "subtitle": "Kam, song, rikong & angan",
+      "occupation": "Kam",
+      "occupationFallback": "Dikkhat nawa",
+      "music": "Song",
+      "musicFallback": "Song a·dok",
+      "hobbies": "Rikong",
+      "joyTriggers": "Angan & An·sengaha",
+      "joyFallback": "Song knatimbo, an·sengaha ong·bo, noksako nibo.",
+      "tip": "Tip: Bostu gittamko hman.",
+      "milestones": "Jang Man·gi",
+      "year": "Bilsi {year}"
+    },
+    "demographics": {
+      "title": "Biming & Bilsi",
+      "fullName": "Biming Gital",
+      "dobAge": "Bithar Man·gi & Bilsi",
+      "years": "Bilsi {age}",
+      "gender": "Me·asa/Me·chik",
+      "phone": "Phone",
+      "relationship": "Sambandha",
+      "language": "Ku·sik",
+      "languageFallback": "EN",
+      "background": "A·dok"
+    },
+    "gamingProgress": {
+      "title": "Game Score & Kam Kawm",
+      "subtitle": "Game score & kam kawm nibo",
+      "liveTelemetry": "Telemetry",
+      "avgAccuracy": "Score",
+      "motorLatency": "Kam Kawm",
+      "ms": "ms",
+      "spatialRecall": "Gisik Ra·ani",
+      "totalSessions": "Pilak Session",
+      "chartTitle": "Game Chart",
+      "lastSessions": "Session {count}",
+      "accuracyLine": "Score (%)",
+      "latencyLine": "Kam Kawm (ms)",
+      "aiObservation": "AI Clinical (ASHA Report)"
+    },
+    "report": {
+      "export": "Report Export",
+      "copied": "Copy ahaha",
+      "copyText": "Copy",
+      "printPdf": "Print / PDF",
+      "closeReport": "Report Chipbo",
+      "title": "ABDM Report Exporter",
+      "subtitle": "Telemedicine & Evaluation Sheet"
+    }
+  }
+}

@@ -29,7 +29,9 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.cognicare.data.local.Patient
 import com.cognicare.ui.components.CogniCareDrawerContent
+import com.cognicare.ui.components.CogniCareTopBar
 import com.cognicare.ui.theme.*
+import kotlinx.coroutines.launch
 
 private val Ink = Color(0xFF16120E)
 private val InkSecondary = Color(0xFF4A4036)
@@ -47,6 +49,7 @@ fun CaregiverScreen(
     val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    val scope = rememberCoroutineScope()
     var fontSize by remember { mutableFloatStateOf(18f) }
     var language by remember { mutableStateOf(patient.language.ifEmpty { "en" }) }
 
@@ -62,6 +65,8 @@ fun CaregiverScreen(
                 onReadAloudToggle = { },
                 isNightModeEnabled = false,
                 onNightModeToggle = { },
+                patientName = patient.name,
+                patientState = patient.state.ifEmpty { "Assam" },
                 onCaregiverClick = { },
                 onSosClick = {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
@@ -73,53 +78,9 @@ fun CaregiverScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .shadow(3.dp, CircleShape)
-                                    .clip(CircleShape)
-                                    .background(Color.White)
-                                    .border(2.dp, Ink, CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(text = "\uD83E\uDDE0", fontSize = 18.sp)
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text("Caregiver Dashboard", fontSize = 20.sp, fontWeight = FontWeight.Black)
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(Icons.Default.ArrowBack, "Back", tint = Color.White)
-                        }
-                    },
-                    actions = {
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = Brick,
-                            modifier = Modifier
-                                .shadow(3.dp, RoundedCornerShape(12.dp))
-                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
-                                .clickable {
-                                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
-                                    context.startActivity(intent)
-                                }
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(Icons.Filled.Phone, null, tint = Color.White, modifier = Modifier.size(16.dp))
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("SOS", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White)
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = TeaGreen, titleContentColor = Color.White)
+                CogniCareTopBar(
+                    onBackClick = onBack,
+                    onMenuClick = { scope.launch { drawerState.open() } }
                 )
             }
         ) { padding ->
