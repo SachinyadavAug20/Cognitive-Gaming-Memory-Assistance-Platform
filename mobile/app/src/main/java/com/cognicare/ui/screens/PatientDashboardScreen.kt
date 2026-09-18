@@ -32,6 +32,8 @@ import com.cognicare.ui.components.CogniCareDrawerContent
 import com.cognicare.ui.components.CogniCareTopBar
 import com.cognicare.util.HapticUtil
 import com.cognicare.util.LocalizationManager
+import com.cognicare.util.NotificationHelper
+import com.cognicare.util.PatientMediaManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -53,28 +55,6 @@ data class RoutineItem(
     var isDone: Boolean = false
 )
 
-private fun getPatientPhotoPath(patient: Patient): String? {
-    return when (patient.id) {
-        1L -> "sample-images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg"
-        2L -> "sample-images/patient_2_mary_nongrum/patient_profile_photo_mary_nongrum.jpg"
-        3L -> "sample-images/patient_3_ibochouba_singh/patient_profile_photo_ibochouba_singh.jpg"
-        4L -> "sample-images/patient_4_lalhmingmawii_sailo/patient_profile_photo_lalhmingmawii_sailo.jpg"
-        5L -> "sample-images/patient_5_kevichusa_angami/patient_profile_photo_kevichusa_angami.jpg"
-        else -> "sample-images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg"
-    }
-}
-
-private fun getFamilyMemberPhoto(index: Int): String {
-    val relativePhotos = listOf(
-        "sample-images/patient_1_biren_borah/relatives/daughter.jpg",
-        "sample-images/patient_1_biren_borah/relatives/spouse.jpg",
-        "sample-images/patient_1_biren_borah/relatives/grandchild.jpg",
-        "sample-images/patient_1_biren_borah/places/lake.jpg",
-        "sample-images/patient_1_biren_borah/places/namghar.jpg"
-    )
-    return relativePhotos[index % relativePhotos.size]
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PatientDashboardScreen(
@@ -82,6 +62,7 @@ fun PatientDashboardScreen(
     onGamesClick: () -> Unit,
     onEchoesClick: () -> Unit,
     onCaregiverClick: () -> Unit,
+    onPlayGame: (String) -> Unit = { },
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
@@ -110,19 +91,12 @@ fun PatientDashboardScreen(
         )
     }
 
-    // Memories rotation
-    data class MemoryData(val name: String, val relation: String, val note: String, val emoji: String)
-    val memories = remember {
-        listOf(
-            MemoryData("Manash Borah", "Son", "Eldest son, mechanical engineer in Guwahati. Visits every Sunday morning.", "👨‍💼"),
-            MemoryData("Pratima Borah", "Spouse", "Married for 46 years. Loves gardening and cooking traditional Khar together.", "👵"),
-            MemoryData("Arnav Borah", "Grandson", "8-year-old grandson. Loves hearing bedtime folklore tales about Kaziranga.", "👦"),
-            MemoryData("Ananya Borah", "Daughter", "Youngest daughter, teacher at Cotton University. Calls every evening at 7 PM.", "👩‍🏫"),
-            MemoryData("Hari Namghar", "Prayer Hall", "Traditional Assamese prayer hall for community hymns and evening Doba.", "🛕")
-        )
+    // Memories loaded from PatientMediaManager
+    val memories = remember(patient.id) {
+        PatientMediaManager.getMemoriesForPatient(patient.id)
     }
     var memoryIndex by remember { mutableIntStateOf(0) }
-    val currentMemory = memories[memoryIndex % memories.size]
+    val currentMemory = if (memories.isNotEmpty()) memories[memoryIndex % memories.size] else null
 
     // Mood tracker state
     var selectedMood by remember { mutableStateOf<String?>(null) }
@@ -180,14 +154,14 @@ fun PatientDashboardScreen(
                     .padding(paddingValues),
                 contentPadding = PaddingValues(bottom = 36.dp)
             ) {
-                // 1. TEA GREEN HERO BANNER
+                // 1. TEA GREEN HERO BANNER (Elder-Friendly Typography & Real Photo)
                 item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(TeaGreen)
                             .border(width = 3.5.dp, color = Ink)
-                            .padding(horizontal = 20.dp, vertical = 20.dp)
+                            .padding(horizontal = 20.dp, vertical = 22.dp)
                     ) {
                         Column {
                             // Date pill
@@ -197,7 +171,7 @@ fun PatientDashboardScreen(
                                 modifier = Modifier.border(1.dp, Color.White.copy(alpha = 0.35f), RoundedCornerShape(10.dp))
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                                 ) {
@@ -205,22 +179,22 @@ fun PatientDashboardScreen(
                                         imageVector = Icons.Filled.CalendarToday,
                                         contentDescription = null,
                                         tint = Color(0xFFFDE68A),
-                                        modifier = Modifier.size(14.dp)
+                                        modifier = Modifier.size(16.dp)
                                     )
                                     Text(
                                         text = todayDateStr,
-                                        fontSize = 12.sp,
+                                        fontSize = 13.sp,
                                         fontWeight = FontWeight.Black,
                                         color = Color(0xFFFDE68A)
                                     )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(14.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                            // Patient Portrait & Greeting
+                            // Patient Portrait & Greeting (Large Elder-First Typography)
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                val photoPath = getPatientPhotoPath(patient)
+                                val photoPath = PatientMediaManager.getProfilePhoto(patient.id)
                                 val painter = rememberAsyncImagePainter(
                                     model = ImageRequest.Builder(LocalContext.current)
                                         .data("file:///android_asset/$photoPath")
@@ -231,7 +205,7 @@ fun PatientDashboardScreen(
                                     painter = painter,
                                     contentDescription = patient.name,
                                     modifier = Modifier
-                                        .size(80.dp)
+                                        .size(86.dp)
                                         .shadow(4.dp, RoundedCornerShape(22.dp))
                                         .clip(RoundedCornerShape(22.dp))
                                         .border(3.dp, Ink, RoundedCornerShape(22.dp))
@@ -244,24 +218,24 @@ fun PatientDashboardScreen(
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = LocalizationManager.t("patient.greetingName", "name" to patient.name),
-                                        fontSize = 26.sp,
+                                        fontSize = 28.sp,
                                         fontWeight = FontWeight.Black,
                                         fontFamily = FontFamily.Serif,
                                         color = Color.White,
-                                        lineHeight = 30.sp
+                                        lineHeight = 32.sp
                                     )
-                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Spacer(modifier = Modifier.height(6.dp))
                                     Text(
                                         text = "You are safe at home with your family today.",
-                                        fontSize = 14.sp,
+                                        fontSize = 15.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.White.copy(alpha = 0.85f),
-                                        lineHeight = 18.sp
+                                        color = Color.White.copy(alpha = 0.9f),
+                                        lineHeight = 20.sp
                                     )
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(18.dp))
+                            Spacer(modifier = Modifier.height(20.dp))
 
                             // Audio & Action Buttons
                             Row(
@@ -271,7 +245,8 @@ fun PatientDashboardScreen(
                                 // "Read for Me" Button
                                 Surface(
                                     modifier = Modifier
-                                        .weight(1.2f)
+                                        .weight(1.3f)
+                                        .height(52.dp)
                                         .shadow(3.dp, RoundedCornerShape(14.dp))
                                         .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
                                         .clickable {
@@ -282,15 +257,15 @@ fun PatientDashboardScreen(
                                     color = Color.White
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                                        modifier = Modifier.fillMaxSize(),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Icon(Icons.Filled.VolumeUp, null, tint = TeaGreen, modifier = Modifier.size(22.dp))
+                                        Icon(Icons.Filled.VolumeUp, null, tint = TeaGreen, modifier = Modifier.size(24.dp))
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = LocalizationManager.t("patient.listen"),
-                                            fontSize = 15.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.Black,
                                             color = Ink
                                         )
@@ -300,7 +275,8 @@ fun PatientDashboardScreen(
                                 // "Sound On" Button
                                 Surface(
                                     modifier = Modifier
-                                        .weight(0.8f)
+                                        .weight(0.9f)
+                                        .height(52.dp)
                                         .shadow(3.dp, RoundedCornerShape(14.dp))
                                         .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
                                         .clickable {
@@ -312,11 +288,16 @@ fun PatientDashboardScreen(
                                     color = if (isSoundOn) Color(0xFFFEF3C7) else Color.White
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 12.dp),
+                                        modifier = Modifier.fillMaxSize(),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Text(text = if (isSoundOn) "🔊 Sound On" else "🔇 Muted", fontSize = 13.sp, fontWeight = FontWeight.Black, color = Ink)
+                                        Text(
+                                            text = if (isSoundOn) "🔊 Sound On" else "🔇 Muted",
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = Ink
+                                        )
                                     }
                                 }
                             }
@@ -324,9 +305,9 @@ fun PatientDashboardScreen(
                     }
                 }
 
-                // 2. TODAY'S ROUTINE & MEDICATION SCHEDULE (Checklist)
+                // 2. TODAY'S ROUTINE & NOTIFICATION REMINDERS (Checklist + Phone Notification)
                 item {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -335,27 +316,43 @@ fun PatientDashboardScreen(
                         ) {
                             Text(
                                 text = "📅 " + LocalizationManager.t("home.routine.title"),
-                                fontSize = 18.sp,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Black,
                                 fontFamily = FontFamily.Serif,
                                 color = Ink
                             )
+
+                            // Native Mobile Notification Button
                             Surface(
-                                shape = RoundedCornerShape(8.dp),
-                                color = Color(0xFFDCFCE7),
-                                modifier = Modifier.border(1.dp, Ink, RoundedCornerShape(8.dp))
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFFFEF3C7),
+                                modifier = Modifier
+                                    .shadow(2.dp, RoundedCornerShape(10.dp))
+                                    .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
+                                    .clickable {
+                                        HapticUtil.vibrateTap(context)
+                                        NotificationHelper.sendMedicineReminder(context, "Morning Medicine & BP Tablet")
+                                        NotificationHelper.sendHydrationReminder(context)
+                                        LocalizationManager.speak("Medication and hydration reminders sent to your phone notification bar.")
+                                    }
                             ) {
-                                Text(
-                                    text = "${routineItems.count { it.isDone }} of ${routineItems.size} done",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = TeaGreen,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                                )
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(Icons.Filled.NotificationsActive, contentDescription = null, tint = Marigold, modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = "🔔 Notify Phone",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Ink
+                                    )
+                                }
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         routineItems.forEachIndexed { idx, item ->
                             Surface(
@@ -375,38 +372,39 @@ fun PatientDashboardScreen(
                                     }
                             ) {
                                 Row(
-                                    modifier = Modifier.padding(12.dp),
+                                    modifier = Modifier.padding(14.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .size(28.dp)
+                                            .size(32.dp)
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(if (item.isDone) TeaGreen else Color(0xFFF3F4F6))
-                                            .border(1.5.dp, Ink, RoundedCornerShape(8.dp)),
+                                            .border(2.dp, Ink, RoundedCornerShape(8.dp)),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         if (item.isDone) {
-                                            Icon(Icons.Filled.Check, null, tint = Color.White, modifier = Modifier.size(18.dp))
+                                            Icon(Icons.Filled.Check, null, tint = Color.White, modifier = Modifier.size(20.dp))
                                         }
                                     }
 
-                                    Spacer(modifier = Modifier.width(12.dp))
+                                    Spacer(modifier = Modifier.width(14.dp))
 
                                     Column(modifier = Modifier.weight(1f)) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Text(text = item.emoji, fontSize = 16.sp)
+                                            Text(text = item.emoji, fontSize = 18.sp)
                                             Spacer(modifier = Modifier.width(6.dp))
                                             Text(
                                                 text = item.title,
-                                                fontSize = 14.sp,
+                                                fontSize = 16.sp,
                                                 fontWeight = FontWeight.Black,
                                                 color = if (item.isDone) Color.Gray else Ink
                                             )
                                         }
+                                        Spacer(modifier = Modifier.height(2.dp))
                                         Text(
                                             text = "${item.time} • ${item.subtitle}",
-                                            fontSize = 11.sp,
+                                            fontSize = 13.sp,
                                             fontWeight = FontWeight.Medium,
                                             color = InkSecondary
                                         )
@@ -417,16 +415,19 @@ fun PatientDashboardScreen(
                     }
                 }
 
-                // 3. ECHOES OF HOME 3D TIME CAPSULE FEATURED BANNER
+                // 3. ECHOES OF HOME 3D TIME CAPSULE BANNER
                 item {
-                    Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                             .shadow(4.dp, RoundedCornerShape(22.dp))
                             .border(3.dp, Ink, RoundedCornerShape(22.dp))
-                            .clickable { onEchoesClick() },
+                            .clickable {
+                                HapticUtil.vibrateTap(context)
+                                onEchoesClick()
+                            },
                         shape = RoundedCornerShape(22.dp),
                         color = Color(0xFF1E293B)
                     ) {
@@ -438,14 +439,14 @@ fun PatientDashboardScreen(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(56.dp)
-                                    .shadow(2.dp, RoundedCornerShape(16.dp))
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .size(60.dp)
+                                    .shadow(2.dp, RoundedCornerShape(18.dp))
+                                    .clip(RoundedCornerShape(18.dp))
                                     .background(Color(0xFF334155))
-                                    .border(2.dp, Color(0xFFFDE68A), RoundedCornerShape(16.dp)),
+                                    .border(2.dp, Color(0xFFFDE68A), RoundedCornerShape(18.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "🌐", fontSize = 30.sp)
+                                Text(text = "🌐", fontSize = 32.sp)
                             }
 
                             Spacer(modifier = Modifier.width(14.dp))
@@ -454,7 +455,7 @@ fun PatientDashboardScreen(
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = "Echoes of Home 3D",
-                                        fontSize = 18.sp,
+                                        fontSize = 19.sp,
                                         fontWeight = FontWeight.Black,
                                         fontFamily = FontFamily.Serif,
                                         color = Color.White
@@ -466,20 +467,21 @@ fun PatientDashboardScreen(
                                         modifier = Modifier.border(1.dp, Color.White, RoundedCornerShape(6.dp))
                                     ) {
                                         Text(
-                                            text = "3D WebGL",
+                                            text = "3D SPACE",
                                             fontSize = 9.sp,
                                             fontWeight = FontWeight.Black,
                                             color = Color.White,
-                                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
                                         )
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(2.dp))
                                 Text(
-                                    text = "Explore 3D time capsule, orbit rings & sacred memories",
-                                    fontSize = 12.sp,
+                                    text = "Spatial memory orbit with real family photos & sacred places",
+                                    fontSize = 13.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = Color.White.copy(alpha = 0.8f),
-                                    lineHeight = 16.sp
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    lineHeight = 17.sp
                                 )
                             }
 
@@ -491,20 +493,20 @@ fun PatientDashboardScreen(
                                     .border(2.dp, Ink, RoundedCornerShape(12.dp))
                             ) {
                                 Text(
-                                    text = "Open 3D →",
-                                    fontSize = 12.sp,
+                                    text = "Explore →",
+                                    fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
                                     color = Color.White,
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
                                 )
                             }
                         }
                     }
                 }
 
-                // 4. DAILY CLINICAL ACTIVITIES (4 Featured Serious Games)
+                // 4. DAILY CLINICAL GAMES (Featuring Candy Crush Match-3, 3D Majuli Walk, Puzzle)
                 item {
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(26.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -530,16 +532,45 @@ fun PatientDashboardScreen(
                             Text(
                                 text = "All 43 Games →",
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                fontSize = 12.sp,
+                                fontSize = 13.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Ink
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
                 }
 
-                // Game cards row 1
+                // Game Row 1: Tea Garden Match (Candy Crush) & Majuli Island 3D Walk
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        DashboardFeaturedCard(
+                            emoji = "🍬",
+                            title = "Tea Garden Match-3",
+                            domain = "ATTENTION // MATCH-3",
+                            color = Color(0xFF0F766E),
+                            onClick = { onPlayGame("tea_garden_match") },
+                            modifier = Modifier.weight(1f)
+                        )
+                        DashboardFeaturedCard(
+                            emoji = "🚶",
+                            title = "Majuli Island 3D Walk",
+                            domain = "VISUOSPATIAL 3D",
+                            color = Color(0xFF2D5A27),
+                            onClick = { onPlayGame("majuli_walk") },
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                item { Spacer(modifier = Modifier.height(12.dp)) }
+
+                // Game Row 2: Picture Puzzle (Jigsaw) & Market Shopping (Bazaar Buddies)
                 item {
                     Row(
                         modifier = Modifier
@@ -550,52 +581,66 @@ fun PatientDashboardScreen(
                         DashboardFeaturedCard(
                             emoji = "🧩",
                             title = "Picture Puzzle",
-                            domain = "VISUOSPATIAL",
+                            domain = "VISUOSPATIAL PUZZLE",
                             color = TeaGreen,
-                            onClick = onGamesClick,
+                            onClick = { onPlayGame("jigsaw") },
                             modifier = Modifier.weight(1f)
                         )
                         DashboardFeaturedCard(
                             emoji = "🛒",
                             title = "Market Shopping",
-                            domain = "EXECUTIVE",
+                            domain = "EXECUTIVE & MATH",
                             color = Marigold,
-                            onClick = onGamesClick,
+                            onClick = { onPlayGame("bazaar_buddies") },
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
 
-                item { Spacer(modifier = Modifier.height(12.dp)) }
-
-                // Game cards row 2
+                // Quick Launch Pills for Calming Games
                 item {
+                    Spacer(modifier = Modifier.height(12.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        DashboardFeaturedCard(
-                            emoji = "🌿",
-                            title = "Tea Garden",
-                            domain = "ATTENTION",
-                            color = Color(0xFF0D9488),
-                            onClick = onGamesClick,
-                            modifier = Modifier.weight(1f)
-                        )
-                        DashboardFeaturedCard(
-                            emoji = "🪘",
-                            title = "Bihu Dhol Beats",
-                            domain = "ENTRAINMENT",
-                            color = Color(0xFF78350F),
-                            onClick = onGamesClick,
-                            modifier = Modifier.weight(1f)
-                        )
+                        listOf(
+                            Triple("🪔 River Lanterns", "river_lanterns", Color(0xFF065F46)),
+                            Triple("🪘 Bihu Drum Beats", "bihu_dhol", Color(0xFF854D0E)),
+                            Triple("🔔 Temple Bells", "monastery_bell", Color(0xFF581C87))
+                        ).forEach { (label, gId, col) ->
+                            Surface(
+                                shape = RoundedCornerShape(12.dp),
+                                color = Color.White,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .shadow(2.dp, RoundedCornerShape(12.dp))
+                                    .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
+                                    .clickable {
+                                        HapticUtil.vibrateTap(context)
+                                        onPlayGame(gId)
+                                    }
+                            ) {
+                                Box(
+                                    modifier = Modifier.padding(vertical = 10.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = label,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = col,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
-                // 5. REMINISCENCE & COMFORT: MEMORY OF THE DAY
+                // 5. REMINISCENCE & FAMILY COMFORT: REAL PHOTOS OF RELATIVES & PLACES
                 item {
                     Spacer(modifier = Modifier.height(28.dp))
                     Text(
@@ -608,164 +653,167 @@ fun PatientDashboardScreen(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .shadow(4.dp, RoundedCornerShape(22.dp))
-                            .border(3.dp, Ink, RoundedCornerShape(22.dp)),
-                        shape = RoundedCornerShape(22.dp),
-                        color = WarmSurface
-                    ) {
-                        Column(modifier = Modifier.padding(18.dp)) {
-                            // Header badge
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(text = "🧡", fontSize = 20.sp)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "Memory of the Day",
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Black,
-                                        color = Ink
-                                    )
-                                }
-                                Surface(
-                                    shape = RoundedCornerShape(12.dp),
-                                    color = Color(0xFFFFF0DB),
-                                    modifier = Modifier.border(1.5.dp, Color(0xFFD97706), RoundedCornerShape(12.dp))
+                    if (currentMemory != null) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .shadow(4.dp, RoundedCornerShape(22.dp))
+                                .border(3.dp, Ink, RoundedCornerShape(22.dp)),
+                            shape = RoundedCornerShape(22.dp),
+                            color = WarmSurface
+                        ) {
+                            Column(modifier = Modifier.padding(18.dp)) {
+                                // Header badge
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = "Family Keepsake",
-                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Black,
-                                        color = Color(0xFF92400E)
-                                    )
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(14.dp))
-
-                            // Family member portrait + description
-                            Row(verticalAlignment = Alignment.Top) {
-                                val memPhoto = getFamilyMemberPhoto(memoryIndex)
-                                val painter = rememberAsyncImagePainter(
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data("file:///android_asset/$memPhoto")
-                                        .crossfade(true)
-                                        .build()
-                                )
-                                Image(
-                                    painter = painter,
-                                    contentDescription = currentMemory.name,
-                                    modifier = Modifier
-                                        .size(96.dp)
-                                        .shadow(3.dp, RoundedCornerShape(18.dp))
-                                        .clip(RoundedCornerShape(18.dp))
-                                        .border(2.5.dp, Ink, RoundedCornerShape(18.dp))
-                                        .background(Color.White),
-                                    contentScale = ContentScale.Crop
-                                )
-
-                                Spacer(modifier = Modifier.width(14.dp))
-
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Surface(
-                                        shape = RoundedCornerShape(8.dp),
-                                        color = Color(0xFFFEF3C7),
-                                        modifier = Modifier.border(1.dp, Ink, RoundedCornerShape(8.dp))
-                                    ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(text = currentMemory.emoji, fontSize = 22.sp)
+                                        Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            text = currentMemory.relation,
-                                            fontSize = 11.sp,
-                                            fontWeight = FontWeight.Black,
-                                            color = Ink,
-                                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = currentMemory.name,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Black,
-                                        fontFamily = FontFamily.Serif,
-                                        color = Ink
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = currentMemory.note,
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = InkSecondary,
-                                        lineHeight = 18.sp
-                                    )
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // Action Buttons
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
-                                // "Read memory" button
-                                Surface(
-                                    modifier = Modifier
-                                        .weight(1.2f)
-                                        .shadow(3.dp, RoundedCornerShape(14.dp))
-                                        .border(2.dp, Ink, RoundedCornerShape(14.dp))
-                                        .clickable {
-                                            HapticUtil.vibrateTap(context)
-                                            LocalizationManager.speak("${currentMemory.name}, your ${currentMemory.relation}. ${currentMemory.note}")
-                                        },
-                                    shape = RoundedCornerShape(14.dp),
-                                    color = TeaGreen
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(vertical = 12.dp),
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(Icons.Filled.VolumeUp, null, tint = Color.White, modifier = Modifier.size(18.dp))
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        Text(
-                                            text = "Read memory for me",
-                                            fontSize = 13.sp,
-                                            fontWeight = FontWeight.Black,
-                                            color = Color.White
-                                        )
-                                    }
-                                }
-
-                                // "Show another" button
-                                Surface(
-                                    modifier = Modifier
-                                        .weight(0.8f)
-                                        .shadow(3.dp, RoundedCornerShape(14.dp))
-                                        .border(2.dp, Ink, RoundedCornerShape(14.dp))
-                                        .clickable {
-                                            HapticUtil.vibrateTap(context)
-                                            memoryIndex++
-                                        },
-                                    shape = RoundedCornerShape(14.dp),
-                                    color = Color.White
-                                ) {
-                                    Box(
-                                        modifier = Modifier.padding(vertical = 12.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = "✨ Show another",
-                                            fontSize = 13.sp,
+                                            text = "Memory of the Day",
+                                            fontSize = 18.sp,
                                             fontWeight = FontWeight.Black,
                                             color = Ink
                                         )
+                                    }
+                                    Surface(
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = Color(0xFFFFF0DB),
+                                        modifier = Modifier.border(1.5.dp, Color(0xFFD97706), RoundedCornerShape(10.dp))
+                                    ) {
+                                        Text(
+                                            text = currentMemory.category,
+                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = Color(0xFF92400E)
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Real family portrait / place photo + description
+                                Row(verticalAlignment = Alignment.Top) {
+                                    val painter = rememberAsyncImagePainter(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data("file:///android_asset/${currentMemory.imageAssetPath}")
+                                            .crossfade(true)
+                                            .build()
+                                    )
+                                    Image(
+                                        painter = painter,
+                                        contentDescription = currentMemory.name,
+                                        modifier = Modifier
+                                            .size(105.dp)
+                                            .shadow(3.dp, RoundedCornerShape(18.dp))
+                                            .clip(RoundedCornerShape(18.dp))
+                                            .border(2.5.dp, Ink, RoundedCornerShape(18.dp))
+                                            .background(Color.White),
+                                        contentScale = ContentScale.Crop
+                                    )
+
+                                    Spacer(modifier = Modifier.width(16.dp))
+
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = Color(0xFFFEF3C7),
+                                            modifier = Modifier.border(1.dp, Ink, RoundedCornerShape(8.dp))
+                                        ) {
+                                            Text(
+                                                text = currentMemory.relation,
+                                                fontSize = 12.sp,
+                                                fontWeight = FontWeight.Black,
+                                                color = Ink,
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = currentMemory.name,
+                                            fontSize = 22.sp,
+                                            fontWeight = FontWeight.Black,
+                                            fontFamily = FontFamily.Serif,
+                                            color = Ink
+                                        )
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = currentMemory.description,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            color = InkSecondary,
+                                            lineHeight = 19.sp
+                                        )
+                                    }
+                                }
+
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                // Action Buttons: Read aloud & Show next memory
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                ) {
+                                    // "Read memory" button
+                                    Surface(
+                                        modifier = Modifier
+                                            .weight(1.3f)
+                                            .height(50.dp)
+                                            .shadow(3.dp, RoundedCornerShape(14.dp))
+                                            .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                                            .clickable {
+                                                HapticUtil.vibrateTap(context)
+                                                LocalizationManager.speak("${currentMemory.name}, your ${currentMemory.relation}. ${currentMemory.description}")
+                                            },
+                                        shape = RoundedCornerShape(14.dp),
+                                        color = TeaGreen
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxSize(),
+                                            horizontalArrangement = Arrangement.Center,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(Icons.Filled.VolumeUp, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = "Read memory for me",
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Black,
+                                                color = Color.White
+                                            )
+                                        }
+                                    }
+
+                                    // "Show another" button
+                                    Surface(
+                                        modifier = Modifier
+                                            .weight(0.8f)
+                                            .height(50.dp)
+                                            .shadow(3.dp, RoundedCornerShape(14.dp))
+                                            .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                                            .clickable {
+                                                HapticUtil.vibrateTap(context)
+                                                memoryIndex++
+                                            },
+                                        shape = RoundedCornerShape(14.dp),
+                                        color = Color.White
+                                    ) {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = "✨ Show next",
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.Black,
+                                                color = Ink
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -791,28 +839,28 @@ fun PatientDashboardScreen(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(54.dp)
+                                    .size(56.dp)
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(Color.White.copy(alpha = 0.2f))
                                     .border(2.dp, Color.White, RoundedCornerShape(16.dp)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "🎵", fontSize = 28.sp)
+                                Text(text = "🎵", fontSize = 30.sp)
                             }
                             Spacer(modifier = Modifier.width(14.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = "Sensory Calming & 40Hz Flute",
-                                    fontSize = 16.sp,
+                                    fontSize = 17.sp,
                                     fontWeight = FontWeight.Black,
                                     color = Color.White
                                 )
                                 Text(
-                                    text = "Gentle acoustic tones proven to enhance brain rhythm synchronization",
-                                    fontSize = 11.sp,
+                                    text = "Gentle acoustic tones to enhance brain rhythm synchronization",
+                                    fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = Color.White.copy(alpha = 0.8f),
-                                    lineHeight = 15.sp
+                                    color = Color.White.copy(alpha = 0.85f),
+                                    lineHeight = 16.sp
                                 )
                             }
                             Surface(
@@ -828,10 +876,10 @@ fun PatientDashboardScreen(
                             ) {
                                 Text(
                                     text = "Play ▶",
-                                    fontSize = 12.sp,
+                                    fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
                                     color = Color.White,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
                                 )
                             }
                         }
@@ -853,7 +901,7 @@ fun PatientDashboardScreen(
                         Column(modifier = Modifier.padding(18.dp)) {
                             Text(
                                 text = "❤️ How are you feeling today, ${patient.name}?",
-                                fontSize = 16.sp,
+                                fontSize = 17.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Ink
                             )
@@ -887,7 +935,7 @@ fun PatientDashboardScreen(
                                         ) {
                                             Text(
                                                 text = label,
-                                                fontSize = 12.sp,
+                                                fontSize = 13.sp,
                                                 fontWeight = FontWeight.Black,
                                                 color = if (isSelected) Color.White else Ink
                                             )
@@ -899,7 +947,7 @@ fun PatientDashboardScreen(
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
                                     text = "✓ Logged in your daily wellness chart for your caregiver.",
-                                    fontSize = 12.sp,
+                                    fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = TeaGreen
                                 )
@@ -925,7 +973,7 @@ private fun DashboardFeaturedCard(
     Card(
         onClick = onClick,
         modifier = modifier
-            .height(180.dp)
+            .height(185.dp)
             .shadow(4.dp, RoundedCornerShape(18.dp))
             .border(3.dp, Ink, RoundedCornerShape(18.dp)),
         shape = RoundedCornerShape(18.dp),
@@ -941,32 +989,32 @@ private fun DashboardFeaturedCard(
             Column {
                 Text(
                     text = title,
-                    fontSize = 16.sp,
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     maxLines = 2,
-                    lineHeight = 20.sp
+                    lineHeight = 21.sp
                 )
                 Text(
                     text = domain,
-                    fontSize = 9.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White.copy(alpha = 0.75f),
-                    letterSpacing = 1.sp
+                    letterSpacing = 0.8.sp
                 )
             }
 
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .size(70.dp)
+                    .size(72.dp)
                     .shadow(3.dp, RoundedCornerShape(18.dp))
                     .clip(RoundedCornerShape(18.dp))
                     .border(2.5.dp, Ink, RoundedCornerShape(18.dp))
                     .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = emoji, fontSize = 38.sp)
+                Text(text = emoji, fontSize = 40.sp)
             }
         }
     }

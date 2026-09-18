@@ -30,7 +30,6 @@ fun GameScreen(
     when (gameId) {
         // Memory & Reminiscence
         "memory_road" -> MemoryRoadGame(onBack = onBack)
-        "market_visit" -> MarketVisitGame(onBack = onBack)
         "jigsaw" -> JigsawGame(onBack = onBack)
 
         // Attention & Working Memory
@@ -38,10 +37,10 @@ fun GameScreen(
         "church_bell" -> ChurchBellGame(onBack = onBack)
         "monastery_bell" -> MonasteryBellGame(onBack = onBack)
 
-        // Executive Function & IADL
+        // Executive Function & IADL (Going to Market)
+        "market_visit", "bazaar_buddies" -> BazaarBuddiesGame(onBack = onBack)
         "bamboo_craft" -> BambooCraftGame(onBack = onBack)
         "heritage_kitchen" -> HeritageKitchenGame(onBack = onBack)
-        "bazaar_buddies" -> BazaarBuddiesGame(onBack = onBack)
 
         // Visuospatial & Movement
         "auto_rickshaw" -> AutoRickshawGame(onBack = onBack)
@@ -51,6 +50,12 @@ fun GameScreen(
         "temple_prayer" -> TemplePrayerGame(onBack = onBack)
         "river_lanterns" -> RiverLanternsGame(onBack = onBack)
         "bihu_dhol" -> BihuDholGame(onBack = onBack)
+
+        // Match-3 (Candy Crush style)
+        "tea_garden_match" -> TeaGardenMatchGame(onBack = onBack)
+
+        // 3D Spatial Island Walk
+        "majuli_walk" -> MajuliWalk3DGame(onBack = onBack)
 
         // Language & Lessons
         "school_memories", "school_days" -> SchoolDaysGame(onBack = onBack)

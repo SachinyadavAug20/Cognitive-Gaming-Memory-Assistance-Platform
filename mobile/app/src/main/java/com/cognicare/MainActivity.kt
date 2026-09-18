@@ -69,6 +69,12 @@ fun CogniCareApp() {
                     navController.navigate(Screen.PatientDashboard.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
+                },
+                onSelectDemoPatient = { patientId ->
+                    authViewModel.demoLoginPatient(patientId)
+                    navController.navigate(Screen.PatientDashboard.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
                 }
             )
         }
@@ -92,6 +98,9 @@ fun CogniCareApp() {
                 onGamesClick = { navController.navigate(Screen.GamesHub.route) },
                 onEchoesClick = { navController.navigate(Screen.EchoesOfHome3D.route) },
                 onCaregiverClick = { navController.navigate(Screen.Caregiver.route) },
+                onPlayGame = { gameId ->
+                    navController.navigate(Screen.GamePlayer.createRoute(gameId))
+                },
                 onLogout = {
                     authViewModel.logout()
                     navController.navigate(Screen.Login.route) {

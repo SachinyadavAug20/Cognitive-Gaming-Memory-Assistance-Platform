@@ -114,14 +114,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun demoLoginLocal() {
-        val localPatient = Patient(
-            id = 2,
-            name = "Biren Borah",
-            age = 72,
-            gender = "Male",
-            state = "Assam",
-            language = "as"
-        )
+        demoLoginPatient(1L)
+    }
+
+    fun demoLoginPatient(patientId: Long = 1L) {
+        val localPatient = when (patientId) {
+            2L -> Patient(id = 2L, name = "Mary Nongrum", age = 68, gender = "Female", state = "Meghalaya", language = "kha")
+            3L -> Patient(id = 3L, name = "Ibochouba Singh", age = 74, gender = "Male", state = "Manipur", language = "mni")
+            4L -> Patient(id = 4L, name = "Lalhmingmawii Sailo", age = 70, gender = "Female", state = "Mizoram", language = "lus")
+            5L -> Patient(id = 5L, name = "Kevichusa Angami", age = 76, gender = "Male", state = "Nagaland", language = "en")
+            else -> Patient(id = 1L, name = "Biren Borah", age = 72, gender = "Male", state = "Assam", language = "as")
+        }
         tokenManager.patientId = localPatient.id
         tokenManager.patientName = localPatient.name
         tokenManager.language = localPatient.language

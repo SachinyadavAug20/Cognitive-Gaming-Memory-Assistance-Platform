@@ -1,268 +1,480 @@
 package com.cognicare.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.ui.theme.*
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.cognicare.util.HapticUtil
+import com.cognicare.util.LocalizationManager
+import com.cognicare.util.PatientMediaManager
 
+private val Ink = Color(0xFF16120E)
+private val InkSecondary = Color(0xFF4A4036)
+private val CanvasBg = Color(0xFFFAF7F2)
+private val TeaGreen = Color(0xFF1B663E)
+private val Marigold = Color(0xFFE66A00)
+private val WarmSurface = Color(0xFFFFFDF9)
+
+data class DemoPatientOption(
+    val id: Long,
+    val name: String,
+    val age: Int,
+    val state: String,
+    val language: String,
+    val role: String
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     onScanQR: () -> Unit,
-    onDemoLogin: () -> Unit
+    onDemoLogin: () -> Unit,
+    onSelectDemoPatient: (Long) -> Unit = { onDemoLogin() }
 ) {
+    val context = LocalContext.current
+    var showAllPatients by remember { mutableStateOf(false) }
+
+    val demoPatients = remember {
+        listOf(
+            DemoPatientOption(1L, "Biren Borah", 72, "Assam", "as", "Primary Trial Patient"),
+            DemoPatientOption(2L, "Mary Nongrum", 68, "Meghalaya", "kha", "Khasi Choir Singer"),
+            DemoPatientOption(3L, "Ibochouba Singh", 74, "Manipur", "mni", "Manipuri Weaver"),
+            DemoPatientOption(4L, "Lalhmingmawii Sailo", 70, "Mizoram", "lus", "Mizo Folk Storyteller"),
+            DemoPatientOption(5L, "Kevichusa Angami", 76, "Nagaland", "en", "Kohima Elder")
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(WarmWhite)
+            .background(CanvasBg)
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
+            .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // CogniCare logo + branding (matches website header)
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        // Top MDoNER Badge
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = Color(0xFFDCFCE7),
+            modifier = Modifier.border(1.5.dp, TeaGreen, RoundedCornerShape(12.dp))
         ) {
-            // Brain icon in green circle
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(Green40),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "\uD83E\uDDE0", fontSize = 24.sp, color = Color.White)
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
+                Text(text = "🏛️", fontSize = 14.sp)
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
-                    text = "CogniCare",
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = DeepGreen
-                )
-                Text(
-                    text = "North East Memory Care",
+                    text = "MDoNER • North East Memory Care Platform",
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    fontWeight = FontWeight.Black,
+                    color = TeaGreen
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Welcome Back heading (matches website)
-        Text(
-            text = "Welcome Back! \uD83C\uDF1E",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF1C1B1F),
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "We're happy to see you again.\nReady for your daily memory exercises?",
-            fontSize = 16.sp,
-            color = Color.Gray,
-            textAlign = TextAlign.Center,
-            lineHeight = 24.sp
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Kiosk Check-In card (matching website orange/brown card)
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(4.dp, RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color.White)
-                .border(2.dp, Color(0xFFD5C4A8), RoundedCornerShape(16.dp))
+        // Logo & Title
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            // Orange header
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(CardOrange)
-                    .padding(20.dp)
+                    .size(54.dp)
+                    .shadow(3.dp, CircleShape)
+                    .clip(CircleShape)
+                    .background(TeaGreen)
+                    .border(2.5.dp, Ink, CircleShape),
+                contentAlignment = Alignment.Center
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "\uD83D\uDD0D", fontSize = 36.sp)
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
+                Text(text = "🧠", fontSize = 28.sp)
+            }
+            Spacer(modifier = Modifier.width(14.dp))
+            Column {
+                Text(
+                    text = "CogniCare",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Serif,
+                    color = Ink,
+                    lineHeight = 34.sp
+                )
+                Text(
+                    text = "Clinical Memory Therapy",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = InkSecondary
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Large Elder-Friendly Welcome Text
+        Text(
+            text = "Welcome Back! ☀️",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Black,
+            fontFamily = FontFamily.Serif,
+            color = Ink,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = "Ready for your daily brain games and family memories?",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = InkSecondary,
+            textAlign = TextAlign.Center,
+            lineHeight = 22.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Voice Assistance Pill for Elderly Patients
+        Surface(
+            shape = RoundedCornerShape(14.dp),
+            color = Color.White,
+            modifier = Modifier
+                .shadow(2.dp, RoundedCornerShape(14.dp))
+                .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                .clickable {
+                    HapticUtil.vibrateTap(context)
+                    LocalizationManager.speak("Welcome to CogniCare. Tap the green card to enter your daily session as Biren Borah, or tap the orange button below to scan your QR health card.")
+                }
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Filled.VolumeUp, contentDescription = "Voice Guide", tint = TeaGreen, modifier = Modifier.size(22.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Tap to listen: Voice Guide",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Ink
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 1. PRIMARY ONE-TOUCH DEMO PATIENT CARD (Biren Borah)
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(4.dp, RoundedCornerShape(22.dp))
+                .border(3.dp, Ink, RoundedCornerShape(22.dp)),
+            shape = RoundedCornerShape(22.dp),
+            color = WarmSurface
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                // Header badge
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFFDCFCE7),
+                        modifier = Modifier.border(1.5.dp, TeaGreen, RoundedCornerShape(8.dp))
+                    ) {
                         Text(
-                            text = "Kiosk Check-In",
-                            fontSize = 22.sp,
+                            text = "⚡ Instant Patient Entry",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Black,
+                            color = TeaGreen
+                        )
+                    }
+                    Text(
+                        text = "1-Touch Demo",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = InkSecondary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Patient Profile Snippet
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    val profilePhoto = PatientMediaManager.getProfilePhoto(1L)
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            ImageRequest.Builder(context)
+                                .data("file:///android_asset/$profilePhoto")
+                                .crossfade(true)
+                                .build()
+                        ),
+                        contentDescription = "Biren Borah",
+                        modifier = Modifier
+                            .size(76.dp)
+                            .shadow(3.dp, RoundedCornerShape(20.dp))
+                            .clip(RoundedCornerShape(20.dp))
+                            .border(2.5.dp, Ink, RoundedCornerShape(20.dp))
+                            .background(Color.White),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Biren Borah",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Black,
+                            fontFamily = FontFamily.Serif,
+                            color = Ink
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Age 72 • Guwahati, Assam",
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = InkSecondary
                         )
                         Text(
-                            text = "QR Scanner Station",
-                            fontSize = 14.sp,
-                            color = Color.White.copy(alpha = 0.85f)
+                            text = "Language: Assamese (অসমীয়া)",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = TeaGreen
                         )
                     }
                 }
-            }
 
-            // Steps section
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-            ) {
-                Text(
-                    text = "Scan a patient's QR health card to check them in and start their session.",
-                    fontSize = 16.sp,
-                    color = Color(0xFF444444),
-                    lineHeight = 24.sp
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
-                // Step 1
-                StepRow(
-                    number = 1,
-                    text = "Show the QR health card"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Step 2
-                StepRow(
-                    number = 2,
-                    text = "Scan at the kiosk"
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Step 3
-                StepRow(
-                    number = 3,
-                    text = "Check in & start session"
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Open Scanner button (matching website orange button)
-                Button(
-                    onClick = onScanQR,
+                // Big 1-Tap Entry Button
+                Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(64.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = CardOrange,
-                        contentColor = Color.White
-                    )
+                        .height(60.dp)
+                        .shadow(3.dp, RoundedCornerShape(16.dp))
+                        .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
+                        .clickable {
+                            HapticUtil.vibrateTap(context)
+                            onSelectDemoPatient(1L)
+                        },
+                    shape = RoundedCornerShape(16.dp),
+                    color = TeaGreen
                 ) {
-                    Icon(
-                        Icons.Default.QrCodeScanner,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Filled.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "START BIREN'S SESSION →",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+
+                // Switch Patient Accordion
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showAllPatients = !showAllPatients }
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = "OPEN SCANNER",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        text = if (showAllPatients) "▲ Hide other regional patients" else "▼ Switch to other North-East patient demo",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = InkSecondary
                     )
+                }
+
+                if (showAllPatients) {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    demoPatients.filter { it.id != 1L }.forEach { patient ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .shadow(1.dp, RoundedCornerShape(12.dp))
+                                .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
+                                .clickable {
+                                    HapticUtil.vibrateTap(context)
+                                    onSelectDemoPatient(patient.id)
+                                },
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color.White
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter("file:///android_asset/${PatientMediaManager.getProfilePhoto(patient.id)}"),
+                                    contentDescription = patient.name,
+                                    modifier = Modifier
+                                        .size(44.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .border(1.5.dp, Ink, RoundedCornerShape(10.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(text = patient.name, fontSize = 15.sp, fontWeight = FontWeight.Black, color = Ink)
+                                    Text(text = "${patient.state} • ${patient.role}", fontSize = 12.sp, color = InkSecondary)
+                                }
+                                Surface(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = TeaGreen
+                                ) {
+                                    Text(
+                                        text = "Select",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Demo Login button (secondary style)
-        OutlinedButton(
-            onClick = onDemoLogin,
+        // 2. KIOSK QR HEALTH CARD SCANNER CARD
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = Green40
-            ),
-            border = ButtonDefaults.outlinedButtonBorder.copy(
-                brush = Brush.horizontalGradient(listOf(Green40, Green40))
-            )
+                .shadow(4.dp, RoundedCornerShape(22.dp))
+                .border(3.dp, Ink, RoundedCornerShape(22.dp)),
+            shape = RoundedCornerShape(22.dp),
+            color = Color.White
         ) {
-            Icon(
-                Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "Try Demo Patient",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+            Column {
+                // Orange header matching web kiosk
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Marigold)
+                        .border(width = 0.dp, color = Color.Transparent)
+                        .padding(16.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "📷", fontSize = 28.sp)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "Kiosk QR Health Card",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.White
+                            )
+                            Text(
+                                text = "Ayushman Bharat (ABDM) Compatible",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White.copy(alpha = 0.85f)
+                            )
+                        }
+                    }
+                }
 
-        Spacer(modifier = Modifier.weight(1f))
+                Column(modifier = Modifier.padding(18.dp)) {
+                    Text(
+                        text = "Hold up the patient's laminated QR health card or clinic appointment slip in front of the camera.",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = InkSecondary,
+                        lineHeight = 20.sp
+                    )
 
-        // Footer
-        Text(
-            text = "CogniCare CDTx\nMinistry of DoNER \u2022 SIH 2026",
-            fontSize = 12.sp,
-            color = Color.Gray.copy(alpha = 0.6f),
-            textAlign = TextAlign.Center
-        )
+                    Spacer(modifier = Modifier.height(14.dp))
 
-        Spacer(modifier = Modifier.height(24.dp))
-    }
-}
-
-@Composable
-private fun StepRow(number: Int, text: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(WarmWhite)
-            .border(1.dp, Color(0xFFE8E0D0), RoundedCornerShape(12.dp))
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Surface(
-            shape = CircleShape,
-            color = CardOrange,
-            modifier = Modifier.size(28.dp)
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = "$number",
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(58.dp)
+                            .shadow(3.dp, RoundedCornerShape(14.dp))
+                            .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                            .clickable {
+                                HapticUtil.vibrateTap(context)
+                                onScanQR()
+                            },
+                        shape = RoundedCornerShape(14.dp),
+                        color = Marigold
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Icons.Filled.QrCodeScanner, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = "OPEN CAMERA SCANNER",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Color.White,
+                                letterSpacing = 0.5.sp
+                            )
+                        }
+                    }
+                }
             }
         }
-        Spacer(modifier = Modifier.width(12.dp))
+
+        Spacer(modifier = Modifier.height(28.dp))
+
+        // Clinical Footer
         Text(
-            text = text,
-            fontSize = 16.sp,
-            color = Color(0xFF1C1B1F)
+            text = "CogniCare CDTx • Ministry of Development of North Eastern Region (MDoNER)\nSmart India Hackathon 2026 // Clinical Trial Prototype",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Medium,
+            color = InkSecondary.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center,
+            lineHeight = 16.sp
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
