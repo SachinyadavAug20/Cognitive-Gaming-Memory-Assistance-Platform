@@ -546,7 +546,7 @@
     },
     "biomarkers": {
       "title": "Continuous Cognitive Biomarkers & Motor Trajectory",
-      "subtitle": "Real-time motor path curvature, micro-hesitation latencies, and 5-domain clinical competency radar",
+      "subtitle": "Real-time motor path curvature, micro-hesitation latencies, and 6-domain clinical competency radar",
       "activeTelemetry": "Active Clinical Telemetry"
     },
     "lightbox": {

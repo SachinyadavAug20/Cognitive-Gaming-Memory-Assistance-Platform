@@ -44,6 +44,7 @@ interface ClinicalReportTexts {
     executive: string;
     visuospatial: string;
     attention: string;
+    language: string;
   };
   badges: {
     intact: string;
@@ -81,13 +82,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "Clinical Baseline",
     mtaSubtitle: "Hippocampal Intact",
     fazekasSubtitle: "Mild White Matter",
-    competencyTitle: "5-Domain Neuropsychological Competency",
+    competencyTitle: "6-Domain Neuropsychological Competency",
     domains: {
       orientation: "Temporal & Spatial Orientation",
       episodic: "Episodic & Recent Memory Recall",
       executive: "Executive Function & Sequential Logic",
       visuospatial: "Visuospatial & Motor Kinematics",
       attention: "Attention & Reaction Latency",
+      language: "Language, Naming & Verbal Fluency",
     },
     badges: {
       intact: "Intact",
@@ -128,13 +130,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "ক্লিনিকেল ভিত্তি",
     mtaSubtitle: "হিপ্প'কেম্পাছ অটুট",
     fazekasSubtitle: "সামান্য বগা পদাৰ্থ পৰিৱৰ্তন",
-    competencyTitle: "৫-ক্ষেত্ৰৰ স্নায়ু-মনস্তাত্ত্বিক দক্ষতা",
+    competencyTitle: "৬-ক্ষেত্ৰৰ স্নায়ু-মনস্তাত্ত্বিক দক্ষতা",
     domains: {
       orientation: "সময় আৰু স্থানিক স্থিতি নিৰ্ধাৰণ",
       episodic: "ঘটনাভিত্তিক আৰু সাম্প্ৰতিক স্মৃতি",
       executive: "কাৰ্যবাহী কাৰ্য আৰু ক্ৰমিক যুক্তি",
       visuospatial: "দৃষ্টি-স্থানিক আৰু পেশীয় গতিবিধি",
       attention: "মনোযোগ আৰু প্ৰতিক্ৰিয়াৰ গতি",
+      language: "ভাষা, নামকৰণ আৰু বাক্য প্ৰৱাহ",
     },
     badges: {
       intact: "অক্ষত",
@@ -175,13 +178,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "नैदानिक आधार रेखा",
     mtaSubtitle: "हिप्पोकैम्पस अक्षुण्ण",
     fazekasSubtitle: "हल्का व्हाइट मैटर",
-    competencyTitle: "5-डोमेन न्यूरोसाइकोलॉजिकल सक्षमता",
+    competencyTitle: "6-डोमेन न्यूरोसाइकोलॉजिकल सक्षमता",
     domains: {
       orientation: "समय एवं स्थानिक अभिविन्यास",
       episodic: "प्रासंगिक एवं हालिया स्मृति स्मरण",
       executive: "कार्यकारी कार्यप्रणाली एवं क्रमिक तर्क",
       visuospatial: "दृष्टि-स्थानिक एवं मोटर गतिशीलता",
       attention: "ध्यान एवं प्रतिक्रिया गति",
+      language: "भाषा, नामकरण एवं मौखिक प्रवाह",
     },
     badges: {
       intact: "अक्षुण्ण",
@@ -222,13 +226,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "ক্লিনিকাল বেসলাইন",
     mtaSubtitle: "হিপ্পোক্যাম্পাস অক্ষত",
     fazekasSubtitle: "সামান্য হোয়াইট ম্যাটার",
-    competencyTitle: "৫-ডোমেন নিউরোসাইকোলজিকাল সক্ষমতা",
+    competencyTitle: "৬-ডোমেন নিউরোসাইকোলজিকাল সক্ষমতা",
     domains: {
       orientation: "সময় ও স্থানিক স্থিতিমুখিতা",
       episodic: "ঘটনাভিত্তিক ও সাম্প্রতিক স্মৃতিচারণ",
       executive: "নির্বাহী কার্য ও ধারাবাহিক যুক্তি",
       visuospatial: "দৃশ্য-স্থানিক ও মোটর গতিবিজ্ঞান",
       attention: "মনোযোগ ও প্রতিক্রিয়ার গতি",
+      language: "ভাষা, নামকরণ ও মৌখিক সাবলীলতা",
     },
     badges: {
       intact: "অক্ষত",
@@ -269,13 +274,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "क्लिनिकल बेसलाइन",
     mtaSubtitle: "हिप्पोकॅम्पस शाबूत",
     fazekasSubtitle: "किरकोळ व्हाईट मॅटर",
-    competencyTitle: "५-क्षेत्रीय न्यूरोसायकोलॉजिकल सक्षमता",
+    competencyTitle: "६-क्षेत्रीय न्यूरोसायकोलॉजिकल सक्षमता",
     domains: {
       orientation: "काळ आणि अवकाशीय अभिमुखता",
       episodic: "प्रसंगनिष्ठ आणि अलिकडील स्मृती",
       executive: "कार्यकारी कार्य आणि तार्किक क्रम",
       visuospatial: "दृश्य-अवकाशीय व मोटर हालचाली",
       attention: "लक्ष आणि प्रतिसाद वेग",
+      language: "भाषा, नामकरण आणि मौखिक ओघ",
     },
     badges: {
       intact: "शाबूत",
@@ -316,20 +322,21 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "क्लिनिकल बेसलाइन",
     mtaSubtitle: "हिप्पोक्याम्पस अक्षुण्ण",
     fazekasSubtitle: "हल्का ह्वाइट म्याटर",
-    competencyTitle: "५-क्षेत्रीय न्युरोसाइकोलोजिकल सक्षमता",
+    competencyTitle: "६-क्षेत्रीय न्युरोसाइकोलोजिकल सक्षमता",
     domains: {
       orientation: "समय र स्थानिक अभिमुखीकरण",
       episodic: "प्रासंगिक र भर्खरको स्मृति",
       executive: "कार्यकारी कार्य र तार्किक क्रम",
       visuospatial: "दृष्टि-स्थानिक र मोटर चाल",
       attention: "ध्यान र प्रतिक्रिया गति",
+      language: "भाषा, नामकरण र मौखिक प्रवाह",
     },
     badges: {
       intact: "सबल",
       mildImpairment: "हल्का ह्रास",
       stable: "स्थिर",
     },
-    recommendationsTitle: "क्लिनिकल सिफारिसहरू र CDTx सल्लाह:",
+    recommendationsTitle: "क्लिनिकल सिफारিসहरू र CDTx सल्लाह:",
     recommendations: [
       "मोटर चाल दुरुस्त राख्न दैनिक १५ मिनेट दुईतर्फी एयर-ड्रमिङ (बिहु ढोल / खासी क्सिङ)।",
       "प्रासंगिक स्मरण र मनोबलका लागि साथी भ्वाइस सहयात्रीसँग दैनिक कुराकानी।",
@@ -363,13 +370,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "ক্লিনিকল বেসলাইন",
     mtaSubtitle: "হিপোক্যাম্পস ফনা লৈ",
     fazekasSubtitle: "হন্না হোয়াইত মেতর",
-    competencyTitle: "৫-ডোমেন নিউরোসাইকোলোজিকেল কেপাবিলিতি",
+    competencyTitle: "৬-ডোমেন নিউরোসাইকোলোজিকেল কেপাবিলিতি",
     domains: {
       orientation: "মতুম অমসুং মফম খঙবা",
       episodic: "ঙসিসুং হৌখিবা নিংশিংবা",
       executive: "এক্সিক্যুতিভ ফংসন অমসুং লোজিকেল ওর্দর",
       visuospatial: "উবা অমসুং হকচাংগী খোংচৎ",
       attention: "মিৎয়েং থম্বা অমসুং পাউখুম খোঙজেল",
+      language: "লোল, মমিং অমসুং ৱাফং ফোঙদোকপা",
     },
     badges: {
       intact: "ফনা লৈ",
@@ -410,13 +418,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "क्लिनिकेल गाहाय नमुना",
     mtaSubtitle: "हिप्प'केम्पास मोजां",
     fazekasSubtitle: "गुरै गुफुर बेसाद",
-    competencyTitle: "5-गाहाय बाहागो निउरसाइकोलोजिकेल गोहो",
+    competencyTitle: "6-गाहाय बाहागो निउरसाइकोलोजिकेल गोहो",
     domains: {
       orientation: "सम आरो जायगा हमदांनाय",
       episodic: "जाथाइ आरो गोदान गोसोखांनाय",
       executive: "मावफुं गोहो आरो खान्थिआरि सानथौ",
       visuospatial: "नुनाय-जायगा आरो देहा खारथाय",
       attention: "गोसो होनाय आरो फिनजाव सम",
+      language: "राव, मुं दोननाय आरो बुंनायनि गोहो",
     },
     badges: {
       intact: "गाहाम",
@@ -457,13 +466,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "Clinical A·bachengani",
     mtaSubtitle: "Hippocampal Bilakkuenga",
     fazekasSubtitle: "Komi White Matter",
-    competencyTitle: "Bak 5 Neuropsychological Bil",
+    competencyTitle: "Bak 6 Neuropsychological Bil",
     domains: {
       orientation: "Sal aro A·a U·iani",
       episodic: "Gisik Ra·ani aro Da·ororoni Katta",
       executive: "Kam Ka·ani aro Sulsul Chanchiani",
       visuospatial: "Nikani aro Jak-Ja·a Moani",
       attention: "Miksongani aro Ta·rakani",
+      language: "Ku·sik, Biming aro Aganna Sapani",
     },
     badges: {
       intact: "Bilaka",
@@ -504,13 +514,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "Clinical Baseline",
     mtaSubtitle: "Hippocampal ba Dang Bha",
     fazekasSubtitle: "Mild White Matter",
-    competencyTitle: "5-Domain Bor Pyrkhat bad Jingmut",
+    competencyTitle: "6-Domain Bor Pyrkhat bad Jingmut",
     domains: {
       orientation: "Ka Por bad ka Jinghikai Shaphang ka Hima",
       episodic: "Ka Jingkynmaw ia kiei kiei ba la dep",
       executive: "Ka Jingpyrkhat ba Ryntih",
       visuospatial: "Ka Jingiohi bad Jingpyniaid Met",
       attention: "Ka Jingpeit Ngor bad Jingstet Jubab",
+      language: "Ka Ktien, Kyrteng bad Jingkren Jem",
     },
     badges: {
       intact: "Bha Bha",
@@ -551,13 +562,14 @@ const CLINICAL_REPORT_I18N: Record<string, ClinicalReportTexts> = {
     mmseSubtitle: "Clinical Baseline",
     mtaSubtitle: "Hippocampus a la tha",
     fazekasSubtitle: "White Matter Tlem a chhe",
-    competencyTitle: "Peng 5 Thluak Hriselna Tehna",
+    competencyTitle: "Peng 6 Thluak Hriselna Tehna",
     domains: {
       orientation: "Hun leh Hmun Hriatna",
       episodic: "Thil Thleng leh Hriatrengna Hnai",
       executive: "Thil Ruahman leh Ngaihtuahna",
       visuospatial: "Hmuh theih leh Taksa Chetdan",
       attention: "Rilru Pekna leh Chetdan Hmanhmawh",
+      language: "Tawng, Hming Sak leh Thumal Thiamna",
     },
     badges: {
       intact: "A Tha",
@@ -624,12 +636,13 @@ STANDARDIZED SCORES & BIOMARKERS:
 - Fazekas White Matter Grade: ${med?.fazekasGrade ?? "Grade 1"}
 - Clinical Staging: ${med?.clinicalStage ?? stage}
 
-5-DOMAIN CLINICAL COMPETENCY:
+6-DOMAIN CLINICAL COMPETENCY:
 - Temporal & Spatial Orientation: 85%
 - Episodic & Remote Memory: 68%
 - Executive Function & Planning: 72%
 - Visuospatial & Motor Kinematics: 88%
 - Attention & Processing Speed: 74%
+- Language & Verbal Fluency: 91%
 
 DIGITAL THERAPEUTIC ADHERENCE:
 - 18 CDTx Serious Games Prescribed
@@ -790,7 +803,7 @@ Authorized by: Dispur PHC Telemedicine Unit // MDoNER Track
                 </div>
               </div>
 
-              {/* 5-Domain Cognitive Deficit Competency */}
+              {/* 6-Domain Cognitive Deficit Competency */}
               <div>
                 <h4 className="font-serif text-base font-black text-ink mb-2">
                   {cr.competencyTitle}
@@ -802,6 +815,7 @@ Authorized by: Dispur PHC Telemedicine Unit // MDoNER Track
                     { domain: cr.domains.executive, score: 72, badge: cr.badges.mildImpairment },
                     { domain: cr.domains.visuospatial, score: 88, badge: cr.badges.intact },
                     { domain: cr.domains.attention, score: 74, badge: cr.badges.stable },
+                    { domain: cr.domains.language, score: 91, badge: cr.badges.intact },
                   ].map((d) => (
                     <div key={d.domain} className="flex items-center justify-between text-xs font-bold gap-3">
                       <span className="w-56 truncate">{d.domain}</span>

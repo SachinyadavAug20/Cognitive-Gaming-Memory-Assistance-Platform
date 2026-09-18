@@ -74,6 +74,20 @@ export const SAATHI_TRIGGER_LABELS: Record<string, string> = {
   lus: "Saathi be rawh",
 };
 
+export const ASK_ANYTHING_LABELS: Record<string, string> = {
+  en: "Ask anything (e.g. what day is today?)",
+  as: "যিকোনো কথা সোধক (যেনে: আজি কি বাৰ?)",
+  hi: "कुछ भी पूछें (जैसे: आज कौन सा दिन है?)",
+  bn: "যেকোনো কিছু জিজ্ঞাসা করুন (যেমন: আজ কী বার?)",
+  mr: "काहीही विचारा (उदा. आज कोणता वार आहे?)",
+  ne: "केही पनि सोध्नुहोस् (जस्तै: आज कुन दिन हो?)",
+  mni: "করিগুম্বা অমা হংবীয়ু (য়েনবগী: ঙসি করম্বা নুমিৎনো?)",
+  brx: "जेबो सोंनो हागौ (जेरै: दिनै मा सान?)",
+  grt: "Maimoba sing·bo (jemin: Da·alo ma sal?)",
+  kha: "Kylli kano-kano (nuksa: Ka sngi aiu mynta?)",
+  lus: "Engpawh zawt rawh (entirnan: Vawiin hi eng ni nge?)",
+};
+
 const PROMPT_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   what_day: CalendarDays,
   where_am_i: MapPin,
@@ -711,43 +725,28 @@ export function SaathiVoiceCompanion({
               </select>
             </div>
 
-            {/* Speaking / Listening Status Indicator */}
-            <div className="mb-2 flex items-center justify-between rounded-xl border-2 border-black bg-amber-100 px-3.5 py-1.5 text-xs font-bold text-amber-950">
-              <span className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-tea" />
-                <span>
-                  {isSpeaking ? (
-                    <span className="inline-flex items-center gap-1.5">
-                      <Speech className="h-3.5 w-3.5 text-tea" />
-                      <span>Saathi is speaking ({activeLangConfig.name.split(" ")[0]})...</span>
-                    </span>
-                  ) : isListening ? (
-                    <span className="inline-flex items-center gap-1.5">
-                      <Mic className="h-3.5 w-3.5 text-rose-600 animate-pulse" />
-                      <span>Listening... Speak gently to Saathi</span>
-                    </span>
-                  ) : (
-                    "Touch a clinical prompt below or tap the mic"
-                  )}
+            {/* Audio playback banner ONLY when Saathi is speaking */}
+            {isSpeaking && (
+              <div className="mb-2 flex items-center justify-between rounded-xl border-2 border-black bg-amber-100 px-3.5 py-1.5 text-xs font-bold text-amber-950 animate-fade-in">
+                <span className="inline-flex items-center gap-1.5">
+                  <Speech className="h-3.5 w-3.5 text-tea animate-pulse" />
+                  <span>Saathi is speaking ({activeLangConfig.name.split(" ")[0]})...</span>
                 </span>
-              </span>
-
-              {isSpeaking && (
                 <button
                   type="button"
                   onClick={() => {
                     stopSpeaking();
                     setIsSpeaking(false);
                   }}
-                  className="rounded-lg border border-black bg-white px-2 py-0.5 text-[11px] font-black hover:bg-rose-100 text-rose-800"
+                  className="rounded-lg border border-black bg-white px-2.5 py-0.5 text-xs font-black hover:bg-rose-100 text-rose-800 cursor-pointer shadow-2xs"
                 >
                   Stop Audio
                 </button>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Conversation Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto space-y-2.5 py-1 pr-1 min-h-[190px] max-h-[280px]">
+            <div className="flex-1 overflow-y-auto space-y-3 py-2 pr-1 min-h-[220px] max-h-[340px]">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -756,16 +755,16 @@ export function SaathiVoiceCompanion({
                   }`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl border-3 border-black p-3 shadow-[2px_2px_0px_#000] ${
+                    className={`max-w-[85%] rounded-2xl border-3 border-black p-3.5 sm:p-4 shadow-[3px_3px_0px_#000] ${
                       msg.sender === "user"
                         ? "bg-amber-300 text-ink"
                         : "bg-surface text-ink"
                     }`}
                   >
-                    <p className="text-xs sm:text-sm font-black leading-relaxed">
+                    <p className="text-sm sm:text-base font-bold leading-relaxed">
                       {msg.text}
                     </p>
-                    <span className="mt-1 block text-[10px] font-bold text-ink-secondary text-right">
+                    <span className="mt-1.5 block text-[11px] font-bold text-ink-secondary text-right">
                       {msg.time}
                     </span>
                   </div>
@@ -773,35 +772,30 @@ export function SaathiVoiceCompanion({
               ))}
             </div>
 
-            {/* Quick Touch Clinical Prompts */}
-            <div className="pt-2 border-t-2 border-black/10">
-              <span className="block text-[10px] font-black uppercase tracking-wider text-ink-secondary mb-1.5">
-                Clinical Prompts ({activeLangConfig.name.split(" ")[0]}):
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {promptList.map((p, idx) => {
-                  const IconComp = PROMPT_ICONS[p.query] || Sparkles;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleQuickPrompt(p)}
-                      className="btn-tactile flex items-center gap-1.5 rounded-xl border-2 border-black bg-surface px-2.5 py-1 text-[11px] font-black text-ink shadow-[2px_2px_0px_#000] hover:bg-amber-100 transition-transform active:translate-y-0.5 cursor-pointer"
-                    >
-                      <IconComp className="h-3.5 w-3.5 text-tea shrink-0" />
-                      <span>{p.text}</span>
-                    </button>
-                  );
-                })}
-              </div>
+            {/* Simple patient-friendly prompt guidance */}
+            <div className="pt-3 pb-1 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  const examplePrompt = promptList[0] || {
+                    text: "What day is today?",
+                    query: "what_day",
+                  };
+                  handleQuickPrompt(examplePrompt);
+                }}
+                className="text-sm sm:text-base font-bold text-ink-secondary hover:text-ink transition-colors cursor-pointer inline-block"
+                title="Tap to ask"
+              >
+                {ASK_ANYTHING_LABELS[selectedLang] || ASK_ANYTHING_LABELS[currentLocale] || ASK_ANYTHING_LABELS.en}
+              </button>
             </div>
 
             {/* Voice Input Big Action Button */}
-            <div className="mt-3 flex items-center justify-center pt-1">
+            <div className="mt-2.5 flex items-center justify-center">
               <button
                 type="button"
                 onClick={toggleListening}
-                className={`btn-tactile flex items-center gap-2.5 rounded-full border-4 border-black px-7 py-3 text-sm sm:text-base font-black shadow-[4px_4px_0px_#000] cursor-pointer transition-all ${
+                className={`btn-tactile flex min-h-[58px] items-center gap-3 rounded-2xl border-3 border-black px-7 sm:px-9 py-3.5 text-base sm:text-lg font-black shadow-[4px_4px_0px_#000] cursor-pointer transition-all active:scale-95 ${
                   isListening
                     ? "bg-rose-500 text-white animate-pulse"
                     : "bg-amber-400 text-black hover:bg-amber-300"
@@ -809,12 +803,12 @@ export function SaathiVoiceCompanion({
               >
                 {isListening ? (
                   <>
-                    <MicOff className="h-5 w-5" />
+                    <MicOff className="h-6 w-6 stroke-[2.5]" />
                     <span>Listening... Tap to Stop</span>
                   </>
                 ) : (
                   <>
-                    <Mic className="h-5 w-5" />
+                    <Mic className="h-6 w-6 stroke-[2.5]" />
                     <span>Tap to Speak with Saathi ({activeLangConfig.name.split(" ")[0]})</span>
                   </>
                 )}

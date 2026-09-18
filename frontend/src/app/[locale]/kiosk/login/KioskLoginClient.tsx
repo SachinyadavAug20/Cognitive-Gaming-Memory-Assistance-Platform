@@ -11,13 +11,11 @@ import {
   AlertTriangle,
   QrCode,
   HeartHandshake,
-  Sparkles,
 } from "lucide-react";
 import { KioskScanner } from "@/components/kiosk/KioskScanner";
 import { useAuthStore } from "@/store/useAuthStore";
 import { playScanSuccess, playTapFeedback } from "@/lib/sound";
 import type { PatientProfile } from "@/types/auth";
-import { getSessionCookie } from "@/lib/authCookie";
 import { getCustomOnboardedPatients } from "@/data/mockPatients";
 
 type ScanStatus = "scanning" | "loading" | "success" | "error";
@@ -222,33 +220,7 @@ export function KioskLoginClient() {
     language?: string;
   } | null>(null);
 
-  // Active 30-Day session detected from cookies or zustand store
-  const [existingSession, setExistingSession] = useState<{
-    token: string;
-    patient: PatientProfile;
-  } | null>(null);
-
   const busyRef = useRef(false);
-
-  useEffect(() => {
-    // Check zustand store first
-    const storeState = useAuthStore.getState();
-    if (storeState.isAuthenticated && storeState.token && storeState.patient) {
-      setExistingSession({
-        token: storeState.token,
-        patient: storeState.patient,
-      });
-      return;
-    }
-    // Check 30-day session cookie
-    const cookieData = getSessionCookie();
-    if (cookieData && cookieData.token && cookieData.patient) {
-      setExistingSession({
-        token: cookieData.token,
-        patient: cookieData.patient as PatientProfile,
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
@@ -284,21 +256,6 @@ export function KioskLoginClient() {
     },
     [login, router]
   );
-
-  const handleScannerClickToAutoLogin = useCallback(() => {
-    if (busyRef.current || status === "loading" || status === "success") return;
-    busyRef.current = true;
-    if (existingSession) {
-      completeLoginSuccess(existingSession.token, existingSession.patient);
-    } else {
-      // 1-tap demo auto-login as Biren Borah
-      completeLoginSuccess("demo-jwt-token-biren", {
-        id: 2,
-        name: "Biren Borah",
-        languagePreference: "as",
-      });
-    }
-  }, [existingSession, status, completeLoginSuccess]);
 
   const handleScan = useCallback(
     (text: string) => {
@@ -373,46 +330,10 @@ export function KioskLoginClient() {
           <p className="mt-1 text-sm md:text-base font-bold text-ink-secondary max-w-md mx-auto">
             {t("subtitle")}
           </p>
-
-          {/* Active 30-Day Session Available Card / Click-to-Login */}
-          {existingSession && status === "scanning" && (
-            <div className="mt-4 w-full max-w-md mx-auto p-4 rounded-2xl border-3 border-black bg-amber-50 shadow-[4px_4px_0px_#000] text-center">
-              <div className="flex items-center justify-center gap-1.5 text-xs font-black text-teal-800 uppercase tracking-wider mb-1">
-                <Sparkles className="h-4 w-4 text-amber-600" />
-                <span>{kp18n.activeSession}</span>
-              </div>
-              <p className="text-base md:text-lg font-black text-ink">
-                {kp18n.welcomeBack(existingSession.patient.name)}
-              </p>
-              <button
-                type="button"
-                onClick={handleScannerClickToAutoLogin}
-                className="mt-2.5 w-full btn-tactile inline-flex items-center justify-center gap-2 rounded-xl border-2 border-black bg-tea text-white px-4 py-2.5 text-sm font-black shadow-[3px_3px_0px_#000] hover:bg-emerald-800 cursor-pointer animate-pulse"
-              >
-                <CheckCircle2 className="h-4 w-4 text-white" />
-                <span>{kp18n.tapAutoLogin}</span>
-              </button>
-              <p className="text-[11px] font-bold text-ink-secondary mt-1.5">
-                {kp18n.scannerHint}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Scanner Container with Overlay States */}
-        <div
-          onClick={status === "scanning" ? handleScannerClickToAutoLogin : undefined}
-          className={`relative w-full max-w-[420px] mx-auto ${
-            status === "scanning"
-              ? "cursor-pointer group hover:scale-[1.01] transition-transform"
-              : ""
-          }`}
-          title={
-            existingSession && status === "scanning"
-              ? `Click scanner to auto-login as ${existingSession.patient.name}`
-              : "Click scanner to quick-login as Biren Borah (Demo)"
-          }
-        >
+        <div className="relative w-full max-w-[420px] mx-auto">
           <KioskScanner
             onScan={handleScan}
             paused={status !== "scanning"}

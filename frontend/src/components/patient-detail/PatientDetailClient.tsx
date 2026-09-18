@@ -178,7 +178,7 @@ export function CaregiverPatientDetailClient({ patientId }: { patientId?: string
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                {/* 5-Axis Clinical Radar */}
+                {/* 6-Axis Clinical Radar */}
                 <div className="rounded-2xl border-3 border-black bg-surface p-4 shadow-[4px_4px_0px_#000]">
                   <BiomarkerRadarChart />
                 </div>

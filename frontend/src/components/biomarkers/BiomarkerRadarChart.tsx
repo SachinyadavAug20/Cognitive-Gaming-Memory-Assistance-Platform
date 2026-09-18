@@ -28,6 +28,7 @@ const DEFAULT_BIOMARKER_AXES: BiomarkerAxis[] = [
   { label: "Bilateral Symmetry", value: 85, domain: "Two-Hand Coordination" },
   { label: "Processing Speed", value: 82, domain: "Reaction Latency" },
   { label: "Acoustic Fluency", value: 90, domain: "Speech-Pause Ratio" },
+  { label: "Executive Planning", value: 86, domain: "Sequence Flexibility" },
 ];
 
 const DEFAULT_MOCA_TELEMETRY = {

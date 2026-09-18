@@ -66,71 +66,68 @@ type ActiveModalGame =
   | "bihu-dhol"
   | null;
 
-// Vibrant Regional Colors (Terracotta Saffron, Assam Tea Forest, Muga Amber Gold, Kopou Orchid)
+// Vibrant Non-Blue Regional Palette (Vibrant Emerald, Mandarin Orange, Golden Amber, Kopou Crimson Rose, Royal Orchid, Meadow Green)
 function getGameCardBg(id: string): string {
   switch (id) {
-    // 1. Vibrant Terracotta / Saffron
+    // 1. Vibrant Fresh Emerald
     case "jigsaw":
-    case "hornbill-flight":
-    case "day-in-my-world":
-      return "bg-[#E05316]"; // vibrant river terracotta
-    case "weaving":
-    case "river-lanterns":
-    case "bihu-dhol":
-    case "daily-tasks":
-      return "bg-[#EA580C]"; // vibrant festive drum & craft terracotta
-    case "drum":
-    case "majuli-pottery":
-    case "heritage-kitchen":
-      return "bg-[#D4380D]"; // vibrant artisan terracotta
-
-    // 2. Vibrant Assam Tea Forest & River Jade
-    case "majuli-walk":
-    case "companion":
     case "tea-harvest":
+    case "tea-harvest-vision":
     case "dzukou-botanist":
     case "brahmaputra-boat":
-      return "bg-[#15803D]"; // vibrant Assam tea garden forest
     case "wayfinding":
-    case "tea-harvest-vision":
     case "root-bridge":
-      return "bg-[#16803D]"; // vibrant rainforest canopy
-    case "rhythm-hills":
-    case "tea-garden-catch":
-    case "lotus-painter":
-      return "bg-[#16A34A]"; // vibrant bamboo & hills meadow
+      return "bg-[#059669]"; // vibrant fresh emerald
 
-    // 3. Vibrant Golden Muga Amber
+    // 2. Vibrant Mandarin Orange
+    case "majuli-walk":
+    case "hornbill-flight":
+    case "day-in-my-world":
+    case "daily-tasks":
+    case "heritage-kitchen":
+    case "drum":
+    case "majuli-pottery":
+      return "bg-[#EA580C]"; // vibrant mandarin orange
+
+    // 3. Radiant Golden Amber
+    case "weaving":
     case "loom":
     case "butterfly-sanctuary":
     case "storybook":
     case "timeline":
-      return "bg-[#C25E00]"; // vibrant golden muga amber
     case "tuned-drum":
     case "monastery-bell":
     case "daily-routine":
     case "bazaar-buddies":
     case "arrow-escape":
     case "pathways":
-      return "bg-[#D97706]"; // vibrant brass gong & amber market
     case "radio":
     case "sorting":
-      return "bg-[#B85B00]"; // vibrant vintage teak bronze
+      return "bg-[#D97706]"; // radiant golden amber
 
-    // 4. Vibrant Kopou Orchid & Wild Berry Plum
+    // 4. Vibrant Kopou Crimson Rose
     case "memory-road":
+    case "river-lanterns":
+    case "bihu-dhol":
     case "alpana":
-      return "bg-[#9D246C]"; // vibrant Kopou orchid plum
     case "grandchild-chat":
     case "family-emotions":
-      return "bg-[#BE123C]"; // vibrant warm rose
+      return "bg-[#E11D48]"; // vibrant Kopou crimson rose
+
+    // 5. Vibrant Royal Orchid Purple
     case "memory-detective":
-      return "bg-[#A21CAF]"; // vibrant royal berry orchid
     case "memory-garden":
-      return "bg-[#9D174D]"; // vibrant courtyard mulberry
+      return "bg-[#9333EA]"; // vibrant royal orchid purple
+
+    // 6. Vibrant Meadow Green
+    case "companion":
+    case "rhythm-hills":
+    case "tea-garden-catch":
+    case "lotus-painter":
+      return "bg-[#16A34A]"; // vibrant meadow green
 
     default:
-      return "bg-[#15803D]"; // vibrant tea forest fallback
+      return "bg-[#059669]"; // vibrant emerald fallback
   }
 }
 
