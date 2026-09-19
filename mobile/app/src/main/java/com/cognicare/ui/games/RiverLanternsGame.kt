@@ -56,7 +56,7 @@ fun RiverLanternsGame(onBack: () -> Unit) {
     )
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -141,6 +141,10 @@ fun RiverLanternsGame(onBack: () -> Unit) {
                             )
                             lanterns.add(newLantern)
                             lanternCount++
+                            if (lanterns.size > 40) {
+                                val now2 = System.currentTimeMillis()
+                                lanterns.removeAll { lantern -> (now2 - lantern.birthTime) > 20_000 }
+                            }
                             if (lanternCount % 5 == 0) {
                                 LocalizationManager.speak("Peace and light to you and your loved ones.")
                             }

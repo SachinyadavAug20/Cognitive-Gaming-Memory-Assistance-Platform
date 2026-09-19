@@ -57,7 +57,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
     var isDishDone by remember { mutableStateOf(false) }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -128,6 +128,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
                         modifier = Modifier
                             .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                             .clickable {
+                                ElderlyFeedback.onTap(context)
                                 LocalizationManager.speak("Tap the next cooking step in order.")
                             }
                     ) {
@@ -150,7 +151,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(shuffledSteps) { _, step ->
+                itemsIndexed(shuffledSteps, key = { _, step -> step.stepNumber }) { _, step ->
                     val isCompleted = completedSteps.contains(step.stepNumber)
                     Surface(
                         shape = RoundedCornerShape(14.dp),
@@ -164,6 +165,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
                                 shape = RoundedCornerShape(14.dp)
                             )
                             .clickable(enabled = !isCompleted && !isDishDone) {
+                                ElderlyFeedback.onTap(context)
                                 if (step.stepNumber == nextExpectedStep) {
                                     ElderlyFeedback.onSuccess(context)
                                     completedSteps.add(step.stepNumber)

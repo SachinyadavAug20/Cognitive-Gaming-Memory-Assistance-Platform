@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 private data class LifeEvent(val text: String, val emoji: String, val year: Int)
 
@@ -61,7 +62,7 @@ fun TimelineGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("My Life Story", color = Color.White) },
@@ -77,7 +78,7 @@ fun TimelineGame(onBack: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = SchoolPurple)
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = SchoolPurple)
-                Text("Placed ${placedEvents.size}/${events.size}", fontSize = 16.sp, color = Color.Gray)
+                Text("Placed ${placedEvents.size}/${events.size}", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -94,7 +95,7 @@ fun TimelineGame(onBack: () -> Unit) {
                 ) {
                     Text("Arrange events in chronological order", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = SchoolPurple)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("Tap events in the correct order (earliest first)", fontSize = 12.sp, color = Color.Gray)
+                    Text("Tap events in the correct order (earliest first)", fontSize = 12.sp, color = TextSecondary)
                 }
             }
 
@@ -135,6 +136,7 @@ fun TimelineGame(onBack: () -> Unit) {
             remaining.forEach { event ->
                 Button(
                     onClick = {
+                        ElderlyFeedback.onTap(context)
                         if (!showResult) {
                             val expectedIdx = placedEvents.size
                             if (event == events[expectedIdx]) {
@@ -169,7 +171,7 @@ fun TimelineGame(onBack: () -> Unit) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Text("Mistakes: $mistakes", fontSize = 14.sp, color = if (mistakes > 0) ErrorRed else Color.Gray)
+            Text("Mistakes: $mistakes", fontSize = 14.sp, color = if (mistakes > 0) ErrorRed else TextSecondary)
         }
 
         if (showResult) {
@@ -185,7 +187,7 @@ fun TimelineGame(onBack: () -> Unit) {
                     }
                 },
                 confirmButton = {
-                    Button(onClick = { level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { ElderlyFeedback.onTap(context); level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
                         Text("Next Level", fontSize = 18.sp)
                     }
                 }

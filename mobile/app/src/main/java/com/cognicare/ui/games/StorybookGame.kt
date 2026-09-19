@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
@@ -47,7 +49,7 @@ fun StorybookGame(onBack: () -> Unit) {
     var score by remember { mutableIntStateOf(0) }
     var level by remember { mutableIntStateOf(0) }
     var currentBlank by remember { mutableIntStateOf(0) }
-    var answers by remember { mutableStateOf(mutableListOf<String>()) }
+    var answers by remember { mutableStateOf(listOf<String>()) }
     var showResult by remember { mutableStateOf(false) }
     var isCorrect by remember { mutableStateOf(false) }
 
@@ -61,7 +63,7 @@ fun StorybookGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83D\uDCD6 Grandmother's Tales", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -92,10 +94,10 @@ fun StorybookGame(onBack: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); level = (level + 1) % stories.size; currentBlank = 0; answers = mutableListOf(); showResult = false }, RoundedCornerShape(12.dp), Color.White) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Next story" }.clickable { ElderlyFeedback.onTap(context); level = (level + 1) % stories.size; currentBlank = 0; answers = listOf(); showResult = false }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Next Story \u27A1", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), StoryOrange) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), StoryOrange) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
@@ -109,7 +111,7 @@ fun StorybookGame(onBack: () -> Unit) {
                         Spacer(Modifier.height(12.dp))
                         val displayText = buildString {
                             append(story.template)
-                            answers.forEachIndexed { idx, ans -> replaceFirst("{}", "\uD83D\uDD35$ans\uD83D\uDD35") }
+                            answers.forEachIndexed { idx, ans -> replaceFirst(Regex("\\{}"), "\uD83D\uDD35$ans\uD83D\uDD35") }
                         }
                         Text(displayText, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Ink, lineHeight = 26.sp)
                     }
@@ -124,9 +126,9 @@ fun StorybookGame(onBack: () -> Unit) {
                     Surface(Modifier.fillMaxWidth().shadow(3.dp, RoundedCornerShape(16.dp)).border(2.5.dp, Ink, RoundedCornerShape(16.dp)), RoundedCornerShape(16.dp), WarmSurface) {
                         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             blankInfo.second.forEach { option ->
-                                Surface(shape = RoundedCornerShape(12.dp), color = Color.White, modifier = Modifier.fillMaxWidth().shadow(1.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable {
+                                Surface(shape = RoundedCornerShape(12.dp), color = Color.White, modifier = Modifier.fillMaxWidth().shadow(1.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = option }.clickable {
                                     ElderlyFeedback.onTap(context)
-                                    answers.add(option); currentBlank++
+                                    answers = answers + option; currentBlank++
                                     if (currentBlank >= story.blanks.size) checkAnswer()
                                     LocalizationManager.speak(option)
                                 }) {

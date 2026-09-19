@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +52,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Bamboo Craft", color = Color.White) },
@@ -104,7 +105,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
                     Text(
                         text = "What comes next in the bamboo pattern?",
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = TextSecondary
                     )
                 }
             }
@@ -140,7 +141,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
                                     .border(2.dp, bambooColors[colorIndex].copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                             )
                             // Arrow between items
-                            Text(text = " → ", fontSize = 16.sp, color = Color.Gray)
+                            Text(text = " → ", fontSize = 16.sp, color = TextSecondary)
                         }
                         // Question mark for next
                         Box(
@@ -184,6 +185,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
                                 RoundedCornerShape(16.dp)
                             )
                             .clickable {
+                                ElderlyFeedback.onTap(context)
                                 if (!showResult) {
                                     ElderlyFeedback.onSuccess(context)
                                     selectedOption = colorIndex
@@ -235,7 +237,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
-                            onClick = { level++; setupLevel() },
+                            onClick = { ElderlyFeedback.onTap(context); level++; setupLevel() },
                             colors = ButtonDefaults.buttonColors(containerColor = BridgeBrown)
                         ) {
                             Text("Next Pattern", fontSize = 16.sp)

@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -174,21 +176,36 @@ fun GamesHubScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Game grid
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(
-                        items = filteredGames,
-                        key = { it.id },
-                        contentType = { it.domain }
-                    ) { game ->
-                        HubGameCard(
-                            game = game,
-                            onClick = { onGameClick(game.id) }
-                        )
+                if (filteredGames.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("\uD83C\uDFAF", fontSize = 48.sp)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("No games in this category", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = InkSecondary)
+                        }
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(
+                            items = filteredGames,
+                            key = { it.id },
+                            contentType = { it.domain }
+                        ) { game ->
+                            HubGameCard(
+                                game = game,
+                                onClick = { onGameClick(game.id) }
+                            )
+                        }
                     }
                 }
 
@@ -222,7 +239,8 @@ private fun HubGameCard(
         modifier = Modifier
             .height(230.dp)
             .shadow(6.dp, RoundedCornerShape(22.dp))
-            .border(3.dp, Ink, RoundedCornerShape(22.dp)),
+            .border(3.dp, Ink, RoundedCornerShape(22.dp))
+            .semantics { contentDescription = "${game.title}, ${game.domain.label}" },
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -267,9 +285,12 @@ private fun HubGameCard(
                 Text(text = game.emoji, fontSize = 48.sp)
             }
 
-            // Start button — BIG TEXT for elderly
+            // Start button — BIG TEXT for elderly, 48dp touch target
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .semantics { contentDescription = "Start ${game.title}" },
                 shape = RoundedCornerShape(14.dp),
                 color = Color.White.copy(alpha = 0.2f),
                 onClick = {
@@ -277,14 +298,15 @@ private fun HubGameCard(
                     onClick()
                 }
             ) {
-                Text(
-                    text = "Start \u2192",
-                    modifier = Modifier.padding(vertical = 12.dp),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "Start \u2192",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }

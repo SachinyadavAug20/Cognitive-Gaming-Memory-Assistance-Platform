@@ -19,15 +19,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlinx.coroutines.delay
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val CanvasBg = Color(0xFFFAF7F2)
 private val HillBrown = Color(0xFFB45309)
 private val WarmSurface = Color(0xFFFFFDF9)
+
+private const val BASE_SPAWN_INTERVAL = 40
+private const val SPAWN_INTERVAL_DECREMENT = 3
+private const val MIN_SPAWN_INTERVAL = 15
+private const val BASE_FALL_SPEED = 0.008f
+private const val FALL_SPEED_INCREMENT = 0.001f
+private const val BASE_POINTS = 10
+private const val COMBO_MULTIPLIER = 2
+private const val MAX_MISSES = 5
 
 private data class Note(val color: Color, val lane: Int, var y: Float, var hit: Boolean = false)
 
@@ -49,16 +61,16 @@ fun RhythmHillsGame(onBack: () -> Unit) {
 
     LaunchedEffect(level, gameOver) {
         var spawnTimer = 0
-        val spawnInterval = (40 - level * 3).coerceAtLeast(15)
+        val spawnInterval = (BASE_SPAWN_INTERVAL - level * SPAWN_INTERVAL_DECREMENT).coerceAtLeast(MIN_SPAWN_INTERVAL)
         while (!gameOver) {
             spawnTimer++
             if (spawnTimer >= spawnInterval) {
                 spawnTimer = 0
                 notes = notes + Note(laneColors[(0 until numLanes).random()], (0 until numLanes).random(), 0f)
             }
-            notes = notes.map { it.copy(y = it.y + 0.008f + level * 0.001f) }
+            notes = notes.map { it.copy(y = it.y + BASE_FALL_SPEED + level * FALL_SPEED_INCREMENT) }
             val missed = notes.filter { !it.hit && it.y > hitZoneY + 0.05f }
-            if (missed.isNotEmpty()) { misses += missed.size; combo = 0; if (misses >= 5) gameOver = true }
+            if (missed.isNotEmpty()) { misses += missed.size; combo = 0; if (misses >= MAX_MISSES) gameOver = true }
             notes = notes.filter { it.y < 1.05f }
             delay(16L)
         }
@@ -70,14 +82,14 @@ fun RhythmHillsGame(onBack: () -> Unit) {
             .minByOrNull { kotlin.math.abs(it.y - hitZoneY) }
         if (closest != null) {
             notes = notes.map { if (it === closest) it.copy(hit = true) else it }
-            combo++; if (combo > maxCombo) maxCombo = combo; score += 10 + combo * 2
+            combo++; if (combo > maxCombo) maxCombo = combo; score += BASE_POINTS + combo * COMBO_MULTIPLIER
             ElderlyFeedback.onSuccess(context)
             if (combo % 10 == 0) { level++; LocalizationManager.speak("Level $level!") }
-        } else { misses++; combo = 0; if (misses >= 5) gameOver = true; ElderlyFeedback.onError(context) }
+        } else { misses++; combo = 0; if (misses >= MAX_MISSES) gameOver = true; ElderlyFeedback.onError(context) }
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83C\uDFB5 Rhythm Hills", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -90,7 +102,7 @@ fun RhythmHillsGame(onBack: () -> Unit) {
             Surface(Modifier.fillMaxWidth().shadow(3.dp, RoundedCornerShape(16.dp)).border(2.5.dp, Ink, RoundedCornerShape(16.dp)), RoundedCornerShape(16.dp), WarmSurface) {
                 Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Score: $score", fontSize = 16.sp, fontWeight = FontWeight.Black, color = Ink); Text("Level: $level", fontSize = 12.sp, color = HillBrown, fontWeight = FontWeight.Bold) }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Combo: $combo", fontSize = 14.sp, fontWeight = FontWeight.Black, color = HillBrown); Text("Misses: $misses/5", fontSize = 11.sp, color = if (misses >= 3) Color(0xFFD32F2F) else Color.Gray) }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Combo: $combo", fontSize = 14.sp, fontWeight = FontWeight.Black, color = HillBrown); Text("Misses: $misses/5", fontSize = 14.sp, color = if (misses >= 3) Color(0xFFD32F2F) else TextSecondary) }
                 }
             }
             Spacer(Modifier.height(8.dp))
@@ -108,10 +120,10 @@ fun RhythmHillsGame(onBack: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); score = 0; level = 1; combo = 0; misses = 0; gameOver = false; notes = listOf() }, RoundedCornerShape(12.dp), Color.White) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Play again" }.clickable { ElderlyFeedback.onTap(context); score = 0; level = 1; combo = 0; misses = 0; gameOver = false; notes = listOf() }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Play Again \u27F3", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), HillBrown) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), HillBrown) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
@@ -134,7 +146,7 @@ fun RhythmHillsGame(onBack: () -> Unit) {
                 Spacer(Modifier.height(10.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     laneColors.forEachIndexed { idx, color ->
-                        Surface(Modifier.weight(1f).height(64.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.5.dp, Ink, RoundedCornerShape(14.dp)).clickable { tapLane(idx) }, RoundedCornerShape(14.dp), color) {
+                        Surface(Modifier.weight(1f).height(64.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.5.dp, Ink, RoundedCornerShape(14.dp)).semantics { contentDescription = "Tap lane ${idx + 1}" }.clickable { tapLane(idx) }, RoundedCornerShape(14.dp), color) {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("\u25CF", fontSize = 28.sp, color = Color.White) }
                         }
                     }

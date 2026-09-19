@@ -80,7 +80,7 @@ fun MemoryRoadGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Memory Road", color = Color.White) },
@@ -311,6 +311,7 @@ fun MemoryRoadGame(onBack: () -> Unit) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Button(
                             onClick = {
+                                ElderlyFeedback.onTap(context)
                                 level++
                                 lives = (lives + 1).coerceAtMost(3)
                                 setupLevel()

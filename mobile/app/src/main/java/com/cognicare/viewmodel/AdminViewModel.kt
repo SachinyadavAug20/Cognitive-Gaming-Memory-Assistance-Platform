@@ -5,10 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.cognicare.data.remote.*
 import com.cognicare.di.ServiceLocator
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineExceptionHandler
 
 data class AdminUiState(
     val isLoading: Boolean = true,
@@ -28,6 +31,14 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(AdminUiState())
     val uiState: StateFlow<AdminUiState> = _uiState.asStateFlow()
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        _uiState.value = _uiState.value.copy(
+            isLoading = false,
+            error = "Connection error: ${throwable.message}"
+        )
+        loadOfflineData()
+    }
+
     init {
         loadAdminData()
     }
@@ -37,25 +48,27 @@ class AdminViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadAdminData() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
-                val overview = adminRepo.getOverview().getOrNull()
-                val patients = adminRepo.getPatients().getOrNull() ?: emptyList()
-                val sessions = adminRepo.getRecentSessions().getOrNull() ?: emptyList()
-                val districts = adminRepo.getNerDistricts().getOrNull() ?: emptyList()
-                val alerts = adminRepo.getAlerts().getOrNull() ?: emptyList()
-                val ai = adminRepo.getAiDiagnostics().getOrNull()
+                coroutineScope {
+                    val overviewDeferred = async { adminRepo.getOverview().getOrNull() }
+                    val patientsDeferred = async { adminRepo.getPatients().getOrNull() ?: emptyList() }
+                    val sessionsDeferred = async { adminRepo.getRecentSessions().getOrNull() ?: emptyList() }
+                    val districtsDeferred = async { adminRepo.getNerDistricts().getOrNull() ?: emptyList() }
+                    val alertsDeferred = async { adminRepo.getAlerts().getOrNull() ?: emptyList() }
+                    val aiDeferred = async { adminRepo.getAiDiagnostics().getOrNull() }
 
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    overview = overview,
-                    patients = patients,
-                    sessions = sessions,
-                    districts = districts,
-                    alerts = alerts,
-                    aiDiagnostics = ai
-                )
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        overview = overviewDeferred.await(),
+                        patients = patientsDeferred.await(),
+                        sessions = sessionsDeferred.await(),
+                        districts = districtsDeferred.await(),
+                        alerts = alertsDeferred.await(),
+                        aiDiagnostics = aiDeferred.await()
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

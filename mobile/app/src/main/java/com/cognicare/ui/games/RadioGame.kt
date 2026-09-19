@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 import kotlin.math.abs
+private val TextSecondary = Color(0xFF6B7280)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,7 +50,7 @@ fun RadioGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Nostalgia Radio", color = Color.White) },
@@ -65,7 +66,7 @@ fun RadioGame(onBack: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = ChurchBlue)
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = ChurchBlue)
-                Text("Tuned: $tunedCount", fontSize = 16.sp, color = Color.Gray)
+                Text("Tuned: $tunedCount", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -130,6 +131,7 @@ fun RadioGame(onBack: () -> Unit) {
                     // Tune button
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             attempts++
                             val diff = abs(currentFreq - targetFreq)
                             when {
@@ -188,7 +190,7 @@ fun RadioGame(onBack: () -> Unit) {
                         Text("Score: $score", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         Spacer(modifier = Modifier.height(12.dp))
                         Button(
-                            onClick = { level++; showResult = false },
+                            onClick = { ElderlyFeedback.onTap(context); level++; showResult = false },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                             shape = RoundedCornerShape(12.dp)
                         ) {

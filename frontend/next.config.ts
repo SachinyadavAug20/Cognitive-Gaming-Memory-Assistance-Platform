@@ -63,7 +63,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "cognicare.in",
+      },
+      {
+        protocol: "https",
+        hostname: "www.cognicare.in",
       },
     ],
   },

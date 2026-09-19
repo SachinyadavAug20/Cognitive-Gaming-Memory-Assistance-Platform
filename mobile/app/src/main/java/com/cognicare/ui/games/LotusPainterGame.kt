@@ -20,10 +20,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlin.math.cos
 import kotlin.math.sin
@@ -40,6 +43,7 @@ data class DrawnStroke(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LotusPainterGame(onBack: () -> Unit) {
+    val context = LocalContext.current
     val strokes = remember { mutableStateListOf<DrawnStroke>() }
     val currentPoints = remember { mutableStateListOf<Offset>() }
     val palette = listOf(
@@ -52,7 +56,7 @@ fun LotusPainterGame(onBack: () -> Unit) {
     var selectedColor by remember { mutableStateOf(palette[0]) }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -63,12 +67,16 @@ fun LotusPainterGame(onBack: () -> Unit) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = {
+                        ElderlyFeedback.onTap(context)
+                        onBack()
+                    }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Ink)
                     }
                 },
                 actions = {
                     IconButton(onClick = {
+                        ElderlyFeedback.onTap(context)
                         strokes.clear()
                         currentPoints.clear()
                     }) {
@@ -138,6 +146,9 @@ fun LotusPainterGame(onBack: () -> Unit) {
                                 onDragEnd = {
                                     if (currentPoints.isNotEmpty()) {
                                         strokes.add(DrawnStroke(currentPoints.toList(), selectedColor))
+                                        if (strokes.size > 80) {
+                                            strokes.subList(0, strokes.size - 80).clear()
+                                        }
                                         currentPoints.clear()
                                     }
                                 }
@@ -221,7 +232,7 @@ fun LotusPainterGame(onBack: () -> Unit) {
                                     color = if (isSelected) Ink else Color.LightGray,
                                     shape = CircleShape
                                 )
-                                .clickable { selectedColor = col }
+                                .clickable { ElderlyFeedback.onTap(context); selectedColor = col }
                         )
                     }
                 }

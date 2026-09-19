@@ -70,7 +70,7 @@ public class PatientServiceImpl implements PatientService {
                     .issuedAt(LocalDateTime.now())
                     .build();
             patientCardRepo.save(card);
-            log.info("Generated active card for patient id={}: token={}", patient.getId(), card.getSecureToken());
+            log.info("Generated active card for patient id={}: token=***", patient.getId());
 
             List<FamilyMember> familyMembers = familyMemberRepo.findByPatientId(patient.getId());
             List<FamiliarPlace> familiarPlaces = familiarPlaceRepo.findByPatientId(patient.getId());

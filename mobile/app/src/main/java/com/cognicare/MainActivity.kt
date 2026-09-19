@@ -5,18 +5,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.cognicare.di.ServiceLocator
+import com.cognicare.ui.components.CogniCareBottomBar
+import com.cognicare.ui.components.EmergencySOSButton
 import com.cognicare.ui.navigation.Screen
 import com.cognicare.ui.screens.*
 import com.cognicare.ui.theme.CogniCareTheme
@@ -56,6 +59,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+private val bottomNavRoutes = setOf(
+    Screen.PatientDashboard.route,
+    Screen.GamesHub.route,
+    Screen.Caregiver.route
+)
+
 @Composable
 fun CogniCareApp() {
     val navController = rememberNavController()
@@ -70,109 +79,157 @@ fun CogniCareApp() {
         factory = ServiceLocator.provideAdminViewModelFactory(application)
     )
 
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Splash.route
-    ) {
-        composable(Screen.Splash.route) {
-            SplashScreen {
-                navController.navigate(Screen.Login.route) {
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val showBottomBar = currentRoute in bottomNavRoutes
+
+    Scaffold(
+        bottomBar = {
+            if (showBottomBar) {
+                CogniCareBottomBar(
+                    currentRoute = currentRoute,
+                    onNavigate = { route ->
+                        if (route != currentRoute) {
+                            navController.navigate(route) {
+                                popUpTo(Screen.PatientDashboard.route) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
+                    }
+                )
+            }
+        },
+        floatingActionButton = {
+            if (showBottomBar) {
+                EmergencySOSButton()
+            }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Splash.route,
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            composable(Screen.Splash.route) {
+                SplashScreen {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
                 }
             }
-        }
 
-        composable(Screen.Login.route) {
-            LoginScreen(
-                onScanQR = { navController.navigate(Screen.QRScanner.route) },
-                onDemoLogin = {
-                    authViewModel.demoLoginLocal()
-                    navController.navigate(Screen.PatientDashboard.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    onScanQR = { navController.navigate(Screen.QRScanner.route) },
+                    onDemoLogin = {
+                        authViewModel.demoLoginLocal()
+                        navController.navigate(Screen.PatientDashboard.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onSelectDemoPatient = { patientId ->
+                        authViewModel.demoLoginPatient(patientId)
+                        navController.navigate(Screen.PatientDashboard.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
                     }
-                },
-                onSelectDemoPatient = { patientId ->
-                    authViewModel.demoLoginPatient(patientId)
-                    navController.navigate(Screen.PatientDashboard.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                )
+            }
+
+            composable(Screen.QRScanner.route) {
+                QRScannerScreen(
+                    onScanSuccess = { qrData ->
+                        authViewModel.kioskScan(qrData)
+                        navController.navigate(Screen.PatientDashboard.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Screen.PatientDashboard.route) {
+                val patient = authState.patient ?: return@composable
+                PatientDashboardScreen(
+                    patient = patient,
+                    onGamesClick = {
+                        navController.navigate(Screen.GamesHub.route) {
+                            popUpTo(Screen.PatientDashboard.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    onEchoesClick = { navController.navigate(Screen.EchoesOfHome3D.route) },
+                    onCaregiverClick = {
+                        navController.navigate(Screen.Caregiver.route) {
+                            popUpTo(Screen.PatientDashboard.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    onAdminClick = { navController.navigate(Screen.Admin.route) },
+                    onPlayGame = { gameId ->
+                        navController.navigate(Screen.GamePlayer.createRoute(gameId))
+                    },
+                    onLogout = {
+                        authViewModel.logout()
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
-                }
-            )
-        }
+                )
+            }
 
-        composable(Screen.QRScanner.route) {
-            QRScannerScreen(
-                onScanSuccess = { qrData ->
-                    authViewModel.kioskScan(qrData)
-                    navController.navigate(Screen.PatientDashboard.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
+            composable(Screen.EchoesOfHome3D.route) {
+                val patient = authState.patient ?: return@composable
+                EchoesOfHome3DScreen(
+                    patient = patient,
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(Screen.PatientDashboard.route) {
-            val patient = authState.patient ?: return@composable
-            PatientDashboardScreen(
-                patient = patient,
-                onGamesClick = { navController.navigate(Screen.GamesHub.route) },
-                onEchoesClick = { navController.navigate(Screen.EchoesOfHome3D.route) },
-                onCaregiverClick = { navController.navigate(Screen.Caregiver.route) },
-                onAdminClick = { navController.navigate(Screen.Admin.route) },
-                onPlayGame = { gameId ->
-                    navController.navigate(Screen.GamePlayer.createRoute(gameId))
-                },
-                onLogout = {
-                    authViewModel.logout()
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            )
-        }
+            composable(Screen.GamesHub.route) {
+                GamesHubScreen(
+                    onGameClick = { gameId ->
+                        navController.navigate(Screen.GamePlayer.createRoute(gameId))
+                    },
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(Screen.EchoesOfHome3D.route) {
-            val patient = authState.patient ?: return@composable
-            EchoesOfHome3DScreen(
-                patient = patient,
-                onBack = { navController.popBackStack() }
-            )
-        }
+            composable(
+                route = Screen.GamePlayer.route,
+                arguments = listOf(navArgument("gameId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val gameId = backStackEntry.arguments?.getString("gameId") ?: return@composable
+                GameScreen(
+                    gameId = gameId,
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(Screen.GamesHub.route) {
-            GamesHubScreen(
-                onGameClick = { gameId ->
-                    navController.navigate(Screen.GamePlayer.createRoute(gameId))
-                },
-                onBack = { navController.popBackStack() }
-            )
-        }
+            composable(Screen.Caregiver.route) {
+                val patient = authState.patient ?: return@composable
+                CaregiverScreen(
+                    patient = patient,
+                    onBack = { navController.popBackStack() }
+                )
+            }
 
-        composable(
-            route = Screen.GamePlayer.route,
-            arguments = listOf(navArgument("gameId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val gameId = backStackEntry.arguments?.getString("gameId") ?: return@composable
-            GameScreen(
-                gameId = gameId,
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Screen.Caregiver.route) {
-            val patient = authState.patient ?: return@composable
-            CaregiverScreen(
-                patient = patient,
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Screen.Admin.route) {
-            AdminScreen(
-                viewModel = adminViewModel,
-                onBack = { navController.popBackStack() }
-            )
+            composable(Screen.Admin.route) {
+                AdminScreen(
+                    viewModel = adminViewModel,
+                    onBack = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

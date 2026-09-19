@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 
+private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
+
 private data class PotPiece(val emoji: String, val name: String, val order: Int, val color: Color)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +59,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Majuli Pottery", color = Color.White) },
@@ -72,7 +75,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = BridgeBrown)
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = BridgeBrown)
-                Text("Step ${playerSelected.size + 1}/${targetPieces.size}", fontSize = 16.sp, color = Color.Gray)
+                Text("Step ${playerSelected.size + 1}/${targetPieces.size}", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -105,7 +108,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
                         }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text("Bottom to top order", fontSize = 12.sp, color = Color.Gray)
+                    Text("Bottom to top order", fontSize = 12.sp, color = TextSecondary)
                 }
             }
 
@@ -140,7 +143,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
                             }
                         }
                     } else {
-                        Text("Tap pieces to add", fontSize = 14.sp, color = Color.Gray)
+                        Text("Tap pieces to add", fontSize = 14.sp, color = TextSecondary)
                     }
                 }
             }
@@ -169,6 +172,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
                                     .background(if (isAlreadySelected) Color.LightGray else Color.White)
                                     .border(2.dp, if (isAlreadySelected) Color.LightGray else Ink, RoundedCornerShape(12.dp))
                                     .clickable {
+                                        ElderlyFeedback.onTap(context)
                                         if (!isAlreadySelected && !showResult) {
                                             val expectedIdx = playerSelected.size
                                             if (idx == targetPieces.indexOfFirst { it.order == expectedIdx }) {
@@ -191,7 +195,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(piece.emoji, fontSize = 28.sp)
                                     Spacer(modifier = Modifier.height(2.dp))
-                                    Text(piece.name, fontSize = 10.sp, color = if (isAlreadySelected) Color.LightGray else Color.DarkGray)
+                                    Text(piece.name, fontSize = 14.sp, color = if (isAlreadySelected) Color.LightGray else Color.DarkGray)
                                 }
                             }
                         }
@@ -213,7 +217,7 @@ fun MajuliPotteryGame(onBack: () -> Unit) {
                     }
                 },
                 confirmButton = {
-                    Button(onClick = { level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { ElderlyFeedback.onTap(context); level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
                         Text("Next Level", fontSize = 18.sp)
                     }
                 }

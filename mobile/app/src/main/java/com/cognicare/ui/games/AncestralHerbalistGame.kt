@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 private data class Herb(val name: String, val emoji: String, val use: String, val color: Color)
 private data class HerbQuestion(val condition: String, val answer: String, val options: List<String>)
@@ -72,7 +73,7 @@ fun AncestralHerbalistGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Healing Herbs", color = Color.White) },
@@ -88,7 +89,7 @@ fun AncestralHerbalistGame(onBack: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TeaGreen)
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TeaGreen)
-                Text("${correctCount}/${questions.size}", fontSize = 16.sp, color = Color.Gray)
+                Text("${correctCount}/${questions.size}", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -128,6 +129,7 @@ fun AncestralHerbalistGame(onBack: () -> Unit) {
                                 val optionHerb = herbs.find { it.name == optionName }
                                 Button(
                                     onClick = {
+                                        ElderlyFeedback.onTap(context)
                                         if (!showFeedback) {
                                             isCorrect = optionName == q.answer
                                             showFeedback = true
@@ -190,6 +192,7 @@ fun AncestralHerbalistGame(onBack: () -> Unit) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             currentQuestion++
                             showFeedback = false
                             if (currentQuestion >= questions.size) showResult = true
@@ -216,7 +219,7 @@ fun AncestralHerbalistGame(onBack: () -> Unit) {
                     }
                 },
                 confirmButton = {
-                    Button(onClick = { level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { ElderlyFeedback.onTap(context); level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
                         Text("Next Level", fontSize = 18.sp)
                     }
                 }

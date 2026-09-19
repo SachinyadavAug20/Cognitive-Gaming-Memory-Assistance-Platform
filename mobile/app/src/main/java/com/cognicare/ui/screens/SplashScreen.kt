@@ -63,7 +63,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit) {
             Text(
                 text = "North East Memory Care",
                 fontSize = 14.sp,
-                color = Color.Gray,
+                color = Color(0xFF4A4036),
                 letterSpacing = 2.sp
             )
 
@@ -82,7 +82,7 @@ fun SplashScreen(onNavigateToLogin: () -> Unit) {
         Text(
             text = "Ministry of DoNER \u2022 SIH 2026",
             fontSize = 12.sp,
-            color = Color.Gray.copy(alpha = 0.5f),
+            color = Color(0xFF6B7280),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 48.dp)

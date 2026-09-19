@@ -18,9 +18,18 @@ import javax.crypto.spec.SecretKeySpec;
 public class JwtService {
 
     private static final String ALGORITHM = "HmacSHA256";
-    private static final String SECRET = "cognicare-kiosk-secret-key-change-me";
-    // 30 days (1 month) session TTL in seconds
-    private static final long TOKEN_TTL_SECONDS = 30L * 24 * 60 * 60;
+    private final String secret;
+    // 7 days session TTL in seconds (reduced from 30 for security)
+    private static final long TOKEN_TTL_SECONDS = 7L * 24 * 60 * 60;
+
+    public JwtService() {
+        this("cognicare-kiosk-secret-key-change-me");
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public JwtService(@org.springframework.beans.factory.annotation.Value("${JWT_SECRET:cognicare-kiosk-secret-key-change-me}") String secret) {
+        this.secret = secret;
+    }
 
     public String generateToken(Long subject) {
         long nowSeconds = System.currentTimeMillis() / 1000;
@@ -51,7 +60,7 @@ public class JwtService {
         try {
             Mac mac = Mac.getInstance(ALGORITHM);
             SecretKeySpec keySpec = new SecretKeySpec(
-                    SECRET.getBytes(StandardCharsets.UTF_8), ALGORITHM);
+                    secret.getBytes(StandardCharsets.UTF_8), ALGORITHM);
             mac.init(keySpec);
             return mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {

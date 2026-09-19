@@ -1,5 +1,6 @@
 package com.cognicare.data.remote
 
+import androidx.compose.runtime.Immutable
 import com.google.gson.annotations.SerializedName
 
 data class AdminOverviewDto(
@@ -10,6 +11,7 @@ data class AdminOverviewDto(
     @SerializedName("dbStatus") val dbStatus: String?
 )
 
+@Immutable
 data class AdminPatientRowDto(
     @SerializedName("id") val id: Long,
     @SerializedName("name") val name: String?,
@@ -30,6 +32,7 @@ data class AdminAiDiagnosticsDto(
     @SerializedName("clinicalPersona") val clinicalPersona: String?
 )
 
+@Immutable
 data class AdminSessionRowDto(
     @SerializedName("sessionId") val sessionId: Long,
     @SerializedName("patientId") val patientId: Long,
@@ -44,6 +47,7 @@ data class AdminSessionRowDto(
     @SerializedName("timestamp") val timestamp: String?
 )
 
+@Immutable
 data class AdminDistrictHealthDto(
     @SerializedName("state") val state: String?,
     @SerializedName("district") val district: String?,
@@ -92,6 +96,7 @@ data class AdminAshaWorkerDto(
     @SerializedName("status") val status: String?
 )
 
+@Immutable
 data class AdminClinicalAlertDto(
     @SerializedName("id") val id: String?,
     @SerializedName("patientId") val patientId: Long?,

@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -117,7 +119,7 @@ fun CogniCareTopBar(
                         )
                         Text(
                             text = "North East Memory Care",
-                            fontSize = 11.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             color = InkSecondary
                         )
@@ -157,13 +159,15 @@ fun CogniCareTopBar(
                         }
                     }
 
-                    // Language switcher — bigger touch target
+                    // Language switcher — bigger touch target, 48dp minimum
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = Color.White,
                         modifier = Modifier
+                            .height(48.dp)
                             .shadow(2.dp, RoundedCornerShape(12.dp))
                             .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                            .semantics { contentDescription = "Change language, current: $currentLang" }
                             .clickable {
                                 ElderlyFeedback.onTap(context)
                                 showLangDialog = true
@@ -184,13 +188,15 @@ fun CogniCareTopBar(
                         }
                     }
 
-                    // SOS — BIG, RED, IMPOSSIBLE TO MISS
+                    // SOS — BIG, RED, IMPOSSIBLE TO MISS, 48dp touch target
                     Surface(
                         shape = RoundedCornerShape(14.dp),
                         color = Brick,
                         modifier = Modifier
+                            .height(48.dp)
                             .shadow(4.dp, RoundedCornerShape(14.dp))
                             .border(3.dp, Color(0xFF7F0000), RoundedCornerShape(14.dp))
+                            .semantics { contentDescription = "Emergency SOS, call 108" }
                             .clickable {
                                 ElderlyFeedback.onTap(context)
                                 val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
@@ -244,7 +250,7 @@ fun CogniCareTopBar(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
                         )
                     }
 
@@ -264,7 +270,7 @@ fun CogniCareTopBar(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Black,
                             color = Ink,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
                         )
                     }
                 }
@@ -361,6 +367,7 @@ private fun ElderlyButton(
             .size(52.dp)
             .shadow(3.dp, RoundedCornerShape(14.dp))
             .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+            .semantics { this.contentDescription = contentDescription }
             .clickable(
                 interactionSource = interactionSource,
                 indication = null

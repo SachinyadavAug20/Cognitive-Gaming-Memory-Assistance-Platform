@@ -17,10 +17,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 import kotlinx.coroutines.delay
+private val TextSecondary = Color(0xFF6B7280)
 
 private data class FamilyMember(val name: String, val emoji: String, val color: Color)
 private data class MemoryQuestion(val question: String, val answer: String, val options: List<String>)
@@ -116,7 +119,7 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Memory Detective", color = Color.White) },
@@ -132,7 +135,7 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = SchoolPurple)
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = SchoolPurple)
-                Text("Q${currentQuestion + 1}/${questions.size}", fontSize = 16.sp, color = Color.Gray)
+                Text("Q${currentQuestion + 1}/${questions.size}", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -163,7 +166,7 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
-                        Text("Remember who is who!", fontSize = 14.sp, color = Color.Gray)
+                        Text("Remember who is who!", fontSize = 14.sp, color = TextSecondary)
                     }
                 }
             } else if (currentQuestion < questions.size) {
@@ -190,6 +193,7 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
                     val member = family.find { it.name == option }
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             if (!showFeedback) {
                                 isCorrect = option == q.answer
                                 showFeedback = true
@@ -215,7 +219,7 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
                         enabled = !showFeedback
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).semantics { contentDescription = option },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(member?.emoji ?: "", fontSize = 24.sp)
@@ -229,11 +233,12 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             currentQuestion++
                             showFeedback = false
                             if (currentQuestion >= questions.size) showResult = true
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Next question" },
                         colors = ButtonDefaults.buttonColors(containerColor = SchoolPurple)
                     ) {
                         Text("Next", fontSize = 16.sp, color = Color.White)
@@ -255,7 +260,7 @@ fun MemoryDetectiveGame(onBack: () -> Unit) {
                     }
                 },
                 confirmButton = {
-                    Button(onClick = { level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { ElderlyFeedback.onTap(context); level++; showResult = false }, modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Next Level" }) {
                         Text("Next Level", fontSize = 18.sp)
                     }
                 }

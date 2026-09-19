@@ -22,6 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
@@ -119,7 +121,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -137,6 +139,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                 },
                 actions = {
                     IconButton(onClick = {
+                        ElderlyFeedback.onTap(context)
                         grid = generateInitialBoard()
                         score = 0
                         movesUsed = 0
@@ -185,7 +188,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                         )
                         Text(
                             text = "Target: $targetScore Pts • Moves Left: ${(maxMoves - movesUsed).coerceAtLeast(0)}",
-                            fontSize = 11.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = Marigold
                         )
@@ -247,12 +250,13 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                                             color = if (isSelected) Color.Black else Ink.copy(alpha = 0.8f),
                                             shape = RoundedCornerShape(14.dp)
                                         )
+                                        .semantics { contentDescription = tile.emoji }
                                         .clickable {
                                             ElderlyFeedback.onTap(context)
                                             if (selectedPos == null) {
                                                 selectedPos = Pair(r, c)
                                             } else {
-                                                val (pr, pc) = selectedPos!!
+                                                val (pr, pc) = selectedPos ?: return@clickable
                                                 val isAdjacent = (abs(pr - r) + abs(pc - c)) == 1
                                                 if (isAdjacent) {
                                                     val newGrid = grid.toMutableList()
@@ -320,7 +324,9 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                             color = TeaGreen,
                             modifier = Modifier
                                 .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
+                                .semantics { contentDescription = "Next Level" }
                                 .clickable {
+                                    ElderlyFeedback.onTap(context)
                                     grid = generateInitialBoard()
                                     score = 0
                                     movesUsed = 0
@@ -346,7 +352,9 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                         .fillMaxWidth()
                         .shadow(2.dp, RoundedCornerShape(16.dp))
                         .border(2.dp, Ink, RoundedCornerShape(16.dp))
+                        .semantics { contentDescription = "Listen to how to play Match 3" }
                         .clickable {
+                            ElderlyFeedback.onTap(context)
                             LocalizationManager.speak("Tap one flower, then tap an adjacent flower to swap them into 3 in a line.")
                         }
                 ) {

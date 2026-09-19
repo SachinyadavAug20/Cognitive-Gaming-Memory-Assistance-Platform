@@ -24,6 +24,7 @@ import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val CanvasBg = Color(0xFFFAF7F2)
 private val RoutineBrown = Color(0xFF4E342E)
 private val WarmSurface = Color(0xFFFFFDF9)
@@ -57,7 +58,7 @@ fun DailyRoutineGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83D\uDD50 Daily Routine", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -90,7 +91,7 @@ fun DailyRoutineGame(onBack: () -> Unit) {
                             Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); level = (level + 1) % routines.size; userOrder = listOf(); showResult = false }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Next \u27A1", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), RoutineBrown) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), RoutineBrown) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
@@ -103,7 +104,7 @@ fun DailyRoutineGame(onBack: () -> Unit) {
                         Text("Your order:", fontSize = 13.sp, fontWeight = FontWeight.Black, color = RoutineBrown)
                         Spacer(Modifier.height(6.dp))
                         if (userOrder.isEmpty()) {
-                            Text("Tap activities below to add them in order", fontSize = 12.sp, color = Color.Gray, modifier = Modifier.padding(8.dp))
+                            Text("Tap activities below to add them in order", fontSize = 12.sp, color = TextSecondary, modifier = Modifier.padding(8.dp))
                         } else {
                             userOrder.forEachIndexed { idx, act ->
                                 Surface(shape = RoundedCornerShape(10.dp), color = Color(0xFFEFEBE9), modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp).shadow(1.dp, RoundedCornerShape(10.dp)).border(1.5.dp, Ink, RoundedCornerShape(10.dp)).clickable {
@@ -131,7 +132,7 @@ fun DailyRoutineGame(onBack: () -> Unit) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("CHECK ORDER \u2714", fontSize = 15.sp, fontWeight = FontWeight.Black, color = Color.White) }
                     }
                 } else {
-                    Text("Tap an activity to add it (step ${userOrder.size + 1} of ${currentRoutine.size})", fontSize = 12.sp, color = Color.Gray, textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                    Text("Tap an activity to add it (step ${userOrder.size + 1} of ${currentRoutine.size})", fontSize = 12.sp, color = TextSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.fillMaxWidth())
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -152,7 +153,7 @@ fun DailyRoutineGame(onBack: () -> Unit) {
                                     Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                         Text(act.emoji, fontSize = 26.sp)
                                         Spacer(Modifier.height(4.dp))
-                                        Text(act.name, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Ink, maxLines = 1)
+                                        Text(act.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Ink, maxLines = 1)
                                     }
                                 }
                             }

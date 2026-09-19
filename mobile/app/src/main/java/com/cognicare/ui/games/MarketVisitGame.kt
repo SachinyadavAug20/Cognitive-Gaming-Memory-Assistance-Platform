@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 data class MarketItem(val emoji: String, val name: String)
 
@@ -74,7 +75,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Market Visit", color = Color.White) },
@@ -128,7 +129,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
                         text = if (phase == "memorize") "Remember everything on the list"
                         else "Tap the items you saw on the list",
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = TextSecondary
                     )
                 }
             }
@@ -154,7 +155,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
                         memoryItems.forEach { item ->
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(text = item.emoji, fontSize = 36.sp)
-                                Text(text = item.name, fontSize = 12.sp, color = Color.Gray)
+                                Text(text = item.name, fontSize = 12.sp, color = TextSecondary)
                             }
                         }
                     }
@@ -208,6 +209,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
                                             RoundedCornerShape(12.dp)
                                         )
                                         .clickable {
+                                            ElderlyFeedback.onTap(context)
                                             if (!isSelected && !showResult) {
                                                 ElderlyFeedback.onSuccess(context)
                                                 selected = selected + item.name
@@ -269,6 +271,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
                 confirmButton = {
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             level++
                             setupLevel()
                         },

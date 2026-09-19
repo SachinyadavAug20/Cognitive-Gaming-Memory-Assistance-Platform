@@ -17,11 +17,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val CanvasBg = Color(0xFFFAF7F2)
 private val SortBrown = Color(0xFF5D4037)
 private val WarmSurface = Color(0xFFFFFDF9)
@@ -68,7 +71,7 @@ fun SortingGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83E\uDDF4 Sorting ($levelName)", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -98,10 +101,10 @@ fun SortingGame(onBack: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); level = (level + 1) % levels.size; sorted = mapOf(); showResult = false }, RoundedCornerShape(12.dp), Color.White) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Next level" }.clickable { ElderlyFeedback.onTap(context); level = (level + 1) % levels.size; sorted = mapOf(); showResult = false }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Next \u27A1", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), SortBrown) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), SortBrown) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
@@ -117,15 +120,15 @@ fun SortingGame(onBack: () -> Unit) {
                                 Spacer(Modifier.height(6.dp))
                                 val catItems = sorted[cat] ?: emptyList()
                                 catItems.forEach { item ->
-                                    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFEFEBE9), modifier = Modifier.padding(vertical = 2.dp).fillMaxWidth().clickable {
+                                    Surface(shape = RoundedCornerShape(8.dp), color = Color(0xFFEFEBE9), modifier = Modifier.padding(vertical = 2.dp).fillMaxWidth().semantics { contentDescription = "Remove ${item.name} from ${item.category}" }.clickable {
                                         ElderlyFeedback.onTap(context)
                                         sorted = sorted.toMutableMap().also { m -> m[cat] = (m[cat] ?: emptyList()) - item }
                                     }) {
-                                        Row(Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) { Text(item.emoji, fontSize = 16.sp); Spacer(Modifier.width(4.dp)); Text(item.name, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Ink) }
+                                        Row(Modifier.padding(6.dp), verticalAlignment = Alignment.CenterVertically) { Text(item.emoji, fontSize = 16.sp); Spacer(Modifier.width(4.dp)); Text(item.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Ink) }
                                     }
                                 }
                                 if (catItems.isEmpty()) {
-                                    Text("Tap item below", fontSize = 10.sp, color = Color.Gray, modifier = Modifier.padding(4.dp))
+                                    Text("Tap item below", fontSize = 14.sp, color = TextSecondary, modifier = Modifier.padding(4.dp))
                                 }
                             }
                         }
@@ -135,7 +138,7 @@ fun SortingGame(onBack: () -> Unit) {
                 Spacer(Modifier.height(8.dp))
 
                 if (unsortedItems.isEmpty()) {
-                    Surface(Modifier.fillMaxWidth().height(52.dp).shadow(3.dp, RoundedCornerShape(14.dp)).border(2.dp, Ink, RoundedCornerShape(14.dp)).clickable { ElderlyFeedback.onTap(context); checkSort() }, RoundedCornerShape(14.dp), SortBrown) {
+                    Surface(Modifier.fillMaxWidth().height(52.dp).shadow(3.dp, RoundedCornerShape(14.dp)).border(2.dp, Ink, RoundedCornerShape(14.dp)).semantics { contentDescription = "Check sorting" }.clickable { ElderlyFeedback.onTap(context); checkSort() }, RoundedCornerShape(14.dp), SortBrown) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("CHECK SORTING \u2714", fontSize = 15.sp, fontWeight = FontWeight.Black, color = Color.White) }
                     }
                 } else {
@@ -143,7 +146,7 @@ fun SortingGame(onBack: () -> Unit) {
                     Spacer(Modifier.height(6.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         unsortedItems.take(4).forEach { item ->
-                            Surface(shape = RoundedCornerShape(12.dp), color = Color.White, modifier = Modifier.weight(1f).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable {
+                            Surface(shape = RoundedCornerShape(12.dp), color = Color.White, modifier = Modifier.weight(1f).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "${item.emoji} ${item.name}, belongs in ${item.category}" }.clickable {
                                 ElderlyFeedback.onTap(context)
                                 sorted = sorted.toMutableMap().also { m -> m[item.category] = (m[item.category] ?: emptyList()) + item }
                                 LocalizationManager.speak("Placing ${item.name} in ${item.category}")
@@ -152,8 +155,8 @@ fun SortingGame(onBack: () -> Unit) {
                                 Column(Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(item.emoji, fontSize = 22.sp)
                                     Spacer(Modifier.height(2.dp))
-                                    Text(item.name, fontSize = 9.sp, fontWeight = FontWeight.Bold, color = Ink, maxLines = 1)
-                                    Text("\u2191 ${item.category}", fontSize = 8.sp, color = SortBrown)
+                                    Text(item.name, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Ink, maxLines = 1)
+                                    Text("\u2191 ${item.category}", fontSize = 14.sp, color = SortBrown)
                                 }
                             }
                         }

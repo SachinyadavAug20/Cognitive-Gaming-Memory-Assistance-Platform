@@ -20,10 +20,27 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 import kotlinx.coroutines.delay
+import kotlin.random.Random
+
+private const val INITIAL_TIME = 30
+private const val BASE_SPAWN_RATE_MS = 1200L
+private const val SPAWN_RATE_DECREMENT_MS = 80L
+private const val MIN_SPAWN_RATE_MS = 400L
+private const val BASE_FALL_SPEED = 3f
+private const val FALL_SPEED_INCREMENT = 0.5f
+private const val MAX_FALL_SPEED = 12f
+private const val CORRECT_POINTS = 10
+private const val WRONG_PENALTY = -5
+private const val TIME_BONUS_PER_LEVEL = 5
+
+private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 
 data class FallingLeaf(
     val id: Int,
@@ -42,7 +59,7 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
     var score by remember { mutableIntStateOf(0) }
     var level by remember { mutableIntStateOf(1) }
     var lives by remember { mutableIntStateOf(3) }
-    var timeLeft by remember { mutableIntStateOf(30) }
+    var timeLeft by remember { mutableIntStateOf(INITIAL_TIME) }
     var caught by remember { mutableIntStateOf(0) }
     var missed by remember { mutableIntStateOf(0) }
     var gameOver by remember { mutableStateOf(false) }
@@ -52,8 +69,8 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
 
     val correctColor = remember(level) { listOf("\uD83C\uDF3F", "\uD83C\uDF43").random() }
     val leafEmojis = listOf("\uD83C\uDF3F", "\uD83C\uDF43", "\uD83C\uDF42", "\uD83C\uDF41", "\uD83C\uDF44")
-    val spawnRate = remember(level) { (1200L - level * 80L).coerceAtMost(400L) }
-    val fallSpeed = remember(level) { (3f + level * 0.5f).coerceAtMost(12f) }
+    val spawnRate = remember(level) { (BASE_SPAWN_RATE_MS - level * SPAWN_RATE_DECREMENT_MS).coerceAtMost(MIN_SPAWN_RATE_MS) }
+    val fallSpeed = remember(level) { (BASE_FALL_SPEED + level * FALL_SPEED_INCREMENT).coerceAtMost(MAX_FALL_SPEED) }
 
     fun spawnLeaf() {
         val isCorrect = leafEmojis.random() == correctColor
@@ -62,9 +79,9 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
             emoji = if (isCorrect) correctColor else leafEmojis.filter { it != correctColor }.random(),
             x = (0..8).random().toFloat(),
             y = 0f,
-            speed = fallSpeed + (-1f..1f).random(),
+            speed = fallSpeed + (Random.nextFloat() * 2f - 1f),
             isCorrect = isCorrect,
-            points = if (isCorrect) 10 * level else -5
+            points = if (isCorrect) CORRECT_POINTS * level else WRONG_PENALTY
         )
         leaves = leaves + leaf
     }
@@ -72,7 +89,7 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
     LaunchedEffect(level) {
         score = 0
         lives = 3
-        timeLeft = 30 + level * 5
+        timeLeft = INITIAL_TIME + level * TIME_BONUS_PER_LEVEL
         caught = 0
         missed = 0
         gameOver = false
@@ -108,7 +125,7 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Catch Tea Leaves", color = Color.White) },
@@ -174,7 +191,9 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
                                 x = (xFraction * 300).dp,
                                 y = (yFraction * 500).dp
                             )
+                            .semantics { contentDescription = "Tea leaf" }
                             .clickable {
+                                ElderlyFeedback.onTap(context)
                                 if (!showResult && !gameOver) {
                                     if (leaf.isCorrect) {
                                         ElderlyFeedback.onSuccess(context)
@@ -197,7 +216,7 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
                         text = "Tap the $correctColor leaves!",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Gray,
+                        color = TextSecondary,
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
@@ -223,8 +242,8 @@ fun TeaGardenCatchGame(onBack: () -> Unit) {
                 },
                 confirmButton = {
                     Button(
-                        onClick = { level++; showResult = false; gameOver = false },
-                        modifier = Modifier.fillMaxWidth()
+                        onClick = { ElderlyFeedback.onTap(context); level++; showResult = false; gameOver = false },
+                        modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Next Level" }
                     ) { Text("Next Level", fontSize = 18.sp) }
                 }
             )

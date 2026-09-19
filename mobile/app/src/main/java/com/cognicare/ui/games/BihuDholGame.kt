@@ -28,6 +28,7 @@ private val Ink = Color(0xFF16120E)
 private val Canvas = Color(0xFFFAF7F2)
 private val TeaGreen = Color(0xFF1B663E)
 private val Marigold = Color(0xFFE66A00)
+private const val POINTS_PER_TAP = 25
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,7 @@ fun BihuDholGame(onBack: () -> Unit) {
     )
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -169,7 +170,7 @@ fun BihuDholGame(onBack: () -> Unit) {
                         .border(3.dp, Ink, RoundedCornerShape(20.dp))
                         .clickable {
                             ElderlyFeedback.onTap(context)
-                            score += 25
+                            score += POINTS_PER_TAP
                             combo++
                             lastFeedback = "Dha! Great rhythm!"
                         }
@@ -182,7 +183,7 @@ fun BihuDholGame(onBack: () -> Unit) {
                         Text(text = "🥁", fontSize = 34.sp)
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(text = "DHA (Bass)", fontSize = 16.sp, fontWeight = FontWeight.Black, color = Color.White)
-                        Text(text = "Left Hand", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFEF3C7))
+                        Text(text = "Left Hand", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFEF3C7))
                     }
                 }
 
@@ -197,7 +198,7 @@ fun BihuDholGame(onBack: () -> Unit) {
                         .border(3.dp, Ink, RoundedCornerShape(20.dp))
                         .clickable {
                             ElderlyFeedback.onTap(context)
-                            score += 25
+                            score += POINTS_PER_TAP
                             combo++
                             lastFeedback = "Ti-Khiti! Perfect beat!"
                         }
@@ -210,7 +211,7 @@ fun BihuDholGame(onBack: () -> Unit) {
                         Text(text = "🥢", fontSize = 34.sp)
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(text = "TI (Treble)", fontSize = 16.sp, fontWeight = FontWeight.Black, color = Color.White)
-                        Text(text = "Right Stick", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFEF3C7))
+                        Text(text = "Right Stick", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFFFEF3C7))
                     }
                 }
             }

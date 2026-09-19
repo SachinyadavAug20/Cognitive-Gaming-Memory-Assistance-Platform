@@ -22,9 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 @Immutable
-data class TeaLeaf(
+data class GardenLeaf(
     val emoji: String,
     val name: String,
     val color: Color,
@@ -38,16 +39,16 @@ fun TeaGardenGame(onBack: () -> Unit) {
     var score by remember { mutableIntStateOf(0) }
     var level by remember { mutableIntStateOf(1) }
     var timeLeft by remember { mutableIntStateOf(30) }
-    var targetLeaf by remember { mutableStateOf<TeaLeaf?>(null) }
-    var gardenItems by remember { mutableStateOf(listOf<TeaLeaf>()) }
+    var targetLeaf by remember { mutableStateOf<GardenLeaf?>(null) }
+    var gardenItems by remember { mutableStateOf(listOf<GardenLeaf>()) }
     var collected by remember { mutableIntStateOf(0) }
     var showResult by remember { mutableStateOf(false) }
 
     val allLeaves = listOf(
-        TeaLeaf("\uD83C\uDF3F", "Green Leaf", TeaGreen, 10),
-        TeaLeaf("\uD83C\uDF3B", "Marigold", TempleGold, 15),
-        TeaLeaf("\uD83C\uDF38", "Rose", Color(0xFFE91E63), 20),
-        TeaLeaf("\uD83C\uDF3C", "Sunflower", AutoYellow, 25),
+        GardenLeaf("\uD83C\uDF3F", "Green Leaf", TeaGreen, 10),
+        GardenLeaf("\uD83C\uDF3B", "Marigold", TempleGold, 15),
+        GardenLeaf("\uD83C\uDF38", "Rose", Color(0xFFE91E63), 20),
+        GardenLeaf("\uD83C\uDF3C", "Sunflower", AutoYellow, 25),
     )
 
     fun setupLevel() {
@@ -72,7 +73,7 @@ fun TeaGardenGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Tea Garden", color = Color.White) },
@@ -117,7 +118,7 @@ fun TeaGardenGame(onBack: () -> Unit) {
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Pick the:", fontSize = 18.sp, color = Color.Gray)
+                    Text("Pick the:", fontSize = 18.sp, color = TextSecondary)
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = targetLeaf?.emoji ?: "", fontSize = 48.sp)
@@ -129,7 +130,7 @@ fun TeaGardenGame(onBack: () -> Unit) {
                             color = targetLeaf?.color ?: Green40
                         )
                     }
-                    Text("+$${targetLeaf?.points} points each", fontSize = 14.sp, color = Color.Gray)
+                    Text("+$${targetLeaf?.points} points each", fontSize = 14.sp, color = TextSecondary)
                 }
             }
 
@@ -155,6 +156,7 @@ fun TeaGardenGame(onBack: () -> Unit) {
                                     .background(item.color.copy(alpha = 0.1f))
                                     .border(2.dp, item.color.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                                     .clickable {
+                                        ElderlyFeedback.onTap(context)
                                         if (!showResult) {
                                             if (item.name == targetLeaf?.name) {
                                                 ElderlyFeedback.onSuccess(context)
@@ -209,6 +211,7 @@ fun TeaGardenGame(onBack: () -> Unit) {
                 confirmButton = {
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             level++
                             setupLevel()
                         },

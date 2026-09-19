@@ -6,29 +6,31 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Set;
+
 /**
- * Lightweight Bearer-token validator for the kiosk/patient namespace
- * ({@code /api/v1/patients/**}). No Spring Security is wired up yet, so this
- * interceptor keeps the hackathon contract honest:
- *
- * <ul>
- *   <li>a present, signature-and-expiry-valid {@code Authorization: Bearer}
- *       token is accepted;</li>
- *   <li>a present but invalid/expired token is rejected with HTTP 401;</li>
- *   <li>an absent header is still allowed for now, because every live patient
- *       route today is shared with the caregiver app (profile, family, places,
- *       medical-profile, onboard, analyze-pdf) which has no token yet. Flip to
- *       fail-closed once dedicated patient-session endpoints exist.</li>
- * </ul>
+ * Bearer-token validator for protected API namespaces.
+ * Paths not in the protected set are passed through without auth.
  */
 @Component
 @RequiredArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor {
 
     private static final String BEARER_PREFIX = "Bearer ";
+
+    /** Paths that require a valid JWT. All other paths are public. */
+    private static final Set<String> PROTECTED_PREFIXES = Set.of(
+            "/api/v1/patients/",
+            "/api/v1/admin/",
+            "/api/v1/surveillance/",
+            "/api/v1/ai/",
+            "/api/v1/caregiver/",
+            "/admin/"
+    );
 
     private final JwtService jwtService;
 
@@ -40,21 +42,34 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null) {
+        String path = request.getRequestURI();
+
+        boolean needsAuth = PROTECTED_PREFIXES.stream().anyMatch(path::startsWith);
+        if (!needsAuth) {
             return true;
         }
-        if (!header.startsWith(BEARER_PREFIX)) {
-            throw new AuthenticationRequiredException();
+
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header == null || !header.startsWith(BEARER_PREFIX)) {
+            reject(response, "Missing or malformed Authorization header");
+            return false;
         }
 
         String token = header.substring(BEARER_PREFIX.length());
-        if (token.startsWith("demo-")) {
-            return true;
-        }
         if (!jwtService.isValid(token)) {
-            throw new AuthenticationRequiredException();
+            reject(response, "Invalid or expired token");
+            return false;
         }
+
         return true;
+    }
+
+    private void reject(HttpServletResponse response, String message) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        try {
+            response.getWriter().write("{\"error\":\"" + message + "\"}");
+        } catch (java.io.IOException ignored) {
+        }
     }
 }

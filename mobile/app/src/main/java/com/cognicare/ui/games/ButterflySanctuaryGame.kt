@@ -21,8 +21,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
+private const val BASE_BUTTERFLIES = 3
+private const val MAX_BUTTERFLIES = 8
+private const val POINTS_PER_CATCH = 10
+private const val WRONG_PENALTY = 5
+private const val CATCH_THRESHOLD = 2
+private val TextSecondary = Color(0xFF6B7280)
 
 data class Butterfly(val emoji: String, val name: String, val color: Color)
 
@@ -46,7 +54,7 @@ fun ButterflySanctuaryGame(onBack: () -> Unit) {
     )
 
     fun setup() {
-        val count = (3 + level).coerceAtMost(8)
+        val count = (BASE_BUTTERFLIES + level).coerceAtMost(MAX_BUTTERFLIES)
         targetButterfly = butterflies.random()
         grid = List(count) { butterflies.random() }
         caught = 0
@@ -56,7 +64,7 @@ fun ButterflySanctuaryGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setup() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Butterfly Sanctuary", color = Color.White) },
@@ -70,13 +78,13 @@ fun ButterflySanctuaryGame(onBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF7B1FA2)))
-                Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF7B1FA2)))
+                Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF7B1FA2))
+                Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFF7B1FA2))
             }
             Spacer(modifier = Modifier.height(16.dp))
             Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Catch the:", fontSize = 18.sp, color = Color.Gray)
+                    Text("Catch the:", fontSize = 18.sp, color = TextSecondary)
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = targetButterfly?.emoji ?: "", fontSize = 48.sp)
@@ -99,10 +107,12 @@ fun ButterflySanctuaryGame(onBack: () -> Unit) {
                                 modifier = Modifier.size(72.dp).clip(RoundedCornerShape(12.dp))
                                     .background(item.color.copy(alpha = 0.1f))
                                     .border(2.dp, item.color.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                                    .semantics { contentDescription = "${item.name} butterfly" }
                                     .clickable {
+                                        ElderlyFeedback.onTap(context)
                                         if (!showResult) {
-                                            if (isTarget) { ElderlyFeedback.onSuccess(context); score += 10 * level; caught++ }
-                                            else { ElderlyFeedback.onError(context); score = (score - 5).coerceAtLeast(0) }
+                                            if (isTarget) { ElderlyFeedback.onSuccess(context); score += POINTS_PER_CATCH * level; caught++ }
+                                            else { ElderlyFeedback.onError(context); score = (score - WRONG_PENALTY).coerceAtLeast(0) }
                                         }
                                     },
                                 contentAlignment = Alignment.Center
@@ -113,8 +123,8 @@ fun ButterflySanctuaryGame(onBack: () -> Unit) {
                 Spacer(modifier = Modifier.height(8.dp))
             }
             Spacer(modifier = Modifier.weight(1f))
-            if (caught >= 2) {
-                Button(onClick = { level++; setup() }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B1FA2))) {
+            if (caught >= CATCH_THRESHOLD) {
+                Button(onClick = { ElderlyFeedback.onTap(context); level++; setup() }, modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Next Level" }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B1FA2))) {
                     Text("Next Level", fontSize = 18.sp)
                 }
             }

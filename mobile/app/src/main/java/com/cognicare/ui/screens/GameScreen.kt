@@ -1,5 +1,6 @@
 package com.cognicare.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -7,15 +8,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.games.*
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
@@ -27,6 +30,33 @@ fun GameScreen(
     gameId: String,
     onBack: () -> Unit
 ) {
+    val context = LocalContext.current
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    BackHandler {
+        ElderlyFeedback.onTap(context)
+        showExitDialog = true
+    }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Leave Game?", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Ink) },
+            text = { Text("Your progress in this game will be lost.", fontSize = 16.sp, color = Ink) },
+            confirmButton = {
+                TextButton(onClick = { showExitDialog = false; onBack() }) {
+                    Text("Yes, Leave", fontSize = 16.sp, color = TeaGreen)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) {
+                    Text("Stay", fontSize = 16.sp, color = Ink)
+                }
+            },
+            containerColor = Color.White
+        )
+    }
+
     when (gameId) {
         // Memory & Reminiscence
         "memory_road" -> MemoryRoadGame(onBack = onBack)
@@ -75,7 +105,6 @@ fun GameScreen(
         "storybook" -> StorybookGame(onBack = onBack)
 
         // Webcam / Advanced
-        "lotus_painter" -> LotusPainterGame(onBack = onBack)
         "butterfly_sanctuary" -> ButterflySanctuaryGame(onBack = onBack)
         "hornbill_flight" -> HornbillFlightGame(onBack = onBack)
         "majuli_pottery" -> MajuliPotteryGame(onBack = onBack)

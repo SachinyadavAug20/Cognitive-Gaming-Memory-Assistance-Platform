@@ -21,6 +21,10 @@ import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 import kotlinx.coroutines.delay
+import kotlin.random.Random
+
+private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 
 data class BirdObstacle(val x: Float, val gapY: Float, val gapSize: Float)
 
@@ -53,7 +57,7 @@ fun HornbillFlightGame(onBack: () -> Unit) {
             obstacles = obstacles.map { it.copy(x = it.x - gameSpeed) }.filter { it.x > -0.3f }
 
             if (obstacles.isEmpty() || obstacles.last().x < 1.2f) {
-                obstacles = obstacles + BirdObstacle(x = 2f, gapY = (0.25f..0.7f).random(), gapSize = (0.25f - level * 0.01f).coerceAtLeast(0.18f))
+                obstacles = obstacles + BirdObstacle(x = 2f, gapY = 0.25f + Random.nextFloat() * 0.45f, gapSize = (0.25f - level * 0.01f).coerceAtLeast(0.18f))
             }
 
             for (obs in obstacles) {
@@ -74,7 +78,7 @@ fun HornbillFlightGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Hornbill Flight", color = Color.White) },
@@ -133,7 +137,7 @@ fun HornbillFlightGame(onBack: () -> Unit) {
             if (gameOver) {
                 Text("Game Over! Score: $score", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = BridgeBrown)
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("Tap to restart", fontSize = 14.sp, color = Color.Gray)
+                Text("Tap to restart", fontSize = 14.sp, color = TextSecondary)
             } else {
                 Text("Tap to flap!", fontSize = 16.sp, color = BridgeBrown)
             }

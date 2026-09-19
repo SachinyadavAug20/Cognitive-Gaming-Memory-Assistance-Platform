@@ -53,6 +53,9 @@ public class FileStorageService {
     public Resource loadFile(String relativePath) {
         try {
             Path filePath = uploadRoot.resolve(relativePath).normalize();
+            if (!filePath.startsWith(uploadRoot)) {
+                throw new RuntimeException("Access denied: path traversal attempt");
+            }
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists()) {
                 return resource;

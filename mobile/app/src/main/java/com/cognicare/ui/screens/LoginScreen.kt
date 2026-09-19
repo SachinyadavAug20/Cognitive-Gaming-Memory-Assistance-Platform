@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import androidx.compose.runtime.Immutable
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import com.cognicare.util.PatientMediaManager
@@ -41,6 +44,7 @@ private val TeaGreen = Color(0xFF1B663E)
 private val Marigold = Color(0xFFE66A00)
 private val WarmSurface = Color(0xFFFFFDF9)
 
+@Immutable
 data class DemoPatientOption(
     val id: Long,
     val name: String,
@@ -161,13 +165,15 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Voice Assistance Pill — BIGGER for elderly
+        // Voice Assistance Pill — BIGGER for elderly, 48dp touch target
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = Color.White,
             modifier = Modifier
+                .height(48.dp)
                 .shadow(3.dp, RoundedCornerShape(16.dp))
                 .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
+                .semantics { contentDescription = "Tap to hear voice guide instructions" }
                 .clickable {
                     ElderlyFeedback.onTap(context)
                     LocalizationManager.speak("Welcome to CogniCare. Tap the green card to enter your daily session as Biren Borah, or tap the orange button below to scan your QR health card.")
@@ -277,13 +283,14 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // Big 1-Tap Entry Button — 68dp height, huge text
+                // Big 1-Tap Entry Button — 68dp height, huge text, semantic label
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(68.dp)
                         .shadow(4.dp, RoundedCornerShape(18.dp))
                         .border(3.dp, Ink, RoundedCornerShape(18.dp))
+                        .semantics { contentDescription = "Start session as Biren Borah" }
                         .clickable {
                             ElderlyFeedback.onTap(context)
                             onSelectDemoPatient(1L)
@@ -314,13 +321,13 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { showAllPatients = !showAllPatients }
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 10.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = if (showAllPatients) "▲ Hide other regional patients" else "▼ Switch to other North-East patient demo",
-                        fontSize = 13.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = InkSecondary
                     )
@@ -366,10 +373,10 @@ fun LoginScreen(
                                 ) {
                                     Text(
                                         text = "Select",
-                                        fontSize = 11.sp,
+                                        fontSize = 14.sp,
                                         fontWeight = FontWeight.Black,
                                         color = Color.White,
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                                     )
                                 }
                             }
@@ -436,6 +443,7 @@ fun LoginScreen(
                             .height(58.dp)
                             .shadow(3.dp, RoundedCornerShape(14.dp))
                             .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                            .semantics { contentDescription = "Open camera to scan QR health card" }
                             .clickable {
                                 ElderlyFeedback.onTap(context)
                                 onScanQR()
@@ -468,11 +476,11 @@ fun LoginScreen(
         // Clinical Footer
         Text(
             text = "CogniCare CDTx • Ministry of Development of North Eastern Region (MDoNER)\nSmart India Hackathon 2026 // Clinical Trial Prototype",
-            fontSize = 11.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
-            color = InkSecondary.copy(alpha = 0.7f),
+            color = InkSecondary,
             textAlign = TextAlign.Center,
-            lineHeight = 16.sp
+            lineHeight = 20.sp
         )
 
         Spacer(modifier = Modifier.height(16.dp))

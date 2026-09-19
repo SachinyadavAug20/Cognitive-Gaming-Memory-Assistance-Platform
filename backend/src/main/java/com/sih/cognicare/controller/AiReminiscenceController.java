@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/ai/reminiscence")
-@CrossOrigin(origins = "*")
 public class AiReminiscenceController {
 
     private final OllamaReminiscenceService reminiscenceService;

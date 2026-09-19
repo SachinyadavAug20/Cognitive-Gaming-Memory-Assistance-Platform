@@ -6,6 +6,7 @@ import com.cognicare.data.local.AppDatabase
 import com.cognicare.data.remote.CogniCareApi
 import com.cognicare.data.remote.TokenManager
 import com.cognicare.repository.*
+import okhttp3.CertificatePinner
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -59,13 +60,21 @@ object ServiceLocator {
                 else HttpLoggingInterceptor.Level.NONE
             }
 
-            val client = OkHttpClient.Builder()
+            val builder = OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(logging)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
-                .build()
+
+            if (!BuildConfig.DEBUG) {
+                val certificatePinner = CertificatePinner.Builder()
+                    .add("cognicare.in", "sha256/placeholder-pin-replace-before-deploy")
+                    .build()
+                builder.certificatePinner(certificatePinner)
+            }
+
+            val client = builder.build()
 
             Retrofit.Builder()
                 .baseUrl(BuildConfig.BASE_URL)

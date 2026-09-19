@@ -16,18 +16,18 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-        debug {
-            isMinifyEnabled = false
+            buildConfigField("String", "BASE_URL", "\"https://cognicare.in\"")
         }
     }
 
@@ -87,6 +87,9 @@ dependencies {
 
     // DataStore (Preferences)
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Security: EncryptedSharedPreferences
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Coil (Image loading)
     implementation("io.coil-kt:coil-compose:2.7.0")

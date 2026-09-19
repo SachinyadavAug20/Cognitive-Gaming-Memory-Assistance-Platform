@@ -31,10 +31,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private val Ink = Color(0xFF16120E)
 private val InkSecondary = Color(0xFF4A4036)
@@ -55,20 +59,30 @@ data class PuzzlePhoto(
 private fun loadAndSliceBitmap(context: Context, assetPath: String, gridSize: Int): List<Bitmap>? {
     return try {
         context.assets.open(assetPath).use { inputStream ->
-            val original = BitmapFactory.decodeStream(inputStream) ?: return null
-            val minDim = minOf(original.width, original.height)
-            val startX = (original.width - minDim) / 2
-            val startY = (original.height - minDim) / 2
-            val square = Bitmap.createBitmap(original, startX, startY, minDim, minDim)
-            val tileSize = minDim / gridSize
-            val slices = mutableListOf<Bitmap>()
-            for (r in 0 until gridSize) {
-                for (c in 0 until gridSize) {
-                    val tile = Bitmap.createBitmap(square, c * tileSize, r * tileSize, tileSize, tileSize)
-                    slices.add(tile)
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeStream(inputStream, null, options)
+            val maxDim = maxOf(options.outWidth, options.outHeight)
+            val sampleSize = maxOf(1, maxDim / 512)
+
+            context.assets.open(assetPath).use { stream ->
+                val decodeOpts = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+                val original = BitmapFactory.decodeStream(stream, null, decodeOpts) ?: return null
+                val minDim = minOf(original.width, original.height)
+                val startX = (original.width - minDim) / 2
+                val startY = (original.height - minDim) / 2
+                val square = Bitmap.createBitmap(original, startX, startY, minDim, minDim)
+                if (square !== original) original.recycle()
+                val tileSize = minDim / gridSize
+                val slices = mutableListOf<Bitmap>()
+                for (r in 0 until gridSize) {
+                    for (c in 0 until gridSize) {
+                        val tile = Bitmap.createBitmap(square, c * tileSize, r * tileSize, tileSize, tileSize)
+                        slices.add(tile)
+                    }
                 }
+                square.recycle()
+                slices
             }
-            slices
         }
     } catch (e: Exception) {
         null
@@ -146,16 +160,30 @@ fun JigsawGame(onBack: () -> Unit) {
     var moves by remember { mutableIntStateOf(0) }
     var isSolved by remember { mutableStateOf(false) }
     var isPeeking by remember { mutableStateOf(false) }
+    var reloadTrigger by remember { mutableIntStateOf(0) }
+    var isLoadingTimedOut by remember { mutableStateOf(false) }
 
-    // Reload tiles when photo or gridSize changes
-    LaunchedEffect(currentPhoto.assetPath, gridSize) {
-        val loaded = loadAndSliceBitmap(context, currentPhoto.assetPath, gridSize)
+    // Reload tiles when photo, gridSize, or reloadTrigger changes
+    LaunchedEffect(currentPhoto.assetPath, gridSize, reloadTrigger) {
+        isLoadingTimedOut = false
+        pieceBitmaps = null
+        val loaded = withContext(Dispatchers.IO) {
+            loadAndSliceBitmap(context, currentPhoto.assetPath, gridSize)
+        }
         pieceBitmaps = loaded
         pieces = makeInitialShuffle()
         selectedPos = null
         moves = 0
         isSolved = false
         isPeeking = false
+    }
+
+    // 15-second loading timeout
+    LaunchedEffect(currentPhoto.assetPath, gridSize, reloadTrigger) {
+        kotlinx.coroutines.delay(15_000)
+        if (pieceBitmaps == null) {
+            isLoadingTimedOut = true
+        }
     }
 
     fun checkSolved(currentPieces: List<Int>) {
@@ -168,7 +196,7 @@ fun JigsawGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -243,7 +271,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
                                 color = if (gridSize == 2) TeaGreen else Color.Transparent,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.semantics { contentDescription = "2 by 2 Easy difficulty" }.clickable {
                                     if (gridSize != 2) {
                                         gridSize = 2
                                         ElderlyFeedback.onTap(context)
@@ -252,7 +280,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             ) {
                                 Text(
                                     text = "2×2 Easy",
-                                    fontSize = 11.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Black,
                                     color = if (gridSize == 2) Color.White else Ink,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -261,7 +289,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
                                 color = if (gridSize == 3) TeaGreen else Color.Transparent,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.semantics { contentDescription = "3 by 3 Normal difficulty" }.clickable {
                                     if (gridSize != 3) {
                                         gridSize = 3
                                         ElderlyFeedback.onTap(context)
@@ -270,7 +298,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             ) {
                                 Text(
                                     text = "3×3 Normal",
-                                    fontSize = 11.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Black,
                                     color = if (gridSize == 3) Color.White else Ink,
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -370,7 +398,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             )
                         }
                     }
-                } else if (pieceBitmaps != null && pieceBitmaps!!.size == numPieces) {
+                } else if (pieceBitmaps?.size == numPieces) {
                     // Real Sliced Jigsaw Grid
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -388,7 +416,8 @@ fun JigsawGame(onBack: () -> Unit) {
                                     val pieceId = pieces[pos]
                                     val isSelected = selectedPos == pos
                                     val isCorrect = pieceId == pos
-                                    val tileBitmap = pieceBitmaps!![pieceId]
+                                    val tileBitmap = pieceBitmaps?.getOrNull(pieceId)
+                                    if (tileBitmap == null) continue
 
                                     Box(
                                         modifier = Modifier
@@ -401,12 +430,13 @@ fun JigsawGame(onBack: () -> Unit) {
                                                 color = if (isSelected) Marigold else if (isCorrect) TeaGreen else Color.White.copy(alpha = 0.4f),
                                                 shape = RoundedCornerShape(10.dp)
                                             )
+                                            .semantics { contentDescription = "Puzzle piece ${pieceId + 1}" }
                                             .clickable {
                                                 ElderlyFeedback.onTap(context)
                                                 if (selectedPos == null) {
                                                     selectedPos = pos
                                                 } else {
-                                                    val prev = selectedPos!!
+                                                    val prev = selectedPos ?: return@clickable
                                                     if (prev != pos) {
                                                         val updated = pieces.toMutableList()
                                                         val temp = updated[prev]
@@ -443,7 +473,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                                 } else {
                                                     Text(
                                                         text = "${pieceId + 1}",
-                                                        fontSize = 10.sp,
+                                                        fontSize = 14.sp,
                                                         fontWeight = FontWeight.Black,
                                                         color = Color.White
                                                     )
@@ -452,6 +482,46 @@ fun JigsawGame(onBack: () -> Unit) {
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+                } else if (isLoadingTimedOut) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Could not load the puzzle image.",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = Marigold,
+                            modifier = Modifier
+                                .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                                .clickable {
+                                    ElderlyFeedback.onTap(context)
+                                    isLoadingTimedOut = false
+                                    reloadTrigger++
+                                }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Filled.Refresh, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Retry",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
                             }
                         }
                     }
@@ -503,6 +573,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                 color = TeaGreen,
                                 modifier = Modifier
                                     .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
+                                    .semantics { contentDescription = "Hear Story" }
                                     .clickable {
                                         ElderlyFeedback.onTap(context)
                                         LocalizationManager.speak("${currentPhoto.title}. ${currentPhoto.subtitle}. ${currentPhoto.description}")
@@ -514,7 +585,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                 ) {
                                     Icon(Icons.Filled.VolumeUp, null, tint = Color.White, modifier = Modifier.size(16.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text(text = "Hear Story", fontSize = 11.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                    Text(text = "Hear Story", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White)
                                 }
                             }
                         }
@@ -565,6 +636,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             color = if (isPeeking) Marigold else Color(0xFFFEF3C7),
                             modifier = Modifier
                                 .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
+                                .semantics { contentDescription = if (isPeeking) "Hide photo" else "Peek photo" }
                                 .clickable {
                                     ElderlyFeedback.onTap(context)
                                     isPeeking = !isPeeking

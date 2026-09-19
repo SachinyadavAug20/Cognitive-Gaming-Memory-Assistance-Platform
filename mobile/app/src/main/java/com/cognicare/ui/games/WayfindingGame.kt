@@ -17,12 +17,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlin.math.abs
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val CanvasBg = Color(0xFFFAF7F2)
 private val ForestGreen = Color(0xFF2E7D32)
 private val PathTan = Color(0xFFD7CCC8)
@@ -78,7 +81,7 @@ fun WayfindingGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83D\uDEE3\uFE0F Finding Home (Wayfinding)", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -91,7 +94,7 @@ fun WayfindingGame(onBack: () -> Unit) {
             Surface(Modifier.fillMaxWidth().shadow(3.dp, RoundedCornerShape(16.dp)).border(2.5.dp, Ink, RoundedCornerShape(16.dp)), RoundedCornerShape(16.dp), WarmSurface) {
                 Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Score: $score", fontSize = 16.sp, fontWeight = FontWeight.Black, color = Ink); Text("Level: $level", fontSize = 12.sp, color = ForestGreen, fontWeight = FontWeight.Bold) }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Moves: $moves", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink); Text("Best: $bestMoves", fontSize = 11.sp, color = Color.Gray) }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("Moves: $moves", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink); Text("Best: $bestMoves", fontSize = 14.sp, color = TextSecondary) }
                 }
             }
             Spacer(Modifier.height(8.dp))
@@ -113,10 +116,10 @@ fun WayfindingGame(onBack: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); score = 0; level = 1; generateMaze() }, RoundedCornerShape(12.dp), Color.White) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "New path" }.clickable { ElderlyFeedback.onTap(context); score = 0; level = 1; generateMaze() }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("New Path \u27F3", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), ForestGreen) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { onBack() }, RoundedCornerShape(12.dp), ForestGreen) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
@@ -140,7 +143,7 @@ fun WayfindingGame(onBack: () -> Unit) {
                                             isWall -> Color(0xFF795548)
                                             else -> PathTan
                                         },
-                                        modifier = Modifier.size((40).dp).border(1.5.dp, Ink, RoundedCornerShape(6.dp)).clickable {
+                                        modifier = Modifier.size((40).dp).border(1.5.dp, Ink, RoundedCornerShape(6.dp)).semantics { contentDescription = when { isPlayer -> "You are here"; isGoal -> "Home goal"; isWall -> "Wall"; else -> "Path" } }.clickable {
                                             if (abs(x - playerX) + abs(y - playerY) == 1) moveTo(x, y)
                                         }
                                     ) {
@@ -168,7 +171,7 @@ fun WayfindingGame(onBack: () -> Unit) {
                 // Arrow buttons
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("\u25C0" to { moveTo(playerX - 1, playerY) }, "\u25B2" to { moveTo(playerX, playerY - 1) }, "\u25BC" to { moveTo(playerX, playerY + 1) }, "\u25B6" to { moveTo(playerX + 1, playerY) }).forEach { (arrow, action) ->
-                        Surface(Modifier.weight(1f).height(52.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.dp, Ink, RoundedCornerShape(14.dp)).clickable { action() }, RoundedCornerShape(14.dp), Color.White) {
+                        Surface(Modifier.weight(1f).height(52.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.dp, Ink, RoundedCornerShape(14.dp)).semantics { contentDescription = when(arrow) { "\u25C0" -> "Move left"; "\u25B2" -> "Move up"; "\u25BC" -> "Move down"; else -> "Move right" } }.clickable { ElderlyFeedback.onTap(context); action() }, RoundedCornerShape(14.dp), Color.White) {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(arrow, fontSize = 22.sp, fontWeight = FontWeight.Black, color = Ink) }
                         }
                     }

@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,6 +24,7 @@ import com.cognicare.data.remote.*
 import com.cognicare.viewmodel.AdminViewModel
 
 private val Ink = Color(0xFF16120E)
+private val InkSecondary = Color(0xFF4A4036)
 private val Canvas = Color(0xFFFAF7F2)
 private val TeaGreen = Color(0xFF1B663E)
 private val Marigold = Color(0xFFE66A00)
@@ -50,7 +52,11 @@ fun AdminScreen(
     ) { padding ->
         if (state.isLoading) {
             Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = TeaGreen)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator(color = TeaGreen, modifier = Modifier.size(48.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Loading system data...", fontSize = 14.sp, color = InkSecondary)
+                }
             }
         } else {
             LazyColumn(
@@ -70,7 +76,7 @@ fun AdminScreen(
                             Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.WifiOff, null, tint = Marigold, modifier = Modifier.size(20.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = state.error!!, fontSize = 14.sp, color = Ink)
+                                Text(text = state.error ?: "", fontSize = 14.sp, color = Ink)
                             }
                         }
                     }
@@ -109,7 +115,7 @@ fun AdminScreen(
                                 Text(
                                     text = state.aiDiagnostics?.status ?: "Unknown",
                                     fontSize = 14.sp,
-                                    color = if (state.aiDiagnostics?.status == "online") TeaGreen else Color.Gray
+                                    color = if (state.aiDiagnostics?.status == "online") TeaGreen else InkSecondary
                                 )
                             }
                             Surface(
@@ -121,7 +127,7 @@ fun AdminScreen(
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (state.aiDiagnostics?.status == "online") TeaGreen else Color.Gray
+                                    color = if (state.aiDiagnostics?.status == "online") TeaGreen else InkSecondary
                                 )
                             }
                         }
@@ -134,7 +140,7 @@ fun AdminScreen(
                     Text("\uD83C\uDFD5\uFE0F NER District Health", fontSize = 20.sp, fontWeight = FontWeight.Black, color = Ink)
                 }
 
-                items(state.districts) { district ->
+                items(state.districts, key = { "${it.state}-${it.district}" }) { district ->
                     DistrictHealthCard(district)
                 }
 
@@ -144,7 +150,7 @@ fun AdminScreen(
                     Text("\uD83C\uDFAE Recent Sessions", fontSize = 20.sp, fontWeight = FontWeight.Black, color = Ink)
                 }
 
-                items(state.sessions) { session ->
+                items(state.sessions, key = { it.sessionId }) { session ->
                     SessionRow(session)
                 }
 
@@ -154,7 +160,7 @@ fun AdminScreen(
                     Text("\uD83D\uDC64 Registered Patients", fontSize = 20.sp, fontWeight = FontWeight.Black, color = Ink)
                 }
 
-                items(state.patients) { patient ->
+                items(state.patients, key = { it.id }) { patient ->
                     PatientRow(patient)
                 }
 
@@ -164,7 +170,7 @@ fun AdminScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text("\u26A0\uFE0F Active Alerts", fontSize = 20.sp, fontWeight = FontWeight.Black, color = Brick)
                     }
-                    items(state.alerts) { alert ->
+                    items(state.alerts, key = { it.id ?: "" }) { alert ->
                         AlertRow(alert, onResolve = { viewModel.resolveAlert(alert.id ?: "") })
                     }
                 }
@@ -190,7 +196,7 @@ fun AdminStatCard(title: String, value: String, icon: ImageVector, color: Color,
             Icon(icon, null, tint = color, modifier = Modifier.size(28.dp))
             Spacer(modifier = Modifier.height(6.dp))
             Text(value, fontSize = 24.sp, fontWeight = FontWeight.Black, color = color)
-            Text(title, fontSize = 12.sp, color = Color.Gray)
+            Text(title, fontSize = 12.sp, color = InkSecondary)
         }
     }
 }
@@ -207,7 +213,7 @@ fun DistrictHealthCard(district: AdminDistrictHealthDto) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text(text = "${district.district ?: "?"}, ${district.state ?: "?"}", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Ink)
-                    Text(text = "PHC: ${district.primaryPhc ?: "?"}", fontSize = 12.sp, color = Color.Gray)
+                    Text(text = "PHC: ${district.primaryPhc ?: "?"}", fontSize = 12.sp, color = InkSecondary)
                 }
                 Surface(shape = RoundedCornerShape(8.dp), color = TeaGreen.copy(alpha = 0.1f)) {
                     Text(
@@ -233,7 +239,7 @@ fun DistrictHealthCard(district: AdminDistrictHealthDto) {
 fun MiniStat(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(value, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Ink)
-        Text(label, fontSize = 10.sp, color = Color.Gray)
+        Text(label, fontSize = 14.sp, color = InkSecondary)
     }
 }
 
@@ -254,11 +260,11 @@ fun SessionRow(session: AdminSessionRowDto) {
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = session.patientName ?: "Unknown", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Ink)
-                Text(text = "${session.gameType ?: "?"} • ${session.durationSeconds ?: 0}s", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "${session.gameType ?: "?"} • ${session.durationSeconds ?: 0}s", fontSize = 12.sp, color = InkSecondary)
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(text = "${session.accuracyPercentage?.toInt() ?: 0}%", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = TeaGreen)
-                Text(text = "accuracy", fontSize = 10.sp, color = Color.Gray)
+                Text(text = "accuracy", fontSize = 14.sp, color = InkSecondary)
             }
         }
     }
@@ -283,7 +289,7 @@ fun PatientRow(patient: AdminPatientRowDto) {
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = patient.name ?: "Unknown", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Ink)
-                Text(text = "${patient.gender ?: "?"} • ${patient.preferredLanguage ?: "?"}", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "${patient.gender ?: "?"} • ${patient.preferredLanguage ?: "?"}", fontSize = 12.sp, color = InkSecondary)
             }
             Surface(
                 shape = RoundedCornerShape(8.dp),
@@ -292,8 +298,8 @@ fun PatientRow(patient: AdminPatientRowDto) {
                 Text(
                     text = if (patient.hasActiveCard) "Active" else "Inactive",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    fontSize = 11.sp, fontWeight = FontWeight.Bold,
-                    color = if (patient.hasActiveCard) TeaGreen else Color.Gray
+                    fontSize = 14.sp, fontWeight = FontWeight.Bold,
+                    color = if (patient.hasActiveCard) TeaGreen else InkSecondary
                 )
             }
         }
@@ -313,7 +319,7 @@ fun AlertRow(alert: AdminClinicalAlertDto, onResolve: () -> Unit) {
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = alert.alertType ?: "Alert", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Ink)
-                Text(text = alert.message ?: "", fontSize = 12.sp, color = Color.Gray)
+                Text(text = alert.clinicalNote ?: "", fontSize = 12.sp, color = InkSecondary)
             }
             TextButton(onClick = onResolve) { Text("Resolve") }
         }

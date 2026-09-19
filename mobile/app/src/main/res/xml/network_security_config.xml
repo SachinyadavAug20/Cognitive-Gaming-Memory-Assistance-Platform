@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Debug: allow cleartext for local development (emulator localhost) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+
+    <!-- Production: HTTPS only, with certificate pinning -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">cognicare.in</domain>
+        <pin-set expiration="2027-01-01">
+            <!-- SHA-256 of production certificate -->
+            <pin digest="SHA-256">placeholder-pin-replace-before-deploy</pin>
+        </pin-set>
+    </domain-config>
+</network-security-config>

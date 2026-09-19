@@ -7,8 +7,13 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 object HapticUtil {
+    private val doubleTapExecutor = Executors.newSingleThreadScheduledExecutor()
+
     private fun getVibrator(context: Context): Vibrator? {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -45,8 +50,7 @@ object HapticUtil {
 
     fun vibrateDoubleTap(context: Context) {
         vibrate(context, 40)
-        Thread.sleep(60)
-        vibrate(context, 40)
+        doubleTapExecutor.schedule({ vibrate(context, 40) }, 60, TimeUnit.MILLISECONDS)
     }
 }
 
@@ -56,70 +60,67 @@ object HapticUtil {
  */
 object ElderlyFeedback {
 
-    /**
-     * Standard tap feedback — light haptic + soft click sound
-     */
+    private val toneExecutor = Executors.newSingleThreadExecutor()
+    @Volatile private var sharedToneGenerator: ToneGenerator? = null
+
+    private fun getToneGenerator(): ToneGenerator {
+        sharedToneGenerator?.let { return it }
+        synchronized(this) {
+            sharedToneGenerator?.let { return it }
+            val tg = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 80)
+            sharedToneGenerator = tg
+            return tg
+        }
+    }
+
     fun onTap(context: Context) {
         HapticUtil.vibrateTap(context)
-        playTone(context, ToneType.TAP)
+        playTone(ToneType.TAP)
     }
 
-    /**
-     * Success feedback — green flash + success chime + medium haptic
-     */
     fun onSuccess(context: Context) {
         HapticUtil.vibrateSuccess(context)
-        playTone(context, ToneType.SUCCESS)
+        playTone(ToneType.SUCCESS)
     }
 
-    /**
-     * Error feedback — red flash + error buzz + heavy haptic
-     */
     fun onError(context: Context) {
         HapticUtil.vibrateError(context)
-        playTone(context, ToneType.ERROR)
+        playTone(ToneType.ERROR)
     }
 
-    /**
-     * Navigation feedback — soft click + light haptic
-     */
     fun onNavigate(context: Context) {
         HapticUtil.vibrateTap(context)
-        playTone(context, ToneType.NAVIGATE)
+        playTone(ToneType.NAVIGATE)
     }
 
-    /**
-     * Achievement feedback — celebratory sound + double haptic
-     */
     fun onAchievement(context: Context) {
         HapticUtil.vibrateDoubleTap(context)
-        playTone(context, ToneType.ACHIEVEMENT)
+        playTone(ToneType.ACHIEVEMENT)
     }
 
     private enum class ToneType {
         TAP, SUCCESS, ERROR, NAVIGATE, ACHIEVEMENT
     }
 
-    private fun playTone(context: Context, type: ToneType) {
-        try {
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            if (audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT) return
-
-            val toneGenerator = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 80)
-            when (type) {
-                ToneType.TAP -> toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 60)
-                ToneType.SUCCESS -> toneGenerator.startTone(ToneGenerator.TONE_PROP_ACK, 120)
-                ToneType.ERROR -> toneGenerator.startTone(ToneGenerator.TONE_PROP_NACK, 200)
-                ToneType.NAVIGATE -> toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP2, 80)
-                ToneType.ACHIEVEMENT -> {
-                    toneGenerator.startTone(ToneGenerator.TONE_PROP_APPLAUSE, 300)
+    private fun playTone(type: ToneType) {
+        toneExecutor.submit {
+            try {
+                val tg = getToneGenerator()
+                when (type) {
+                    ToneType.TAP -> tg.startTone(ToneGenerator.TONE_PROP_BEEP, 60)
+                    ToneType.SUCCESS -> tg.startTone(ToneGenerator.TONE_PROP_ACK, 120)
+                    ToneType.ERROR -> tg.startTone(ToneGenerator.TONE_PROP_NACK, 200)
+                    ToneType.NAVIGATE -> tg.startTone(ToneGenerator.TONE_PROP_BEEP2, 80)
+                    ToneType.ACHIEVEMENT -> tg.startTone(ToneGenerator.TONE_PROP_ACK, 300)
                 }
-            }
-            // Release after tone completes
-            Thread {
-                Thread.sleep(400)
-                toneGenerator.release()
-            }.start()
-        } catch (_: Exception) { }
+            } catch (_: Exception) { }
+        }
+    }
+
+    fun release() {
+        toneExecutor.submit {
+            sharedToneGenerator?.release()
+            sharedToneGenerator = null
+        }
     }
 }

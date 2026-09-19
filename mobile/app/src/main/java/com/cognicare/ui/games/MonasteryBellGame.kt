@@ -26,6 +26,7 @@ import com.cognicare.util.LocalizationManager
 import kotlinx.coroutines.delay
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val Canvas = Color(0xFFFAF7F2)
 private val TeaGreen = Color(0xFF1B663E)
 private val Marigold = Color(0xFFE66A00)
@@ -79,7 +80,7 @@ fun MonasteryBellGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -200,9 +201,9 @@ fun MonasteryBellGame(onBack: () -> Unit) {
                                 )
                                 Text(
                                     text = bell.location,
-                                    fontSize = 11.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isGlowing) Color.White.copy(alpha = 0.8f) else Color.Gray
+                                    color = if (isGlowing) Color.White.copy(alpha = 0.8f) else TextSecondary
                                 )
                             }
                         }
@@ -260,9 +261,9 @@ fun MonasteryBellGame(onBack: () -> Unit) {
                                 )
                                 Text(
                                     text = bell.location,
-                                    fontSize = 11.sp,
+                                    fontSize = 14.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (isGlowing) Color.White.copy(alpha = 0.8f) else Color.Gray
+                                    color = if (isGlowing) Color.White.copy(alpha = 0.8f) else TextSecondary
                                 )
                             }
                         }
@@ -279,6 +280,7 @@ fun MonasteryBellGame(onBack: () -> Unit) {
                     .shadow(2.dp, RoundedCornerShape(16.dp))
                     .border(2.dp, Ink, RoundedCornerShape(16.dp))
                     .clickable(enabled = !isShowingSequence) {
+                        ElderlyFeedback.onTap(context)
                         userIndex = 0
                     }
             ) {

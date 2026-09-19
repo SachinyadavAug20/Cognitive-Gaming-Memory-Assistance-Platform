@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 data class BellPair(val id: Int, val emoji: String, val name: String)
 
@@ -52,7 +53,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Temple Prayer", color = Color.White) },
@@ -105,7 +106,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
                     Text(
                         text = "Tap two cards with the same symbol",
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = TextSecondary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -156,6 +157,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
                                         RoundedCornerShape(12.dp)
                                     )
                                     .clickable {
+                                        ElderlyFeedback.onTap(context)
                                         if (!isRevealed && !showResult) {
                                             ElderlyFeedback.onSuccess(context)
                                             if (firstSelection == null) {
@@ -177,7 +179,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
                                                     }
                                                 } else {
                                                     // No match — flip back
-                                                    val prev = firstSelection!!
+                                                    val prev = firstSelection ?: return@clickable
                                                     val mismatchId = pair.id
                                                     val prevId = prev.id
                                                     firstSelection = null
@@ -224,7 +226,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
                 },
                 confirmButton = {
                     Button(
-                        onClick = { level++; setupLevel() },
+                        onClick = { ElderlyFeedback.onTap(context); level++; setupLevel() },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.buttonColors(containerColor = TempleGold)
                     ) {

@@ -92,7 +92,7 @@ fun TeaGardenVisionGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83C\uDF3F Tea with Hands", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -176,7 +176,7 @@ fun TeaGardenVisionGame(onBack: () -> Unit) {
                 // Direction buttons as fallback
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     listOf("\u2B06\uFE0F" to "up", "\u2B07\uFE0F" to "down", "\u2B05\uFE0F" to "left", "\u27A1\uFE0F" to "right").forEach { (icon, dir) ->
-                        Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { checkGesture(dir) }, RoundedCornerShape(12.dp), Color.White) {
+                        Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); checkGesture(dir) }, RoundedCornerShape(12.dp), Color.White) {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(icon, fontSize = 20.sp) }
                         }
                     }

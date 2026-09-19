@@ -1,6 +1,7 @@
 package com.cognicare.repository
 
 import com.cognicare.data.remote.*
+import com.cognicare.util.bodyOrNull
 
 class AuthRepository(
     private val api: CogniCareApi,
@@ -9,16 +10,13 @@ class AuthRepository(
     suspend fun kioskScan(qrData: String): Result<KioskScanResponse> {
         return try {
             val response = api.kioskScan(KioskScanRequest(qrData))
-            if (response.isSuccessful) {
-                val body = response.body()!!
-                tokenManager.token = body.token
-                tokenManager.patientId = body.patient.id
-                tokenManager.patientName = body.patient.name
-                body.patient.languagePreference?.let { tokenManager.language = it }
-                Result.success(body)
-            } else {
-                Result.failure(Exception("Kiosk scan failed: ${response.code()}"))
-            }
+            val body = response.bodyOrNull()
+                ?: return Result.failure(Exception("Kiosk scan failed: ${response.code()}"))
+            tokenManager.token = body.token
+            tokenManager.patientId = body.patient.id
+            tokenManager.patientName = body.patient.name
+            body.patient.languagePreference?.let { tokenManager.language = it }
+            Result.success(body)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -27,16 +25,13 @@ class AuthRepository(
     suspend fun kioskDemo(): Result<KioskScanResponse> {
         return try {
             val response = api.kioskDemo()
-            if (response.isSuccessful) {
-                val body = response.body()!!
-                tokenManager.token = body.token
-                tokenManager.patientId = body.patient.id
-                tokenManager.patientName = body.patient.name
-                body.patient.languagePreference?.let { tokenManager.language = it }
-                Result.success(body)
-            } else {
-                Result.failure(Exception("Demo login failed: ${response.code()}"))
-            }
+            val body = response.bodyOrNull()
+                ?: return Result.failure(Exception("Demo login failed: ${response.code()}"))
+            tokenManager.token = body.token
+            tokenManager.patientId = body.patient.id
+            tokenManager.patientName = body.patient.name
+            body.patient.languagePreference?.let { tokenManager.language = it }
+            Result.success(body)
         } catch (e: Exception) {
             Result.failure(e)
         }

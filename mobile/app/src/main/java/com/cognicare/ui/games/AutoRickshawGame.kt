@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 data class RouteStop(val emoji: String, val name: String)
 
@@ -58,7 +59,7 @@ fun AutoRickshawGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Auto Ride", color = Color.White) },
@@ -111,7 +112,7 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                     Text(
                         text = "Tap the stops in the correct order",
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = TextSecondary
                     )
                 }
             }
@@ -139,10 +140,10 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                         route.forEachIndexed { index, stop ->
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(text = stop.emoji, fontSize = 36.sp)
-                                Text(text = stop.name, fontSize = 12.sp, color = Color.Gray)
+                                Text(text = stop.name, fontSize = 12.sp, color = TextSecondary)
                             }
                             if (index < route.lastIndex) {
-                                Text(text = " → ", fontSize = 20.sp, color = Color.Gray)
+                                Text(text = " → ", fontSize = 20.sp, color = TextSecondary)
                             }
                         }
                     }
@@ -169,7 +170,7 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                         Text(
                             text = "Tap stops below to build your route",
                             fontSize = 14.sp,
-                            color = Color.Gray
+                            color = TextSecondary
                         )
                     } else {
                         Row(
@@ -179,10 +180,10 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                             userRoute.forEachIndexed { index, stop ->
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(text = stop.emoji, fontSize = 36.sp)
-                                    Text(text = stop.name, fontSize = 12.sp, color = Color.Gray)
+                                    Text(text = stop.name, fontSize = 12.sp, color = TextSecondary)
                                 }
                                 if (index < userRoute.lastIndex) {
-                                    Text(text = " → ", fontSize = 20.sp, color = Color.Gray)
+                                    Text(text = " → ", fontSize = 20.sp, color = TextSecondary)
                                 }
                             }
                         }
@@ -224,6 +225,7 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                                         RoundedCornerShape(12.dp)
                                     )
                                     .clickable {
+                                        ElderlyFeedback.onTap(context)
                                         if (!isUsed && !showResult) {
                                             ElderlyFeedback.onSuccess(context)
                                             val newUserRoute = userRoute + stop
@@ -248,7 +250,7 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(text = stop.emoji, fontSize = 28.sp)
-                                    Text(text = stop.name, fontSize = 10.sp, color = Color.Gray)
+                                    Text(text = stop.name, fontSize = 14.sp, color = TextSecondary)
                                 }
                             }
                         }
@@ -292,6 +294,7 @@ fun AutoRickshawGame(onBack: () -> Unit) {
                 confirmButton = {
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             if (correct) level++
                             setupLevel()
                         },

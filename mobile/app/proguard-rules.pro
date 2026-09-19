@@ -1,7 +1,7 @@
 # ProGuard rules for CogniCare Android App
 
 # Keep Retrofit models
--keep class com.cognicare.data.remote.dto.** { *; }
+-keep class com.cognicare.data.remote.** { *; }
 -keep class com.cognicare.data.local.** { *; }
 
 # Keep Room entities

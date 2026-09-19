@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "*")
 public class GameSessionController {
 
     private final GameSessionService gameSessionService;
@@ -20,10 +19,10 @@ public class GameSessionController {
     /**
      * Save patient game session telemetry
      */
-    @PostMapping({"/patients/{id}/sessions", "/api/v1/patients/{id}/sessions"})
+    @PostMapping({"/api/v1/patients/{id}/sessions"})
     public ResponseEntity<GameSession> recordSession(
             @PathVariable("id") Long patientId,
-            @RequestBody GameSessionRequest request) {
+            @RequestBody @jakarta.validation.Valid GameSessionRequest request) {
         GameSession session = gameSessionService.saveSession(patientId, request);
         return ResponseEntity.ok(session);
     }
@@ -31,7 +30,7 @@ public class GameSessionController {
     /**
      * Get patient gaming session stats and rolling averages
      */
-    @GetMapping({"/patients/{id}/sessions/stats", "/api/v1/patients/{id}/sessions/stats"})
+    @GetMapping({"/api/v1/patients/{id}/sessions/stats"})
     public ResponseEntity<GameSessionStatsResponse> getSessionStats(
             @PathVariable("id") Long patientId) {
         GameSessionStatsResponse stats = gameSessionService.getPatientSessionStats(patientId);

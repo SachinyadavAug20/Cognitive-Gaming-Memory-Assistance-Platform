@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 data class WordPair(val english: String, val local: String, val emoji: String)
 
@@ -64,7 +65,7 @@ fun SchoolDaysGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("School Days", color = Color.White) },
@@ -117,7 +118,7 @@ fun SchoolDaysGame(onBack: () -> Unit) {
                     Text(
                         text = "Tap the local language word for",
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = TextSecondary
                     )
                 }
             }
@@ -163,6 +164,7 @@ fun SchoolDaysGame(onBack: () -> Unit) {
 
                 Button(
                     onClick = {
+                        ElderlyFeedback.onTap(context)
                         if (!showResult) {
                             ElderlyFeedback.onSuccess(context)
                             selected = option
@@ -240,6 +242,7 @@ fun SchoolDaysGame(onBack: () -> Unit) {
                 confirmButton = {
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             if (isCorrect) level++
                             setupLevel()
                         },

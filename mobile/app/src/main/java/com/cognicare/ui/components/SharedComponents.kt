@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
@@ -45,14 +47,14 @@ fun DomainFilterChip(
 ) {
     Surface(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.semantics { contentDescription = "$label, ${count ?: 0} items" },
         shape = RoundedCornerShape(24.dp),
         color = if (isSelected) Green40 else Color.White,
         border = if (isSelected) null else ButtonDefaults.outlinedButtonBorder,
         contentColor = if (isSelected) Color.White else Color.Black
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = emoji, fontSize = 14.sp)

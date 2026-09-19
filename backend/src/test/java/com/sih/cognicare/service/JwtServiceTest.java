@@ -15,7 +15,7 @@ class JwtServiceTest {
 
     @BeforeEach
     void setUp() {
-        jwtService = new JwtService();
+        jwtService = new JwtService("cognicare-kiosk-secret-key-change-me");
     }
 
     @Test

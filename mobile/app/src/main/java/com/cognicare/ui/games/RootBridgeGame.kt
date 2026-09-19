@@ -63,7 +63,7 @@ fun RootBridgeGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83C\uDF33 Root Bridge (Cross)", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },

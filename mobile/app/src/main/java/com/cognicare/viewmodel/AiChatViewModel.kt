@@ -28,9 +28,12 @@ class AiChatViewModel(application: Application) : AndroidViewModel(application) 
 
     fun sendMessage(patientId: Long, message: String, personaName: String = "Saathi") {
         viewModelScope.launch {
-            val history = _state.value.messages.map { ChatMessage(role = it.role, text = it.text) }
+            val allMessages = _state.value.messages + ChatMessage(role = "user", text = message)
+            val trimmedMessages = if (allMessages.size > 40) allMessages.takeLast(40) else allMessages
+            val history = trimmedMessages.dropLast(1).map { ChatMessage(role = it.role, text = it.text) }
+
             _state.value = _state.value.copy(
-                messages = _state.value.messages + ChatMessage(role = "user", text = message),
+                messages = trimmedMessages,
                 isLoading = true,
                 error = null
             )

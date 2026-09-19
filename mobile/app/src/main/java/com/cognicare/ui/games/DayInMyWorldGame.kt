@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
@@ -119,14 +121,14 @@ fun DayInMyWorldGame(onBack: () -> Unit) {
     var visitedNodes by remember { mutableStateOf(setOf<String>()) }
     val scrollState = rememberScrollState()
 
-    val node = storyNodes[currentNodeId] ?: storyNodes["start"]!!
+    val node = storyNodes[currentNodeId] ?: storyNodes["start"] ?: return
 
     LaunchedEffect(currentNodeId) { scrollState.animateScrollTo(0) }
 
     val isEnding = currentNodeId.startsWith("end_") || currentNodeId == "final"
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83C\uDFD8\uFE0F Day in My Village", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -160,7 +162,7 @@ fun DayInMyWorldGame(onBack: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         node.choices.forEach { (text, nextId) ->
-                            Surface(shape = RoundedCornerShape(14.dp), color = if (nextId == "start") Color.White else VillageAmber, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.dp, Ink, RoundedCornerShape(14.dp)).clickable {
+                            Surface(shape = RoundedCornerShape(14.dp), color = if (nextId == "start") Color.White else VillageAmber, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.dp, Ink, RoundedCornerShape(14.dp)).semantics { contentDescription = text }.clickable {
                                 ElderlyFeedback.onTap(context)
                                 if (nextId == "start") { score = 0; visitedNodes = setOf("start") } else { score += 10 }
                                 currentNodeId = nextId; visitedNodes = visitedNodes + nextId
@@ -169,7 +171,7 @@ fun DayInMyWorldGame(onBack: () -> Unit) {
                             }
                         }
                         Spacer(Modifier.height(10.dp))
-                        Surface(Modifier.fillMaxWidth().height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), VillageAmber) {
+                        Surface(Modifier.fillMaxWidth().height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), VillageAmber) {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                         }
                     }
@@ -196,7 +198,7 @@ fun DayInMyWorldGame(onBack: () -> Unit) {
 
                 // Choices
                 node.choices.forEach { (text, nextId) ->
-                    Surface(shape = RoundedCornerShape(14.dp), color = Color.White, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.dp, VillageAmber, RoundedCornerShape(14.dp)).clickable {
+                    Surface(shape = RoundedCornerShape(14.dp), color = Color.White, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).shadow(2.dp, RoundedCornerShape(14.dp)).border(2.dp, VillageAmber, RoundedCornerShape(14.dp)).semantics { contentDescription = text }.clickable {
                         ElderlyFeedback.onTap(context)
                         score += 10; currentNodeId = nextId; visitedNodes = visitedNodes + nextId
                         LocalizationManager.speak(text)

@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
@@ -33,6 +35,15 @@ private val GreenLight = Color(0xFF81C784)
 private val GreenPale = Color(0xFFC8E6C9)
 private val WarmSurface = Color(0xFFFFFDF9)
 
+private const val INITIAL_TIME = 30
+private const val BASE_GRID_SIZE = 4
+private const val MAX_GRID_SIZE = 8
+private const val BASE_TARGETS = 2
+private const val TARGETS_PER_LEVEL = 2
+private const val TIME_DECREMENT = 2
+private const val MIN_TIME = 12
+private const val POINTS_PER_FOUND = 10
+
 private data class FlowerCell(val id: Int, val emoji: String, val isTarget: Boolean, var found: Boolean = false)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +52,7 @@ fun DzukouBotanistGame(onBack: () -> Unit) {
     val context = LocalContext.current
     var score by remember { mutableIntStateOf(0) }
     var level by remember { mutableIntStateOf(1) }
-    var timeLeft by remember { mutableIntStateOf(30) }
+    var timeLeft by remember { mutableIntStateOf(INITIAL_TIME) }
     var gameOver by remember { mutableStateOf(false) }
     var foundCount by remember { mutableIntStateOf(0) }
     var totalTargets by remember { mutableIntStateOf(0) }
@@ -52,17 +63,17 @@ fun DzukouBotanistGame(onBack: () -> Unit) {
     val targetEmojis = listOf("\uD83C\uDF3A", "\uD83C\uDF38", "\u2618\uFE0F", "\uD83C\uDF3F")
 
     fun generateLevel() {
-        val gridSize = (4 + level).coerceAtMost(8)
+                val gridSize = (BASE_GRID_SIZE + level).coerceAtMost(MAX_GRID_SIZE)
         val total = gridSize * gridSize
         targetEmoji = targetEmojis[level % targetEmojis.size]
-        val numTargets = (2 + level * 2).coerceAtMost(total / 3)
+        val numTargets = (BASE_TARGETS + level * TARGETS_PER_LEVEL).coerceAtMost(total / 3)
         totalTargets = numTargets; foundCount = 0
         val distractors = distractorEmojis.filter { it != targetEmoji }
         val allCells = mutableListOf<FlowerCell>()
         repeat(numTargets) { allCells.add(FlowerCell(it, targetEmoji, true)) }
         repeat(total - numTargets) { idx -> allCells.add(FlowerCell(numTargets + idx, distractors[idx % distractors.size], false)) }
         cells = allCells.shuffled()
-        timeLeft = (30 - level * 2).coerceAtLeast(12)
+        timeLeft = (INITIAL_TIME - level * TIME_DECREMENT).coerceAtLeast(MIN_TIME)
     }
 
     LaunchedEffect(level) { generateLevel() }
@@ -74,7 +85,7 @@ fun DzukouBotanistGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83C\uDF3A Valley Flowers (Dzukou)", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -113,25 +124,26 @@ fun DzukouBotanistGame(onBack: () -> Unit) {
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); score = 0; level = 1; gameOver = false; generateLevel() }, RoundedCornerShape(12.dp), Color.White) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Search again" }.clickable { ElderlyFeedback.onTap(context); score = 0; level = 1; gameOver = false; generateLevel() }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Search Again \u27F3", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), GreenDeep) {
+                            Surface(Modifier.weight(1f).height(48.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), GreenDeep) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
                     }
                 }
             } else {
-                val gridSize = (4 + level).coerceAtMost(8)
+        val gridSize = (BASE_GRID_SIZE + level).coerceAtMost(MAX_GRID_SIZE)
                 LazyVerticalGrid(columns = GridCells.Fixed(gridSize), modifier = Modifier.weight(1f).shadow(3.dp, RoundedCornerShape(18.dp)).border(2.5.dp, Ink, RoundedCornerShape(18.dp)).clip(RoundedCornerShape(18.dp)), horizontalArrangement = Arrangement.spacedBy(3.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    items(cells) { cell ->
-                        Surface(shape = RoundedCornerShape(8.dp), color = if (cell.found) GreenLight else if (cell.isTarget) GreenPale else Color(0xFFF3E5F5), modifier = Modifier.aspectRatio(1f).border(1.5.dp, if (cell.found) GreenDeep else Ink, RoundedCornerShape(8.dp)).clickable {
+                    items(cells, key = { it.id }) { cell ->
+                        Surface(shape = RoundedCornerShape(8.dp), color = if (cell.found) GreenLight else if (cell.isTarget) GreenPale else Color(0xFFF3E5F5), modifier = Modifier.aspectRatio(1f).border(1.5.dp, if (cell.found) GreenDeep else Ink, RoundedCornerShape(8.dp)).semantics { contentDescription = "${cell.emoji} flower" }.clickable {
+                            ElderlyFeedback.onTap(context)
                             if (!cell.found) {
                                 val idx = cells.indexOf(cell)
                                 if (cell.isTarget) {
                                     cells = cells.toMutableList().also { it[idx] = cell.copy(found = true) }
-                                    foundCount++; score += 10
+                                    foundCount++; score += POINTS_PER_FOUND
                                     ElderlyFeedback.onSuccess(context)
                                     if (foundCount >= totalTargets) { score += level * 20; level++; ElderlyFeedback.onSuccess(context); LocalizationManager.speak("All flowers found! Level up!"); generateLevel() }
                                 } else {

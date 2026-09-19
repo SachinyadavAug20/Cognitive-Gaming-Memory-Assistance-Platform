@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 
+private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
+
 private val ThreadColors = listOf(
     Color(0xFFE91E63), Color(0xFF4CAF50), Color(0xFFF4A261), Color(0xFF2196F3), Color(0xFF9C27B0), Color(0xFF795548)
 )
@@ -52,7 +55,7 @@ fun LoomGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Weaving Loom", color = Color.White) },
@@ -79,7 +82,7 @@ fun LoomGame(onBack: () -> Unit) {
             ) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = BridgeBrown)
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = BridgeBrown)
-                Text("Step ${currentStep + 1}/$patternLength", fontSize = 16.sp, color = Color.Gray)
+                Text("Step ${currentStep + 1}/$patternLength", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -122,7 +125,7 @@ fun LoomGame(onBack: () -> Unit) {
 
                     if (showTarget) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Watch carefully...", fontSize = 14.sp, color = Color.Gray)
+                        Text("Watch carefully...", fontSize = 14.sp, color = TextSecondary)
                     }
                 }
             }
@@ -184,6 +187,7 @@ fun LoomGame(onBack: () -> Unit) {
                                         .background(color)
                                         .border(2.dp, Ink, RoundedCornerShape(12.dp))
                                         .clickable {
+                                            ElderlyFeedback.onTap(context)
                                             if (!showResult && currentStep < patternLength) {
                                                 if (idx == targetPattern[currentStep]) {
                                                     ElderlyFeedback.onSuccess(context)
@@ -225,7 +229,7 @@ fun LoomGame(onBack: () -> Unit) {
                 },
                 confirmButton = {
                     Button(
-                        onClick = { level++; showResult = false },
+                        onClick = { ElderlyFeedback.onTap(context); level++; showResult = false },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Next Level", fontSize = 18.sp) }
                 }

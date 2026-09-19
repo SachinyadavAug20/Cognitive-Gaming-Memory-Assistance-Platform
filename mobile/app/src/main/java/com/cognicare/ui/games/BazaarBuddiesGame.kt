@@ -22,11 +22,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val InkSecondary = Color(0xFF4A4036)
 private val CanvasBg = Color(0xFFFAF7F2)
 private val TeaGreen = Color(0xFF1B663E)
@@ -86,7 +89,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
     val expectedChange = (selectedNote ?: 0) - totalCost
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -205,6 +208,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                     .height(56.dp)
                                     .shadow(3.dp, RoundedCornerShape(14.dp))
                                     .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                                    .semantics { contentDescription = "Enter Morning Bazaar" }
                                     .clickable {
                                         ElderlyFeedback.onTap(context)
                                         phase = "market"
@@ -308,7 +312,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                     text = "${p.emoji} ${if (inCart) "✓" else "○"}",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Black,
-                                    color = if (inCart) TeaGreen else Color.Gray,
+                                    color = if (inCart) TeaGreen else TextSecondary,
                                     modifier = Modifier.padding(horizontal = 4.dp)
                                 )
                             }
@@ -324,7 +328,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                             .fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(allProducts) { item ->
+                        items(allProducts, key = { it.id }) { item ->
                             val count = cart[item.id] ?: 0
                             val isTarget = item.isTarget
                             Surface(
@@ -364,7 +368,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                 ) {
                                                     Text(
                                                         text = "List",
-                                                        fontSize = 9.sp,
+                                                        fontSize = 14.sp,
                                                         fontWeight = FontWeight.Black,
                                                         color = Ink,
                                                         modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
@@ -388,6 +392,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                 color = Color(0xFFFEE2E2),
                                                 modifier = Modifier
                                                     .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
+                                                    .semantics { contentDescription = "Remove one ${item.name}" }
                                                     .clickable {
                                                         ElderlyFeedback.onTap(context)
                                                         if (count == 1) cart.remove(item.id) else cart[item.id] = count - 1
@@ -409,6 +414,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                             color = if (totalCost + item.price <= budget) TeaGreen else Color.LightGray,
                                             modifier = Modifier
                                                 .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
+                                                .semantics { contentDescription = "Add one ${item.name}" }
                                                 .clickable {
                                                     if (totalCost + item.price <= budget) {
                                                         ElderlyFeedback.onTap(context)
@@ -438,12 +444,13 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                     // Proceed to Cashier Button
                     Surface(
                         shape = RoundedCornerShape(16.dp),
-                        color = if (totalCost > 0) Marigold else Color.Gray,
+                        color = if (totalCost > 0) Marigold else TextSecondary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp)
                             .shadow(3.dp, RoundedCornerShape(16.dp))
                             .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
+                            .semantics { contentDescription = "Proceed to cashier counter" }
                             .clickable(enabled = totalCost > 0) {
                                 ElderlyFeedback.onTap(context)
                                 phase = "cashier"
@@ -520,6 +527,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                             .weight(1f)
                                             .shadow(2.dp, RoundedCornerShape(12.dp))
                                             .border(2.dp, if (isChosen) Color.Black else Ink, RoundedCornerShape(12.dp))
+                                            .semantics { contentDescription = "Pay with rupee $noteValue note" }
                                             .clickable(enabled = canPay) {
                                                 ElderlyFeedback.onTap(context)
                                                 selectedNote = noteValue
@@ -536,11 +544,11 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                 text = "₹$noteValue",
                                                 fontSize = 18.sp,
                                                 fontWeight = FontWeight.Black,
-                                                color = if (isChosen) Color.White else if (canPay) Ink else Color.Gray
+                                                color = if (isChosen) Color.White else if (canPay) Ink else TextSecondary
                                             )
                                             Text(
                                                 text = if (canPay) "Note" else "Too small",
-                                                fontSize = 10.sp,
+                                                fontSize = 14.sp,
                                                 fontWeight = FontWeight.Bold,
                                                 color = if (isChosen) Color.White else InkSecondary
                                             )
@@ -591,7 +599,9 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                 .weight(1f)
                                                 .shadow(2.dp, RoundedCornerShape(12.dp))
                                                 .border(2.dp, if (isThisSelected) TeaGreen else Ink, RoundedCornerShape(12.dp))
+                                                .semantics { contentDescription = "Change is rupee $choice" }
                                                 .clickable {
+                                                    ElderlyFeedback.onTap(context)
                                                     selectedChangeChoice = choice
                                                     if (choice == expectedChange) {
                                                         isChangeCorrect = true
@@ -627,6 +637,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                             .height(52.dp)
                                             .shadow(3.dp, RoundedCornerShape(14.dp))
                                             .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                                            .semantics { contentDescription = "Get bazaar receipt" }
                                             .clickable {
                                                 ElderlyFeedback.onTap(context)
                                                 phase = "receipt"
@@ -780,7 +791,9 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                         .height(48.dp)
                                         .shadow(2.dp, RoundedCornerShape(12.dp))
                                         .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                                        .semantics { contentDescription = "Shop again" }
                                         .clickable {
+                                            ElderlyFeedback.onTap(context)
                                             cart.clear()
                                             selectedNote = null
                                             selectedChangeChoice = null
@@ -801,7 +814,8 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                         .height(48.dp)
                                         .shadow(2.dp, RoundedCornerShape(12.dp))
                                         .border(2.dp, Ink, RoundedCornerShape(12.dp))
-                                        .clickable { onBack() },
+                                        .semantics { contentDescription = "Done" }
+                                        .clickable { ElderlyFeedback.onTap(context); onBack() },
                                     shape = RoundedCornerShape(12.dp),
                                     color = TeaGreen
                                 ) {

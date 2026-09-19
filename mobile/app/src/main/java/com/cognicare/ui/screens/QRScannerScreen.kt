@@ -69,7 +69,6 @@ fun QRScannerScreen(
             )
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
-    }
     ) { padding ->
         if (hasCameraPermission) {
             Box(

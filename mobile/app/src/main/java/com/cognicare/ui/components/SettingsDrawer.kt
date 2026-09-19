@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
@@ -60,6 +62,7 @@ fun CogniCareDrawerContent(
     onSosClick: () -> Unit,
     onLogout: () -> Unit
 ) {
+    val context = LocalContext.current
     ModalDrawerSheet(
         drawerContainerColor = Canvas,
         modifier = Modifier
@@ -258,7 +261,10 @@ fun CogniCareDrawerContent(
                         .fillMaxWidth()
                         .shadow(2.5.dp, RoundedCornerShape(12.dp))
                         .border(2.dp, Ink, RoundedCornerShape(12.dp))
-                        .clickable { langExpanded = !langExpanded }
+                        .clickable {
+                            ElderlyFeedback.onTap(context)
+                            langExpanded = !langExpanded
+                        }
                 ) {
                     Row(
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
@@ -299,6 +305,7 @@ fun CogniCareDrawerContent(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
+                                        ElderlyFeedback.onTap(context)
                                         onLanguageChange(code)
                                         LocalizationManager.setLanguage(code)
                                         langExpanded = false

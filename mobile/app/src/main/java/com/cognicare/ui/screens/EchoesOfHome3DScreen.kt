@@ -363,6 +363,16 @@ fun EchoesOfHome3DScreen(
                     }.sortedBy { it.third } // back to front
 
                     // Draw connections and 3D memory orbs
+                    val textPaint = Paint().apply {
+                        textAlign = Paint.Align.CENTER
+                        isAntiAlias = true
+                        isFakeBoldText = true
+                    }
+                    val labelPaint = Paint().apply {
+                        textAlign = Paint.Align.CENTER
+                        isAntiAlias = true
+                        isFakeBoldText = true
+                    }
                     projectedNodes.forEach { (node, pos, z) ->
                         val isCurrent = selectedNode?.id == node.id
                         val alpha = ((z + 250f) / 500f).coerceIn(0.35f, 1f)
@@ -391,23 +401,13 @@ fun EchoesOfHome3DScreen(
 
                         // Draw Emoji & Label
                         drawIntoCanvas { canvas ->
-                            val textPaint = Paint().apply {
-                                color = android.graphics.Color.WHITE
-                                textSize = if (isCurrent) 34f else 26f
-                                textAlign = Paint.Align.CENTER
-                                isAntiAlias = true
-                                isFakeBoldText = true
-                            }
+                            textPaint.color = android.graphics.Color.WHITE
+                            textPaint.textSize = if (isCurrent) 34f else 26f
                             canvas.nativeCanvas.drawText(node.emoji, pos.x, pos.y + 10f, textPaint)
 
-                            val labelPaint = Paint().apply {
-                                color = if (isCurrent) android.graphics.Color.YELLOW else android.graphics.Color.WHITE
-                                textSize = if (isCurrent) 26f else 20f
-                                textAlign = Paint.Align.CENTER
-                                isAntiAlias = true
-                                isFakeBoldText = true
-                                setShadowLayer(4f, 1f, 1f, android.graphics.Color.BLACK)
-                            }
+                            labelPaint.color = if (isCurrent) android.graphics.Color.YELLOW else android.graphics.Color.WHITE
+                            labelPaint.textSize = if (isCurrent) 26f else 20f
+                            labelPaint.setShadowLayer(4f, 1f, 1f, android.graphics.Color.BLACK)
                             canvas.nativeCanvas.drawText(node.title, pos.x, pos.y + 44f, labelPaint)
                         }
                     }
@@ -443,7 +443,7 @@ fun EchoesOfHome3DScreen(
                 Column(modifier = Modifier.padding(14.dp)) {
                     // 1. Focused Memory with REAL PHOTO
                     if (selectedNode != null) {
-                        val node = selectedNode!!
+                        selectedNode?.let { node ->
                         Surface(
                             shape = RoundedCornerShape(16.dp),
                             color = Color(0xFFFFFBEB),
@@ -560,6 +560,7 @@ fun EchoesOfHome3DScreen(
                                     }
                                 }
                             }
+                        }
                         }
                     }
 

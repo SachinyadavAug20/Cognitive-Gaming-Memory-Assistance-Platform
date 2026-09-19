@@ -113,7 +113,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
     val bobbingOffset = (sin(stepProgress * 1.5) * 8f).toFloat()
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -259,7 +259,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(text = activeLandmark.name, fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink)
-                            Text(text = activeLandmark.nativeName, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = TeaGreen)
+                            Text(text = activeLandmark.nativeName, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TeaGreen)
                         }
                     }
                 }
@@ -319,7 +319,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                     .height(50.dp)
                                     .shadow(2.dp, RoundedCornerShape(14.dp))
                                     .border(2.dp, Ink, RoundedCornerShape(14.dp))
-                                    .clickable { onBack() }
+                                    .clickable { ElderlyFeedback.onTap(context); onBack() }
                             ) {
                                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                     Text(text = "Return to Dashboard ✓", fontSize = 15.sp, fontWeight = FontWeight.Black, color = Color.White)
@@ -478,6 +478,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                         .shadow(1.dp, RoundedCornerShape(12.dp))
                                         .border(2.dp, if (isChosen) (if (isCorrect) TeaGreen else Brick) else Ink, RoundedCornerShape(12.dp))
                                         .clickable {
+                                            ElderlyFeedback.onTap(context)
                                             selectedOption = optIdx
                                             if (isCorrect) {
                                                 ElderlyFeedback.onSuccess(context)

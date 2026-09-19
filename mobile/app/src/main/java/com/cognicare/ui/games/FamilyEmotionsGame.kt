@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 private data class EmotionScene(val emoji: String, val person: String, val emotion: String, val color: Color)
 private data class EmotionQuestion(val scene: EmotionScene, val options: List<String>)
@@ -81,7 +82,7 @@ fun FamilyEmotionsGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Social Warmth", color = Color.White) },
@@ -97,7 +98,7 @@ fun FamilyEmotionsGame(onBack: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("Level $level", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFFE91E63))
                 Text("Score: $score", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color(0xFFE91E63))
-                Text("${correctCount}/${questions.size}", fontSize = 16.sp, color = Color.Gray)
+                Text("${correctCount}/${questions.size}", fontSize = 16.sp, color = TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -118,7 +119,7 @@ fun FamilyEmotionsGame(onBack: () -> Unit) {
                     ) {
                         Text(q.scene.emoji, fontSize = 64.sp)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(q.scene.person, fontSize = 16.sp, color = Color.Gray)
+                        Text(q.scene.person, fontSize = 16.sp, color = TextSecondary)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text("What emotion?", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = q.scene.color)
                     }
@@ -139,6 +140,7 @@ fun FamilyEmotionsGame(onBack: () -> Unit) {
                                 val optionEmoji = emotions.find { it.second == option }?.first ?: "\u2753"
                                 Button(
                                     onClick = {
+                                        ElderlyFeedback.onTap(context)
                                         if (!showFeedback) {
                                             isCorrect = option == q.scene.emotion
                                             showFeedback = true
@@ -197,6 +199,7 @@ fun FamilyEmotionsGame(onBack: () -> Unit) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             currentQuestion++
                             showFeedback = false
                             if (currentQuestion >= questions.size) showResult = true
@@ -223,7 +226,7 @@ fun FamilyEmotionsGame(onBack: () -> Unit) {
                     }
                 },
                 confirmButton = {
-                    Button(onClick = { level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
+                    Button(onClick = { ElderlyFeedback.onTap(context); level++; showResult = false }, modifier = Modifier.fillMaxWidth()) {
                         Text("Next Level", fontSize = 18.sp)
                     }
                 }

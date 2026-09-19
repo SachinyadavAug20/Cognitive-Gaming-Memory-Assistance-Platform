@@ -42,7 +42,7 @@ export function setSessionCookie(
 
   try {
     const serialized = encodeURIComponent(JSON.stringify(payload));
-    document.cookie = `${AUTH_COOKIE_NAME}=${serialized}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
+    document.cookie = `${AUTH_COOKIE_NAME}=${serialized}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Strict; Secure`;
   } catch (err) {
     console.warn("Failed to write session cookie:", err);
   }
@@ -86,5 +86,5 @@ export function getSessionCookie(): SessionCookieData | null {
  */
 export function clearSessionCookie(): void {
   if (typeof document === "undefined") return;
-  document.cookie = `${AUTH_COOKIE_NAME}=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+  document.cookie = `${AUTH_COOKIE_NAME}=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict; Secure`;
 }

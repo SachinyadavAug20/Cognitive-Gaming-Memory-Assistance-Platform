@@ -25,6 +25,9 @@ import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
 import kotlinx.coroutines.delay
 
+private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
+
 private data class Drum(val emoji: String, val color: Color, val label: String)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +77,7 @@ fun TunedDrumGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Drum Circle", color = Color.White) },
@@ -171,6 +174,7 @@ fun TunedDrumGame(onBack: () -> Unit) {
                                 .background(drum.color.copy(alpha = if (isHighlighted) 1f else 0.7f))
                                 .border(3.dp, Ink, CircleShape)
                                 .clickable {
+                                    ElderlyFeedback.onTap(context)
                                     if (isPlayerTurn && !showResult) {
                                         val newInput = playerInput + idx
                                         playerInput = newInput
@@ -210,7 +214,7 @@ fun TunedDrumGame(onBack: () -> Unit) {
 
             Text(
                 text = "Mistakes: $mistakes / 3",
-                fontSize = 16.sp, color = if (mistakes >= 2) ErrorRed else Color.Gray
+                fontSize = 16.sp, color = if (mistakes >= 2) ErrorRed else TextSecondary
             )
         }
 
@@ -234,7 +238,7 @@ fun TunedDrumGame(onBack: () -> Unit) {
                 },
                 confirmButton = {
                     Button(
-                        onClick = { level++; showResult = false },
+                        onClick = { ElderlyFeedback.onTap(context); level++; showResult = false },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Next Level", fontSize = 18.sp) }
                 }

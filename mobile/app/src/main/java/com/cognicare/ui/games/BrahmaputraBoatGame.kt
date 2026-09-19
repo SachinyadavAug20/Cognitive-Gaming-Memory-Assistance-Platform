@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -24,12 +25,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
+import com.cognicare.util.TiltSensor
 import kotlinx.coroutines.delay
 
 private val Ink = Color(0xFF16120E)
+private val TextSecondary = Color(0xFF6B7280)
 private val CanvasBg = Color(0xFFFAF7F2)
 private val RiverBlue = Color(0xFF006064)
 private val RiverLight = Color(0xFF00ACC1)
@@ -55,6 +60,9 @@ fun BrahmaputraBoatGame(onBack: () -> Unit) {
 
     val maxLanes = 3
     val laneWidth = 120f
+
+    val tiltSensor = remember { TiltSensor(context) }
+    DisposableEffect(Unit) { onDispose { tiltSensor.stop() } }
 
     LaunchedEffect(level) {
         val baseSpeed = 2f + level * 0.5f
@@ -92,7 +100,7 @@ fun BrahmaputraBoatGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -177,7 +185,7 @@ fun BrahmaputraBoatGame(onBack: () -> Unit) {
                             text = "You navigated the mighty Brahmaputra!",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.Gray
+                            color = TextSecondary
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Surface(
@@ -210,6 +218,7 @@ fun BrahmaputraBoatGame(onBack: () -> Unit) {
                                     .height(48.dp)
                                     .shadow(2.dp, RoundedCornerShape(12.dp))
                                     .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                                    .semantics { contentDescription = "Play again" }
                                     .clickable {
                                         ElderlyFeedback.onTap(context)
                                         score = 0; lives = 3; level = 1
@@ -228,6 +237,7 @@ fun BrahmaputraBoatGame(onBack: () -> Unit) {
                                     .height(48.dp)
                                     .shadow(2.dp, RoundedCornerShape(12.dp))
                                     .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                                    .semantics { contentDescription = "Done" }
                                     .clickable { onBack() },
                                 shape = RoundedCornerShape(12.dp),
                                 color = RiverBlue
@@ -327,6 +337,7 @@ fun BrahmaputraBoatGame(onBack: () -> Unit) {
                                 .height(60.dp)
                                 .shadow(3.dp, RoundedCornerShape(16.dp))
                                 .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
+                                .semantics { contentDescription = when(idx) { 0 -> "Move left"; 1 -> "Move center"; else -> "Move right" } }
                                 .clickable {
                                     ElderlyFeedback.onTap(context)
                                     boatLane = idx

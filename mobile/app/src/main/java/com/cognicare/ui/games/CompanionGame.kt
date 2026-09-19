@@ -19,6 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.sp
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
@@ -114,12 +116,12 @@ fun CompanionGame(onBack: () -> Unit) {
     var isTyping by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
-    val node = chatTree[currentNode] ?: chatTree["start"]!!
+    val node = chatTree[currentNode] ?: chatTree["start"] ?: return
 
     LaunchedEffect(conversationLog.size) { scrollState.animateScrollTo(scrollState.maxValue) }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("\uD83E\uDD16 Chat with Saathi", fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Color.White) },
@@ -143,7 +145,7 @@ fun CompanionGame(onBack: () -> Unit) {
                         Row(Modifier.fillMaxWidth().padding(vertical = 3.dp), horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start) {
                             Surface(shape = RoundedCornerShape(14.dp), color = if (isUser) CompanionPurple else Color(0xFFEDE7F6), modifier = Modifier.widthIn(max = 280.dp).border(1.5.dp, if (isUser) CompanionPurple else Ink, RoundedCornerShape(14.dp))) {
                                 Column(Modifier.padding(10.dp)) {
-                                    Text(speaker, fontSize = 10.sp, fontWeight = FontWeight.Black, color = if (isUser) Color.White else CompanionPurple)
+                                    Text(speaker, fontSize = 14.sp, fontWeight = FontWeight.Black, color = if (isUser) Color.White else CompanionPurple)
                                     Text(msg, fontSize = 13.sp, fontWeight = FontWeight.Medium, color = if (isUser) Color.White else Ink)
                                 }
                             }
@@ -161,10 +163,10 @@ fun CompanionGame(onBack: () -> Unit) {
                         Text("+${conversationLog.size * 5} Calm XP!", fontSize = 14.sp, fontWeight = FontWeight.Black, color = CompanionPurple)
                         Spacer(Modifier.height(8.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Surface(Modifier.weight(1f).height(44.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { ElderlyFeedback.onTap(context); conversationLog = listOf(); currentNode = "start"; score = 0 }, RoundedCornerShape(12.dp), Color.White) {
+                            Surface(Modifier.weight(1f).height(44.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "New Chat" }.clickable { ElderlyFeedback.onTap(context); conversationLog = listOf(); currentNode = "start"; score = 0 }, RoundedCornerShape(12.dp), Color.White) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("New Chat", fontSize = 13.sp, fontWeight = FontWeight.Black, color = Ink) }
                             }
-                            Surface(Modifier.weight(1f).height(44.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).clickable { onBack() }, RoundedCornerShape(12.dp), CompanionPurple) {
+                            Surface(Modifier.weight(1f).height(44.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, Ink, RoundedCornerShape(12.dp)).semantics { contentDescription = "Done" }.clickable { ElderlyFeedback.onTap(context); onBack() }, RoundedCornerShape(12.dp), CompanionPurple) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Done \u2713", fontSize = 13.sp, fontWeight = FontWeight.Black, color = Color.White) }
                             }
                         }
@@ -178,10 +180,11 @@ fun CompanionGame(onBack: () -> Unit) {
                 }
                 Spacer(Modifier.height(8.dp))
                 node.responses.forEach { (text, nextId) ->
-                    Surface(shape = RoundedCornerShape(12.dp), color = Color.White, modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, CompanionPurple, RoundedCornerShape(12.dp)).clickable {
+                    Surface(shape = RoundedCornerShape(12.dp), color = Color.White, modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp).shadow(2.dp, RoundedCornerShape(12.dp)).border(2.dp, CompanionPurple, RoundedCornerShape(12.dp)).semantics { contentDescription = text }.clickable {
                         ElderlyFeedback.onTap(context)
                         score += 5
-                        conversationLog = conversationLog + ("You" to text) + ("Saathi" to (chatTree[nextId]?.message ?: ""))
+                        val newLog = conversationLog + ("You" to text) + ("Saathi" to (chatTree[nextId]?.message ?: ""))
+                        conversationLog = if (newLog.size > 60) newLog.takeLast(60) else newLog
                         currentNode = nextId
                         LocalizationManager.speak(text)
                     }) {

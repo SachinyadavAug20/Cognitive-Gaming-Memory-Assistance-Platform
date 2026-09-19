@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
 import com.cognicare.util.ElderlyFeedback
+private val TextSecondary = Color(0xFF6B7280)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +68,7 @@ fun ChurchBellGame(onBack: () -> Unit) {
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Church Bell", color = Color.White) },
@@ -126,7 +127,7 @@ fun ChurchBellGame(onBack: () -> Unit) {
                             else -> "Tap the bells in the same order"
                         },
                         fontSize = 16.sp,
-                        color = Color.Gray
+                        color = TextSecondary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -156,6 +157,7 @@ fun ChurchBellGame(onBack: () -> Unit) {
                             )
                             .border(3.dp, color, CircleShape)
                             .clickable {
+                                ElderlyFeedback.onTap(context)
                                 if (phase == "input" && !showResult) {
                                     ElderlyFeedback.onSuccess(context)
                                     val newInput = playerInput + index
@@ -232,6 +234,7 @@ fun ChurchBellGame(onBack: () -> Unit) {
                 confirmButton = {
                     Button(
                         onClick = {
+                            ElderlyFeedback.onTap(context)
                             if (isCorrect) level++
                             generateSequence()
                         },
