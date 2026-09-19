@@ -68,8 +68,9 @@ object ServiceLocator {
                 .writeTimeout(60, TimeUnit.SECONDS)
 
             if (!BuildConfig.DEBUG) {
+                // To enable certificate pinning in release builds, replace with actual server SHA-256 pin
                 val certificatePinner = CertificatePinner.Builder()
-                    .add("cognicare.in", "sha256/placeholder-pin-replace-before-deploy")
+                    .add("cognicare.in", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
                     .build()
                 builder.certificatePinner(certificatePinner)
             }

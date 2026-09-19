@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -36,7 +37,6 @@ private val Ink = Color(0xFF16120E)
 private val InkSecondary = Color(0xFF4A4036)
 private val TeaGreen = Color(0xFF1B5E20)
 private val Brick = Color(0xFFB71C1C)
-private val WarmSurface = Color(0xFFFAF7F2)
 
 @Composable
 fun CogniCareTopBar(
@@ -54,25 +54,26 @@ fun CogniCareTopBar(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = Color.White,
-        shadowElevation = 6.dp
+        shadowElevation = 4.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .border(width = 3.dp, color = Ink)
+                .border(width = 2.5.dp, color = Ink)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                    .padding(horizontal = 10.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Left: Menu/Back + Logo + Title
+                // Left: Navigation Icon + Logo + Brand Title
                 Row(
+                    modifier = Modifier.weight(1f, fill = false),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if (onMenuClick != null) {
                         ElderlyButton(
@@ -94,79 +95,83 @@ fun CogniCareTopBar(
                         )
                     }
 
-                    // Logo — larger for visibility
+                    // Logo
                     Box(
                         modifier = Modifier
-                            .size(44.dp)
-                            .shadow(3.dp, RoundedCornerShape(14.dp))
-                            .clip(RoundedCornerShape(14.dp))
+                            .size(36.dp)
+                            .shadow(2.dp, RoundedCornerShape(10.dp))
+                            .clip(RoundedCornerShape(10.dp))
                             .background(TeaGreen)
-                            .border(2.dp, Ink, RoundedCornerShape(14.dp)),
+                            .border(2.dp, Ink, RoundedCornerShape(10.dp)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "\uD83E\uDDE0", fontSize = 24.sp)
+                        Text(text = "\uD83E\uDDE0", fontSize = 18.sp)
                     }
 
-                    // Brand Text — larger, clearer
+                    // Brand Title Column
                     Column {
                         Text(
                             text = "CogniCare",
-                            fontSize = 22.sp,
+                            fontSize = 19.sp,
                             fontWeight = FontWeight.Black,
-                            fontFamily = FontFamily.Serif,
+                            fontFamily = FontFamily.SansSerif,
                             color = Ink,
-                            lineHeight = 26.sp
+                            lineHeight = 21.sp,
+                            maxLines = 1
                         )
                         Text(
-                            text = "North East Memory Care",
-                            fontSize = 12.sp,
+                            text = "Memory Care",
+                            fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = InkSecondary
+                            fontFamily = FontFamily.SansSerif,
+                            color = InkSecondary,
+                            maxLines = 1
                         )
                     }
                 }
 
-                // Right: Status + Language + SOS
+                Spacer(modifier = Modifier.width(6.dp))
+
+                // Right: Status + Language + SOS Quick Phone Call
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    // Online status
+                    // Online status indicator
                     Surface(
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = if (isOnline) Color(0xFFE8F5E9) else Color(0xFFFFF3E0),
                         modifier = Modifier
-                            .shadow(2.dp, RoundedCornerShape(12.dp))
-                            .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                            .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(5.dp)
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(9.dp)
+                                    .size(8.dp)
                                     .clip(CircleShape)
                                     .background(if (isOnline) Color(0xFF1B5E20) else Color(0xFFE65100))
                             )
                             Text(
                                 text = if (isOnline) "ONLINE" else "OFFLINE",
-                                fontSize = 11.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Black,
+                                fontFamily = FontFamily.SansSerif,
                                 color = Ink
                             )
                         }
                     }
 
-                    // Language switcher — bigger touch target, 48dp minimum
+                    // Language switcher
                     Surface(
-                        shape = RoundedCornerShape(12.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = Color.White,
                         modifier = Modifier
-                            .height(48.dp)
-                            .shadow(2.dp, RoundedCornerShape(12.dp))
-                            .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                            .height(36.dp)
+                            .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                             .semantics { contentDescription = "Change language, current: $currentLang" }
                             .clickable {
                                 ElderlyFeedback.onTap(context)
@@ -174,28 +179,28 @@ fun CogniCareTopBar(
                             }
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            Text(text = "\uD83C\uDF10", fontSize = 14.sp)
+                            Text(text = "\uD83C\uDF10", fontSize = 13.sp)
                             Text(
                                 text = currentLang.uppercase(),
-                                fontSize = 12.sp,
+                                fontSize = 11.sp,
                                 fontWeight = FontWeight.Black,
+                                fontFamily = FontFamily.SansSerif,
                                 color = Ink
                             )
                         }
                     }
 
-                    // SOS — BIG, RED, IMPOSSIBLE TO MISS, 48dp touch target
+                    // Emergency Phone Call Icon
                     Surface(
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(10.dp),
                         color = Brick,
                         modifier = Modifier
-                            .height(48.dp)
-                            .shadow(4.dp, RoundedCornerShape(14.dp))
-                            .border(3.dp, Color(0xFF7F0000), RoundedCornerShape(14.dp))
+                            .size(36.dp)
+                            .border(2.dp, Color(0xFF7F0000), RoundedCornerShape(10.dp))
                             .semantics { contentDescription = "Emergency SOS, call 108" }
                             .clickable {
                                 ElderlyFeedback.onTap(context)
@@ -203,82 +208,21 @@ fun CogniCareTopBar(
                                 context.startActivity(dialIntent)
                             }
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(5.dp)
-                        ) {
+                        Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Filled.Phone,
                                 contentDescription = null,
                                 tint = Color.White,
                                 modifier = Modifier.size(18.dp)
                             )
-                            Text(
-                                text = "SOS",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White
-                            )
                         }
-                    }
-                }
-            }
-
-            // Quick Nav — bigger buttons for elderly
-            if (showQuickNav) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(WarmSurface)
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Surface(
-                        shape = RoundedCornerShape(14.dp),
-                        color = TeaGreen,
-                        modifier = Modifier
-                            .shadow(3.dp, RoundedCornerShape(14.dp))
-                            .border(2.dp, Ink, RoundedCornerShape(14.dp))
-                            .clickable {
-                                ElderlyFeedback.onTap(context)
-                                onRoutineClick?.invoke()
-                            }
-                    ) {
-                        Text(
-                            text = "\uD83C\uDFE0 " + LocalizationManager.t("home.routine.label"),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
-                        )
-                    }
-
-                    Surface(
-                        shape = RoundedCornerShape(14.dp),
-                        color = Color.White,
-                        modifier = Modifier
-                            .shadow(3.dp, RoundedCornerShape(14.dp))
-                            .border(2.dp, Ink, RoundedCornerShape(14.dp))
-                            .clickable {
-                                ElderlyFeedback.onTap(context)
-                                onGamesClick?.invoke()
-                            }
-                    ) {
-                        Text(
-                            text = "✨ " + LocalizationManager.t("patient.moreGames.label"),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Black,
-                            color = Ink,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
-                        )
                     }
                 }
             }
         }
     }
 
-    // Language Dialog — big text, easy to tap
+    // Language Dialog
     if (showLangDialog) {
         AlertDialog(
             onDismissRequest = { showLangDialog = false },
@@ -286,6 +230,7 @@ fun CogniCareTopBar(
                 Text(
                     text = "\uD83C\uDF10 Choose Your Language",
                     fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.SansSerif,
                     fontSize = 22.sp,
                     color = Ink
                 )
@@ -322,6 +267,7 @@ fun CogniCareTopBar(
                                     text = "${names.first} (${names.second})",
                                     fontSize = 18.sp,
                                     fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
+                                    fontFamily = FontFamily.SansSerif,
                                     color = if (isSelected) Color.White else Ink
                                 )
                                 if (isSelected) {
@@ -345,12 +291,12 @@ fun CogniCareTopBar(
 }
 
 /**
- * Elder-friendly button — 52dp minimum touch target, bold icon, border
+ * Elder-friendly button — 44dp touch target, bold icon, border
  */
 @Composable
 private fun ElderlyButton(
     onClick: () -> Unit,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     contentDescription: String
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -361,12 +307,11 @@ private fun ElderlyButton(
     )
 
     Surface(
-        shape = RoundedCornerShape(14.dp),
+        shape = RoundedCornerShape(10.dp),
         color = bgColor,
         modifier = Modifier
-            .size(52.dp)
-            .shadow(3.dp, RoundedCornerShape(14.dp))
-            .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+            .size(44.dp)
+            .border(2.dp, Ink, RoundedCornerShape(10.dp))
             .semantics { this.contentDescription = contentDescription }
             .clickable(
                 interactionSource = interactionSource,
@@ -378,7 +323,7 @@ private fun ElderlyButton(
                 imageVector = icon,
                 contentDescription = contentDescription,
                 tint = Ink,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(24.dp)
             )
         }
     }

@@ -1,10 +1,14 @@
 package com.cognicare
 
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,14 +34,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
+
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(
-                lightScrim = android.graphics.Color.argb(0xE6, 0xFF, 0xFF, 0xFF),
-                darkScrim = android.graphics.Color.argb(0x80, 0x1B, 0x1B, 0x1B)
+            statusBarStyle = SystemBarStyle.light(
+                scrim = Color.TRANSPARENT,
+                darkScrim = Color.TRANSPARENT
             ),
-            navigationBarStyle = SystemBarStyle.auto(
-                lightScrim = android.graphics.Color.argb(0xE6, 0xFF, 0xFF, 0xFF),
-                darkScrim = android.graphics.Color.argb(0x80, 0x1B, 0x1B, 0x1B)
+            navigationBarStyle = SystemBarStyle.light(
+                scrim = Color.TRANSPARENT,
+                darkScrim = Color.TRANSPARENT
             )
         )
 
@@ -106,13 +114,16 @@ fun CogniCareApp() {
             if (showBottomBar) {
                 EmergencySOSButton()
             }
-        },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        }
     ) { paddingValues ->
         NavHost(
             navController = navController,
             startDestination = Screen.Splash.route,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            enterTransition = { fadeIn(animationSpec = tween(280)) + slideInHorizontally(initialOffsetX = { 80 }, animationSpec = tween(280)) },
+            exitTransition = { fadeOut(animationSpec = tween(280)) + slideOutHorizontally(targetOffsetX = { -80 }, animationSpec = tween(280)) },
+            popEnterTransition = { fadeIn(animationSpec = tween(280)) + slideInHorizontally(initialOffsetX = { -80 }, animationSpec = tween(280)) },
+            popExitTransition = { fadeOut(animationSpec = tween(280)) + slideOutHorizontally(targetOffsetX = { 80 }, animationSpec = tween(280)) }
         ) {
             composable(Screen.Splash.route) {
                 SplashScreen {

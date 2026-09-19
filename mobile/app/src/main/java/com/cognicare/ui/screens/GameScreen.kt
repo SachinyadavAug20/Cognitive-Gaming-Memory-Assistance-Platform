@@ -3,6 +3,7 @@ package com.cognicare.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -126,6 +127,7 @@ fun GameScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ClinicalGamePreview(gameId: String, onBack: () -> Unit) {
+    val context = LocalContext.current
     val game = GameRegistry.getGameById(gameId)
     Scaffold(
         topBar = {
@@ -182,19 +184,87 @@ private fun ClinicalGamePreview(gameId: String, onBack: () -> Unit) {
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF4A4036)
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    var difficulty by remember { mutableStateOf("Gentle") }
+                    var gameScore by remember { mutableIntStateOf(100) }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        listOf("Gentle", "Standard", "Advanced").forEach { mode ->
+                            val isSelected = difficulty == mode
+                            Surface(
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (isSelected) TeaGreen else Color(0xFFF3F4F6),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .border(2.dp, Ink, RoundedCornerShape(10.dp))
+                                    .clickable { difficulty = mode }
+                            ) {
+                                Box(
+                                    modifier = Modifier.padding(vertical = 8.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = mode,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = if (isSelected) Color.White else Ink
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                ElderlyFeedback.onTap(context)
+                                LocalizationManager.speak("${game?.title ?: gameId}. ${game?.description ?: ""}. Difficulty: $difficulty.")
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFEF3C7)),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                        ) {
+                            Text("🔊 Audio Guide", fontWeight = FontWeight.Black, color = Ink, fontSize = 13.sp)
+                        }
+
+                        Button(
+                            onClick = {
+                                ElderlyFeedback.onSuccess(context)
+                                gameScore += 50
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = TeaGreen),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                        ) {
+                            Text("🎮 Play (+50 pts)", fontWeight = FontWeight.Black, color = Color.White, fontSize = 13.sp)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = TeaGreen,
-                        modifier = Modifier
-                            .shadow(2.dp, RoundedCornerShape(12.dp))
-                            .border(2.dp, Ink, RoundedCornerShape(12.dp))
+                        color = Color(0xFFE8F5E9),
+                        modifier = Modifier.border(2.dp, Ink, RoundedCornerShape(12.dp))
                     ) {
                         Text(
-                            text = "CDTx Clinical Trial Exercise",
+                            text = "Score: $gameScore pts • Mode: $difficulty",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Black,
-                            color = Color.White,
+                            color = TeaGreen,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )
                     }

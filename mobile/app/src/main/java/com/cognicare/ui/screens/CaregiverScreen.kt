@@ -82,15 +82,18 @@ fun CaregiverScreen(
                     onBackClick = onBack,
                     onMenuClick = { scope.launch { drawerState.open() } }
                 )
-            },
-            contentWindowInsets = WindowInsets(0, 0, 0, 0)
+            }
         ) { padding ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
                     .background(Canvas),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(
+                    top = padding.calculateTopPadding() + 12.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 120.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Patient summary card

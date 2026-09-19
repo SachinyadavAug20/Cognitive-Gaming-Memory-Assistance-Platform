@@ -110,13 +110,12 @@ fun GamesHubScreen(
                     onBackClick = onBack,
                     onMenuClick = { scope.launch { drawerState.open() } }
                 )
-            },
-            contentWindowInsets = WindowInsets(0, 0, 0, 0)
+            }
         ) { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
+                    .padding(top = padding.calculateTopPadding())
                     .background(Canvas)
             ) {
                 // Page header
@@ -192,7 +191,7 @@ fun GamesHubScreen(
                 } else {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        contentPadding = PaddingValues(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 120.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -208,8 +207,6 @@ fun GamesHubScreen(
                         }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -285,14 +282,15 @@ private fun HubGameCard(
                 Text(text = game.emoji, fontSize = 48.sp)
             }
 
-            // Start button — BIG TEXT for elderly, 48dp touch target
+            // Start button — solid white button with thick dark border for paperclip design language
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
+                    .height(44.dp)
+                    .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
                     .semantics { contentDescription = "Start ${game.title}" },
                 shape = RoundedCornerShape(14.dp),
-                color = Color.White.copy(alpha = 0.2f),
+                color = Color.White,
                 onClick = {
                     ElderlyFeedback.onTap(context)
                     onClick()
@@ -301,9 +299,9 @@ private fun HubGameCard(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = "Start \u2192",
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = Ink,
                         textAlign = TextAlign.Center
                     )
                 }

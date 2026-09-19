@@ -2,6 +2,8 @@ package com.cognicare.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,11 +28,13 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.cognicare.data.local.Patient
+import com.cognicare.ui.components.CogniCareDrawerContent
 import com.cognicare.ui.components.CogniCareTopBar
 import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
@@ -82,6 +86,7 @@ fun PatientDashboardScreen(
     var readAloudEnabled by remember { mutableStateOf(persistedReadAloud) }
     var isSoundOn by remember { mutableStateOf(true) }
     var selectedMood by remember { mutableStateOf(persistedMood) }
+    var fullScreenPhotoPath by remember { mutableStateOf<String?>(null) }
 
     val todayDateStr = remember {
         SimpleDateFormat("EEEE, d MMMM", Locale.getDefault()).format(Date())
@@ -117,100 +122,191 @@ fun PatientDashboardScreen(
     var memoryIndex by remember { mutableIntStateOf(0) }
     val currentMemory = if (memories.isNotEmpty()) memories[memoryIndex % memories.size] else null
 
-    Scaffold(
-        topBar = {
-            CogniCareTopBar(
-                showQuickNav = true,
-                onRoutineClick = { },
-                onGamesClick = onGamesClickRemembered,
-                isOnline = true
+    if (fullScreenPhotoPath != null) {
+        AlertDialog(
+            onDismissRequest = { fullScreenPhotoPath = null },
+            confirmButton = {
+                Button(
+                    onClick = { fullScreenPhotoPath = null },
+                    colors = ButtonDefaults.buttonColors(containerColor = TeaGreen),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Close", fontWeight = FontWeight.Bold, color = Color.White)
+                }
+            },
+            title = {
+                Text(
+                    text = "🔍 Family Photo",
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.SansSerif,
+                    fontSize = 20.sp,
+                    color = Ink
+                )
+            },
+            text = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(280.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .border(3.dp, Ink, RoundedCornerShape(18.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("file:///android_asset/$fullScreenPhotoPath")
+                                .crossfade(true)
+                                .build()
+                        ),
+                        contentDescription = "Full photo",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier.border(3.5.dp, Ink, RoundedCornerShape(24.dp))
+        )
+    }
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            CogniCareDrawerContent(
+                currentFontSize = 18f,
+                onFontSizeChange = { },
+                currentLanguage = patient.language.ifEmpty { "en" },
+                onLanguageChange = { lang ->
+                    LocalizationManager.setLanguage(lang)
+                },
+                isReadAloudEnabled = readAloudEnabled,
+                onReadAloudToggle = { enabled ->
+                    readAloudEnabled = enabled
+                    coroutineScope.launch { settingsDataStore.setReadAloud(enabled) }
+                },
+                isNightModeEnabled = persistedNightMode,
+                onNightModeToggle = { enabled ->
+                    coroutineScope.launch { settingsDataStore.setNightMode(enabled) }
+                },
+                patientName = patient.name,
+                patientState = patient.state.ifEmpty { "Assam" },
+                onDashboardClick = { coroutineScope.launch { drawerState.close() } },
+                onGamesClick = { coroutineScope.launch { drawerState.close() }; onGamesClickRemembered() },
+                onEchoesClick = { coroutineScope.launch { drawerState.close() }; onEchoesClickRemembered() },
+                onCaregiverClick = { coroutineScope.launch { drawerState.close() }; onCaregiverClick() },
+                onAdminClick = { coroutineScope.launch { drawerState.close() }; onAdminClick() },
+                onSosClick = {
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
+                    context.startActivity(intent)
+                },
+                onLogout = {
+                    coroutineScope.launch { drawerState.close() }
+                    onLogout()
+                }
             )
-        },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(if (persistedNightMode) Color(0xFF161310) else Canvas)
-                .padding(paddingValues),
-            contentPadding = PaddingValues(bottom = 100.dp)
-        ) {
-            item {
-                DashboardHero(
-                    patient = patient,
-                    todayDateStr = todayDateStr,
-                    isSoundOn = isSoundOn,
-                    onReadAloud = {
-                        ElderlyFeedback.onTap(context)
-                        LocalizationManager.speak("Good day, ${patient.name}! You are safe at home with your family today.")
-                    },
-                    onToggleSound = {
-                        ElderlyFeedback.onTap(context)
-                        isSoundOn = !isSoundOn
-                        if (!isSoundOn) LocalizationManager.stopSpeaking()
-                    }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                CogniCareTopBar(
+                    onMenuClick = { coroutineScope.launch { drawerState.open() } },
+                    showQuickNav = false,
+                    isOnline = true
                 )
             }
-
-            item {
-                DailyRoutineSection(
-                    routineItems = routineItems,
-                    onToggleItem = { idx, item ->
-                        ElderlyFeedback.onTap(context)
-                        routineItems[idx] = item.copy(isDone = !item.isDone)
-                        val completed = routineItems.filter { it.isDone }.map { it.key }.toSet()
-                        coroutineScope.launch {
-                            settingsDataStore.setRoutineCompleted(completed)
-                        }
-                        if (!item.isDone) {
-                            ElderlyFeedback.onSuccess(context)
-                            LocalizationManager.speak("Completed: ${item.title}")
-                        }
-                    },
-                    onNotifyPhone = {
-                        ElderlyFeedback.onTap(context)
-                        NotificationHelper.sendMedicineReminder(context, "Morning Medicine")
-                        NotificationHelper.sendHydrationReminder(context)
-                    }
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(if (persistedNightMode) Color(0xFF161310) else Canvas),
+                contentPadding = PaddingValues(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 120.dp
                 )
-            }
-
-            item {
-                QuickActionsSection(
-                    onGamesClick = onGamesClickRemembered,
-                    onEchoesClick = onEchoesClickRemembered,
-                    onPlayGame = onPlayGame
-                )
-            }
-
-            if (currentMemory != null) {
+            ) {
                 item {
-                    MemoryCard(
-                        memory = currentMemory,
-                        onReadMemory = {
+                    DashboardHero(
+                        patient = patient,
+                        todayDateStr = todayDateStr,
+                        isSoundOn = isSoundOn,
+                        onReadAloud = {
                             ElderlyFeedback.onTap(context)
-                            LocalizationManager.speak("${currentMemory.name}, your ${currentMemory.relation}. ${currentMemory.description}")
+                            LocalizationManager.speak("Good day, ${patient.name}! You are safe at home with your family today.")
                         },
-                        onNextMemory = {
+                        onToggleSound = {
                             ElderlyFeedback.onTap(context)
-                            memoryIndex++
+                            isSoundOn = !isSoundOn
+                            if (!isSoundOn) LocalizationManager.stopSpeaking()
+                        },
+                        onViewImage = { photoPath -> fullScreenPhotoPath = photoPath }
+                    )
+                }
+
+                item {
+                    DailyRoutineSection(
+                        routineItems = routineItems,
+                        onToggleItem = { idx, item ->
+                            ElderlyFeedback.onTap(context)
+                            routineItems[idx] = item.copy(isDone = !item.isDone)
+                            val completed = routineItems.filter { it.isDone }.map { it.key }.toSet()
+                            coroutineScope.launch {
+                                settingsDataStore.setRoutineCompleted(completed)
+                            }
+                            if (!item.isDone) {
+                                ElderlyFeedback.onSuccess(context)
+                                LocalizationManager.speak("Completed: ${item.title}")
+                            }
+                        },
+                        onNotifyPhone = {
+                            ElderlyFeedback.onTap(context)
+                            NotificationHelper.sendMedicineReminder(context, "Morning Medicine")
+                            NotificationHelper.sendHydrationReminder(context)
                         }
                     )
                 }
-            }
 
-            item {
-                MoodTrackerSection(
-                    selectedMood = selectedMood,
-                    onMoodSelected = { key, label ->
-                        ElderlyFeedback.onTap(context)
-                        selectedMood = key
-                        coroutineScope.launch {
-                            settingsDataStore.setMood(key)
-                        }
-                        LocalizationManager.speak("Thank you. You selected $label.")
+                item {
+                    QuickActionsSection(
+                        onGamesClick = onGamesClickRemembered,
+                        onEchoesClick = onEchoesClickRemembered,
+                        onPlayGame = onPlayGame
+                    )
+                }
+
+                if (currentMemory != null) {
+                    item {
+                        MemoryCard(
+                            memory = currentMemory,
+                            onReadMemory = {
+                                ElderlyFeedback.onTap(context)
+                                LocalizationManager.speak("${currentMemory.name}, your ${currentMemory.relation}. ${currentMemory.description}")
+                            },
+                            onNextMemory = {
+                                ElderlyFeedback.onTap(context)
+                                memoryIndex++
+                            },
+                            onViewImage = { photoPath -> fullScreenPhotoPath = photoPath }
+                        )
                     }
-                )
+                }
+
+                item {
+                    MoodTrackerSection(
+                        selectedMood = selectedMood,
+                        onMoodSelected = { key, label ->
+                            ElderlyFeedback.onTap(context)
+                            selectedMood = key
+                            coroutineScope.launch {
+                                settingsDataStore.setMood(key)
+                            }
+                            LocalizationManager.speak("Thank you. You selected $label.")
+                        }
+                    )
+                }
             }
         }
     }
@@ -222,7 +318,8 @@ private fun DashboardHero(
     todayDateStr: String,
     isSoundOn: Boolean,
     onReadAloud: () -> Unit,
-    onToggleSound: () -> Unit
+    onToggleSound: () -> Unit,
+    onViewImage: (String) -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -265,7 +362,8 @@ private fun DashboardHero(
                         .shadow(4.dp, RoundedCornerShape(22.dp))
                         .clip(RoundedCornerShape(22.dp))
                         .border(3.dp, Ink, RoundedCornerShape(22.dp))
-                        .background(Color.White),
+                        .background(Color.White)
+                        .clickable { photoPath?.let { onViewImage(it) } },
                     contentScale = ContentScale.Crop
                 )
 
@@ -359,7 +457,7 @@ private fun DailyRoutineSection(
     onToggleItem: (Int, RoutineItem) -> Unit,
     onNotifyPhone: () -> Unit
 ) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -369,7 +467,7 @@ private fun DailyRoutineSection(
                 text = "\uD83D\uDCC5 Daily Routine",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
-                fontFamily = FontFamily.Serif,
+                fontFamily = FontFamily.SansSerif,
                 color = Ink
             )
             Surface(
@@ -387,7 +485,7 @@ private fun DailyRoutineSection(
                 ) {
                     Icon(Icons.Filled.NotificationsActive, null, tint = Marigold, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Remind Me", fontSize = 14.sp, fontWeight = FontWeight.Black, color = Ink)
+                    Text("Remind Me", fontSize = 14.sp, fontWeight = FontWeight.Black, fontFamily = FontFamily.SansSerif, color = Ink)
                 }
             }
         }
@@ -455,12 +553,12 @@ private fun QuickActionsSection(
     onPlayGame: (String) -> Unit
 ) {
     val context = LocalContext.current
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
         Text(
             text = "\u2728 Quick Activities",
             fontSize = 22.sp,
             fontWeight = FontWeight.Black,
-            fontFamily = FontFamily.Serif,
+            fontFamily = FontFamily.SansSerif,
             color = Ink
         )
         Spacer(modifier = Modifier.height(14.dp))
@@ -583,58 +681,95 @@ private fun QuickActionCard(
 private fun MemoryCard(
     memory: MemoryItem,
     onReadMemory: () -> Unit,
-    onNextMemory: () -> Unit
+    onNextMemory: () -> Unit,
+    onViewImage: (String) -> Unit = {}
 ) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)) {
-        Text(
-            text = "\uD83E\uDDE1 Family Memory",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Black,
-            fontFamily = FontFamily.Serif,
-            color = Ink
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "\uD83E\uDDE1 Family Memory",
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Black,
+                fontFamily = FontFamily.SansSerif,
+                color = Ink
+            )
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = Color(0xFFFEF3C7),
+                modifier = Modifier
+                    .border(1.5.dp, Ink, RoundedCornerShape(8.dp))
+                    .clickable { onViewImage(memory.imageAssetPath) }
+            ) {
+                Text(
+                    text = "🔍 Tap photo to expand",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Ink,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
 
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp, RoundedCornerShape(22.dp))
-                .border(3.dp, Ink, RoundedCornerShape(22.dp)),
+                .border(3.5.dp, Ink, RoundedCornerShape(22.dp)),
             shape = RoundedCornerShape(22.dp),
             color = Color(0xFFFFFDF9)
         ) {
             Column(modifier = Modifier.padding(18.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    val painter = rememberAsyncImagePainter(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("file:///android_asset/${memory.imageAssetPath}")
-                            .crossfade(true)
-                            .build()
-                    )
-                    Image(
-                        painter = painter,
-                        contentDescription = memory.name,
-                        modifier = Modifier
-                            .size(90.dp)
-                            .shadow(3.dp, RoundedCornerShape(18.dp))
-                            .clip(RoundedCornerShape(18.dp))
-                            .border(2.5.dp, Ink, RoundedCornerShape(18.dp))
-                            .background(Color.White),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(14.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFFFEF3C7),
-                            modifier = Modifier.border(1.dp, Ink, RoundedCornerShape(8.dp))
+                AnimatedContent(
+                    targetState = memory,
+                    transitionSpec = {
+                        (fadeIn(animationSpec = tween(300)) + slideInHorizontally(animationSpec = tween(300)) { width -> width / 2 }) togetherWith
+                        (fadeOut(animationSpec = tween(300)) + slideOutHorizontally(animationSpec = tween(300)) { width -> -width / 2 })
+                    },
+                    label = "memoryAnim"
+                ) { currentMem ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        val painter = rememberAsyncImagePainter(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("file:///android_asset/${currentMem.imageAssetPath}")
+                                .crossfade(true)
+                                .build()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(90.dp)
+                                .shadow(3.dp, RoundedCornerShape(18.dp))
+                                .clip(RoundedCornerShape(18.dp))
+                                .border(2.5.dp, Ink, RoundedCornerShape(18.dp))
+                                .background(Color.White)
+                                .clickable { onViewImage(currentMem.imageAssetPath) },
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(memory.relation, fontSize = 12.sp, fontWeight = FontWeight.Black, color = Ink, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
+                            Image(
+                                painter = painter,
+                                contentDescription = currentMem.name,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(memory.name, fontSize = 20.sp, fontWeight = FontWeight.Black, fontFamily = FontFamily.Serif, color = Ink)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(memory.description, fontSize = 13.sp, color = InkSecondary, lineHeight = 17.sp)
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = Color(0xFFFEF3C7),
+                                modifier = Modifier.border(1.dp, Ink, RoundedCornerShape(8.dp))
+                            ) {
+                                Text(currentMem.relation, fontSize = 12.sp, fontWeight = FontWeight.Black, color = Ink, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(currentMem.name, fontSize = 20.sp, fontWeight = FontWeight.Black, fontFamily = FontFamily.SansSerif, color = Ink)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(currentMem.description, fontSize = 13.sp, color = InkSecondary, lineHeight = 17.sp)
+                        }
                     }
                 }
 
@@ -693,7 +828,7 @@ private fun MoodTrackerSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .shadow(4.dp, RoundedCornerShape(22.dp))
-                .border(3.dp, Ink, RoundedCornerShape(22.dp)),
+                .border(3.5.dp, Ink, RoundedCornerShape(22.dp)),
             shape = RoundedCornerShape(22.dp),
             color = Color.White
         ) {
@@ -702,37 +837,48 @@ private fun MoodTrackerSection(
                     text = "\u2764\uFE0F How are you feeling today?",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Serif,
                     color = Ink
                 )
                 Spacer(modifier = Modifier.height(14.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     listOf(
-                        Triple("happy", "Happy \uD83D\uDE0A", Color(0xFFDCFCE7)),
-                        Triple("peaceful", "Peaceful \uD83D\uDE0C", Color(0xFFDBEAFE)),
-                        Triple("okay", "Okay \uD83D\uDE10", Color(0xFFFEF3C7)),
-                        Triple("care", "Need Care \uD83E\uDD17", Color(0xFFFEE2E2))
-                    ).forEach { (key, label, color) ->
-                        val isSelected = selectedMood == key
+                        MoodItem("happy", "Happy", "\uD83D\uDE0A", Color(0xFFDCFCE7)),
+                        MoodItem("peaceful", "Calm", "\uD83D\uDE0C", Color(0xFFDBEAFE)),
+                        MoodItem("okay", "Okay", "\uD83D\uDE10", Color(0xFFFEF3C7)),
+                        MoodItem("care", "Need Care", "\uD83E\uDD17", Color(0xFFFEE2E2))
+                    ).forEach { item ->
+                        val isSelected = selectedMood == item.key
                         Surface(
                             shape = RoundedCornerShape(14.dp),
-                            color = if (isSelected) TeaGreen else color,
+                            color = if (isSelected) TeaGreen else item.color,
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp)
-                                .semantics { contentDescription = label }
+                                .height(72.dp)
+                                .semantics { contentDescription = "${item.label} mood" }
                                 .shadow(2.dp, RoundedCornerShape(14.dp))
-                                .border(2.dp, Ink, RoundedCornerShape(14.dp))
-                                .clickable { onMoodSelected(key, label) }
+                                .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                                .clickable { onMoodSelected(item.key, item.label) }
                         ) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(vertical = 6.dp, horizontal = 2.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(text = item.emoji, fontSize = 22.sp)
+                                Spacer(modifier = Modifier.height(2.dp))
                                 Text(
-                                    text = label,
-                                    fontSize = 14.sp,
+                                    text = item.label,
+                                    fontSize = 12.sp,
                                     fontWeight = FontWeight.Black,
-                                    color = if (isSelected) Color.White else Ink
+                                    color = if (isSelected) Color.White else Ink,
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
@@ -751,3 +897,5 @@ private fun MoodTrackerSection(
         }
     }
 }
+
+private data class MoodItem(val key: String, val label: String, val emoji: String, val color: Color)

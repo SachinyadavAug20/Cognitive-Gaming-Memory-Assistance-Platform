@@ -1,16 +1,20 @@
 package com.cognicare.ui.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 
 // ============================================================
 // ELDERLY DEMENTIA-FRIENDLY TYPOGRAPHY
@@ -26,38 +30,38 @@ private val ElderlyTypography = Typography(
         fontSize = 44.sp,
         fontWeight = FontWeight.Bold,
         lineHeight = 52.sp,
-        fontFamily = FontFamily.Serif
+        fontFamily = FontFamily.SansSerif
     ),
     displayMedium = TextStyle(
         fontSize = 38.sp,
         fontWeight = FontWeight.Bold,
         lineHeight = 46.sp,
-        fontFamily = FontFamily.Serif
+        fontFamily = FontFamily.SansSerif
     ),
     displaySmall = TextStyle(
         fontSize = 32.sp,
         fontWeight = FontWeight.Bold,
         lineHeight = 40.sp,
-        fontFamily = FontFamily.Serif
+        fontFamily = FontFamily.SansSerif
     ),
     // Headlines — section headers (e.g., "Today's Routine")
     headlineLarge = TextStyle(
         fontSize = 30.sp,
         fontWeight = FontWeight.Bold,
         lineHeight = 38.sp,
-        fontFamily = FontFamily.Serif
+        fontFamily = FontFamily.SansSerif
     ),
     headlineMedium = TextStyle(
         fontSize = 26.sp,
         fontWeight = FontWeight.SemiBold,
         lineHeight = 34.sp,
-        fontFamily = FontFamily.Serif
+        fontFamily = FontFamily.SansSerif
     ),
     headlineSmall = TextStyle(
         fontSize = 24.sp,
         fontWeight = FontWeight.SemiBold,
         lineHeight = 30.sp,
-        fontFamily = FontFamily.Serif
+        fontFamily = FontFamily.SansSerif
     ),
     // Titles — card titles, game names
     titleLarge = TextStyle(
@@ -157,6 +161,16 @@ fun CogniCareTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) ElderDarkScheme else ElderLightScheme
+    val view = LocalView.current
+
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window ?: return@SideEffect
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightNavigationBars = !darkTheme
+        }
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,
