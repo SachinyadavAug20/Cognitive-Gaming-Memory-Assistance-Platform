@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 
 data class MarketItem(val emoji: String, val name: String)
 
@@ -74,6 +74,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = { Text("Market Visit", color = Color.White) },
@@ -208,7 +209,7 @@ fun MarketVisitGame(onBack: () -> Unit) {
                                         )
                                         .clickable {
                                             if (!isSelected && !showResult) {
-                                                HapticUtil.vibrate(context, 60)
+                                                ElderlyFeedback.onSuccess(context)
                                                 selected = selected + item.name
                                                 if (isCorrect) {
                                                     score += 10

@@ -32,6 +32,7 @@ import com.cognicare.ui.components.CogniCareTopBar
 import com.cognicare.ui.components.DomainFilterChip
 import com.cognicare.ui.games.*
 import com.cognicare.ui.theme.*
+import com.cognicare.util.ElderlyFeedback
 import kotlinx.coroutines.launch
 
 private val Ink = Color(0xFF16120E)
@@ -64,17 +65,21 @@ fun GamesHubScreen(
         else allGames.filter { it.domain == selectedDomain }
     }
 
-    val domainFilters = listOf(
-        Triple(null, "All Activities", allGames.size),
-        Triple(CognitiveDomain.MEMORY, "Memory & Recall", allGames.count { it.domain == CognitiveDomain.MEMORY }),
-        Triple(CognitiveDomain.ATTENTION, "Attention & Focus", allGames.count { it.domain == CognitiveDomain.ATTENTION }),
-        Triple(CognitiveDomain.EXECUTIVE, "Daily Routine", allGames.count { it.domain == CognitiveDomain.EXECUTIVE }),
-        Triple(CognitiveDomain.VISUOSPATIAL, "Patterns & Art", allGames.count { it.domain == CognitiveDomain.VISUOSPATIAL }),
-        Triple(CognitiveDomain.LANGUAGE, "Hands & Movement", allGames.count { it.domain == CognitiveDomain.LANGUAGE }),
-        Triple(CognitiveDomain.CALM, "Calm & Music", allGames.count { it.domain == CognitiveDomain.CALM }),
-        Triple(CognitiveDomain.REMINISCENCE, "Reminiscence", allGames.count { it.domain == CognitiveDomain.REMINISCENCE }),
-        Triple(CognitiveDomain.ADVANCED, "Advanced 3D", allGames.count { it.domain == CognitiveDomain.ADVANCED }),
-    )
+    val domainFilters = remember(allGames.size) {
+        listOf(
+            Triple(null, "All Activities", allGames.size),
+            Triple(CognitiveDomain.MEMORY, "Memory & Recall", allGames.count { it.domain == CognitiveDomain.MEMORY }),
+            Triple(CognitiveDomain.ATTENTION, "Attention & Focus", allGames.count { it.domain == CognitiveDomain.ATTENTION }),
+            Triple(CognitiveDomain.EXECUTIVE, "Daily Routine", allGames.count { it.domain == CognitiveDomain.EXECUTIVE }),
+            Triple(CognitiveDomain.VISUOSPATIAL, "Patterns & Art", allGames.count { it.domain == CognitiveDomain.VISUOSPATIAL }),
+            Triple(CognitiveDomain.LANGUAGE, "Hands & Movement", allGames.count { it.domain == CognitiveDomain.LANGUAGE }),
+            Triple(CognitiveDomain.CALM, "Calm & Music", allGames.count { it.domain == CognitiveDomain.CALM }),
+            Triple(CognitiveDomain.REMINISCENCE, "Reminiscence", allGames.count { it.domain == CognitiveDomain.REMINISCENCE }),
+            Triple(CognitiveDomain.ADVANCED, "Advanced 3D", allGames.count { it.domain == CognitiveDomain.ADVANCED }),
+        )
+    }
+
+    val onGameClickRemembered = remember(onGameClick) { onGameClick }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -103,7 +108,8 @@ fun GamesHubScreen(
                     onBackClick = onBack,
                     onMenuClick = { scope.launch { drawerState.open() } }
                 )
-            }
+            },
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->
             Column(
                 modifier = Modifier
@@ -141,7 +147,10 @@ fun GamesHubScreen(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(domainFilters) { (domain, label, count) ->
+                    items(
+                        items = domainFilters,
+                        key = { (domain, label, _) -> domain?.name ?: "all" }
+                    ) { (domain, label, count) ->
                         DomainFilterChip(
                             label = label,
                             count = count,
@@ -171,7 +180,11 @@ fun GamesHubScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(filteredGames) { game ->
+                    items(
+                        items = filteredGames,
+                        key = { it.id },
+                        contentType = { it.domain }
+                    ) { game ->
                         HubGameCard(
                             game = game,
                             onClick = { onGameClick(game.id) }
@@ -191,21 +204,25 @@ private fun HubGameCard(
     game: GameConfig,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val cardColor = when (game.domain) {
-        CognitiveDomain.CALM -> Color(0xFF1362B8)
-        CognitiveDomain.EXECUTIVE, CognitiveDomain.ATTENTION -> Marigold
-        CognitiveDomain.MEMORY -> Color(0xFF9D246C)
-        CognitiveDomain.REMINISCENCE -> Color(0xFFBE123C)
-        CognitiveDomain.ADVANCED -> Color(0xFFEA580C)
+        CognitiveDomain.CALM -> Color(0xFF1565C0)
+        CognitiveDomain.EXECUTIVE, CognitiveDomain.ATTENTION -> Color(0xFFD84315)
+        CognitiveDomain.MEMORY -> Color(0xFF6A1B9A)
+        CognitiveDomain.REMINISCENCE -> Color(0xFF4E342E)
+        CognitiveDomain.ADVANCED -> Color(0xFFE65100)
         else -> TeaGreen
     }
 
     Card(
-        onClick = onClick,
+        onClick = {
+            ElderlyFeedback.onTap(context)
+            onClick()
+        },
         modifier = Modifier
-            .height(210.dp)
-            .shadow(5.dp, RoundedCornerShape(20.dp))
-            .border(3.dp, Ink, RoundedCornerShape(20.dp)),
+            .height(230.dp)
+            .shadow(6.dp, RoundedCornerShape(22.dp))
+            .border(3.dp, Ink, RoundedCornerShape(22.dp)),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -220,47 +237,50 @@ private fun HubGameCard(
             Column {
                 Text(
                     text = game.title,
-                    fontSize = 15.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     maxLines = 2,
-                    lineHeight = 20.sp
+                    lineHeight = 22.sp
                 )
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(3.dp))
                 Text(
                     text = game.domain.label.uppercase(),
-                    fontSize = 10.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Black,
                     color = Color(0xFFFFF0DB),
                     letterSpacing = 1.sp
                 )
             }
 
-            // Game emoji in white box
+            // Game emoji — BIG for visual recognition
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .size(80.dp)
-                    .shadow(3.dp, RoundedCornerShape(20.dp))
-                    .clip(RoundedCornerShape(20.dp))
-                    .border(3.dp, Ink, RoundedCornerShape(20.dp))
+                    .size(88.dp)
+                    .shadow(4.dp, RoundedCornerShape(22.dp))
+                    .clip(RoundedCornerShape(22.dp))
+                    .border(3.dp, Ink, RoundedCornerShape(22.dp))
                     .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = game.emoji, fontSize = 44.sp)
+                Text(text = game.emoji, fontSize = 48.sp)
             }
 
-            // Start button
+            // Start button — BIG TEXT for elderly
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = Color.White.copy(alpha = 0.2f),
-                onClick = onClick
+                onClick = {
+                    ElderlyFeedback.onTap(context)
+                    onClick()
+                }
             ) {
                 Text(
                     text = "Start \u2192",
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    fontSize = 13.sp,
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Black,
                     color = Color.White,
                     textAlign = TextAlign.Center

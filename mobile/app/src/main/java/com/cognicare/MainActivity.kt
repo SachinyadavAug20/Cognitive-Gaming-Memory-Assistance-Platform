@@ -2,6 +2,7 @@ package com.cognicare
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,15 +20,31 @@ import com.cognicare.di.ServiceLocator
 import com.cognicare.ui.navigation.Screen
 import com.cognicare.ui.screens.*
 import com.cognicare.ui.theme.CogniCareTheme
+import com.cognicare.viewmodel.AdminViewModel
 import com.cognicare.viewmodel.AuthViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                lightScrim = android.graphics.Color.argb(0xE6, 0xFF, 0xFF, 0xFF),
+                darkScrim = android.graphics.Color.argb(0x80, 0x1B, 0x1B, 0x1B)
+            ),
+            navigationBarStyle = SystemBarStyle.auto(
+                lightScrim = android.graphics.Color.argb(0xE6, 0xFF, 0xFF, 0xFF),
+                darkScrim = android.graphics.Color.argb(0x80, 0x1B, 0x1B, 0x1B)
+            )
+        )
 
         setContent {
-            CogniCareTheme {
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val application = context.applicationContext as android.app.Application
+            val settingsDataStore = remember { ServiceLocator.provideSettingsDataStore(application) }
+            val isDarkMode by settingsDataStore.nightMode.collectAsState(initial = false)
+
+            CogniCareTheme(darkTheme = isDarkMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -48,6 +65,10 @@ fun CogniCareApp() {
         factory = ServiceLocator.provideAuthViewModelFactory(application)
     )
     val authState by authViewModel.authState.collectAsState()
+
+    val adminViewModel: AdminViewModel = viewModel(
+        factory = ServiceLocator.provideAdminViewModelFactory(application)
+    )
 
     NavHost(
         navController = navController,
@@ -98,6 +119,7 @@ fun CogniCareApp() {
                 onGamesClick = { navController.navigate(Screen.GamesHub.route) },
                 onEchoesClick = { navController.navigate(Screen.EchoesOfHome3D.route) },
                 onCaregiverClick = { navController.navigate(Screen.Caregiver.route) },
+                onAdminClick = { navController.navigate(Screen.Admin.route) },
                 onPlayGame = { gameId ->
                     navController.navigate(Screen.GamePlayer.createRoute(gameId))
                 },
@@ -142,6 +164,13 @@ fun CogniCareApp() {
             val patient = authState.patient ?: return@composable
             CaregiverScreen(
                 patient = patient,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Admin.route) {
+            AdminScreen(
+                viewModel = adminViewModel,
                 onBack = { navController.popBackStack() }
             )
         }

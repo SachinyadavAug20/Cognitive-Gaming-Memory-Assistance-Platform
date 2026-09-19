@@ -31,34 +31,64 @@ fun GameScreen(
         // Memory & Reminiscence
         "memory_road" -> MemoryRoadGame(onBack = onBack)
         "jigsaw" -> JigsawGame(onBack = onBack)
+        "memory_detective" -> MemoryDetectiveGame(onBack = onBack)
+        "dzukou_botanist" -> DzukouBotanistGame(onBack = onBack)
 
         // Attention & Working Memory
         "tea_garden", "tea_harvest" -> TeaGardenGame(onBack = onBack)
         "church_bell" -> ChurchBellGame(onBack = onBack)
         "monastery_bell" -> MonasteryBellGame(onBack = onBack)
+        "tea_garden_catch" -> TeaGardenCatchGame(onBack = onBack)
+        "tuned_drum" -> TunedDrumGame(onBack = onBack)
 
-        // Executive Function & IADL (Going to Market)
+        // Executive Function & IADL
         "market_visit", "bazaar_buddies" -> BazaarBuddiesGame(onBack = onBack)
         "bamboo_craft" -> BambooCraftGame(onBack = onBack)
         "heritage_kitchen" -> HeritageKitchenGame(onBack = onBack)
+        "daily_routine" -> DailyRoutineGame(onBack = onBack)
+        "sorting" -> SortingGame(onBack = onBack)
+        "daily_tasks" -> DailyTasksGame(onBack = onBack)
 
         // Visuospatial & Movement
         "auto_rickshaw" -> AutoRickshawGame(onBack = onBack)
         "lotus_painter" -> LotusPainterGame(onBack = onBack)
+        "brahmaputra_boat" -> BrahmaputraBoatGame(onBack = onBack)
+        "wayfinding" -> WayfindingGame(onBack = onBack)
+        "root_bridge" -> RootBridgeGame(onBack = onBack)
 
-        // Calm, Sensory & Rhythmic Entrainment
+        // Calm, Sensory & Rhythmic
         "temple_prayer" -> TemplePrayerGame(onBack = onBack)
         "river_lanterns" -> RiverLanternsGame(onBack = onBack)
         "bihu_dhol" -> BihuDholGame(onBack = onBack)
+        "rhythm_hills" -> RhythmHillsGame(onBack = onBack)
+        "companion" -> CompanionGame(onBack = onBack)
 
-        // Match-3 (Candy Crush style)
+        // Match-3
         "tea_garden_match" -> TeaGardenMatchGame(onBack = onBack)
 
-        // 3D Spatial Island Walk
+        // 3D Spatial
         "majuli_walk" -> MajuliWalk3DGame(onBack = onBack)
+        "day_in_my_world" -> DayInMyWorldGame(onBack = onBack)
 
         // Language & Lessons
         "school_memories", "school_days" -> SchoolDaysGame(onBack = onBack)
+        "storybook" -> StorybookGame(onBack = onBack)
+
+        // Webcam / Advanced
+        "lotus_painter" -> LotusPainterGame(onBack = onBack)
+        "butterfly_sanctuary" -> ButterflySanctuaryGame(onBack = onBack)
+        "hornbill_flight" -> HornbillFlightGame(onBack = onBack)
+        "majuli_pottery" -> MajuliPotteryGame(onBack = onBack)
+        "tea_garden_vision" -> TeaGardenVisionGame(onBack = onBack)
+
+        // Reminiscence & Social
+        "grandchild_chat" -> GrandchildChatGame(onBack = onBack)
+        "timeline" -> TimelineGame(onBack = onBack)
+        "radio" -> RadioGame(onBack = onBack)
+        "ancestral_herbalist" -> AncestralHerbalistGame(onBack = onBack)
+        "family_emotions" -> FamilyEmotionsGame(onBack = onBack)
+        "alpana" -> AlpanaGame(onBack = onBack)
+        "loom" -> LoomGame(onBack = onBack)
 
         else -> ClinicalGamePreview(gameId = gameId, onBack = onBack)
     }
@@ -85,7 +115,8 @@ private fun ClinicalGamePreview(gameId: String, onBack: () -> Unit) {
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         Box(
             modifier = Modifier

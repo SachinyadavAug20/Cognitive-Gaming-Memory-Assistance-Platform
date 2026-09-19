@@ -22,8 +22,12 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
         }
     }
 
@@ -34,6 +38,11 @@ android {
 
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs += listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=" +
+            "app/src/main/compose-stability.conf"
+        )
     }
 
     buildFeatures {
@@ -57,6 +66,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
+    debugImplementation("androidx.compose.ui:ui-tooling")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.8.5")
@@ -81,9 +91,6 @@ dependencies {
     // Coil (Image loading)
     implementation("io.coil-kt:coil-compose:2.7.0")
 
-    // Accompanist (System UI)
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
-
     // Retrofit + OkHttp (Networking)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
@@ -95,4 +102,11 @@ dependencies {
 
     // Location (for SOS / geofencing)
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Baseline Profiles (optional — add benchmarks module for production)
+    // baselineProfile project(":benchmarks")
 }
+
+// baselineProfile {
+//     automaticGenerationDuringBuild = true
+// }

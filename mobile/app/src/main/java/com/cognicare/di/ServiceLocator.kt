@@ -24,6 +24,7 @@ object ServiceLocator {
     private var aiRepository: AiRepository? = null
     private var surveillanceRepository: SurveillanceRepository? = null
     private var adminRepository: AdminRepository? = null
+    private var settingsDataStore: com.cognicare.data.local.SettingsDataStore? = null
 
     @Synchronized
     fun provideDatabase(context: Application): AppDatabase {
@@ -106,6 +107,11 @@ object ServiceLocator {
         return adminRepository ?: AdminRepository(provideApi(context)).also { adminRepository = it }
     }
 
+    @Synchronized
+    fun provideSettingsDataStore(context: Application): com.cognicare.data.local.SettingsDataStore {
+        return settingsDataStore ?: com.cognicare.data.local.SettingsDataStore(context).also { settingsDataStore = it }
+    }
+
     // ViewModel factories
     fun provideAuthViewModelFactory(context: Application) = object : androidx.lifecycle.ViewModelProvider.Factory {
         override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
@@ -142,6 +148,13 @@ object ServiceLocator {
                 context,
                 provideSurveillanceRepository(context)
             ) as T
+        }
+    }
+
+    fun provideAdminViewModelFactory(context: Application) = object : androidx.lifecycle.ViewModelProvider.Factory {
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+            @Suppress("UNCHECKED_CAST")
+            return com.cognicare.viewmodel.AdminViewModel(context) as T
         }
     }
 }

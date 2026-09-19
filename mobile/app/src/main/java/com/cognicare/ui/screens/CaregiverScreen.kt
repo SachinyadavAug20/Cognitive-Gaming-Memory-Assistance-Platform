@@ -82,7 +82,8 @@ fun CaregiverScreen(
                     onBackClick = onBack,
                     onMenuClick = { scope.launch { drawerState.open() } }
                 )
-            }
+            },
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { padding ->
             LazyColumn(
                 modifier = Modifier

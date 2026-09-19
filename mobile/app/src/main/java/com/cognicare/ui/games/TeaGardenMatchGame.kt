@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlin.math.abs
 
@@ -119,6 +119,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -247,7 +248,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                                             shape = RoundedCornerShape(14.dp)
                                         )
                                         .clickable {
-                                            HapticUtil.vibrateTap(context)
+                                            ElderlyFeedback.onTap(context)
                                             if (selectedPos == null) {
                                                 selectedPos = Pair(r, c)
                                             } else {
@@ -265,7 +266,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                                                         grid = newGrid
                                                         score += matchedCount * 30
                                                         movesUsed++
-                                                        HapticUtil.vibrateSuccess(context)
+                                                        ElderlyFeedback.onSuccess(context)
                                                         comboMessage = "🎉 Sweet Match! +${matchedCount * 30} Points!"
                                                         LocalizationManager.speak("Great match!")
                                                         if (score >= targetScore && !isWon) {
@@ -273,7 +274,7 @@ fun TeaGardenMatchGame(onBack: () -> Unit) {
                                                             LocalizationManager.speak("Congratulations! You reached the target score!")
                                                         }
                                                     } else {
-                                                        HapticUtil.vibrateError(context)
+                                                        ElderlyFeedback.onError(context)
                                                         comboMessage = "No 3-in-a-row formed, try another pair!"
                                                     }
                                                 }

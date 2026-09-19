@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlin.math.sin
 
@@ -113,6 +113,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
     val bobbingOffset = (sin(stepProgress * 1.5) * 8f).toFloat()
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -358,7 +359,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                         modifier = Modifier
                                             .border(1.5.dp, Ink, RoundedCornerShape(8.dp))
                                             .clickable {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 LocalizationManager.speak("${activeLandmark.name}. ${activeLandmark.description}")
                                             }
                                     ) {
@@ -396,7 +397,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                     .shadow(3.dp, RoundedCornerShape(16.dp))
                                     .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         stepProgress += 1f
                                         totalSteps += 10
                                     }
@@ -427,7 +428,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                     .shadow(3.dp, RoundedCornerShape(16.dp))
                                     .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         isAnsweringQuestion = true
                                         selectedOption = null
                                         LocalizationManager.speak(activeLandmark.question)
@@ -479,11 +480,11 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                         .clickable {
                                             selectedOption = optIdx
                                             if (isCorrect) {
-                                                HapticUtil.vibrateSuccess(context)
+                                                ElderlyFeedback.onSuccess(context)
                                                 score += 50
                                                 LocalizationManager.speak("Correct! That is ${activeLandmark.name}.")
                                             } else {
-                                                HapticUtil.vibrateError(context)
+                                                ElderlyFeedback.onError(context)
                                                 LocalizationManager.speak("Let's look closely again.")
                                             }
                                         }
@@ -520,7 +521,7 @@ fun MajuliWalk3DGame(onBack: () -> Unit) {
                                         .shadow(2.dp, RoundedCornerShape(12.dp))
                                         .border(2.dp, Ink, RoundedCornerShape(12.dp))
                                         .clickable {
-                                            HapticUtil.vibrateTap(context)
+                                            ElderlyFeedback.onTap(context)
                                             if (currentStopIndex + 1 < landmarks.size) {
                                                 currentStopIndex++
                                                 isAnsweringQuestion = false

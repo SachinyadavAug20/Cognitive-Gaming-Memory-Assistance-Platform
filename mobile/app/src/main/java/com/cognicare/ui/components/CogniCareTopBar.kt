@@ -2,9 +2,12 @@ package com.cognicare.ui.components
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,12 +27,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
 private val InkSecondary = Color(0xFF4A4036)
-private val TeaGreen = Color(0xFF1B663E)
-private val Brick = Color(0xFFC5221F)
+private val TeaGreen = Color(0xFF1B5E20)
+private val Brick = Color(0xFFB71C1C)
 private val WarmSurface = Color(0xFFFAF7F2)
 
 @Composable
@@ -46,151 +50,106 @@ fun CogniCareTopBar(
     var showLangDialog by remember { mutableStateOf(false) }
 
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .border(width = 2.5.dp, color = Ink),
+        modifier = Modifier.fillMaxWidth(),
         color = Color.White,
-        shadowElevation = 4.dp
+        shadowElevation = 6.dp
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
+                .border(width = 3.dp, color = Ink)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // Left: Menu/Back Button + Brand Logo & Title
+                // Left: Menu/Back + Logo + Title
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     if (onMenuClick != null) {
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = Color.White,
-                            modifier = Modifier
-                                .size(42.dp)
-                                .shadow(2.5.dp, RoundedCornerShape(12.dp))
-                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
-                                .clickable { onMenuClick() }
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Filled.Menu,
-                                    contentDescription = "Menu Navigation",
-                                    tint = Ink,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
+                        ElderlyButton(
+                            onClick = {
+                                ElderlyFeedback.onTap(context)
+                                onMenuClick()
+                            },
+                            icon = Icons.Filled.Menu,
+                            contentDescription = "Menu Navigation"
+                        )
                     } else if (onBackClick != null) {
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = Color.White,
-                            modifier = Modifier
-                                .size(42.dp)
-                                .shadow(2.5.dp, RoundedCornerShape(12.dp))
-                                .border(2.dp, Ink, RoundedCornerShape(12.dp))
-                                .clickable { onBackClick() }
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                    tint = Ink,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
+                        ElderlyButton(
+                            onClick = {
+                                ElderlyFeedback.onNavigate(context)
+                                onBackClick()
+                            },
+                            icon = Icons.Filled.ArrowBack,
+                            contentDescription = "Go Back"
+                        )
                     }
 
-                    // Logo Icon Box
+                    // Logo — larger for visibility
                     Box(
                         modifier = Modifier
-                            .size(38.dp)
-                            .shadow(2.dp, RoundedCornerShape(12.dp))
-                            .clip(RoundedCornerShape(12.dp))
+                            .size(44.dp)
+                            .shadow(3.dp, RoundedCornerShape(14.dp))
+                            .clip(RoundedCornerShape(14.dp))
                             .background(TeaGreen)
-                            .border(2.dp, Ink, RoundedCornerShape(12.dp)),
+                            .border(2.dp, Ink, RoundedCornerShape(14.dp)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "\uD83E\uDDE0", fontSize = 20.sp)
+                        Text(text = "\uD83E\uDDE0", fontSize = 24.sp)
                     }
 
-                    // Brand Text
+                    // Brand Text — larger, clearer
                     Column {
                         Text(
                             text = "CogniCare",
-                            fontSize = 20.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.Black,
                             fontFamily = FontFamily.Serif,
                             color = Ink,
-                            lineHeight = 22.sp
+                            lineHeight = 26.sp
                         )
                         Text(
                             text = "North East Memory Care",
-                            fontSize = 9.sp,
+                            fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             color = InkSecondary
                         )
                     }
                 }
 
-                // Right: Online Badge + Language Switcher + Emergency SOS Button
+                // Right: Status + Language + SOS
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Connectivity status badge
+                    // Online status
                     Surface(
-                        shape = RoundedCornerShape(10.dp),
-                        color = if (isOnline) Color(0xFFDCFCE7) else Color(0xFFFEF3C7),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isOnline) Color(0xFFE8F5E9) else Color(0xFFFFF3E0),
                         modifier = Modifier
-                            .shadow(1.5.dp, RoundedCornerShape(10.dp))
-                            .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
+                            .shadow(2.dp, RoundedCornerShape(12.dp))
+                            .border(2.dp, Ink, RoundedCornerShape(12.dp))
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 4.dp),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(7.dp)
+                                    .size(9.dp)
                                     .clip(CircleShape)
-                                    .background(if (isOnline) Color(0xFF16A34A) else Color(0xFFD97706))
+                                    .background(if (isOnline) Color(0xFF1B5E20) else Color(0xFFE65100))
                             )
                             Text(
-                                text = if (isOnline) "LIVE" else "OFFLINE",
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Ink
-                            )
-                        }
-                    }
-
-                    // Language Switch Pill
-                    Surface(
-                        shape = RoundedCornerShape(10.dp),
-                        color = Color.White,
-                        modifier = Modifier
-                            .shadow(1.5.dp, RoundedCornerShape(10.dp))
-                            .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
-                            .clickable { showLangDialog = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(3.dp)
-                        ) {
-                            Text(text = "\uD83C\uDF10", fontSize = 11.sp)
-                            Text(
-                                text = currentLang.uppercase(),
+                                text = if (isOnline) "ONLINE" else "OFFLINE",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Ink
@@ -198,32 +157,60 @@ fun CogniCareTopBar(
                         }
                     }
 
-                    // Emergency SOS Button
+                    // Language switcher — bigger touch target
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = Brick,
+                        color = Color.White,
                         modifier = Modifier
-                            .shadow(2.5.dp, RoundedCornerShape(12.dp))
+                            .shadow(2.dp, RoundedCornerShape(12.dp))
                             .border(2.dp, Ink, RoundedCornerShape(12.dp))
                             .clickable {
+                                ElderlyFeedback.onTap(context)
+                                showLangDialog = true
+                            }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(text = "\uD83C\uDF10", fontSize = 14.sp)
+                            Text(
+                                text = currentLang.uppercase(),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Black,
+                                color = Ink
+                            )
+                        }
+                    }
+
+                    // SOS — BIG, RED, IMPOSSIBLE TO MISS
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = Brick,
+                        modifier = Modifier
+                            .shadow(4.dp, RoundedCornerShape(14.dp))
+                            .border(3.dp, Color(0xFF7F0000), RoundedCornerShape(14.dp))
+                            .clickable {
+                                ElderlyFeedback.onTap(context)
                                 val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
                                 context.startActivity(dialIntent)
                             }
                     ) {
                         Row(
-                            modifier = Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Phone,
                                 contentDescription = null,
                                 tint = Color.White,
-                                modifier = Modifier.size(15.dp)
+                                modifier = Modifier.size(18.dp)
                             )
                             Text(
                                 text = "SOS",
-                                fontSize = 13.sp,
+                                fontSize = 16.sp,
                                 fontWeight = FontWeight.Black,
                                 color = Color.White
                             )
@@ -232,46 +219,52 @@ fun CogniCareTopBar(
                 }
             }
 
-            // Quick Nav Row (My Routine / Daily Activities) if enabled
+            // Quick Nav — bigger buttons for elderly
             if (showQuickNav) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(WarmSurface)
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Surface(
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(14.dp),
                         color = TeaGreen,
                         modifier = Modifier
-                            .shadow(2.dp, RoundedCornerShape(10.dp))
-                            .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
-                            .clickable { onRoutineClick?.invoke() }
+                            .shadow(3.dp, RoundedCornerShape(14.dp))
+                            .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                            .clickable {
+                                ElderlyFeedback.onTap(context)
+                                onRoutineClick?.invoke()
+                            }
                     ) {
                         Text(
                             text = "\uD83C\uDFE0 " + LocalizationManager.t("home.routine.label"),
-                            fontSize = 12.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )
                     }
 
                     Surface(
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(14.dp),
                         color = Color.White,
                         modifier = Modifier
-                            .shadow(2.dp, RoundedCornerShape(10.dp))
-                            .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
-                            .clickable { onGamesClick?.invoke() }
+                            .shadow(3.dp, RoundedCornerShape(14.dp))
+                            .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                            .clickable {
+                                ElderlyFeedback.onTap(context)
+                                onGamesClick?.invoke()
+                            }
                     ) {
                         Text(
                             text = "✨ " + LocalizationManager.t("patient.moreGames.label"),
-                            fontSize = 12.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Black,
                             color = Ink,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                         )
                     }
                 }
@@ -279,15 +272,15 @@ fun CogniCareTopBar(
         }
     }
 
-    // Quick Language Switch Dialog
+    // Language Dialog — big text, easy to tap
     if (showLangDialog) {
         AlertDialog(
             onDismissRequest = { showLangDialog = false },
             title = {
                 Text(
-                    text = "Choose Your Language",
+                    text = "\uD83C\uDF10 Choose Your Language",
                     fontWeight = FontWeight.Black,
-                    fontSize = 18.sp,
+                    fontSize = 22.sp,
                     color = Ink
                 )
             },
@@ -295,18 +288,19 @@ fun CogniCareTopBar(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 380.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                        .heightIn(max = 400.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     LocalizationManager.availableLanguages.forEach { (code, names) ->
                         val isSelected = currentLang == code
                         Surface(
-                            shape = RoundedCornerShape(10.dp),
+                            shape = RoundedCornerShape(14.dp),
                             color = if (isSelected) TeaGreen else Color.White,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
+                                .border(2.dp, Ink, RoundedCornerShape(14.dp))
                                 .clickable {
+                                    ElderlyFeedback.onTap(context)
                                     LocalizationManager.setLanguage(code)
                                     showLangDialog = false
                                 }
@@ -314,18 +308,18 @@ fun CogniCareTopBar(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                                    .padding(horizontal = 18.dp, vertical = 14.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     text = "${names.first} (${names.second})",
-                                    fontSize = 14.sp,
+                                    fontSize = 18.sp,
                                     fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
                                     color = if (isSelected) Color.White else Ink
                                 )
                                 if (isSelected) {
-                                    Text(text = "✓", fontSize = 16.sp, fontWeight = FontWeight.Black, color = Color.White)
+                                    Text(text = "✓", fontSize = 20.sp, fontWeight = FontWeight.Black, color = Color.White)
                                 }
                             }
                         }
@@ -334,12 +328,51 @@ fun CogniCareTopBar(
             },
             confirmButton = {
                 TextButton(onClick = { showLangDialog = false }) {
-                    Text("Close", fontWeight = FontWeight.Bold, color = TeaGreen)
+                    Text("Close", fontWeight = FontWeight.Bold, color = TeaGreen, fontSize = 18.sp)
                 }
             },
             containerColor = Color.White,
-            shape = RoundedCornerShape(20.dp),
-            modifier = Modifier.border(3.dp, Ink, RoundedCornerShape(20.dp))
+            shape = RoundedCornerShape(24.dp),
+            modifier = Modifier.border(3.dp, Ink, RoundedCornerShape(24.dp))
         )
+    }
+}
+
+/**
+ * Elder-friendly button — 52dp minimum touch target, bold icon, border
+ */
+@Composable
+private fun ElderlyButton(
+    onClick: () -> Unit,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val bgColor by animateColorAsState(
+        if (isPressed) Color(0xFFE8F5E9) else Color.White,
+        label = "btnBg"
+    )
+
+    Surface(
+        shape = RoundedCornerShape(14.dp),
+        color = bgColor,
+        modifier = Modifier
+            .size(52.dp)
+            .shadow(3.dp, RoundedCornerShape(14.dp))
+            .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { onClick() }
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = Ink,
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }

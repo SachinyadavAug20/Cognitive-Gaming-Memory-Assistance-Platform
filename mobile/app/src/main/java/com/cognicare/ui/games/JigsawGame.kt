@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
@@ -162,12 +162,13 @@ fun JigsawGame(onBack: () -> Unit) {
         val target = (0 until numPieces).toList()
         if (currentPieces == target) {
             isSolved = true
-            HapticUtil.vibrateSuccess(context)
+            ElderlyFeedback.onSuccess(context)
             LocalizationManager.speak("Wonderful! You solved the puzzle of ${currentPhoto.title}! ${currentPhoto.description}")
         }
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -186,7 +187,7 @@ fun JigsawGame(onBack: () -> Unit) {
                 actions = {
                     // Peek original photo button
                     IconButton(onClick = {
-                        HapticUtil.vibrateTap(context)
+                        ElderlyFeedback.onTap(context)
                         isPeeking = !isPeeking
                     }) {
                         Icon(
@@ -197,7 +198,7 @@ fun JigsawGame(onBack: () -> Unit) {
                     }
                     // Reset / Shuffle button
                     IconButton(onClick = {
-                        HapticUtil.vibrateTap(context)
+                        ElderlyFeedback.onTap(context)
                         pieces = makeInitialShuffle()
                         selectedPos = null
                         moves = 0
@@ -245,7 +246,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                 modifier = Modifier.clickable {
                                     if (gridSize != 2) {
                                         gridSize = 2
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                     }
                                 }
                             ) {
@@ -263,7 +264,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                 modifier = Modifier.clickable {
                                     if (gridSize != 3) {
                                         gridSize = 3
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                     }
                                 }
                             ) {
@@ -298,7 +299,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                 .border(2.dp, if (isCurrent) Marigold else Ink, RoundedCornerShape(12.dp))
                                 .clickable {
                                     if (selectedPhotoIndex != index) {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         selectedPhotoIndex = index
                                     }
                                 }
@@ -401,7 +402,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                                 shape = RoundedCornerShape(10.dp)
                                             )
                                             .clickable {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 if (selectedPos == null) {
                                                     selectedPos = pos
                                                 } else {
@@ -503,7 +504,7 @@ fun JigsawGame(onBack: () -> Unit) {
                                 modifier = Modifier
                                     .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         LocalizationManager.speak("${currentPhoto.title}. ${currentPhoto.subtitle}. ${currentPhoto.description}")
                                     }
                             ) {
@@ -565,7 +566,7 @@ fun JigsawGame(onBack: () -> Unit) {
                             modifier = Modifier
                                 .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
                                 .clickable {
-                                    HapticUtil.vibrateTap(context)
+                                    ElderlyFeedback.onTap(context)
                                     isPeeking = !isPeeking
                                 }
                         ) {

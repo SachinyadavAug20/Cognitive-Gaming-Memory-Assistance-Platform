@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +51,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = { Text("Bamboo Craft", color = Color.White) },
@@ -184,7 +185,7 @@ fun BambooCraftGame(onBack: () -> Unit) {
                             )
                             .clickable {
                                 if (!showResult) {
-                                    HapticUtil.vibrate(context, 60)
+                                    ElderlyFeedback.onSuccess(context)
                                     selectedOption = colorIndex
 
                                     val expectedNext = pattern.last()

@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +32,11 @@ import coil.request.ImageRequest
 import com.cognicare.data.local.Patient
 import com.cognicare.ui.components.CogniCareDrawerContent
 import com.cognicare.ui.components.CogniCareTopBar
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import com.cognicare.util.NotificationHelper
 import com.cognicare.util.PatientMediaManager
+import com.cognicare.di.ServiceLocator
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -47,12 +50,14 @@ private val Marigold = Color(0xFFE66A00)
 private val Brick = Color(0xFFC5221F)
 private val WarmSurface = Color(0xFFFFFDF9)
 
+@Immutable
 data class RoutineItem(
     val time: String,
     val title: String,
     val subtitle: String,
     val emoji: String,
-    var isDone: Boolean = false
+    val key: String,
+    val isDone: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,33 +67,63 @@ fun PatientDashboardScreen(
     onGamesClick: () -> Unit,
     onEchoesClick: () -> Unit,
     onCaregiverClick: () -> Unit,
+    onAdminClick: () -> Unit = {},
     onPlayGame: (String) -> Unit = { },
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val settingsDataStore = remember { ServiceLocator.provideSettingsDataStore(context.applicationContext as android.app.Application) }
 
-    var fontSize by remember { mutableFloatStateOf(18f) }
+    // Load persisted settings
+    val persistedFontSize by settingsDataStore.fontSize.collectAsState(initial = 18f)
+    val persistedNightMode by settingsDataStore.nightMode.collectAsState(initial = false)
+    val persistedReadAloud by settingsDataStore.readAloud.collectAsState(initial = false)
+    val persistedSoundOn by settingsDataStore.soundOn.collectAsState(initial = true)
+    val persistedMood by settingsDataStore.lastMood.collectAsState(initial = null)
+    val persistedRoutine by settingsDataStore.routineCompleted.collectAsState(initial = emptySet())
+
+    var fontSize by remember { mutableFloatStateOf(persistedFontSize) }
     val currentLang by LocalizationManager.currentLanguage.collectAsState()
-    var readAloudEnabled by remember { mutableStateOf(false) }
-    var nightModeEnabled by remember { mutableStateOf(false) }
-    var isSoundOn by remember { mutableStateOf(true) }
+    var readAloudEnabled by remember { mutableStateOf(persistedReadAloud) }
+    var nightModeEnabled by remember { mutableStateOf(persistedNightMode) }
+    var isSoundOn by remember { mutableStateOf(persistedSoundOn) }
 
     val todayDateStr = remember {
         val sdf = SimpleDateFormat("EEEE, d MMMM", Locale.getDefault())
         sdf.format(Date())
     }
 
-    // Routine checklist items
+    // Memoize callbacks to prevent child recomposition
+    val onGamesClickRemembered = remember(onGamesClick) { onGamesClick }
+    val onEchoesClickRemembered = remember(onEchoesClick) { onEchoesClick }
+    val onPlayGameRemembered = remember(onPlayGame) { onPlayGame }
+
+    // Auto-speak greeting when listen-first is enabled
+    LaunchedEffect(patient.id, persistedReadAloud) {
+        if (persistedReadAloud) {
+            kotlinx.coroutines.delay(500)
+            LocalizationManager.speak("Good day, ${patient.name}! You are safe at home with your family today. Let's do your daily brain activities.")
+        }
+    }
+
+    // Routine checklist items (persisted, immutable)
     val routineItems = remember {
         mutableStateListOf(
-            RoutineItem("8:00 AM", "Morning Medicine (BP & Vitamin)", "1 Pill with Fresh Water", "💊", true),
-            RoutineItem("10:30 AM", "Drink Fresh Water", "Glass 3 of 6 glasses today", "💧", false),
-            RoutineItem("1:00 PM", "Nutritious Lunch & Rest", "Steamed Joha rice with fish & greens", "🍲", false),
-            RoutineItem("4:30 PM", "Gentle Evening Walk", "Garden stroll with family", "🚶", false),
-            RoutineItem("8:00 PM", "Evening Medicine & Tea", "Warm herbal tea & relax", "🍵", false)
-        )
+            RoutineItem("8:00 AM", "Morning Medicine (BP & Vitamin)", "1 Pill with Fresh Water", "\uD83D\uDC8A", "medicine"),
+            RoutineItem("10:30 AM", "Drink Fresh Water", "Glass 3 of 6 glasses today", "\uD83D\uDCA7", "water"),
+            RoutineItem("1:00 PM", "Nutritious Lunch & Rest", "Steamed Joha rice with fish & greens", "\uD83C\uDF72", "lunch"),
+            RoutineItem("4:30 PM", "Gentle Evening Walk", "Garden stroll with family", "\uD83D\uDEB6", "walk"),
+            RoutineItem("8:00 PM", "Evening Medicine & Tea", "Warm herbal tea & relax", "\uD83C\uDF75", "tea")
+        ).apply {
+            // Restore persisted state
+            forEachIndexed { idx, item ->
+                if (item.key in persistedRoutine) {
+                    this[idx] = item.copy(isDone = true)
+                }
+            }
+        }
     }
 
     // Memories loaded from PatientMediaManager
@@ -98,21 +133,21 @@ fun PatientDashboardScreen(
     var memoryIndex by remember { mutableIntStateOf(0) }
     val currentMemory = if (memories.isNotEmpty()) memories[memoryIndex % memories.size] else null
 
-    // Mood tracker state
-    var selectedMood by remember { mutableStateOf<String?>(null) }
+    // Mood tracker state (persisted)
+    var selectedMood by remember { mutableStateOf(persistedMood) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             CogniCareDrawerContent(
                 currentFontSize = fontSize,
-                onFontSizeChange = { fontSize = it },
+                onFontSizeChange = { fontSize = it; scope.launch { settingsDataStore.setFontSize(it) } },
                 currentLanguage = currentLang,
-                onLanguageChange = { LocalizationManager.setLanguage(it) },
+                onLanguageChange = { LocalizationManager.setLanguage(it); scope.launch { settingsDataStore.setLanguage(it) } },
                 isReadAloudEnabled = readAloudEnabled,
-                onReadAloudToggle = { readAloudEnabled = it },
+                onReadAloudToggle = { readAloudEnabled = it; scope.launch { settingsDataStore.setReadAloud(it) } },
                 isNightModeEnabled = nightModeEnabled,
-                onNightModeToggle = { nightModeEnabled = it },
+                onNightModeToggle = { nightModeEnabled = it; scope.launch { settingsDataStore.setNightMode(it) } },
                 patientName = patient.name,
                 patientState = patient.state.ifEmpty { "Assam" },
                 onDashboardClick = { scope.launch { drawerState.close() } },
@@ -127,6 +162,10 @@ fun PatientDashboardScreen(
                 onCaregiverClick = {
                     scope.launch { drawerState.close() }
                     onCaregiverClick()
+                },
+                onAdminClick = {
+                    scope.launch { drawerState.close() }
+                    onAdminClick()
                 },
                 onSosClick = {
                     val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:108"))
@@ -145,7 +184,8 @@ fun PatientDashboardScreen(
                     onGamesClick = onGamesClick,
                     isOnline = true
                 )
-            }
+            },
+            contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
@@ -237,23 +277,23 @@ fun PatientDashboardScreen(
 
                             Spacer(modifier = Modifier.height(20.dp))
 
-                            // Audio & Action Buttons
+                            // Audio & Action Buttons — BIGGER for elderly (60dp height)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                // "Read for Me" Button
+                                // "Read for Me" Button — BIG, CLEAR, TRIPLE FEEDBACK
                                 Surface(
                                     modifier = Modifier
                                         .weight(1.3f)
-                                        .height(52.dp)
-                                        .shadow(3.dp, RoundedCornerShape(14.dp))
-                                        .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                                        .height(60.dp)
+                                        .shadow(4.dp, RoundedCornerShape(16.dp))
+                                        .border(3.dp, Ink, RoundedCornerShape(16.dp))
                                         .clickable {
-                                            HapticUtil.vibrateTap(context)
+                                            ElderlyFeedback.onTap(context)
                                             LocalizationManager.speak("Good day, ${patient.name}! You are safe at home with your family today. Let's do your daily brain activities.")
                                         },
-                                    shape = RoundedCornerShape(14.dp),
+                                    shape = RoundedCornerShape(16.dp),
                                     color = Color.White
                                 ) {
                                     Row(
@@ -261,30 +301,31 @@ fun PatientDashboardScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.Center
                                     ) {
-                                        Icon(Icons.Filled.VolumeUp, null, tint = TeaGreen, modifier = Modifier.size(24.dp))
-                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Icon(Icons.Filled.VolumeUp, null, tint = TeaGreen, modifier = Modifier.size(28.dp))
+                                        Spacer(modifier = Modifier.width(10.dp))
                                         Text(
                                             text = LocalizationManager.t("patient.listen"),
-                                            fontSize = 16.sp,
+                                            fontSize = 20.sp,
                                             fontWeight = FontWeight.Black,
                                             color = Ink
                                         )
                                     }
                                 }
 
-                                // "Sound On" Button
+                                // "Sound On/Off" Button — BIG TOGGLE
                                 Surface(
                                     modifier = Modifier
                                         .weight(0.9f)
-                                        .height(52.dp)
-                                        .shadow(3.dp, RoundedCornerShape(14.dp))
-                                        .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
+                                        .height(60.dp)
+                                        .shadow(4.dp, RoundedCornerShape(16.dp))
+                                        .border(3.dp, Ink, RoundedCornerShape(16.dp))
                                         .clickable {
-                                            HapticUtil.vibrateTap(context)
+                                            ElderlyFeedback.onTap(context)
                                             isSoundOn = !isSoundOn
+                                            scope.launch { settingsDataStore.setSoundOn(isSoundOn) }
                                             if (!isSoundOn) LocalizationManager.stopSpeaking()
                                         },
-                                    shape = RoundedCornerShape(14.dp),
+                                    shape = RoundedCornerShape(16.dp),
                                     color = if (isSoundOn) Color(0xFFFEF3C7) else Color.White
                                 ) {
                                     Row(
@@ -293,8 +334,8 @@ fun PatientDashboardScreen(
                                         horizontalArrangement = Arrangement.Center
                                     ) {
                                         Text(
-                                            text = if (isSoundOn) "🔊 Sound On" else "🔇 Muted",
-                                            fontSize = 14.sp,
+                                            text = if (isSoundOn) "\uD83D\uDD0A Sound On" else "\uD83D\uDD07 Muted",
+                                            fontSize = 18.sp,
                                             fontWeight = FontWeight.Black,
                                             color = Ink
                                         )
@@ -330,7 +371,7 @@ fun PatientDashboardScreen(
                                     .shadow(2.dp, RoundedCornerShape(10.dp))
                                     .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         NotificationHelper.sendMedicineReminder(context, "Morning Medicine & BP Tablet")
                                         NotificationHelper.sendHydrationReminder(context)
                                         LocalizationManager.speak("Medication and hydration reminders sent to your phone notification bar.")
@@ -354,7 +395,11 @@ fun PatientDashboardScreen(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        routineItems.forEachIndexed { idx, item ->
+                        items(
+                            items = routineItems,
+                            key = { it.key }
+                        ) { item ->
+                            val idx = routineItems.indexOf(item)
                             Surface(
                                 shape = RoundedCornerShape(14.dp),
                                 color = if (item.isDone) Color(0xFFF1F5F9) else Color.White,
@@ -364,9 +409,12 @@ fun PatientDashboardScreen(
                                     .shadow(2.dp, RoundedCornerShape(14.dp))
                                     .border(2.dp, if (item.isDone) Color.Gray else Ink, RoundedCornerShape(14.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         routineItems[idx] = item.copy(isDone = !item.isDone)
+                                        val completed = routineItems.filter { it.isDone }.map { it.key }.toSet()
+                                        scope.launch { settingsDataStore.setRoutineCompleted(completed) }
                                         if (!item.isDone) {
+                                            ElderlyFeedback.onSuccess(context)
                                             LocalizationManager.speak("Completed: ${item.title}")
                                         }
                                     }
@@ -425,7 +473,7 @@ fun PatientDashboardScreen(
                             .shadow(4.dp, RoundedCornerShape(22.dp))
                             .border(3.dp, Ink, RoundedCornerShape(22.dp))
                             .clickable {
-                                HapticUtil.vibrateTap(context)
+                                ElderlyFeedback.onTap(context)
                                 onEchoesClick()
                             },
                         shape = RoundedCornerShape(22.dp),
@@ -619,7 +667,7 @@ fun PatientDashboardScreen(
                                     .shadow(2.dp, RoundedCornerShape(12.dp))
                                     .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         onPlayGame(gId)
                                     }
                             ) {
@@ -767,7 +815,7 @@ fun PatientDashboardScreen(
                                             .shadow(3.dp, RoundedCornerShape(14.dp))
                                             .border(2.dp, Ink, RoundedCornerShape(14.dp))
                                             .clickable {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 LocalizationManager.speak("${currentMemory.name}, your ${currentMemory.relation}. ${currentMemory.description}")
                                             },
                                         shape = RoundedCornerShape(14.dp),
@@ -797,7 +845,7 @@ fun PatientDashboardScreen(
                                             .shadow(3.dp, RoundedCornerShape(14.dp))
                                             .border(2.dp, Ink, RoundedCornerShape(14.dp))
                                             .clickable {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 memoryIndex++
                                             },
                                         shape = RoundedCornerShape(14.dp),
@@ -870,7 +918,7 @@ fun PatientDashboardScreen(
                                     .shadow(2.dp, RoundedCornerShape(12.dp))
                                     .border(2.dp, Ink, RoundedCornerShape(12.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         LocalizationManager.speak("Playing calming bamboo flute and 40 Hertz sensory rhythm.")
                                     }
                             ) {
@@ -924,8 +972,9 @@ fun PatientDashboardScreen(
                                             .shadow(2.dp, RoundedCornerShape(12.dp))
                                             .border(2.dp, Ink, RoundedCornerShape(12.dp))
                                             .clickable {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 selectedMood = key
+                                                scope.launch { settingsDataStore.setMood(key) }
                                                 LocalizationManager.speak("Thank you for sharing. You selected $label.")
                                             }
                                     ) {

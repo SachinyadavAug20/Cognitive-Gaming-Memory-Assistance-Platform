@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
@@ -50,6 +50,7 @@ fun BihuDholGame(onBack: () -> Unit) {
     )
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -167,7 +168,7 @@ fun BihuDholGame(onBack: () -> Unit) {
                         .shadow(4.dp, RoundedCornerShape(20.dp))
                         .border(3.dp, Ink, RoundedCornerShape(20.dp))
                         .clickable {
-                            HapticUtil.vibrateTap(context)
+                            ElderlyFeedback.onTap(context)
                             score += 25
                             combo++
                             lastFeedback = "Dha! Great rhythm!"
@@ -195,7 +196,7 @@ fun BihuDholGame(onBack: () -> Unit) {
                         .shadow(4.dp, RoundedCornerShape(20.dp))
                         .border(3.dp, Ink, RoundedCornerShape(20.dp))
                         .clickable {
-                            HapticUtil.vibrateTap(context)
+                            ElderlyFeedback.onTap(context)
                             score += 25
                             combo++
                             lastFeedback = "Ti-Khiti! Perfect beat!"

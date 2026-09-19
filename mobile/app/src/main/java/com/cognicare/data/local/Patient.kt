@@ -1,8 +1,10 @@
 package com.cognicare.data.local
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+@Immutable
 @Entity(tableName = "patients")
 data class Patient(
     @PrimaryKey val id: Long,
@@ -14,6 +16,7 @@ data class Patient(
     val language: String = "en"
 )
 
+@Immutable
 @Entity(tableName = "game_scores")
 data class GameScore(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

@@ -52,6 +52,7 @@ fun LotusPainterGame(onBack: () -> Unit) {
     var selectedColor by remember { mutableStateOf(palette[0]) }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {

@@ -56,6 +56,7 @@ fun CogniCareDrawerContent(
     onGamesClick: () -> Unit = {},
     onEchoesClick: () -> Unit = {},
     onCaregiverClick: () -> Unit,
+    onAdminClick: () -> Unit = {},
     onSosClick: () -> Unit,
     onLogout: () -> Unit
 ) {
@@ -168,6 +169,15 @@ fun CogniCareDrawerContent(
                     title = LocalizationManager.t("home.caregiver.title"),
                     subtitle = "Vitals, Telemetry & Adherence",
                     onClick = onCaregiverClick
+                )
+
+                DrawerNeoButton(
+                    icon = Icons.Filled.AdminPanelSettings,
+                    title = "Mission Control",
+                    subtitle = "Admin Dashboard & Analytics",
+                    badge = "Admin",
+                    accentColor = Color(0xFF1E293B),
+                    onClick = onAdminClick
                 )
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Ink.copy(alpha = 0.2f), thickness = 2.dp)

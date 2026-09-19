@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +67,7 @@ fun ChurchBellGame(onBack: () -> Unit) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = { Text("Church Bell", color = Color.White) },
@@ -156,7 +157,7 @@ fun ChurchBellGame(onBack: () -> Unit) {
                             .border(3.dp, color, CircleShape)
                             .clickable {
                                 if (phase == "input" && !showResult) {
-                                    HapticUtil.vibrate(context, 60)
+                                    ElderlyFeedback.onSuccess(context)
                                     val newInput = playerInput + index
                                     playerInput = newInput
 

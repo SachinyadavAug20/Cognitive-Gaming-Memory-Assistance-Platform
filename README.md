@@ -45,7 +45,12 @@ graph TD
 | `mobile/` | Native Android mobile & tablet application (Kotlin) — hardware camera, regional TTS, haptics, kiosk mode |
 | `omkar/` | Standalone sub-project demo games (A-Day-in-My-World, Bazaar Buddies, Memory Garden, Memory Road) |
 
-> **Detailed technical references:** `frontend/INFO.md`, `backend/INFO.md`, and `mobile/INFO.md`.
+### Key Files
+| File | Description |
+|---|---|
+| `frontend/INFO.md` | Frontend technical reference |
+| `backend/INFO.md` | Backend technical reference |
+| `mobile/INFO.md` | Mobile app technical reference (88 Kotlin files, 42 games) |
 
 ---
 
@@ -87,7 +92,7 @@ graph TD
 |---|---|---|
 | **Frontend** | Next.js 16.3.3, React 19.2, TypeScript 5, Tailwind 4, Three.js, recharts 3, next-intl 4, zustand, MediaPipe tasks-vision, html5-qrcode, gsap | Zero-flicker i18n, Web Audio/TTS, 3D kinematics, SSR + `next/dynamic` code splitting |
 | **Backend** | Spring Boot 4.1, Java 17, Spring Data JPA, Hibernate, Apache PDFBox 3.0.3, hand-rolled HS256 JWT | REST API, multipart upload, JWT auth (fail-open on `/patients/**`), surveillance/SOS |
-| **Mobile** | Kotlin, Android SDK 35, Jetpack Compose, CameraX, ML Kit, ExoPlayer | Native Android kiosk mode, QR scanner, offline TTS, haptic feedback |
+| **Mobile** | Kotlin 2.1.0, Android SDK 35, Jetpack Compose (Material3), CameraX, ML Kit, Room DB, Retrofit2, Coil | 88 Kotlin files, 42 games, 11-language TTS, dark theme, DataStore persistence, offline-first |
 | **AI / LLM** | Ollama (`qwen2.5:1.5b` / `llama3.2:3b`) | Offline-first clinical report analysis + conversational reminiscence |
 | **Database** | MariaDB (default) / H2 file-backed (demo profile) | Multi-patient medical schemas, family albums, biomarker/surveillance history |
 

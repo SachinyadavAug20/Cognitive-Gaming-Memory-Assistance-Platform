@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 
 data class BellPair(val id: Int, val emoji: String, val name: String)
 
@@ -52,6 +52,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = { Text("Temple Prayer", color = Color.White) },
@@ -156,7 +157,7 @@ fun TemplePrayerGame(onBack: () -> Unit) {
                                     )
                                     .clickable {
                                         if (!isRevealed && !showResult) {
-                                            HapticUtil.vibrate(context, 60)
+                                            ElderlyFeedback.onSuccess(context)
                                             if (firstSelection == null) {
                                                 // First card
                                                 firstSelection = pair

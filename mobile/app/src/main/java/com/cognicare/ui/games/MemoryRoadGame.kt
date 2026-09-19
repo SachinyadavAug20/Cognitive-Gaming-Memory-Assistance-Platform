@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,8 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 
+@Immutable
 data class Landmark(
     val emoji: String,
     val name: String,
@@ -78,6 +80,7 @@ fun MemoryRoadGame(onBack: () -> Unit) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = { Text("Memory Road", color = Color.White) },
@@ -206,14 +209,14 @@ fun MemoryRoadGame(onBack: () -> Unit) {
                                 isTarget = isTarget,
                                 onClick = {
                                     if (isTarget && !showSuccess) {
-                                        HapticUtil.vibrate(context, 80)
+                                        ElderlyFeedback.onSuccess(context)
                                         foundCount++
                                         score += 10 * level
                                         if (foundCount >= totalTargets) {
                                             showSuccess = true
                                         }
                                     } else if (!isTarget && !showSuccess) {
-                                        HapticUtil.vibrate(context, 200)
+                                        ElderlyFeedback.onError(context)
                                         showWrong = true
                                         wrongItem = item
                                         lives--

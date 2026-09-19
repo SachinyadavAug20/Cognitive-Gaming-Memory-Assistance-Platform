@@ -1,6 +1,6 @@
 package com.cognicare.ui.games
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import com.cognicare.ui.theme.*
 
@@ -15,6 +15,7 @@ enum class CognitiveDomain(val label: String) {
     ADVANCED("Advanced")
 }
 
+@Immutable
 data class GameConfig(
     val id: String,
     val title: String,

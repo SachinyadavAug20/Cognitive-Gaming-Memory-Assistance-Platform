@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
@@ -86,6 +86,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
     val expectedChange = (selectedNote ?: 0) - totalCost
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -205,7 +206,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                     .shadow(3.dp, RoundedCornerShape(14.dp))
                                     .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         phase = "market"
                                         LocalizationManager.speak("Welcome to the morning bazaar! Find your items and add them to your bamboo basket.")
                                     },
@@ -388,7 +389,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                 modifier = Modifier
                                                     .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                                                     .clickable {
-                                                        HapticUtil.vibrateTap(context)
+                                                        ElderlyFeedback.onTap(context)
                                                         if (count == 1) cart.remove(item.id) else cart[item.id] = count - 1
                                                     }
                                             ) {
@@ -410,10 +411,10 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                 .border(1.5.dp, Ink, RoundedCornerShape(10.dp))
                                                 .clickable {
                                                     if (totalCost + item.price <= budget) {
-                                                        HapticUtil.vibrateTap(context)
+                                                        ElderlyFeedback.onTap(context)
                                                         cart[item.id] = count + 1
                                                     } else {
-                                                        HapticUtil.vibrateError(context)
+                                                        ElderlyFeedback.onError(context)
                                                         LocalizationManager.speak("Not enough budget remaining.")
                                                     }
                                                 }
@@ -444,7 +445,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                             .shadow(3.dp, RoundedCornerShape(16.dp))
                             .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
                             .clickable(enabled = totalCost > 0) {
-                                HapticUtil.vibrateTap(context)
+                                ElderlyFeedback.onTap(context)
                                 phase = "cashier"
                                 LocalizationManager.speak("At the cashier counter. Your total bill is ₹$totalCost. Select a note from your wallet to pay.")
                             }
@@ -520,7 +521,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                             .shadow(2.dp, RoundedCornerShape(12.dp))
                                             .border(2.dp, if (isChosen) Color.Black else Ink, RoundedCornerShape(12.dp))
                                             .clickable(enabled = canPay) {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 selectedNote = noteValue
                                                 selectedChangeChoice = null
                                                 isChangeCorrect = null
@@ -594,11 +595,11 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                                     selectedChangeChoice = choice
                                                     if (choice == expectedChange) {
                                                         isChangeCorrect = true
-                                                        HapticUtil.vibrateSuccess(context)
+                                                        ElderlyFeedback.onSuccess(context)
                                                         LocalizationManager.speak("Correct! ₹$expectedChange is your change. Shopping complete!")
                                                     } else {
                                                         isChangeCorrect = false
-                                                        HapticUtil.vibrateError(context)
+                                                        ElderlyFeedback.onError(context)
                                                         LocalizationManager.speak("Not quite. Check your calculation again.")
                                                     }
                                                 }
@@ -627,7 +628,7 @@ fun BazaarBuddiesGame(onBack: () -> Unit) {
                                             .shadow(3.dp, RoundedCornerShape(14.dp))
                                             .border(2.dp, Ink, RoundedCornerShape(14.dp))
                                             .clickable {
-                                                HapticUtil.vibrateTap(context)
+                                                ElderlyFeedback.onTap(context)
                                                 phase = "receipt"
                                             },
                                         shape = RoundedCornerShape(14.dp),

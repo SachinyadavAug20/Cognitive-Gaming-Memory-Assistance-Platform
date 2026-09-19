@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +42,7 @@ import com.cognicare.data.local.Patient
 import com.cognicare.ui.components.CogniCareTopBar
 import com.cognicare.ui.games.MajuliWalk3DGame
 import com.cognicare.ui.games.RiverLanternsGame
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import com.cognicare.util.PatientMediaManager
 import kotlin.math.*
@@ -52,6 +53,7 @@ private val TeaGreen = Color(0xFF1B663E)
 private val Marigold = Color(0xFFE66A00)
 private val CanvasBg = Color(0xFF121814)
 
+@Immutable
 data class MemoryNode3D(
     val id: String,
     val title: String,
@@ -156,7 +158,8 @@ fun EchoesOfHome3DScreen(
                 onBackClick = onBack,
                 onMenuClick = null
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
         Column(
             modifier = Modifier
@@ -204,7 +207,7 @@ fun EchoesOfHome3DScreen(
                             modifier = Modifier
                                 .border(1.5.dp, Color.White, RoundedCornerShape(10.dp))
                                 .clickable {
-                                    HapticUtil.vibrateTap(context)
+                                    ElderlyFeedback.onTap(context)
                                     autoRotate = !autoRotate
                                 }
                         ) {
@@ -237,7 +240,7 @@ fun EchoesOfHome3DScreen(
                                     .shadow(if (isSelected) 2.dp else 0.dp, RoundedCornerShape(10.dp))
                                     .border(1.5.dp, if (isSelected) Marigold else Color.White.copy(alpha = 0.3f), RoundedCornerShape(10.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         activeScene = idx
                                     },
                                 shape = RoundedCornerShape(10.dp),
@@ -535,7 +538,7 @@ fun EchoesOfHome3DScreen(
                                         .shadow(2.dp, RoundedCornerShape(12.dp))
                                         .border(2.dp, Ink, RoundedCornerShape(12.dp))
                                         .clickable {
-                                            HapticUtil.vibrateTap(context)
+                                            ElderlyFeedback.onTap(context)
                                             LocalizationManager.speak("${node.title}, your ${node.relation}. ${node.subtitle}")
                                         },
                                     shape = RoundedCornerShape(12.dp),
@@ -588,7 +591,7 @@ fun EchoesOfHome3DScreen(
                                     .shadow(2.dp, RoundedCornerShape(12.dp))
                                     .border(2.dp, if (isFocused) Marigold else Ink, RoundedCornerShape(12.dp))
                                     .clickable {
-                                        HapticUtil.vibrateTap(context)
+                                        ElderlyFeedback.onTap(context)
                                         selectedNode = node
                                         LocalizationManager.speak("${node.title}, ${node.relation}. ${node.subtitle}")
                                     }

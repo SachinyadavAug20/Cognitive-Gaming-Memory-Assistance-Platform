@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import com.cognicare.util.PatientMediaManager
 
@@ -161,27 +161,27 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Voice Assistance Pill for Elderly Patients
+        // Voice Assistance Pill — BIGGER for elderly
         Surface(
-            shape = RoundedCornerShape(14.dp),
+            shape = RoundedCornerShape(16.dp),
             color = Color.White,
             modifier = Modifier
-                .shadow(2.dp, RoundedCornerShape(14.dp))
-                .border(2.dp, Ink, RoundedCornerShape(14.dp))
+                .shadow(3.dp, RoundedCornerShape(16.dp))
+                .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
                 .clickable {
-                    HapticUtil.vibrateTap(context)
+                    ElderlyFeedback.onTap(context)
                     LocalizationManager.speak("Welcome to CogniCare. Tap the green card to enter your daily session as Biren Borah, or tap the orange button below to scan your QR health card.")
                 }
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Filled.VolumeUp, contentDescription = "Voice Guide", tint = TeaGreen, modifier = Modifier.size(22.dp))
-                Spacer(modifier = Modifier.width(8.dp))
+                Icon(Icons.Filled.VolumeUp, contentDescription = "Voice Guide", tint = TeaGreen, modifier = Modifier.size(26.dp))
+                Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = "Tap to listen: Voice Guide",
-                    fontSize = 14.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Black,
                     color = Ink
                 )
@@ -277,18 +277,18 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // Big 1-Tap Entry Button
+                // Big 1-Tap Entry Button — 68dp height, huge text
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(60.dp)
-                        .shadow(3.dp, RoundedCornerShape(16.dp))
-                        .border(2.5.dp, Ink, RoundedCornerShape(16.dp))
+                        .height(68.dp)
+                        .shadow(4.dp, RoundedCornerShape(18.dp))
+                        .border(3.dp, Ink, RoundedCornerShape(18.dp))
                         .clickable {
-                            HapticUtil.vibrateTap(context)
+                            ElderlyFeedback.onTap(context)
                             onSelectDemoPatient(1L)
                         },
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(18.dp),
                     color = TeaGreen
                 ) {
                     Row(
@@ -296,11 +296,11 @@ fun LoginScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Filled.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Icon(Icons.Filled.Person, contentDescription = null, tint = Color.White, modifier = Modifier.size(28.dp))
+                        Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = "START BIREN'S SESSION →",
-                            fontSize = 17.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.White,
                             letterSpacing = 0.5.sp
@@ -336,7 +336,7 @@ fun LoginScreen(
                                 .shadow(1.dp, RoundedCornerShape(12.dp))
                                 .border(1.5.dp, Ink, RoundedCornerShape(12.dp))
                                 .clickable {
-                                    HapticUtil.vibrateTap(context)
+                                    ElderlyFeedback.onTap(context)
                                     onSelectDemoPatient(patient.id)
                                 },
                             shape = RoundedCornerShape(12.dp),
@@ -437,7 +437,7 @@ fun LoginScreen(
                             .shadow(3.dp, RoundedCornerShape(14.dp))
                             .border(2.5.dp, Ink, RoundedCornerShape(14.dp))
                             .clickable {
-                                HapticUtil.vibrateTap(context)
+                                ElderlyFeedback.onTap(context)
                                 onScanQR()
                             },
                         shape = RoundedCornerShape(14.dp),

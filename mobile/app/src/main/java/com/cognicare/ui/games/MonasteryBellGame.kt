@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlinx.coroutines.delay
 
@@ -65,7 +65,7 @@ fun MonasteryBellGame(onBack: () -> Unit) {
         delay(600)
         for (bellId in sequence) {
             activeGlowingBell = bellId
-            HapticUtil.vibrateTap(context)
+            ElderlyFeedback.onTap(context)
             delay(700)
             activeGlowingBell = null
             delay(350)
@@ -79,6 +79,7 @@ fun MonasteryBellGame(onBack: () -> Unit) {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -167,18 +168,18 @@ fun MonasteryBellGame(onBack: () -> Unit) {
                                     shape = RoundedCornerShape(20.dp)
                                 )
                                 .clickable(enabled = !isShowingSequence) {
-                                    HapticUtil.vibrateTap(context)
+                                    ElderlyFeedback.onTap(context)
                                     if (bell.id == sequence[userIndex]) {
                                         userIndex++
                                         if (userIndex == sequence.size) {
-                                            HapticUtil.vibrateSuccess(context)
+                                            ElderlyFeedback.onSuccess(context)
                                             score += 50
                                             feedbackMessage = "Correct! Adding another bell..."
                                             val nextId = (0..3).random()
                                             sequence = sequence + nextId
                                         }
                                     } else {
-                                        HapticUtil.vibrateError(context)
+                                        ElderlyFeedback.onError(context)
                                         feedbackMessage = "Missed! Watch again"
                                         userIndex = 0
                                     }
@@ -227,18 +228,18 @@ fun MonasteryBellGame(onBack: () -> Unit) {
                                     shape = RoundedCornerShape(20.dp)
                                 )
                                 .clickable(enabled = !isShowingSequence) {
-                                    HapticUtil.vibrateTap(context)
+                                    ElderlyFeedback.onTap(context)
                                     if (bell.id == sequence[userIndex]) {
                                         userIndex++
                                         if (userIndex == sequence.size) {
-                                            HapticUtil.vibrateSuccess(context)
+                                            ElderlyFeedback.onSuccess(context)
                                             score += 50
                                             feedbackMessage = "Correct! Adding another bell..."
                                             val nextId = (0..3).random()
                                             sequence = sequence + nextId
                                         }
                                     } else {
-                                        HapticUtil.vibrateError(context)
+                                        ElderlyFeedback.onError(context)
                                         feedbackMessage = "Missed! Watch again"
                                         userIndex = 0
                                     }

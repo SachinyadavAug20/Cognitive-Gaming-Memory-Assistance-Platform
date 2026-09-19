@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 import kotlin.math.sin
 
@@ -56,6 +56,7 @@ fun RiverLanternsGame(onBack: () -> Unit) {
     )
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -129,7 +130,7 @@ fun RiverLanternsGame(onBack: () -> Unit) {
                     .fillMaxWidth()
                     .pointerInput(Unit) {
                         detectTapGestures { offset ->
-                            HapticUtil.vibrateTap(context)
+                            ElderlyFeedback.onTap(context)
                             val newLantern = FloatingLantern(
                                 id = System.currentTimeMillis(),
                                 x = offset.x,

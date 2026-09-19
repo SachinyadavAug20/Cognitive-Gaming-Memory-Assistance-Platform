@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 import com.cognicare.util.LocalizationManager
 
 private val Ink = Color(0xFF16120E)
@@ -57,6 +57,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
     var isDishDone by remember { mutableStateOf(false) }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = {
@@ -164,7 +165,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
                             )
                             .clickable(enabled = !isCompleted && !isDishDone) {
                                 if (step.stepNumber == nextExpectedStep) {
-                                    HapticUtil.vibrateSuccess(context)
+                                    ElderlyFeedback.onSuccess(context)
                                     completedSteps.add(step.stepNumber)
                                     nextExpectedStep++
                                     if (nextExpectedStep > 5) {
@@ -174,7 +175,7 @@ fun HeritageKitchenGame(onBack: () -> Unit) {
                                         LocalizationManager.speak("Step completed: ${step.text}")
                                     }
                                 } else {
-                                    HapticUtil.vibrateError(context)
+                                    ElderlyFeedback.onError(context)
                                     LocalizationManager.speak("Not quite yet! Look for Step $nextExpectedStep first.")
                                 }
                             }

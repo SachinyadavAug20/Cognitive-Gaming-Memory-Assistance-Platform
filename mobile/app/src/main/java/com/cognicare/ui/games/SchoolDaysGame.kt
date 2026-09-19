@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cognicare.ui.theme.*
-import com.cognicare.util.HapticUtil
+import com.cognicare.util.ElderlyFeedback
 
 data class WordPair(val english: String, val local: String, val emoji: String)
 
@@ -64,6 +64,7 @@ fun SchoolDaysGame(onBack: () -> Unit) {
     LaunchedEffect(level) { setupLevel() }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
         topBar = {
             TopAppBar(
                 title = { Text("School Days", color = Color.White) },
@@ -163,7 +164,7 @@ fun SchoolDaysGame(onBack: () -> Unit) {
                 Button(
                     onClick = {
                         if (!showResult) {
-                            HapticUtil.vibrate(context, 60)
+                            ElderlyFeedback.onSuccess(context)
                             selected = option
                             if (isCorrect) {
                                 score += 10 * level
