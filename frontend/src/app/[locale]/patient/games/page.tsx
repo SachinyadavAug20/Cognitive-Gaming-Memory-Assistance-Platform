@@ -112,6 +112,7 @@ function getGameCardBg(id: string): string {
     case "alpana":
     case "grandchild-chat":
     case "family-emotions":
+    case "card-mastery":
       return "bg-[#E11D48]"; // vibrant Kopou crimson rose
 
     // 5. Vibrant Royal Orchid Purple

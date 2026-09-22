@@ -1006,7 +1006,42 @@ export function ActivityIllustration({ gameId, className = "h-12 w-12 sm:h-14 sm
       return <CompassIllustration className={className} />;
     case "memory-road":
       return <RoadSignIllustration className={className} />;
+    case "card-mastery":
+      return <PlayingCardsIllustration className={className} />;
     default:
       return <VillageSunriseIllustration className={className} />;
   }
+}
+
+/**
+ * Traditional 54 Playing Cards Illustration (Ace of Hearts and King of Spades)
+ */
+export function PlayingCardsIllustration({ className = "h-12 w-12 sm:h-14 sm:w-14" }: IllustrationProps) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-label="Heritage Playing Cards" role="img">
+      {/* Background Card (King of Spades, tilted) */}
+      <g transform="rotate(-12 24 36)">
+        <rect x="12" y="10" width="30" height="42" rx="4" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2.2" />
+        {/* Top-left rank & suit */}
+        <text x="15" y="19" fill="#0F172A" fontSize="7" fontWeight="bold" fontFamily="serif">K</text>
+        <path d="M17 21 C17 20 18 19 19 19 C20 19 21 20 21 21 C21 22 20 23 19 24.5 C18 23 17 22 17 21 Z M18.5 24 L17.5 26 L20.5 26 Z" fill="#0F172A" />
+        {/* Center spade emblem */}
+        <path d="M23 28 C21 26 21 23 24 23 C26 23 27 25 27 28 C27 30 25 32 27 34 C29 32 27 30 27 28 Z" fill="#0F172A" />
+        <path d="M27 24 C27 21 29 20 31 20 C33 20 35 21 35 24 C35 26.5 33 29 31 31.5 C29 29 27 26.5 27 24 Z" fill="#0F172A" />
+        <path d="M29 31 L28 35 L34 35 L33 31 Z" fill="#0F172A" />
+      </g>
+
+      {/* Foreground Card (Ace of Hearts, upright) */}
+      <g transform="rotate(8 38 34)">
+        <rect x="22" y="12" width="30" height="42" rx="4" fill="#FFFFFF" stroke="#0F172A" strokeWidth="2.2" />
+        {/* Top-left rank & suit */}
+        <text x="25" y="21" fill="#DC2626" fontSize="7.5" fontWeight="bold" fontFamily="serif">A</text>
+        <path d="M28 22 C26.5 20.5 24.5 21.5 24.5 23 C24.5 24.8 28 27.5 28 27.5 C28 27.5 31.5 24.8 31.5 23 C31.5 21.5 29.5 20.5 28 22 Z" fill="#DC2626" />
+        {/* Central large Heart pip */}
+        <path d="M37 28 C34 24.5 30 26.5 30 29.5 C30 33 37 38 37 38 C37 38 44 33 44 29.5 C44 26.5 40 24.5 37 28 Z" fill="#DC2626" stroke="#991B1B" strokeWidth="0.5" />
+        {/* Bottom-right inverted A */}
+        <text x="45" y="49" fill="#DC2626" fontSize="7.5" fontWeight="bold" fontFamily="serif" transform="rotate(180 47 47)">A</text>
+      </g>
+    </svg>
+  );
 }

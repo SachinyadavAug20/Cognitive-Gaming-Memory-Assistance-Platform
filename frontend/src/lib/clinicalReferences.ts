@@ -498,7 +498,9 @@ export function getReferencesForGame(gameId: string): ClinicalReference[] {
       ].filter(Boolean);
     case "daily-routine":
     case "sorting":
+    case "card-mastery":
       return [
+        REFERENCE_BY_ID["active-jama-2002"],
         REFERENCE_BY_ID["active-jag-2014"],
         REFERENCE_BY_ID["errorless-clare-2008"],
         REFERENCE_BY_ID["moca-nasreddine-2005"],

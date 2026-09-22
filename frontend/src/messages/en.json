@@ -1109,7 +1109,7 @@
       "findPrompt": "Find all the",
       "findTarget": "Find Target:",
       "startBtn": "Start Road Search",
-      "startButton": "Begin Village Walk",
+      "startButton": "Begin Walk",
       "found": "Found it!",
       "wrong": "That's not it, look for the target.",
       "levelComplete": "Street Cleared!",
@@ -1123,12 +1123,15 @@
       "introTitle": "Village Road Walk",
       "introSubtitle": "Help Amma and Baba find familiar places in the village.",
       "audioPrompt": "Look closely at the village road and tap on the place you need to find.",
-      "startButton": "Begin Walk",
       "listenLabel": "Read for Me",
       "celebrationTitle": "All Places Found!",
       "celebrationSubtitle": "Wonderful! You helped find all the places in the village.",
       "hudProgress": "Places Found",
       "hudAction": "Tap the Place"
+    },
+    "cardMastery": {
+      "title": "Heritage Playing Cards",
+      "desc": "Calming, familiar card exercises for memory, sequencing, pattern matching, and reasoning."
     }
   }
 }

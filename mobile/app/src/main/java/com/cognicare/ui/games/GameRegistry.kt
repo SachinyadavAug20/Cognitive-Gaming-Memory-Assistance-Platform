@@ -61,6 +61,7 @@ object GameRegistry {
         GameConfig("radio", "Nostalgia Radio", "\uD83D\uDCFB", "Tune radio", CognitiveDomain.REMINISCENCE, Color(0xFF4E342E)),
         GameConfig("ancestral_herbalist", "Herbalist", "\uD83C\uDF3F", "Healing herbs", CognitiveDomain.REMINISCENCE, Color(0xFF1B5E20)),
         GameConfig("family_emotions", "Family Emotions", "\uD83D\uDE0A", "Social warmth", CognitiveDomain.REMINISCENCE, Color(0xFF880E4F)),
+        GameConfig("card_mastery", "Heritage Cards", "\uD83C\uDCCF", "Card memory & reasoning", CognitiveDomain.MEMORY, Color(0xFFC2185B)),
 
         // Domain 3: Attention / Working Memory / Spatial
         GameConfig("tea_harvest", "Tea Harvest", "\uD83C\uDF3F", "Picking leaves", CognitiveDomain.ATTENTION, Color(0xFF1B5E20)),

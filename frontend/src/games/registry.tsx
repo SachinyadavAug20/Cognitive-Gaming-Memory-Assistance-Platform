@@ -111,6 +111,7 @@ const WeavingGame = dynamic(() => import("./weaving/WeavingGame").then((m) => m.
 const AncestralHerbalistGame = dynamic(() => import("./ancestral-herbalist/AncestralHerbalistGame").then((m) => m.AncestralHerbalistGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const FamilyEmotionsGame = dynamic(() => import("./family-emotions/FamilyEmotionsGame").then((m) => m.FamilyEmotionsGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const TeaGardenMatchGame = dynamic(() => import("./tea-garden-match/TeaGardenMatchGame").then((m) => m.TeaGardenMatchGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const CardMasteryGame = dynamic(() => import("./card-mastery/CardMasteryGame").then((m) => m.CardMasteryGame), { loading: () => <GameLoaderFallback />, ssr: false });
 
 export type ClinicalDomain =
   | "memory"
@@ -583,6 +584,17 @@ export const GAMES: GameDef[] = [
     category: "attention",
     recommended: true,
     component: TeaGardenMatchGame,
+  },
+  {
+    id: "card-mastery",
+    icon: Layers,
+    titleKey: "cardMastery.title",
+    descKey: "cardMastery.desc",
+    accent: "bg-[#C2185B]",
+    domain: "Heritage Playing Cards (Taash)",
+    category: "memory",
+    recommended: true,
+    component: CardMasteryGame,
   },
 ];
 

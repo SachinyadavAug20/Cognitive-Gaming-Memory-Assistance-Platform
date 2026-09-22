@@ -64,6 +64,7 @@ fun GameScreen(
         "jigsaw" -> JigsawGame(onBack = onBack)
         "memory_detective" -> MemoryDetectiveGame(onBack = onBack)
         "dzukou_botanist" -> DzukouBotanistGame(onBack = onBack)
+        "card_mastery", "card-mastery", "heritage_cards", "card_game" -> CardMasteryGame(onBack = onBack)
 
         // Attention & Working Memory
         "tea_garden", "tea_harvest" -> TeaGardenGame(onBack = onBack)

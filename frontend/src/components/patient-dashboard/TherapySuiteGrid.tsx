@@ -133,7 +133,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
   const jigsawStrings = getGameStrings("jigsaw", locale);
   const majuliStrings = getGameStrings("majuli-walk", locale);
   const weavingStrings = getGameStrings("weaving", locale);
-  const memoryRoadStrings = getGameStrings("memory-road", locale);
+  const cardMasteryStrings = getGameStrings("card-mastery", locale);
 
   const handleSpeak = (text: string) => {
     unlockAudio();
@@ -301,17 +301,17 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 4. Finding Signs on the Road (memory-road) - Vibrant Kopou Crimson Rose (#E11D48) */}
+        {/* 4. Heritage Card Memory & Reasoning (card-mastery) - Vibrant Kopou Crimson Rose (#E11D48) */}
         <Link
-          href="/patient/games/memory-road"
-          data-voice-desc={`${memoryRoadStrings.title}. ${memoryRoadStrings.audioPrompt}`}
+          href="/patient/games/card-mastery"
+          data-voice-desc={`${cardMasteryStrings.title}. ${cardMasteryStrings.audioPrompt}`}
           className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#E11D48] p-5 text-white transition-transform hover:scale-[1.01]`}
         >
           {/* Header */}
           <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
             <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
-              <Route className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
-              <span className="truncate">{memoryRoadStrings.title}</span>
+              <Layers className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
+              <span className="truncate">{cardMasteryStrings.title}</span>
             </div>
 
             <button
@@ -319,24 +319,24 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                handleSpeak(`${memoryRoadStrings.title}. ${memoryRoadStrings.audioPrompt}`);
+                handleSpeak(`${cardMasteryStrings.title}. ${cardMasteryStrings.audioPrompt}`);
               }}
               className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-rose-100 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
               title="Read for Me"
-              aria-label={`Read for Me: ${memoryRoadStrings.title}`}
+              aria-label={`Read for Me: ${cardMasteryStrings.title}`}
             >
               <Volume2 className="h-6 w-6 stroke-[2.5]" />
             </button>
           </div>
 
-          {/* Center Visual: Memory Road Landmark Signs Illustration */}
+          {/* Center Visual: Playing Cards Illustration */}
           <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
-            <ActivityIllustration gameId="memory-road" className="h-12 w-12 sm:h-14 sm:w-14" />
+            <ActivityIllustration gameId="card-mastery" className="h-12 w-12 sm:h-14 sm:w-14" />
           </div>
 
           {/* Action Button */}
           <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-rose-100 transition-all">
-            <span>{memoryRoadStrings.startButton || "Find Road Signs"}</span>
+            <span>{cardMasteryStrings.startButton || "Play Cards"}</span>
             <span>➔</span>
           </div>
         </Link>

@@ -57,8 +57,9 @@ export const COGNITIVE_DOMAINS: CognitiveDomainInfo[] = [
       "memory-detective",
       "timeline",
       "ancestral-herbalist",
+      "card-mastery",
     ],
-    spokenIntro: "Showing 6 Memory activities. Reconnect with family memories, life stories, and cherished photographs.",
+    spokenIntro: "Showing 7 Memory activities. Reconnect with family memories, playing cards, life stories, and cherished photographs.",
   },
   {
     key: "attention",
