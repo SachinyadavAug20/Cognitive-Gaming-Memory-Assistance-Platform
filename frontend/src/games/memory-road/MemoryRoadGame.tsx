@@ -898,25 +898,25 @@ export function MemoryRoadGame() {
 
       {/* ─── LEVEL DONE ─── */}
       {phase === "levelDone" && (
-        <div className="flex flex-col items-center gap-5 py-12 text-center">
-          <div className="relative">
-            <Sparkles className="h-16 w-16 text-amber-500 animate-bounce" />
-            <span className="absolute -top-2 -right-2 text-3xl">{targetObj.emoji}</span>
+        <Celebration
+          emoji={targetObj.emoji}
+          title={`${t("levelComplete")} (Street ${currentLevelIdx + 1})`}
+          subtitle={`${t("found")} ${levelConfig.count} ${localizedName(targetObj)}!`}
+          xpEarned={score}
+          accuracy={`${Math.max(0, 100 - errors * 10)}%`}
+          gameTitle="Village Road Walk"
+          gameId="memory-road"
+          level={currentLevelIdx + 1}
+        >
+          <div className="flex flex-col items-center gap-4 mt-2">
+            <ChunkyButton variant="tea" size="xl" onClick={nextLevel}>
+              <span className="flex items-center gap-2">
+                <span>{t("nextLevel")}</span>
+                <ArrowRight className="h-5 w-5" />
+              </span>
+            </ChunkyButton>
           </div>
-          <h3 className="font-serif text-2xl sm:text-3xl font-black text-ink">
-            {t("levelComplete")}
-          </h3>
-          <p className="text-lg font-semibold text-ink-secondary">
-            {t("found")} {levelConfig.count} {localizedName(targetObj)}!
-          </p>
-
-          <ChunkyButton variant="tea" size="xl" onClick={nextLevel}>
-            <span className="flex items-center gap-2">
-              <span>{t("nextLevel")}</span>
-              <ArrowRight className="h-5 w-5" />
-            </span>
-          </ChunkyButton>
-        </div>
+        </Celebration>
       )}
 
       {/* ─── GAME DONE ─── */}
@@ -926,6 +926,10 @@ export function MemoryRoadGame() {
           subtitle={t("celebrationSubtitle")}
           xpEarned={score}
           accuracy={`${Math.max(0, 100 - errors * 10)}%`}
+          gameTitle="Village Road Walk (Wayfinding)"
+          gameId="memory-road"
+          level="All 8 Streets Cleared"
+          emoji="🛕"
         >
           <div className="flex flex-col items-center gap-5 max-w-md mx-auto text-center w-full">
             <div className="flex flex-wrap items-center justify-center gap-3">

@@ -34,6 +34,19 @@ export interface FamilyUploadedPhoto {
   prompt: string;
 }
 
+export interface CommunityAchievement {
+  id: string;
+  patientName: string;
+  gameTitle: string;
+  gameId: string;
+  levelText: string;
+  scoreText: string;
+  timestamp: string;
+  cheers: number;
+  badgeEmoji: string;
+  cheeredByMe?: boolean;
+}
+
 export interface CareSyncState {
   // 1. Doctor Prescription
   prescription: DoctorPrescription;
@@ -48,7 +61,14 @@ export interface CareSyncState {
   familyPhotos: FamilyUploadedPhoto[];
   addFamilyPhoto: (photo: Omit<FamilyUploadedPhoto, "id">) => void;
 
-  // 4. Patient Daily Nutrition & Metabolic Logs
+  // 4. Community Shared Game Achievements
+  communityAchievements: CommunityAchievement[];
+  shareAchievement: (
+    achievement: Omit<CommunityAchievement, "id" | "timestamp" | "cheers" | "cheeredByMe">
+  ) => string;
+  cheerAchievement: (id: string) => void;
+
+  // 5. Patient Daily Nutrition & Metabolic Logs
   morningMedicineTaken: boolean;
   waterGlasses: number;
   mealsTakenToday: string[];
@@ -141,12 +161,64 @@ const DEFAULT_FAMILY_PHOTOS: FamilyUploadedPhoto[] = [
   },
 ];
 
+const DEFAULT_COMMUNITY_ACHIEVEMENTS: CommunityAchievement[] = [
+  {
+    id: "ca_1",
+    patientName: "Biren Borah (Baba)",
+    gameTitle: "Heritage Playing Cards (Taash)",
+    gameId: "card-mastery",
+    levelText: "Level 3 Cleared",
+    scoreText: "100% Accuracy • 320ms Reaction",
+    timestamp: "Today 08:30 AM",
+    cheers: 28,
+    badgeEmoji: "🃏",
+    cheeredByMe: true,
+  },
+  {
+    id: "ca_2",
+    patientName: "Hemlata Devi (Aita)",
+    gameTitle: "Daily Newspaper Puzzles (Dainik)",
+    gameId: "newspaper",
+    levelText: "Sudoku & Word Search Completed",
+    scoreText: "Morning Clarity Milestone",
+    timestamp: "Today 07:50 AM",
+    cheers: 34,
+    badgeEmoji: "📰",
+    cheeredByMe: false,
+  },
+  {
+    id: "ca_3",
+    patientName: "Pranab Hazarika (Koka)",
+    gameTitle: "Village Road Walk",
+    gameId: "memory-road",
+    levelText: "Temple Street Cleared",
+    scoreText: "Found all 4 Landmarks",
+    timestamp: "Yesterday",
+    cheers: 22,
+    badgeEmoji: "🛕",
+    cheeredByMe: false,
+  },
+  {
+    id: "ca_4",
+    patientName: "Biren Borah (Baba)",
+    gameTitle: "Tea Garden Harvest",
+    gameId: "tea-harvest",
+    levelText: "Level 2 Completed",
+    scoreText: "12 Baskets Harvested",
+    timestamp: "Yesterday",
+    cheers: 19,
+    badgeEmoji: "🍃",
+    cheeredByMe: true,
+  },
+];
+
 export const useCareSyncStore = create<CareSyncState>()(
   persist(
     (set, get) => ({
       prescription: DEFAULT_PRESCRIPTION,
       familyNotes: DEFAULT_FAMILY_NOTES,
       familyPhotos: DEFAULT_FAMILY_PHOTOS,
+      communityAchievements: DEFAULT_COMMUNITY_ACHIEVEMENTS,
       morningMedicineTaken: false,
       waterGlasses: 5,
       mealsTakenToday: ["breakfast", "lunch"],
@@ -199,6 +271,34 @@ export const useCareSyncStore = create<CareSyncState>()(
             },
             ...state.familyPhotos,
           ],
+        })),
+
+      shareAchievement: (achievement) => {
+        const id = "ca_" + Date.now();
+        const entry: CommunityAchievement = {
+          ...achievement,
+          id,
+          timestamp: "Just now",
+          cheers: 1,
+          cheeredByMe: true,
+        };
+        set((state) => ({
+          communityAchievements: [entry, ...state.communityAchievements],
+        }));
+        return id;
+      },
+
+      cheerAchievement: (id) =>
+        set((state) => ({
+          communityAchievements: state.communityAchievements.map((a) =>
+            a.id === id
+              ? {
+                  ...a,
+                  cheers: a.cheeredByMe ? Math.max(0, a.cheers - 1) : a.cheers + 1,
+                  cheeredByMe: !a.cheeredByMe,
+                }
+              : a
+          ),
         })),
 
       setMorningMedicineTaken: (taken) => set({ morningMedicineTaken: taken }),

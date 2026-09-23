@@ -16,6 +16,7 @@ import { SUDOKU_PUZZLES, WORD_SEARCH_EN } from "./newspaperData";
 import { playCorrect, playTapFeedback, playEncourage, unlockAudio } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { useLocale } from "next-intl";
+import { Celebration } from "@/components/games/Celebration";
 
 export function DainikNewspaperGame() {
   const locale = useLocale();
@@ -263,15 +264,28 @@ export function DainikNewspaperGame() {
           )}
 
           {isCompleted && (
-            <div className="p-4 rounded-2xl bg-emerald-100 border-3 border-black text-center space-y-2 animate-in zoom-in">
-              <CheckCircle2 className="h-10 w-10 text-tea mx-auto" />
-              <h4 className="font-serif font-black text-xl text-ink">
-                Shabash! Sudoku Solved! 🌸
-              </h4>
-              <p className="text-xs font-bold text-ink-secondary">
-                You earned 50 Brain Points for working memory & logical sequencing!
-              </p>
-            </div>
+            <Celebration
+              title="Shabash! Sudoku Solved! 🌸"
+              subtitle="You solved the 4x4 morning Sudoku puzzle with 100% logical precision!"
+              xpEarned={50}
+              accuracy="100%"
+              gameTitle="Daily Newspaper Puzzles (Dainik)"
+              gameId="newspaper"
+              level="Morning Sudoku Cleared"
+              emoji="📰"
+            >
+              <button
+                onClick={() => {
+                  playTapFeedback();
+                  const p = SUDOKU_PUZZLES[Math.floor(Math.random() * SUDOKU_PUZZLES.length)];
+                  setGrid(p.initialGrid.map((row) => [...row]));
+                  setIsCompleted(false);
+                }}
+                className="btn-tactile px-5 py-2.5 rounded-xl border-2 border-black bg-surface text-ink font-bold text-sm shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-surface-muted"
+              >
+                Play Another Puzzle ➔
+              </button>
+            </Celebration>
           )}
         </div>
       )}
@@ -333,6 +347,30 @@ export function DainikNewspaperGame() {
               })}
             </div>
           </div>
+
+          {/* Word Search Completion Celebration */}
+          {foundWords.length >= WORD_SEARCH_EN.words.length && (
+            <Celebration
+              title="All Words Discovered! 🌿"
+              subtitle="You found all morning culture words with sharp visual acuity!"
+              xpEarned={60}
+              accuracy="100%"
+              gameTitle="Daily Newspaper Puzzles (Dainik)"
+              gameId="newspaper"
+              level="Word Search Cleared"
+              emoji="📰"
+            >
+              <button
+                onClick={() => {
+                  playTapFeedback();
+                  setFoundWords([]);
+                }}
+                className="btn-tactile px-5 py-2.5 rounded-xl border-2 border-black bg-surface text-ink font-bold text-sm shadow-[2px_2px_0px_#000] cursor-pointer hover:bg-surface-muted"
+              >
+                Reset Word Search ↺
+              </button>
+            </Celebration>
+          )}
         </div>
       )}
     </div>

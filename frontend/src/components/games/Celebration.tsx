@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useLocale } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import type { LucideIcon } from "lucide-react";
 import {
   Award,
@@ -10,7 +11,12 @@ import {
   Zap,
   ShieldCheck,
   Paperclip,
+  Share2,
+  MessageCircle,
 } from "lucide-react";
+import { useCareSyncStore } from "@/lib/careSyncStore";
+import { usePatientDetail } from "@/games/usePatientDetail";
+import { playEncourage, playTapFeedback } from "@/lib/sound";
 
 interface CelebrationProps {
   icon?: LucideIcon | React.ComponentType<{ className?: string; size?: number | string }>;
@@ -20,6 +26,9 @@ interface CelebrationProps {
   xpEarned?: number;
   accuracy?: string;
   pieces?: number;
+  gameTitle?: string;
+  gameId?: string;
+  level?: number | string;
   children?: ReactNode;
 }
 
@@ -56,6 +65,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: string;
     cognitiveStatus: string;
     statusEngaged: string;
+    shareCommunity: string;
+    sharedSuccess: string;
+    sendWhatsapp: string;
+    viewCommunity: string;
   }
 > = {
   en: {
@@ -66,6 +79,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "Precision Score",
     cognitiveStatus: "Cognitive Status",
     statusEngaged: "Engaged",
+    shareCommunity: "Share with Family & Community 🤝",
+    sharedSuccess: "Shared to Community & Family Wall! 🎉",
+    sendWhatsapp: "Send on WhatsApp",
+    viewCommunity: "View Community Wall ➔",
   },
   as: {
     milestoneProtocol: "চিকিৎসাগত মাইলষ্টোন প্ৰট’কল // সত্যায়িত",
@@ -75,6 +92,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "সঠিকতা স্ক’ৰ",
     cognitiveStatus: "জ্ঞানমূলক স্থিতি",
     statusEngaged: "সক্ৰিয়",
+    shareCommunity: "পৰিয়াল আৰু সতীৰ্থৰ সৈতে ভাগ-বতৰা কৰক 🤝",
+    sharedSuccess: "সতীৰ্থ আৰু পৰিয়ালৰ ৱাললৈ পঠোৱা হ'ল! 🎉",
+    sendWhatsapp: "হোৱাটছএপত পঠাওক",
+    viewCommunity: "সতীৰ্থৰ পৃষ্ঠা চাওক ➔",
   },
   hi: {
     milestoneProtocol: "नैदानिक मील का पत्थर प्रोटोकॉल // सत्यापित",
@@ -84,6 +105,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "सटीकता स्कोर",
     cognitiveStatus: "संज्ञानात्मक स्थिति",
     statusEngaged: "सक्रिय",
+    shareCommunity: "परिवार और समुदाय के साथ साझा करें 🤝",
+    sharedSuccess: "समुदाय और परिवार की वॉल पर साझा किया गया! 🎉",
+    sendWhatsapp: "व्हाट्सएप पर भेजें",
+    viewCommunity: "कम्युनिटी वॉल देखें ➔",
   },
   bn: {
     milestoneProtocol: "ক্লিনিকাল মাইলফলক প্রোটোকল // যাচাইকৃত",
@@ -93,6 +118,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "নির্ভুলতা স্কোর",
     cognitiveStatus: "জ্ঞানীয় অবস্থা",
     statusEngaged: "সক্রিয়",
+    shareCommunity: "পরিবার ও সম্প্রদায়ের সাথে ভাগ করুন 🤝",
+    sharedSuccess: "কমিউনিটি এবং পরিবারের দেয়ালে শেয়ার করা হয়েছে! 🎉",
+    sendWhatsapp: "হোয়াটসঅ্যাপে পাঠান",
+    viewCommunity: "কমিউনিটি ওয়াল দেখুন ➔",
   },
   mr: {
     milestoneProtocol: "वैद्यकीय टप्पा प्रोटोकॉल // सत्यापित",
@@ -102,6 +131,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "अचूकता गुण",
     cognitiveStatus: "संज्ञानात्मक स्थिती",
     statusEngaged: "सक्रिय",
+    shareCommunity: "कुटुंब आणि समुदायासोबत शेअर करा 🤝",
+    sharedSuccess: "समुदाय आणि कुटुंब वॉलवर शेअर केले! 🎉",
+    sendWhatsapp: "व्हॉट्सॲपवर पाठवा",
+    viewCommunity: "कम्युनिटी वॉल पहा ➔",
   },
   ne: {
     milestoneProtocol: "चिकित्सीय माइलस्टोन प्रोटोकल // प्रमाणित",
@@ -111,6 +144,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "शुद्धता अङ्क",
     cognitiveStatus: "संज्ञानात्मक अवस्था",
     statusEngaged: "सक्रिय",
+    shareCommunity: "परिवार र समुदायसँग साझा गर्नुहोस् 🤝",
+    sharedSuccess: "समुदाय र परिवारको भित्तामा साझा गरियो! 🎉",
+    sendWhatsapp: "ह्वाट्सएपमा पठाउनुहोस्",
+    viewCommunity: "समुदाय भित्ता हेर्नुहोस् ➔",
   },
   mni: {
     milestoneProtocol: "ক্লিনিকল মাইলস্টোন প্রোটোকোল // চৎনবা য়ারবা",
@@ -120,15 +157,23 @@ const CELEBRATION_I18N: Record<
     precisionScore: "চুংশিনবা স্কোর",
     cognitiveStatus: "ৱাখলগী ফীভম",
     statusEngaged: "য়াওশিনবা",
+    shareCommunity: "ইমুং-মনুং অমসুং কম্যুনিতীগা য়াম্না শেয়ার তৌবীযু 🤝",
+    sharedSuccess: "কম্যুনিতী অমসুং ইমুংগী ফম্বাকতা শেয়ার তৌরে! 🎉",
+    sendWhatsapp: "ৱাটসএপতা থাবীয়ু",
+    viewCommunity: "কম্যুনিতী ৱাল য়েংবীযু ➔",
   },
   brx: {
-    milestoneProtocol: "फाहामथाय बिथांखि दाबि // थার जाबाय",
+    milestoneProtocol: "फाहामथाय बिथांखि दाबि // थार जाबाय",
     objectiveComplete: "फाहामथाय थांखि फोजोबबाय",
     defaultSubtitle: "मेमोरी बाहागो लानायखौ नायबिजिरबाय आरो डिजिटल रेकर्डआव दोनबाय।",
     reminiscenceExp: "गोसोखां महर",
     precisionScore: "गेबेंथि स्क'र",
     cognitiveStatus: "मेमोरी थाथाय",
     statusEngaged: "नाजाबाय थानाय",
+    shareCommunity: "नखर आरो समाजजों रानना ला 🤝",
+    sharedSuccess: "समाजनि आरो नखरनि वालआव रानबाय! 🎉",
+    sendWhatsapp: "व्हाट्सएपआव हर",
+    viewCommunity: "समाज वाल नाय ➔",
   },
   grt: {
     milestoneProtocol: "Sanani Gadang Gimin Tik Ka∙gimin",
@@ -138,6 +183,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "Tik ong∙ani Skol",
     cognitiveStatus: "Gisikni Gadang",
     statusEngaged: "Bak ra∙enga",
+    shareCommunity: "Nokdang aro Songadam baksa bak ra·pabo 🤝",
+    sharedSuccess: "Songadam aro nokdangni walo bak ra·aha! 🎉",
+    sendWhatsapp: "WhatsApp-o watbo",
+    viewCommunity: "Songadam Wal-ko Nibo ➔",
   },
   kha: {
     milestoneProtocol: "Ka Rukom Pynkhiah ba la Pynshisha",
@@ -147,6 +196,10 @@ const CELEBRATION_I18N: Record<
     precisionScore: "Ka Jingbha ka jingkhein",
     cognitiveStatus: "Ka Jingmut Jingpyrkhat",
     statusEngaged: "Mynjur",
+    shareCommunity: "Iasam bad ka ing ka sem bad ka imlang sahlang 🤝",
+    sharedSuccess: "La pynsaphriang ha ka imlang sahlang bad ka ing! 🎉",
+    sendWhatsapp: "Phah ha WhatsApp",
+    viewCommunity: "Peit ia ka Imlang Sahlang ➔",
   },
   lus: {
     milestoneProtocol: "Inenkawlna Hlawhtlinna // Nemngheh",
@@ -156,23 +209,58 @@ const CELEBRATION_I18N: Record<
     precisionScore: "Dikna Score",
     cognitiveStatus: "Hriatna Dinhmun",
     statusEngaged: "Tel Mek",
+    shareCommunity: "Chhungkua leh khawtlang hnenah hriattir rawh 🤝",
+    sharedSuccess: "Khawtlang leh chhungkaw bangah tarlan a ni ta! 🎉",
+    sendWhatsapp: "WhatsApp-ah thawn rawh",
+    viewCommunity: "Khawtlang Bang En Rawh ➔",
   },
 };
 
 export function Celebration({
   icon: Icon = Award,
+  emoji,
   title,
   subtitle,
   xpEarned = 100,
   accuracy = "100%",
+  gameTitle,
+  gameId,
+  level,
   children,
 }: CelebrationProps) {
   const locale = useLocale();
+  const pathname = usePathname();
+  const { detail } = usePatientDetail();
   const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
   const c18n = CELEBRATION_I18N[normLoc] || CELEBRATION_I18N.en;
   const resolvedSubtitle = subtitle || c18n.defaultSubtitle;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [xpDisplay, setXpDisplay] = useState(0);
+  const [sharedToCommunity, setSharedToCommunity] = useState(false);
+
+  const patientDisplayName = detail?.name || "Biren Borah (Baba)";
+  const inferredGameId = gameId || pathname.split("/patient/games/")[1]?.split("/")[0] || "therapy-game";
+  const inferredGameTitle = gameTitle || title || "Therapy Game";
+  const inferredLevelText = level ? `Level ${level} Cleared` : "Session Cleared";
+  const inferredScoreText = accuracy ? `${accuracy} Precision • +${xpEarned} XP` : `+${xpEarned} XP`;
+  const badge = emoji || "🏆";
+
+  const handleShareToCommunity = () => {
+    playTapFeedback();
+    playEncourage();
+    setSharedToCommunity(true);
+    useCareSyncStore.getState().shareAchievement({
+      patientName: patientDisplayName,
+      gameTitle: inferredGameTitle,
+      gameId: inferredGameId,
+      levelText: inferredLevelText,
+      scoreText: inferredScoreText,
+      badgeEmoji: badge,
+    });
+  };
+
+  const whatsAppText = `🌸 Warm news from ${patientDisplayName}! Baba just completed ${inferredLevelText} in ${inferredGameTitle} with ${accuracy} accuracy (+${xpEarned} XP)! 🏆 Sending love & blessings to all family! ❤️`;
+  const encodedWhatsAppUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsAppText)}`;
 
   // Animated count-up for XP
   useEffect(() => {
@@ -339,6 +427,46 @@ export function Celebration({
             <span className="text-base text-amber-900">{c18n.statusEngaged}</span>
           </div>
         </div>
+      </div>
+
+      {/* ── Community & WhatsApp Sharing Module (Every Level & Game) ── */}
+      <div className="relative z-10 w-full max-w-md">
+        {!sharedToCommunity ? (
+          <button
+            type="button"
+            onClick={handleShareToCommunity}
+            className="btn-chunky w-full py-3.5 text-xs sm:text-sm font-black text-white shadow-[3px_3px_0px_#000] cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-2"
+            style={{ backgroundColor: "#D4441C", borderColor: "#16120E" }}
+          >
+            <Share2 className="h-4.5 w-4.5 stroke-[2.5]" />
+            <span>{c18n.shareCommunity}</span>
+          </button>
+        ) : (
+          <div className="w-full rounded-2xl border-2 border-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 p-3.5 space-y-2.5 text-center shadow-xs animate-fadeIn">
+            <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black text-emerald-800 dark:text-emerald-200">
+              <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 shrink-0" />
+              <span>{c18n.sharedSuccess}</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <a
+                href={encodedWhatsAppUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => playTapFeedback()}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-black border border-black shadow-xs hover:bg-emerald-700 active:scale-95 cursor-pointer"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>{c18n.sendWhatsapp}</span>
+              </a>
+              <Link
+                href="/patient/community"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface text-ink text-xs font-black border border-black shadow-xs hover:bg-surface-muted active:scale-95"
+              >
+                <span>{c18n.viewCommunity}</span>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Custom Game Milestone Content */}

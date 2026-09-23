@@ -1631,6 +1631,11 @@ export function CardMasteryGame() {
               : "All 8 card therapy levels completed!"
           }
           xpEarned={score}
+          gameTitle="Heritage Playing Cards (Taash)"
+          gameId="card-mastery"
+          level={currentLevel}
+          accuracy="100%"
+          emoji="🃏"
         >
           <div className="flex flex-col items-center gap-4 mt-6">
             <ChunkyButton

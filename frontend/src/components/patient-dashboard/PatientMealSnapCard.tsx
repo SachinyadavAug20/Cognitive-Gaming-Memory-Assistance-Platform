@@ -12,6 +12,7 @@ import {
   Utensils,
   ChevronRight,
   Smile,
+  Star,
 } from "lucide-react";
 import { playTapFeedback, playEncourage, unlockAudio } from "@/lib/sound";
 import { speak } from "@/lib/speech";
@@ -22,10 +23,30 @@ interface MealPreset {
   id: string;
   name: Record<string, string>;
   emoji: string;
-  score: number;
+  stars: number;
   badge: Record<string, string>;
   advice: Record<string, string>;
   imagePlaceholder: string;
+}
+
+function StarRating({ count, max = 10 }: { count: number; max?: number }) {
+  return (
+    <div className="flex items-center gap-1" aria-label={`${count} out of ${max} stars`}>
+      {Array.from({ length: max }).map((_, i) => {
+        const isFilled = i < count;
+        return (
+          <Star
+            key={i}
+            className={`h-4.5 w-4.5 sm:h-5 sm:w-5 transition-transform ${
+              isFilled
+                ? "text-amber-500 fill-amber-400 stroke-amber-700 drop-shadow-xs"
+                : "text-neutral-300 fill-neutral-100 dark:fill-neutral-800 dark:text-neutral-700"
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
 }
 
 const PRESET_MEALS: MealPreset[] = [
@@ -45,19 +66,19 @@ const PRESET_MEALS: MealPreset[] = [
       kha: "Ja, dai bad jhur",
       lus: "Chaw, dal leh thlai hnah",
     },
-    score: 94,
+    stars: 10,
     badge: {
-      en: "🌟 Gold Brain Food",
-      hi: "🌟 उत्तम मस्तिष्क आहार",
-      as: "🌟 শ্ৰেষ্ঠ মস্তিষ্ক খাদ্য",
-      bn: "🌟 সেরা মস্তিষ্ক পুষ্টি",
-      mr: "🌟 उत्तम पोषण",
-      ne: "🌟 उत्कृष्ट मस्तिष्क पोषण",
-      mni: "🌟 অকনবা পুষ্টি",
-      brx: "🌟 गाहाম गोसोनि आदार",
-      grt: "🌟 Namgipa cha·ani",
-      kha: "🌟 Jingbam ba bha tam",
-      lus: "🌟 Chaw tha tak",
+      en: "⭐ 10/10 Gold Brain Food",
+      hi: "⭐ 10/10 उत्तम मस्तिष्क आहार",
+      as: "⭐ ১০/১০ শ্ৰেষ্ঠ মস্তিষ্ক খাদ্য",
+      bn: "⭐ ১০/১০ সেরা মস্তিষ্ক পুষ্টি",
+      mr: "⭐ १०/१० उत्तम पोषण",
+      ne: "⭐ १०/१० उत्कृष्ट मस्तिष्क पोषण",
+      mni: "⭐ ১০/১০ অকনবা পুষ্টি",
+      brx: "⭐ १०/१० गाहाम गोसोनि आदार",
+      grt: "⭐ 10/10 Namgipa cha·ani",
+      kha: "⭐ 10/10 Jingbam ba bha tam",
+      lus: "⭐ 10/10 Chaw tha tak",
     },
     advice: {
       en: "Superb plate! Green spinach and lentils nourish memory cells and keep blood sugar very steady. Drink 1 glass of warm water after eating.",
@@ -90,19 +111,19 @@ const PRESET_MEALS: MealPreset[] = [
       kha: "Ruti bad jhur",
       lus: "Chhangpui leh chawhmeh",
     },
-    score: 88,
+    stars: 9,
     badge: {
-      en: "🌿 Steady Energy",
-      hi: "🌿 स्थिर ऊर्जा",
-      as: "🌿 নিৰৱচ্ছিন্ন শক্তি",
-      bn: "🌿 ধীর ও শান্ত শক্তি",
-      mr: "🌿 स्थिर ऊर्जा",
-      ne: "🌿 स्थिर ऊर्जा",
-      mni: "🌿 মপাঙ্গল",
-      brx: "🌿 मोजां गोहो",
-      grt: "🌿 Bil namgipa",
-      kha: "🌿 Ka bor ba neh",
-      lus: "🌿 Chakna nghet",
+      en: "⭐ 9/10 Steady Energy",
+      hi: "⭐ 9/10 स्थिर ऊर्जा",
+      as: "⭐ ৯/১০ নিৰৱচ্ছিন্ন শক্তি",
+      bn: "⭐ ৯/১০ ধীর ও শান্ত শক্তি",
+      mr: "⭐ ९/१० स्थिर ऊर्जा",
+      ne: "⭐ ९/१० स्थिर ऊर्जा",
+      mni: "⭐ ৯/১০ মপাঙ্গল",
+      brx: "⭐ ९/१० मोजां गोहो",
+      grt: "⭐ 9/10 Bil namgipa",
+      kha: "⭐ 9/10 Ka bor ba neh",
+      lus: "⭐ 9/10 Chakna nghet",
     },
     advice: {
       en: "Whole grains and spiced seasonal vegetables support good blood flow to the brain. Take gentle bites and enjoy every flavor.",
@@ -135,19 +156,19 @@ const PRESET_MEALS: MealPreset[] = [
       kha: "Khichdi bad dahi",
       lus: "Khichdi lum leh dahi",
     },
-    score: 91,
+    stars: 9,
     badge: {
-      en: "🌸 Gentle & Calming",
-      hi: "🌸 सुपाच्य एवं शांतिकर",
-      as: "🌸 সুপাচ্য আৰু শান্তিদায়ক",
-      bn: "🌸 সহজে হজম ও শান্তিময়",
-      mr: "🌸 पचनास हलके",
-      ne: "🌸 सजिलै पच्ने र शान्त",
-      mni: "🌸 নুংঙাইবা অমসুং হৌবা",
-      brx: "🌸 गोसो गोरोन्थाय",
-      grt: "🌸 Ka·sengatgipa",
-      kha: "🌸 Jem ban tylliat",
-      lus: "🌸 Pumpui tan tha",
+      en: "⭐ 9/10 Gentle & Calming",
+      hi: "⭐ 9/10 सुपाच्य एवं शांतिकर",
+      as: "⭐ ৯/১০ সুপাচ্য আৰু শান্তিদায়ক",
+      bn: "⭐ ৯/১০ সহজে হজম ও শান্তিময়",
+      mr: "⭐ ९/१० पचनास हलके",
+      ne: "⭐ ९/१० सजिलै पच्ने र शान्त",
+      mni: "⭐ ৯/১০ নুংঙাইবা অমসুং হৌবা",
+      brx: "⭐ ९/१० गोसो गोरोन्थाय",
+      grt: "⭐ 9/10 Ka·sengatgipa",
+      kha: "⭐ 9/10 Jem ban tylliat",
+      lus: "⭐ 9/10 Pumpui tan tha",
     },
     advice: {
       en: "Gentle on your stomach! Curd provides friendly probiotics that directly communicate with brain neurotransmitters to reduce anxiety.",
@@ -180,19 +201,19 @@ const PRESET_MEALS: MealPreset[] = [
       kha: "Ki soh bad ka dud lum",
       lus: "Thei thar leh hnute lum",
     },
-    score: 92,
+    stars: 9,
     badge: {
-      en: "✨ Antioxidant Glow",
-      hi: "✨ एंटीऑक्सीडेंट से भरपूर",
-      as: "✨ এন্টিঅক্সিডেন্ট ভৰপূৰ",
-      bn: "✨ অ্যান্টিঅক্সিডেন্টে ভরপুর",
-      mr: "✨ जीवनसत्त्वयुक्त",
-      ne: "✨ भिटामिनयुक्त",
-      mni: "✨ পুষ্টি লৈরবা",
-      brx: "✨ गोसो मोजां खालामग्रा",
-      grt: "✨ Namgipa bil",
-      kha: "✨ Ka jingbam pynshait",
-      lus: "✨ Thluak enkawlna",
+      en: "⭐ 9/10 Antioxidant Glow",
+      hi: "⭐ 9/10 एंटीऑक्सीडेंट से भरपूर",
+      as: "⭐ ৯/১০ এন্টিঅক্সিডেন্ট ভৰপূৰ",
+      bn: "⭐ ৯/১০ অ্যান্টিঅক্সিডেন্টে ভরপুর",
+      mr: "⭐ ९/१० जीवनसत्त्वयुक्त",
+      ne: "⭐ ९/१० भिटामिनयुक्त",
+      mni: "⭐ ৯/১০ পুষ্টি লৈরবা",
+      brx: "⭐ ९/१० गोसो मोजां खालामग्रा",
+      grt: "⭐ 9/10 Namgipa bil",
+      kha: "⭐ 9/10 Ka jingbam pynshait",
+      lus: "⭐ 9/10 Thluak enkawlna",
     },
     advice: {
       en: "Antioxidants from fresh fruits protect memory connections. Warm milk relaxes muscles and prepares you for deep, peaceful rest.",
@@ -246,10 +267,10 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
 
           const praiseMsg =
             normLoc === "hi"
-              ? `शाबाश ${patientName} जी! आपके भोजन की तस्वीर दर्ज हो गई है। यह आपकी याददाश्त के लिए 92 प्रतिशत उत्तम है!`
+              ? `शाबाश ${patientName} जी! आपके भोजन की तस्वीर दर्ज हो गई है। इसे याददाश्त के लिए 10 में से 9 स्टार मिले हैं!`
               : normLoc === "as"
-              ? `বৰ সুন্দৰ ${patientName}! আপোনাৰ আহাৰৰ ছবিখন সংৰক্ষণ কৰা হ'ল। ই মস্তিষ্কৰ বাবে ৯২ নম্বৰ পাইছে!`
-              : `Great job ${patientName}! Your meal photo has been saved. It scored 92 out of 100 for healthy memory!`;
+              ? `বৰ সুন্দৰ ${patientName}! আপোনাৰ আহাৰৰ ছবিখন সংৰক্ষণ কৰা হ'ল। ই ১০ টাৰ ভিতৰত ৯ টা তৰা পাইছে!`
+              : `Great job ${patientName}! Your meal photo has been saved. It scored 9 out of 10 stars for healthy memory!`;
 
           unlockAudio();
           speak(praiseMsg, normLoc, 0.85);
@@ -270,7 +291,8 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
   const handleListenAdvice = () => {
     unlockAudio();
     playTapFeedback();
-    const fullSpeech = `${currentName}. ${currentBadge}. ${currentAdvice}`;
+    const currentStars = customPhotoUrl ? 9 : activeMeal.stars;
+    const fullSpeech = `${currentName}. ${currentStars} out of 10 stars. ${currentBadge}. ${currentAdvice}`;
     speak(fullSpeech, normLoc, 0.85);
   };
 
@@ -278,6 +300,8 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
     playTapFeedback();
     setCustomPhotoUrl(null);
   };
+
+  const currentStars = customPhotoUrl ? 9 : activeMeal.stars;
 
   return (
     <div className="border-3 border-black bg-gradient-to-br from-amber-50 via-emerald-50 to-teal-50 rounded-3xl p-5 sm:p-7 shadow-[5px_5px_0px_#000] space-y-5">
@@ -334,10 +358,10 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
 
       <p className="text-sm font-bold text-ink-secondary">
         {normLoc === "hi"
-          ? "भोजन की तस्वीर लें या नीचे से चुनें — हम तुरंत बताएंगे यह आपकी याददाश्त के लिए कितना अच्छा है!"
+          ? "भोजन की तस्वीर लें या नीचे से चुनें — हम तुरंत बताएंगे यह 10 में से कितने स्टार का है!"
           : normLoc === "as"
-          ? "আহাৰৰ ছবি তোলক বা তলৰ পৰা বাছক — আমি জনাম ই আপোনাৰ স্মৃতিশক্তিৰ বাবে কিমান উপকাৰী!"
-          : "Snap a photo of your plate or tap what you are eating to get an instant healthy score and friendly advice!"}
+          ? "আহাৰৰ ছবি তোলক বা তলৰ পৰা বাছক — আমি জনাম ই ১০ টাৰ ভিতৰত কিমান তৰা পাইছে!"
+          : "Snap a photo of your plate or tap what you are eating to get an instant 10-star rating and friendly advice!"}
       </p>
 
       {/* Preset 1-Tap Food Choices */}
@@ -357,8 +381,9 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
             >
               <div className="flex items-center justify-between">
                 <span className="text-2xl">{meal.emoji}</span>
-                <span className="text-[11px] font-mono font-bold px-1.5 py-0.5 rounded bg-black/5">
-                  {meal.score}/100
+                <span className="text-xs font-mono font-black px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-950/60 border border-amber-500/30 text-amber-950 dark:text-amber-200 flex items-center gap-1 shadow-2xs">
+                  <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                  <span>{meal.stars}/10</span>
                 </span>
               </div>
               <span className="text-xs font-bold text-ink leading-tight">
@@ -392,13 +417,14 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
               </div>
             </div>
 
-            {/* Middle: Big Score & Advice */}
-            <div className="flex-1 space-y-2 text-center md:text-left">
-              <div className="flex items-center justify-center md:justify-start gap-2.5 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-xl bg-tea text-white font-mono font-black text-sm border-2 border-black shadow-[2px_2px_0px_#000]">
-                  <span>🌟 Score:</span>
-                  <span className="text-amber-300 text-base">{customPhotoUrl ? 92 : activeMeal.score} / 100</span>
-                </span>
+            {/* Middle: Big 10-Star Rating & Advice */}
+            <div className="flex-1 space-y-2.5 text-center md:text-left">
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2.5 flex-wrap">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-black text-sm border-2 border-black shadow-[2px_2px_0px_#000]">
+                  <Star className="h-4.5 w-4.5 fill-black text-black" />
+                  <span>{currentStars} / 10 Stars</span>
+                </div>
+                <StarRating count={currentStars} max={10} />
                 <span className="text-xs font-black uppercase tracking-wider text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded-xl border border-emerald-500">
                   {currentBadge}
                 </span>
