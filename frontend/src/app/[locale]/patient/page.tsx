@@ -566,11 +566,11 @@ export default function PatientHome() {
                   playTapFeedback();
                   setStudioOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 bg-black/25 hover:bg-black/35 px-3.5 py-1.5 rounded-xl border border-white/25 text-xs sm:text-sm font-bold text-sky-200 cursor-pointer active:scale-95"
-                title="Hyper-Customization Studio (Arch Linux Style)"
+                className="inline-flex items-center gap-1.5 bg-black/25 hover:bg-black/35 px-3.5 py-1.5 rounded-xl border border-white/25 text-xs sm:text-sm font-bold text-amber-200 cursor-pointer active:scale-95"
+                title="Theme & Display Settings"
               >
-                <span>⚙️</span>
-                <span>Arch UI Studio</span>
+                <span>🎨</span>
+                <span>Theme & Style</span>
               </button>
             </div>
           </div>

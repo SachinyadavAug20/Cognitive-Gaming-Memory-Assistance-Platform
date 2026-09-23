@@ -15,11 +15,6 @@ import { playPress, unlockAudio } from "@/lib/sound";
 import { usePathname } from "@/i18n/navigation";
 import { useHyperCustomizationStore } from "@/store/useHyperCustomizationStore";
 
-const HyperCustomizationStudio = dynamic(
-  () => import("@/components/accessibility/HyperCustomizationStudio").then((m) => m.HyperCustomizationStudio),
-  { ssr: false }
-);
-
 const TOOLBAR_I18N: Record<string, {
   seniorLabel: string;
   textSize: string;
@@ -370,7 +365,6 @@ const emptySubscribe = () => () => {};
 
 export function AccessibilityToolbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHyperStudioOpen, setIsHyperStudioOpen] = useState(false);
   const mounted = useSyncExternalStore(
     emptySubscribe,
     () => true,
@@ -920,13 +914,13 @@ export function AccessibilityToolbar() {
               type="button"
               onClick={() => {
                 playPress();
-                setIsHyperStudioOpen(true);
+                useHyperCustomizationStore.getState().setStudioOpen(true);
               }}
               className="flex items-center gap-1 rounded-lg border-2 border-black bg-amber-200 px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black text-black hover:bg-amber-300 shadow-[1.5px_1.5px_0px_#000] cursor-pointer shrink-0"
-              title="Arch Linux-Style Hyper-Customization Studio (Theme, Typography, Layout, Widgets)"
+              title="Theme & Style (Colors, Text Size, Simple Presets)"
             >
               <Sliders className="h-3.5 w-3.5 stroke-[2.5] text-tea" />
-              <span className="hidden sm:inline">Arch Studio</span>
+              <span className="hidden sm:inline">Theme & Style</span>
             </button>
 
             {/* Circadian Night Mode Toggle */}
@@ -1046,13 +1040,6 @@ export function AccessibilityToolbar() {
           onToggleHighContrast={toggleHighContrast}
           fontSizeLevel={fontSizeLevel}
           onFontSizeChange={setFontSize}
-        />
-      )}
-
-      {isHyperStudioOpen && (
-        <HyperCustomizationStudio
-          isOpen={isHyperStudioOpen}
-          onClose={() => setIsHyperStudioOpen(false)}
         />
       )}
     </>

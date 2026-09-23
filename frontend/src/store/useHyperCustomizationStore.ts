@@ -166,6 +166,25 @@ export const useHyperCustomizationStore = create<HyperCustomizationState>()(
     {
       name: "cognicare-hyper-customization",
       storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        theme: state.theme,
+        fontFamily: state.fontFamily,
+        textScale: state.textScale,
+        cornerRadius: state.cornerRadius,
+        borderWidth: state.borderWidth,
+        layoutDensity: state.layoutDensity,
+        highContrast: state.highContrast,
+        reducedMotion: state.reducedMotion,
+        soundscape: state.soundscape,
+        speechRate: state.speechRate,
+        widgets: state.widgets,
+        // isStudioOpen is NEVER persisted so it never persists across page refresh
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.isStudioOpen = false;
+        }
+      },
     }
   )
 );

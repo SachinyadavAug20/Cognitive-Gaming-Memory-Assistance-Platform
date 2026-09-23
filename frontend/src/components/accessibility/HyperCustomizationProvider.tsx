@@ -26,6 +26,21 @@ export function HyperCustomizationProvider({ children }: Props) {
     setStudioOpen,
   } = useHyperCustomizationStore();
 
+  // Guarantee studio overlay is NEVER open on page refresh or initial load
+  useEffect(() => {
+    setStudioOpen(false);
+    try {
+      const raw = localStorage.getItem("cognicare-hyper-customization");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed?.state?.isStudioOpen) {
+          parsed.state.isStudioOpen = false;
+          localStorage.setItem("cognicare-hyper-customization", JSON.stringify(parsed));
+        }
+      }
+    } catch {}
+  }, [setStudioOpen]);
+
   useEffect(() => {
     const root = document.documentElement;
 
