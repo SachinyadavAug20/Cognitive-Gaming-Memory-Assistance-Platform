@@ -39,6 +39,7 @@ import {
   Headphones,
   Sliders,
   Heart,
+  Newspaper,
 } from "lucide-react";
 
 import dynamic from "next/dynamic";
@@ -112,6 +113,7 @@ const AncestralHerbalistGame = dynamic(() => import("./ancestral-herbalist/Ances
 const FamilyEmotionsGame = dynamic(() => import("./family-emotions/FamilyEmotionsGame").then((m) => m.FamilyEmotionsGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const TeaGardenMatchGame = dynamic(() => import("./tea-garden-match/TeaGardenMatchGame").then((m) => m.TeaGardenMatchGame), { loading: () => <GameLoaderFallback />, ssr: false });
 const CardMasteryGame = dynamic(() => import("./card-mastery/CardMasteryGame").then((m) => m.CardMasteryGame), { loading: () => <GameLoaderFallback />, ssr: false });
+const DainikNewspaperGame = dynamic(() => import("./newspaper/DainikNewspaperGame").then((m) => m.DainikNewspaperGame), { loading: () => <GameLoaderFallback />, ssr: false });
 
 export type ClinicalDomain =
   | "memory"
@@ -595,6 +597,17 @@ export const GAMES: GameDef[] = [
     category: "memory",
     recommended: true,
     component: CardMasteryGame,
+  },
+  {
+    id: "dainik-newspaper",
+    icon: Newspaper,
+    titleKey: "dainikNewspaper.title",
+    descKey: "dainikNewspaper.desc",
+    accent: "bg-[#B45309]",
+    domain: "Morning Newspaper Sudoku & Word Search",
+    category: "executive_function",
+    recommended: true,
+    component: DainikNewspaperGame,
   },
 ];
 

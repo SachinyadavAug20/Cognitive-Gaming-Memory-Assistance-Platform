@@ -641,6 +641,10 @@
     "cardMastery": {
       "title": "Hnahtawh Inrem Lemchan",
       "desc": "Card 54 hmangin hriatrengna, a indawt dan, leh ngaihtuahna tichak tura khelh."
+    },
+    "dainikNewspaper": {
+      "title": "Ni Tin Chanchinbu Infiamna",
+      "desc": "Zing thingpui in paha 4x4 Sudoku leh thu zawn infiamna awlsam tak."
     }
   },
   "nav": {

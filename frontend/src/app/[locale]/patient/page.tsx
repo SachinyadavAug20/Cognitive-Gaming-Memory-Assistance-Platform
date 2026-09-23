@@ -32,6 +32,9 @@ import { DailyRoutineSchedule } from "@/components/patient-dashboard/DailyRoutin
 import { TherapySuiteGrid } from "@/components/patient-dashboard/TherapySuiteGrid";
 import { SaathiVoiceCompanion } from "@/components/patient-dashboard/SaathiVoiceCompanion";
 import { PatientBottomLogout } from "@/components/patient/PatientBottomLogout";
+import { DualMemoryProbes } from "@/components/patient-dashboard/DualMemoryProbes";
+import { PatientMealSnapCard } from "@/components/patient-dashboard/PatientMealSnapCard";
+import { useHyperCustomizationStore } from "@/store/useHyperCustomizationStore";
 
 const MOOD_LABEL_KEY: Record<MoodKey, string> = {
   peaceful: "wellbeing.moodPeaceful",
@@ -366,6 +369,7 @@ export default function PatientHome() {
   const patient = useAuthStore((s) => s.patient);
   const patientId = patient?.id ?? 0;
   const { detail } = usePatientDetail();
+  const widgets = useHyperCustomizationStore((s) => s.widgets);
 
   useIdleTimeout();
 
@@ -539,12 +543,14 @@ export default function PatientHome() {
     [locale]
   );
 
+  const setStudioOpen = useHyperCustomizationStore((s) => s.setStudioOpen);
+
   return (
     <div className="min-h-[100vh] pb-32 flex flex-col bg-canvas">
       {/* Patient Header Banner */}
       <div className="bg-tea border-b-4 border-black px-4 pt-6 pb-6 md:px-8 text-white shadow-sm">
         <div className="max-w-3xl mx-auto flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
             <span
               suppressHydrationWarning
               className="inline-flex items-center gap-2 bg-black/25 px-3 py-1 rounded-xl border border-white/25 text-xs sm:text-sm font-black text-amber-300"
@@ -552,6 +558,21 @@ export default function PatientHome() {
               <Calendar className="h-4 w-4 text-amber-400" />
               <span suppressHydrationWarning>{todayDateStr}</span>
             </span>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  playTapFeedback();
+                  setStudioOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 bg-black/25 hover:bg-black/35 px-3.5 py-1.5 rounded-xl border border-white/25 text-xs sm:text-sm font-bold text-sky-200 cursor-pointer active:scale-95"
+                title="Hyper-Customization Studio (Arch Linux Style)"
+              >
+                <span>⚙️</span>
+                <span>Arch UI Studio</span>
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 sm:gap-5">
@@ -593,7 +614,7 @@ export default function PatientHome() {
                 unlockAudio();
                 speak(heroText, locale || langCode, rate);
               }}
-              className="btn-tactile inline-flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-black bg-white px-6 sm:px-7 py-3 sm:py-3.5 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-amber-100 cursor-pointer active:scale-95 transition-all"
+              className="btn-tactile inline-flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-border bg-surface px-6 sm:px-7 py-3 sm:py-3.5 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-surface-muted cursor-pointer active:scale-95 transition-all"
             >
               <Volume2 className="h-6 w-6 sm:h-7 sm:w-7 text-tea shrink-0 stroke-[2.5]" />
               <span>{t("listen")}</span>
@@ -604,11 +625,24 @@ export default function PatientHome() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 flex-1 w-full">
+        {/* 1. INSTANT MEMORY & MEDICINE PROBE */}
+        {widgets.showDualRecall && (
+          <DualMemoryProbes
+            patientName={patientName}
+            langCode={langCode}
+            rate={rate}
+          />
+        )}
+
         {/* 1. DAILY BRAIN ACTIVITIES & THERAPY SUITE */}
-        <TherapySuiteGrid gamesTitle={t("gamesTitle")} />
+        {widgets.showQuickGamesGrid && (
+          <TherapySuiteGrid gamesTitle={t("gamesTitle")} />
+        )}
 
         {/* 2. TODAY'S ROUTINE & MEDICATION SCHEDULE */}
-        <DailyRoutineSchedule langCode={langCode} rate={rate} />
+        {widgets.showRoutineSchedule && (
+          <DailyRoutineSchedule langCode={langCode} rate={rate} />
+        )}
 
         {/* 3. WELLBEING & COGNITIVE MEMORY SECTION */}
         <section aria-labelledby="wellbeing-title">
@@ -671,6 +705,11 @@ export default function PatientHome() {
           </div>
         </section>
 
+        {/* 4. SIMPLE MEAL SNAP & BRAIN NUTRITION SCORE */}
+        {widgets.showDietTracker && (
+          <PatientMealSnapCard patientName={patientName} />
+        )}
+
         <div className="pt-4 pb-6 text-center">
           <Link
             href="/"
@@ -700,16 +739,18 @@ export default function PatientHome() {
       )}
 
       {/* Interactive Saathi Voice Companion */}
-      <SaathiVoiceCompanion
-        key={locale}
-        patientName={patientName}
-        langCode={langCode}
-        currentLocale={locale}
-        rate={rate}
-        familyMembers={detail?.familyMembers}
-        familiarPlaces={detail?.familiarPlaces}
-        joyTriggers={detail?.joyTriggers ?? undefined}
-      />
+      {widgets.showVoiceCompanion && (
+        <SaathiVoiceCompanion
+          key={locale}
+          patientName={patientName}
+          langCode={langCode}
+          currentLocale={locale}
+          rate={rate}
+          familyMembers={detail?.familyMembers}
+          familiarPlaces={detail?.familiarPlaces}
+          joyTriggers={detail?.joyTriggers ?? undefined}
+        />
+      )}
     </div>
   );
 }

@@ -61,6 +61,7 @@ const RAW: Array<[string, string, string, string]> = [
   ["weaving", "weaving.title", "weaving.desc", "Traditional Weaving Motifs"],
   ["family-emotions", "familyEmotions.title", "familyEmotions.desc", "Family Emotions & Social Warmth"],
   ["card-mastery", "cardMastery.title", "cardMastery.desc", "Heritage Card Memory & Reasoning"],
+  ["dainik-newspaper", "dainikNewspaper.title", "dainikNewspaper.desc", "Morning Newspaper Sudoku & Word Search"],
 ];
 
 export const GAME_META: GameMeta[] = RAW.map(([id, titleKey, descKey, domain]) => ({

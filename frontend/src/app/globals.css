@@ -58,14 +58,25 @@ html {
   color: var(--color-ink);
   background: var(--color-canvas);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   font-size: 18px;
   line-height: 1.6;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  text-size-adjust: 100%;
 }
 
-/* ── Paper texture overlay (GPU-accelerated, zero-jank background) ── */
+body {
+  overscroll-behavior-y: none;
+}
+
+/* ── Paper texture overlay (GPU-accelerated, zero-jank fixed background) ── */
 .paper-texture {
   background-image: radial-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 0);
   background-size: 24px 24px;
+  background-attachment: fixed;
+  transform: translateZ(0);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -78,8 +89,10 @@ html {
   border: 4px solid #16120E;
   border-radius: 16px;
   box-shadow: 0px 5px 0px #16120E;
-  transform: translateY(0px);
-  transition: transform 0.08s ease-in-out, box-shadow 0.08s ease-in-out, background-color 0.15s ease;
+  transform: translateY(0px) translateZ(0);
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+  transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.15s ease;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
@@ -91,12 +104,12 @@ html {
   letter-spacing: 0.02em;
 }
 .btn-chunky:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) translateZ(0);
   box-shadow: 0px 7px 0px #16120E;
 }
 .btn-chunky:active,
 .btn-chunky[data-pressed="true"] {
-  transform: translateY(5px);
+  transform: translateY(5px) translateZ(0);
   box-shadow: 0px 0px 0px #16120E;
 }
 .btn-chunky:focus {
@@ -149,7 +162,10 @@ html.keyboard-user .btn-chunky:focus-visible {
 .btn-tactile {
   border: 2px solid var(--color-border);
   box-shadow: 3px 3px 0px var(--color-border);
-  transition: all 0.1s ease;
+  transition: transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  backface-visibility: hidden;
   font-weight: 700;
   cursor: pointer;
   user-select: none;
@@ -157,11 +173,11 @@ html.keyboard-user .btn-chunky:focus-visible {
 }
 .btn-tactile:hover {
   box-shadow: 4px 4px 0px var(--color-border);
-  transform: translate(-1px, -1px);
+  transform: translate(-1px, -1px) translateZ(0);
 }
 .btn-tactile:active {
   box-shadow: 0px 0px 0px var(--color-border);
-  transform: translate(2px, 2px);
+  transform: translate(2px, 2px) translateZ(0);
 }
 
 /* ── Scrapbook Card ── */
@@ -171,6 +187,8 @@ html.keyboard-user .btn-chunky:focus-visible {
   box-shadow: 4px 4px 0px var(--color-border);
   background: var(--color-surface);
   padding: 24px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
 }
 
 /* ── Polaroid Frame ── */
@@ -180,6 +198,8 @@ html.keyboard-user .btn-chunky:focus-visible {
   border-radius: 4px;
   padding: 12px 12px 40px 12px;
   box-shadow: 3px 3px 0px var(--color-border);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
 }
 
 /* ── Water glass fill animation ── */
@@ -1029,5 +1049,202 @@ body.virtual-mouse-active * {
   content-visibility: auto;
   contain-intrinsic-size: auto 240px;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   ARCH LINUX-STYLE HYPER-CUSTOMIZATION THEMES
+   ══════════════════════════════════════════════════════════════ */
+html.theme-arch-monochrome {
+  --color-canvas: #000000;
+  --color-surface: #121212;
+  --color-surface-muted: #1E1E1E;
+  --color-ink: #FFFFFF;
+  --color-ink-secondary: #94A3B8;
+  --color-border: #FFFFFF;
+  --color-border-soft: #475569;
+  --color-tea: #0284C7;
+  --color-marigold: #F59E0B;
+}
+
+html.theme-terracotta-clay {
+  --color-canvas: #FFFBEB;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #FEF3C7;
+  --color-tea: #C2410C;
+  --color-marigold: #D97706;
+  --color-border: #7C2D12;
+}
+
+html.theme-nordic-clean {
+  --color-canvas: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F1F5F9;
+  --color-tea: #0F766E;
+  --color-marigold: #0284C7;
+  --color-border: #0F172A;
+}
+
+html.theme-high-contrast-yellow {
+  --color-canvas: #000000;
+  --color-surface: #18181B;
+  --color-surface-muted: #27272A;
+  --color-ink: #FEF08A;
+  --color-ink-secondary: #FDE047;
+  --color-border: #FACC15;
+  --color-tea: #FACC15;
+  --color-marigold: #FBBF24;
+}
+
+html.theme-cyber-dark {
+  --color-canvas: #09090B;
+  --color-surface: #18181B;
+  --color-surface-muted: #27272A;
+  --color-ink: #F4F4F5;
+  --color-ink-secondary: #A1A1AA;
+  --color-tea: #10B981;
+  --color-marigold: #34D399;
+  --color-border: #3F3F46;
+}
+
+/* Dark Theme Contrast Guardians */
+html.theme-arch-monochrome,
+html.theme-cyber-dark,
+html.theme-high-contrast-yellow {
+  color-scheme: dark;
+}
+
+html.theme-arch-monochrome .bg-white,
+html.theme-cyber-dark .bg-white,
+html.theme-high-contrast-yellow .bg-white,
+html.dark .bg-white {
+  background-color: var(--color-surface) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-border) !important;
+}
+
+html.theme-arch-monochrome .bg-white *,
+html.theme-cyber-dark .bg-white *,
+html.theme-high-contrast-yellow .bg-white *,
+html.dark .bg-white * {
+  color: var(--color-ink) !important;
+}
+
+html.theme-arch-monochrome .bg-amber-50,
+html.theme-cyber-dark .bg-amber-50,
+html.theme-high-contrast-yellow .bg-amber-50,
+html.dark .bg-amber-50,
+html.theme-arch-monochrome .bg-amber-100,
+html.theme-cyber-dark .bg-amber-100,
+html.theme-high-contrast-yellow .bg-amber-100,
+html.dark .bg-amber-100,
+html.theme-arch-monochrome .bg-amber-200,
+html.theme-cyber-dark .bg-amber-200,
+html.theme-high-contrast-yellow .bg-amber-200,
+html.dark .bg-amber-200 {
+  background-color: var(--color-surface-muted) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-border) !important;
+}
+
+html.theme-arch-monochrome .bg-amber-50 *,
+html.theme-cyber-dark .bg-amber-50 *,
+html.theme-high-contrast-yellow .bg-amber-50 *,
+html.dark .bg-amber-50 *,
+html.theme-arch-monochrome .bg-amber-100 *,
+html.theme-cyber-dark .bg-amber-100 *,
+html.theme-high-contrast-yellow .bg-amber-100 *,
+html.dark .bg-amber-100 *,
+html.theme-arch-monochrome .bg-amber-200 *,
+html.theme-cyber-dark .bg-amber-200 *,
+html.theme-high-contrast-yellow .bg-amber-200 *,
+html.dark .bg-amber-200 * {
+  color: var(--color-ink) !important;
+}
+
+html.theme-arch-monochrome .btn-tactile,
+html.theme-cyber-dark .btn-tactile,
+html.theme-high-contrast-yellow .btn-tactile {
+  background-color: var(--color-surface) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-border) !important;
+}
+
+html.theme-arch-monochrome .btn-tactile *,
+html.theme-cyber-dark .btn-tactile *,
+html.theme-high-contrast-yellow .btn-tactile * {
+  color: var(--color-ink) !important;
+}
+
+/* Typography Overrides */
+html.font-pref-mono, html.font-pref-mono body {
+  font-family: var(--font-mono), monospace !important;
+}
+
+html.font-pref-serif, html.font-pref-serif body {
+  font-family: var(--font-serif), Georgia, serif !important;
+}
+
+html.font-pref-dyslexic, html.font-pref-dyslexic body {
+  font-family: "Atkinson Hyperlegible", sans-serif !important;
+  letter-spacing: 0.04em !important;
+  word-spacing: 0.08em !important;
+}
+
+/* Text Scales & Accessibility Font Scaling */
+html.scale-pref-elder-giant,
+html.font-scale-lg {
+  font-size: 25px !important;
+  line-height: 1.65 !important;
+}
+
+html.scale-pref-extra-large {
+  font-size: 22px !important;
+}
+
+html.scale-pref-large {
+  font-size: 20px !important;
+}
+
+html.scale-pref-normal,
+html.font-scale-md {
+  font-size: 18px !important;
+}
+
+html.scale-pref-small,
+html.font-scale-sm {
+  font-size: 15px !important;
+}
+
+/* Enhanced Elder Assist: scale hardcoded arbitrary pixel text classes proportionally */
+html.scale-pref-elder-giant [class*="text-[9px]"],
+html.font-scale-lg [class*="text-[9px]"] {
+  font-size: 13px !important;
+}
+
+html.scale-pref-elder-giant [class*="text-[10px]"],
+html.font-scale-lg [class*="text-[10px]"] {
+  font-size: 14px !important;
+}
+
+html.scale-pref-elder-giant [class*="text-[11px]"],
+html.font-scale-lg [class*="text-[11px]"] {
+  font-size: 15px !important;
+}
+
+html.scale-pref-elder-giant [class*="text-[12px]"],
+html.font-scale-lg [class*="text-[12px]"] {
+  font-size: 16px !important;
+}
+
+/* Dynamic Border and Corner Radius */
+:root {
+  --app-radius: 16px;
+  --app-border-width: 2px;
+}
+
+.custom-box {
+  border-radius: var(--app-radius) !important;
+  border-width: var(--app-border-width) !important;
+}
+
 
 

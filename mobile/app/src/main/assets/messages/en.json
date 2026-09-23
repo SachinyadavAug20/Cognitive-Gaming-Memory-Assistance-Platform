@@ -1132,6 +1132,10 @@
     "cardMastery": {
       "title": "Heritage Playing Cards",
       "desc": "Calming, familiar card exercises for memory, sequencing, pattern matching, and reasoning."
+    },
+    "dainikNewspaper": {
+      "title": "Daily Newspaper Puzzles",
+      "desc": "Morning newspaper games: gentle 4x4 Sudoku and word search with morning tea."
     }
   }
 }

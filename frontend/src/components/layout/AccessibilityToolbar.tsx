@@ -13,6 +13,12 @@ import dynamic from "next/dynamic";
 import { useListenFirst } from "@/components/accessibility/useListenFirst";
 import { playPress, unlockAudio } from "@/lib/sound";
 import { usePathname } from "@/i18n/navigation";
+import { useHyperCustomizationStore } from "@/store/useHyperCustomizationStore";
+
+const HyperCustomizationStudio = dynamic(
+  () => import("@/components/accessibility/HyperCustomizationStudio").then((m) => m.HyperCustomizationStudio),
+  { ssr: false }
+);
 
 const TOOLBAR_I18N: Record<string, {
   seniorLabel: string;
@@ -219,6 +225,12 @@ function getFontSizeSnapshot(): "sm" | "md" | "lg" {
   try {
     const s = localStorage.getItem("cognicare_font_size");
     if (s === "sm" || s === "md" || s === "lg") return s;
+    const hyperState = localStorage.getItem("cognicare-hyper-customization");
+    if (hyperState) {
+      const parsed = JSON.parse(hyperState)?.state?.textScale;
+      if (parsed === "small") return "sm";
+      if (parsed === "elder_giant" || parsed === "extra_large" || parsed === "large") return "lg";
+    }
   } catch {
     // Ignore read errors
   }
@@ -358,6 +370,7 @@ const emptySubscribe = () => () => {};
 
 export function AccessibilityToolbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isHyperStudioOpen, setIsHyperStudioOpen] = useState(false);
   const mounted = useSyncExternalStore(
     emptySubscribe,
     () => true,
@@ -466,10 +479,29 @@ export function AccessibilityToolbar() {
 
     // Initial Theme & Accessibility Setup on Client Mount
     try {
-      const s = localStorage.getItem("cognicare_font_size");
-      if (s === "sm") document.documentElement.style.fontSize = "16px";
-      else if (s === "lg") document.documentElement.style.fontSize = "22px";
-      else document.documentElement.style.fontSize = "18px";
+      const s = getFontSizeSnapshot();
+      const root = document.documentElement;
+      root.classList.remove(
+        "font-scale-sm",
+        "font-scale-md",
+        "font-scale-lg",
+        "scale-pref-small",
+        "scale-pref-normal",
+        "scale-pref-large",
+        "scale-pref-extra-large",
+        "scale-pref-elder-giant"
+      );
+
+      if (s === "sm") {
+        root.classList.add("font-scale-sm", "scale-pref-small");
+        root.style.setProperty("font-size", "15px", "important");
+      } else if (s === "lg") {
+        root.classList.add("font-scale-lg", "scale-pref-elder-giant");
+        root.style.setProperty("font-size", "25px", "important");
+      } else {
+        root.classList.add("font-scale-md", "scale-pref-normal");
+        root.style.setProperty("font-size", "18px", "important");
+      }
 
       if (localStorage.getItem("cognicare_high_contrast") === "true") {
         document.documentElement.classList.add("high-contrast-mode", "dark");
@@ -525,14 +557,41 @@ export function AccessibilityToolbar() {
       // Ignore
     }
   }, []);
+
   const setFontSize = useCallback((level: "sm" | "md" | "lg") => {
     try {
+      unlockAudio();
+      playPress();
       localStorage.setItem("cognicare_font_size", level);
       const root = document.documentElement;
-      if (level === "sm") root.style.fontSize = "16px";
-      else if (level === "lg") root.style.fontSize = "22px";
-      else root.style.fontSize = "18px";
+
+      root.classList.remove(
+        "font-scale-sm",
+        "font-scale-md",
+        "font-scale-lg",
+        "scale-pref-small",
+        "scale-pref-normal",
+        "scale-pref-large",
+        "scale-pref-extra-large",
+        "scale-pref-elder-giant"
+      );
+
+      if (level === "sm") {
+        root.classList.add("font-scale-sm", "scale-pref-small");
+        root.style.setProperty("font-size", "15px", "important");
+        useHyperCustomizationStore.getState().setTextScale("small");
+      } else if (level === "lg") {
+        root.classList.add("font-scale-lg", "scale-pref-elder-giant");
+        root.style.setProperty("font-size", "25px", "important");
+        useHyperCustomizationStore.getState().setTextScale("elder_giant");
+      } else {
+        root.classList.add("font-scale-md", "scale-pref-normal");
+        root.style.setProperty("font-size", "18px", "important");
+        useHyperCustomizationStore.getState().setTextScale("normal");
+      }
+
       window.dispatchEvent(new Event("cognicare_accessibility_change"));
+      window.dispatchEvent(new Event("storage"));
     } catch {
       // Ignore
     }
@@ -685,10 +744,10 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("sm")}
-                  className={`px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-colors ${
-                    activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
+                  className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
+                    activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-[2px_2px_0px_#000] border-2 border-black" : "border-2 border-transparent hover:bg-surface-muted text-ink"
                   }`}
-                  title="Smaller Text"
+                  title="Smaller Text (15px)"
                   aria-label="Set smaller text"
                 >
                   A-
@@ -696,10 +755,10 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("md")}
-                  className={`px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-colors ${
-                    activeFontSizeLevel === "md" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
+                  className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
+                    activeFontSizeLevel === "md" ? "bg-tea text-white shadow-[2px_2px_0px_#000] border-2 border-black" : "border-2 border-transparent hover:bg-surface-muted text-ink"
                   }`}
-                  title="Standard Text"
+                  title="Standard Text (18px)"
                   aria-label="Set standard text"
                 >
                   A
@@ -707,10 +766,10 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("lg")}
-                  className={`px-3.5 py-1 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-colors ${
-                    activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
+                  className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
+                    activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-[2px_2px_0px_#000] border-2 border-black ring-1 ring-amber-400" : "border-2 border-transparent hover:bg-surface-muted text-ink"
                   }`}
-                  title="Large Text (Elder Assist)"
+                  title="Large Text for Elders (25px)"
                   aria-label="Set large text"
                 >
                   A+
@@ -856,6 +915,20 @@ export function AccessibilityToolbar() {
               <span className="hidden lg:inline">{a11y.settings}</span>
             </button>
 
+            {/* Arch-Style Hyper-Customization Studio */}
+            <button
+              type="button"
+              onClick={() => {
+                playPress();
+                setIsHyperStudioOpen(true);
+              }}
+              className="flex items-center gap-1 rounded-lg border-2 border-black bg-amber-200 px-1.5 sm:px-2 py-0.5 text-[11px] sm:text-xs font-black text-black hover:bg-amber-300 shadow-[1.5px_1.5px_0px_#000] cursor-pointer shrink-0"
+              title="Arch Linux-Style Hyper-Customization Studio (Theme, Typography, Layout, Widgets)"
+            >
+              <Sliders className="h-3.5 w-3.5 stroke-[2.5] text-tea" />
+              <span className="hidden sm:inline">Arch Studio</span>
+            </button>
+
             {/* Circadian Night Mode Toggle */}
             <button
               type="button"
@@ -873,34 +946,34 @@ export function AccessibilityToolbar() {
             </button>
 
             {/* Font Size Scaler */}
-            <div className="flex items-center gap-0.5 rounded border border-black/30 bg-surface p-0.5 shrink-0">
+            <div className="flex items-center gap-1 rounded border-2 border-black/30 bg-surface p-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setFontSize("sm")}
-                className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
-                  activeFontSizeLevel === "sm" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
+                className={`px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
+                  activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                 }`}
-                title="Small Text"
+                title="Small Text (15px)"
               >
                 A-
               </button>
               <button
                 type="button"
                 onClick={() => setFontSize("md")}
-                className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
-                  activeFontSizeLevel === "md" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
+                className={`px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
+                  activeFontSizeLevel === "md" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                 }`}
-                title="Standard Text"
+                title="Standard Text (18px)"
               >
                 A
               </button>
               <button
                 type="button"
                 onClick={() => setFontSize("lg")}
-                className={`px-1.5 py-0.5 text-[10px] font-black rounded cursor-pointer ${
-                  activeFontSizeLevel === "lg" ? "bg-tea text-white" : "hover:bg-surface-muted text-ink"
+                className={`px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
+                  activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-xs ring-1 ring-amber-400" : "hover:bg-surface-muted text-ink"
                 }`}
-                title="Large Text (Elder Assist)"
+                title="Large Text for Elders (25px)"
               >
                 A+
               </button>
@@ -973,6 +1046,13 @@ export function AccessibilityToolbar() {
           onToggleHighContrast={toggleHighContrast}
           fontSizeLevel={fontSizeLevel}
           onFontSizeChange={setFontSize}
+        />
+      )}
+
+      {isHyperStudioOpen && (
+        <HyperCustomizationStudio
+          isOpen={isHyperStudioOpen}
+          onClose={() => setIsHyperStudioOpen(false)}
         />
       )}
     </>

@@ -641,6 +641,10 @@
     "cardMastery": {
       "title": "Ka Jingialeh Taas",
       "desc": "Kynmaw, pynbynta, bad pynbeit ia ki 54 tylli ki taas kiba la mlien ban ialeh."
+    },
+    "dainikNewspaper": {
+      "title": "Ki Kot Khubor Mynstep",
+      "desc": "Ki jingialehkai kot khubor: 4x4 Sudoku bad ka jingwad kyntien ryngkat ka sha saw."
     }
   },
   "nav": {

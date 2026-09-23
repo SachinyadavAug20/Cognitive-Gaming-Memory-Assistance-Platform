@@ -11,5 +11,8 @@ sealed class Screen(val route: String) {
     }
     data object EchoesOfHome3D : Screen("echoes_3d")
     data object Caregiver : Screen("caregiver")
+    data object DoctorDashboard : Screen("doctor_dashboard")
+    data object DietDashboard : Screen("diet_dashboard")
+    data object FamilyPortal : Screen("family_portal")
     data object Admin : Screen("admin")
 }

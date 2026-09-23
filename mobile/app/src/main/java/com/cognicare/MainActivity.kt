@@ -235,6 +235,25 @@ fun CogniCareApp() {
                 )
             }
 
+            composable(Screen.DoctorDashboard.route) {
+                DoctorDashboardScreen(
+                    onBack = { navController.popBackStack() },
+                    onNavigateToPatient = { navController.navigate(Screen.PatientDashboard.route) }
+                )
+            }
+
+            composable(Screen.DietDashboard.route) {
+                DietDashboardScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Screen.FamilyPortal.route) {
+                FamilyPortalScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
             composable(Screen.Admin.route) {
                 AdminScreen(
                     viewModel = adminViewModel,

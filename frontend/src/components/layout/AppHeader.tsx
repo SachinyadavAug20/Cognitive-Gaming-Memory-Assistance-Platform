@@ -16,6 +16,10 @@ import {
   Home,
   BookOpen,
   WifiOff,
+  Stethoscope,
+  UtensilsCrossed,
+  Heart,
+  Users,
 } from "lucide-react";
 import { useSystemStatus } from "@/hooks/useSystemStatus";
 
@@ -23,18 +27,18 @@ interface AppHeaderProps {
   isOnline?: boolean;
 }
 
-const PATIENT_NAV_LABELS: Record<string, { routine: string; games: string }> = {
-  en: { routine: "My Routine", games: "Daily Activities" },
-  hi: { routine: "मेरी दिनचर्या", games: "दैनिक गतिविधियां" },
-  as: { routine: "মোৰ নিয়মসূচী", games: "দৈনিক কাৰ্যকলাপ" },
-  bn: { routine: "আমার রুটিন", games: "দৈনিক কার্যকলাপ" },
-  mr: { routine: "माझी दिनचर्या", games: "दैनिक उपक्रम" },
-  ne: { routine: "मेरो दिनचर्या", games: "दैनिक गतिविधिहरू" },
-  mni: { routine: "ঐগী থবক", games: "নুমিৎ খুদিংগী থবক" },
-  brx: { routine: "आंनि बिथांखि", games: "सानफ्रोमबो हाबाफोर" },
-  grt: { routine: "Angni Tikat", games: "Salanti Kamrang" },
-  kha: { routine: "Ka Jingbuh Por", games: "Ki Kam Babha" },
-  lus: { routine: "Ka Tih Tur", games: "Ni Tin Hnathawh" },
+const PATIENT_NAV_LABELS: Record<string, { routine: string; games: string; community: string }> = {
+  en: { routine: "My Routine", games: "Daily Activities", community: "Community" },
+  hi: { routine: "मेरी दिनचर्या", games: "दैनिक गतिविधियां", community: "साथी समुदाय" },
+  as: { routine: "মোৰ নিয়মসূচী", games: "দৈনিক কাৰ্যকলাপ", community: "সামাজিক চক্ৰ" },
+  bn: { routine: "আমার রুটিন", games: "দৈনিক কার্যকলাপ", community: "সম্প্রদায়" },
+  mr: { routine: "माझी दिनचर्या", games: "दैनिक उपक्रम", community: "समुदाय" },
+  ne: { routine: "मेरो दिनचर्या", games: "दैनिक गतिविधिहरू", community: "समुदाय" },
+  mni: { routine: "ঐগী থবক", games: "নুমিৎ খুদিংগী থবক", community: "খুন্নাই" },
+  brx: { routine: "आंनि बिथांखि", games: "सानफ्रोमबो हाबाफोर", community: "गामि" },
+  grt: { routine: "Angni Tikat", games: "Salanti Kamrang", community: "Songsal" },
+  kha: { routine: "Ka Jingbuh Por", games: "Ki Kam Babha", community: "Ka Shnong" },
+  lus: { routine: "Ka Tih Tur", games: "Ni Tin Hnathawh", community: "Khawtlang" },
 };
 
 const MAIN_NAV_LABELS: Record<string, {
@@ -163,25 +167,26 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
     ? [
         { href: "/patient", label: pNav.routine, icon: Home, exact: true },
         { href: "/patient/games", label: pNav.games, icon: Sparkles, exact: false },
+        { href: "/patient/community", label: pNav.community, icon: Users, exact: false },
       ]
     : [
         { href: "/", label: mNav.home, icon: Home, exact: true },
-        { href: "/patient/games", label: mNav.activities, icon: Sparkles, exact: false },
-        { href: "/kiosk/login", label: mNav.kiosk, icon: QrCode, exact: false },
-        { href: "/command-center", label: mNav.telemetry, icon: Activity, exact: false },
-        { href: "/clinical-evidence", label: mNav.clinical, icon: BookOpen, exact: false },
+        { href: "/patient", label: normLoc === "hi" ? "रोगी" : normLoc === "as" ? "ৰোগী" : "Patient", icon: Home, exact: true },
+        { href: "/caregiver", label: normLoc === "hi" ? "देखभालकर्ता" : normLoc === "as" ? "শুশ্ৰূষাকাৰী" : "Caregiver", icon: ShieldCheck, exact: false },
+        { href: "/doctor", label: normLoc === "hi" ? "डॉक्टर" : normLoc === "as" ? "চিকিৎসক" : "Doctor", icon: Stethoscope, exact: false },
+        { href: "/family", label: normLoc === "hi" ? "परिवार" : normLoc === "as" ? "পৰিয়াল" : "Family", icon: Heart, exact: false },
       ];
 
   return (
     <nav
       aria-label="Main Navigation"
-      className="w-full border-b-3 border-black bg-white/95 px-2 sm:px-4 md:px-6 py-2 shadow-sm backdrop-blur-md overflow-x-clip"
+      className="w-full border-b-3 border-border bg-surface/95 px-2 sm:px-4 md:px-6 py-2 shadow-sm backdrop-blur-md overflow-x-clip"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-3 flex-nowrap">
         {/* Left: Brand Identity */}
         <Link href="/" className={`flex items-center group shrink-0 ${isPatientRoute ? "gap-2.5" : "gap-2"}`}>
           <div
-            className={`flex items-center justify-center rounded-xl border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors ${
+            className={`flex items-center justify-center rounded-xl border-2 border-border bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors ${
               isPatientRoute ? "h-10 w-10 sm:h-11 sm:w-11" : "h-8 w-8 sm:h-9 sm:w-9"
             }`}
           >
@@ -228,8 +233,8 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
                     : "gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-black"
                 } ${
                   isActive
-                    ? "border-2 border-black bg-tea text-white shadow-[2px_2px_0px_#000]"
-                    : "border-2 border-transparent text-ink hover:border-black/30 hover:bg-surface"
+                    ? "border-2 border-border bg-tea text-white shadow-[2px_2px_0px_#000]"
+                    : "border-2 border-transparent text-ink hover:border-border/30 hover:bg-surface-muted"
                 }`}
               >
                 <Icon className={isPatientRoute ? "h-4.5 w-4.5" : "h-4 w-4"} />

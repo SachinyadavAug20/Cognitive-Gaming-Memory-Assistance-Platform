@@ -76,7 +76,7 @@ export function AudioToggle({ size = "md" }: AudioToggleProps = {}) {
         aria-label={enabled ? hub.soundOff : hub.soundOn}
         className={
           size === "lg"
-            ? "btn-tactile flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-black bg-white px-5 sm:px-6 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-amber-100 cursor-pointer"
+            ? "btn-tactile flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-border bg-surface px-5 sm:px-6 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-surface-muted cursor-pointer"
             : `${CARD} btn-tactile flex min-h-[48px] items-center gap-2 rounded-xl bg-surface px-3 text-base font-extrabold text-ink`
         }
       >

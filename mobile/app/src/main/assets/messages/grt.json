@@ -641,6 +641,10 @@
     "cardMastery": {
       "title": "Taas Kal·ani",
       "desc": "Gisik ra·ani, sulsul donani aro pattern-ko u·ina standard card 54-chi kal·ani."
+    },
+    "dainikNewspaper": {
+      "title": "Salanti Khobar Lekha Kal·ani",
+      "desc": "Pringni cha·ani baksa 4x4 Sudoku aro kattarangko sandiani."
     }
   },
   "nav": {
