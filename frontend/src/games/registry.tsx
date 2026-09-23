@@ -138,6 +138,17 @@ export interface GameDef {
 export const GAMES: GameDef[] = [
   // ── 6 CLINICAL DOMAINS (Memory, Attention, Orientation, Language, Visuospatial, Executive Function) ──
   {
+    id: "card-mastery",
+    icon: Layers,
+    titleKey: "cardMastery.title",
+    descKey: "cardMastery.desc",
+    accent: "bg-[#C2185B]",
+    domain: "Heritage Playing Cards (Taash)",
+    category: "memory",
+    recommended: true,
+    component: CardMasteryGame,
+  },
+  {
     id: "lotus-painter",
     icon: Palette,
     titleKey: "lotusPainter.title",
@@ -586,17 +597,6 @@ export const GAMES: GameDef[] = [
     category: "attention",
     recommended: true,
     component: TeaGardenMatchGame,
-  },
-  {
-    id: "card-mastery",
-    icon: Layers,
-    titleKey: "cardMastery.title",
-    descKey: "cardMastery.desc",
-    accent: "bg-[#C2185B]",
-    domain: "Heritage Playing Cards (Taash)",
-    category: "memory",
-    recommended: true,
-    component: CardMasteryGame,
   },
   {
     id: "dainik-newspaper",

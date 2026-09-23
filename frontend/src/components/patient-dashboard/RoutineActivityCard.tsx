@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { Image as ImageIcon, CheckCircle2, Sparkles, Volume2 } from "lucide-react";
+import { CheckCircle2, Sparkles, Volume2, Play } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { ActivityIllustration } from "@/components/ui/ActivityIllustrations";
 
 interface RoutineActivityCardProps {
   activityDone: boolean;
@@ -33,11 +35,11 @@ export function RoutineActivityCard({
       <div>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="h-13 w-13 rounded-2xl border-2 border-black bg-amber-100 text-amber-700 flex items-center justify-center shadow-xs shrink-0">
-              <ImageIcon className="h-7 w-7 stroke-[2.5]" />
+            <div className="h-13 w-13 rounded-2xl border-2 border-black bg-rose-50 text-rose-700 flex items-center justify-center shadow-xs shrink-0 p-1">
+              <ActivityIllustration gameId="card-mastery" className="h-8 w-8" />
             </div>
             <div>
-              <span className="inline-flex items-center rounded-full bg-amber-50 border border-amber-300 px-2.5 py-0.5 text-[11px] font-black uppercase text-amber-900 tracking-wider">
+              <span className="inline-flex items-center rounded-full bg-rose-50 border border-rose-300 px-2.5 py-0.5 text-[11px] font-black uppercase text-rose-900 tracking-wider">
                 {actTag}
               </span>
               <div className="text-xs font-bold text-ink-secondary mt-0.5">{actTimeSub}</div>
@@ -65,12 +67,20 @@ export function RoutineActivityCard({
         </div>
       </div>
 
-      <div className="mt-5 pt-3.5 border-t-2 border-black/10">
+      <div className="mt-5 pt-3.5 border-t-2 border-black/10 flex flex-col sm:flex-row gap-2.5">
+        <Link
+          href="/patient/games/card-mastery"
+          className="btn-tactile flex-1 min-h-[48px] py-2.5 px-4 rounded-2xl border-2 border-black bg-[#E11D48] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] hover:bg-rose-700 cursor-pointer transition-all active:scale-98"
+        >
+          <Play className="h-4 w-4 fill-white shrink-0" />
+          <span>Play Cards ➔</span>
+        </Link>
+
         {activityDone ? (
           <button
             type="button"
             onClick={onToggleActivity}
-            className="w-full min-h-[48px] py-2.5 px-4 rounded-2xl border-2 border-black bg-emerald-100 text-emerald-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] hover:bg-emerald-200 cursor-pointer transition-all active:scale-98"
+            className="flex-1 min-h-[48px] py-2.5 px-4 rounded-2xl border-2 border-black bg-emerald-100 text-emerald-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] hover:bg-emerald-200 cursor-pointer transition-all active:scale-98"
             aria-label="Activity completed. Tap to toggle."
           >
             <CheckCircle2 className="h-5 w-5 text-emerald-700 shrink-0" />
@@ -80,7 +90,7 @@ export function RoutineActivityCard({
           <button
             type="button"
             onClick={onToggleActivity}
-            className="w-full min-h-[48px] py-2.5 px-4 rounded-2xl border-2 border-black bg-amber-400 text-ink font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer transition-all active:scale-98"
+            className="flex-1 min-h-[48px] py-2.5 px-4 rounded-2xl border-2 border-black bg-amber-400 text-ink font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[2px_2px_0px_#000] hover:bg-amber-300 cursor-pointer transition-all active:scale-98"
             aria-label="Activity pending. Tap when done."
           >
             <Sparkles className="h-5 w-5 text-ink shrink-0" />

@@ -102,6 +102,21 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        {/* 1. Daily Activity Task: Heritage Card Memory (At the Top) */}
+        <RoutineActivityCard
+          activityDone={activityCompletedState}
+          actTag={routineContent.actTag}
+          actTimeSub={routineContent.actTimeSub}
+          actTitle={routineContent.actTitle}
+          actDetail={routineContent.actDetail}
+          actDone={routineContent.actDone}
+          actTapDo={routineContent.actTapDo}
+          listenAriaLabel={routineContent.listen}
+          onToggleActivity={handleToggleDailyCognitiveActivityStatus}
+          onSpeakActivity={() => synthesizeSpokenAudioNarration(routineContent.actSpoken)}
+        />
+
+        {/* 2. Morning Medicine */}
         <RoutineMedicineCard
           medicineDone={medicineCompletedState}
           medTag={routineContent.medTag}
@@ -115,6 +130,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
           onSpeakMedicine={() => synthesizeSpokenAudioNarration(routineContent.medSpoken)}
         />
 
+        {/* 3. Hydration */}
         <RoutineHydrationCard
           glasses={glassesConsumedCount}
           waterPct={hydrationGoalPercentage}
@@ -136,19 +152,7 @@ export function DailyRoutineSchedule({ langCode, rate }: DailyRoutineSchedulePro
           }
         />
 
-        <RoutineActivityCard
-          activityDone={activityCompletedState}
-          actTag={routineContent.actTag}
-          actTimeSub={routineContent.actTimeSub}
-          actTitle={routineContent.actTitle}
-          actDetail={routineContent.actDetail}
-          actDone={routineContent.actDone}
-          actTapDo={routineContent.actTapDo}
-          listenAriaLabel={routineContent.listen}
-          onToggleActivity={handleToggleDailyCognitiveActivityStatus}
-          onSpeakActivity={() => synthesizeSpokenAudioNarration(routineContent.actSpoken)}
-        />
-
+        {/* 4. Clinical Appointment */}
         <RoutineAppointmentCard
           appointmentDone={appointmentCompletedState}
           aptTag={routineContent.aptTag}

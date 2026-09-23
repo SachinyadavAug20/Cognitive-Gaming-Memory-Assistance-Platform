@@ -130,10 +130,10 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
   const banner = LOCALIZED_BANNER[normLoc] || LOCALIZED_BANNER.en;
 
   // Localized game definitions for the Top 4 featured games on My Route
+  const cardMasteryStrings = getGameStrings("card-mastery", locale);
   const jigsawStrings = getGameStrings("jigsaw", locale);
   const majuliStrings = getGameStrings("majuli-walk", locale);
   const weavingStrings = getGameStrings("weaving", locale);
-  const cardMasteryStrings = getGameStrings("card-mastery", locale);
 
   const handleSpeak = (text: string) => {
     unlockAudio();
@@ -181,7 +181,47 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
       </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        {/* 1. Picture Puzzle (jigsaw) - Vibrant Fresh Emerald (#059669) */}
+        {/* 1. Heritage Card Memory & Reasoning (card-mastery) - Vibrant Kopou Crimson Rose (#E11D48) */}
+        <Link
+          href="/patient/games/card-mastery"
+          data-voice-desc={`${cardMasteryStrings.title}. ${cardMasteryStrings.audioPrompt}`}
+          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#E11D48] p-5 text-white transition-transform hover:scale-[1.01]`}
+        >
+          {/* Header */}
+          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
+            <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
+              <Layers className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
+              <span className="truncate">{cardMasteryStrings.title}</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSpeak(`${cardMasteryStrings.title}. ${cardMasteryStrings.audioPrompt}`);
+              }}
+              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-rose-100 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
+              title="Read for Me"
+              aria-label={`Read for Me: ${cardMasteryStrings.title}`}
+            >
+              <Volume2 className="h-6 w-6 stroke-[2.5]" />
+            </button>
+          </div>
+
+          {/* Center Visual: Playing Cards Illustration */}
+          <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
+            <ActivityIllustration gameId="card-mastery" className="h-12 w-12 sm:h-14 sm:w-14" />
+          </div>
+
+          {/* Action Button */}
+          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-rose-100 transition-all">
+            <span>{cardMasteryStrings.startButton || "Play Cards"}</span>
+            <span>➔</span>
+          </div>
+        </Link>
+
+        {/* 2. Picture Puzzle (jigsaw) - Vibrant Fresh Emerald (#059669) */}
         <Link
           href="/patient/games/jigsaw"
           data-voice-desc={`${jigsawStrings.title}. ${jigsawStrings.audioPrompt}`}
@@ -221,7 +261,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 2. Walking Through the Village (majuli-walk) - Vibrant Mandarin Orange (#EA580C) */}
+        {/* 3. Walking Through the Village (majuli-walk) - Vibrant Mandarin Orange (#EA580C) */}
         <Link
           href="/patient/games/majuli-walk"
           data-voice-desc={`${majuliStrings.title}. ${majuliStrings.audioPrompt}`}
@@ -261,7 +301,7 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           </div>
         </Link>
 
-        {/* 3. The Loom of Memories (weaving) - Vibrant Golden Amber (#D97706) */}
+        {/* 4. The Loom of Memories (weaving) - Vibrant Golden Amber (#D97706) */}
         <Link
           href="/patient/games/weaving"
           data-voice-desc={`${weavingStrings.title}. ${weavingStrings.audioPrompt}`}
@@ -297,46 +337,6 @@ export function TherapySuiteGrid({ gamesTitle }: TherapySuiteGridProps) {
           {/* Action Button */}
           <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-amber-100 transition-all">
             <span>{weavingStrings.startButton || "Weave Memories"}</span>
-            <span>➔</span>
-          </div>
-        </Link>
-
-        {/* 4. Heritage Card Memory & Reasoning (card-mastery) - Vibrant Kopou Crimson Rose (#E11D48) */}
-        <Link
-          href="/patient/games/card-mastery"
-          data-voice-desc={`${cardMasteryStrings.title}. ${cardMasteryStrings.audioPrompt}`}
-          className={`${CARD} game-card btn-tactile group flex flex-col justify-between items-center text-center gap-4 bg-[#E11D48] p-5 text-white transition-transform hover:scale-[1.01]`}
-        >
-          {/* Header */}
-          <div className="w-full flex items-center justify-between gap-2 border-b-2 border-white/20 pb-2.5">
-            <div className="flex items-center gap-2.5 text-white font-black text-sm sm:text-base tracking-wide truncate">
-              <Layers className="h-7 w-7 text-white stroke-[2.5] shrink-0" />
-              <span className="truncate">{cardMasteryStrings.title}</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleSpeak(`${cardMasteryStrings.title}. ${cardMasteryStrings.audioPrompt}`);
-              }}
-              className="btn-tactile flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-2xl border-2 border-black bg-white text-black hover:bg-rose-100 shadow-[2px_2px_0px_#000] cursor-pointer shrink-0"
-              title="Read for Me"
-              aria-label={`Read for Me: ${cardMasteryStrings.title}`}
-            >
-              <Volume2 className="h-6 w-6 stroke-[2.5]" />
-            </button>
-          </div>
-
-          {/* Center Visual: Playing Cards Illustration */}
-          <div className="my-2 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl border-3 border-black bg-white shadow-[3px_3px_0px_#000] p-1.5">
-            <ActivityIllustration gameId="card-mastery" className="h-12 w-12 sm:h-14 sm:w-14" />
-          </div>
-
-          {/* Action Button */}
-          <div className="w-full rounded-2xl border-2 border-black bg-white py-3 px-4 text-xs sm:text-sm font-black text-black shadow-[3px_3px_0px_#000] tracking-wide flex items-center justify-center gap-2 group-hover:bg-rose-100 transition-all">
-            <span>{cardMasteryStrings.startButton || "Play Cards"}</span>
             <span>➔</span>
           </div>
         </Link>
