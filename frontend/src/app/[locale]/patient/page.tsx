@@ -32,7 +32,6 @@ import { DailyRoutineSchedule } from "@/components/patient-dashboard/DailyRoutin
 import { TherapySuiteGrid } from "@/components/patient-dashboard/TherapySuiteGrid";
 import { SaathiVoiceCompanion } from "@/components/patient-dashboard/SaathiVoiceCompanion";
 import { PatientBottomLogout } from "@/components/patient/PatientBottomLogout";
-import { DualMemoryProbes } from "@/components/patient-dashboard/DualMemoryProbes";
 import { PatientMealSnapCard } from "@/components/patient-dashboard/PatientMealSnapCard";
 import { useHyperCustomizationStore } from "@/store/useHyperCustomizationStore";
 
@@ -625,15 +624,6 @@ export default function PatientHome() {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6 space-y-6 flex-1 w-full">
-        {/* 1. INSTANT MEMORY & MEDICINE PROBE */}
-        {widgets.showDualRecall && (
-          <DualMemoryProbes
-            patientName={patientName}
-            langCode={langCode}
-            rate={rate}
-          />
-        )}
-
         {/* 1. DAILY BRAIN ACTIVITIES & THERAPY SUITE */}
         {widgets.showQuickGamesGrid && (
           <TherapySuiteGrid gamesTitle={t("gamesTitle")} />

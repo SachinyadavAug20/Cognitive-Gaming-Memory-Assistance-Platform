@@ -1,19 +1,7 @@
 "use client";
 
 import { useState, useRef, useId } from "react";
-import {
-  Camera,
-  Sparkles,
-  Volume2,
-  CheckCircle2,
-  RotateCcw,
-  Heart,
-  Droplets,
-  Utensils,
-  ChevronRight,
-  Smile,
-  Star,
-} from "lucide-react";
+import { Camera, Volume2, RotateCcw, Star } from "lucide-react";
 import { playTapFeedback, playEncourage, unlockAudio } from "@/lib/sound";
 import { speak } from "@/lib/speech";
 import { useLocale } from "next-intl";
@@ -22,9 +10,9 @@ import { useCareSyncStore } from "@/lib/careSyncStore";
 interface MealPreset {
   id: string;
   name: Record<string, string>;
+  shortName: Record<string, string>;
   emoji: string;
   stars: number;
-  badge: Record<string, string>;
   advice: Record<string, string>;
   imagePlaceholder: string;
 }
@@ -37,9 +25,9 @@ function StarRating({ count, max = 10 }: { count: number; max?: number }) {
         return (
           <Star
             key={i}
-            className={`h-4.5 w-4.5 sm:h-5 sm:w-5 transition-transform ${
+            className={`h-5 w-5 transition-transform ${
               isFilled
-                ? "text-amber-500 fill-amber-400 stroke-amber-700 drop-shadow-xs"
+                ? "text-amber-500 fill-amber-400 drop-shadow-xs"
                 : "text-neutral-300 fill-neutral-100 dark:fill-neutral-800 dark:text-neutral-700"
             }`}
           />
@@ -56,44 +44,20 @@ const PRESET_MEALS: MealPreset[] = [
     name: {
       en: "Rice, Dal & Leafy Greens",
       hi: "दाल, चावल और हरी सब्जी",
-      as: "ভাত, মগু ডাইল আৰু সেউজীয়া শাক",
-      bn: "ভাত, ডাল ও সবুজ শাক",
-      mr: "वरण-भात आणि पालेभाजी",
-      ne: "दाल, भात र हरियो साग",
-      mni: "চেঙুম, খাংহৌ অমসুং হৌবী",
-      brx: "मैखाम, दाल आरो गोथां बेगर",
-      grt: "Mi, dal aro sam gital",
-      kha: "Ja, dai bad jhur",
-      lus: "Chaw, dal leh thlai hnah",
+      as: "ভাত, মগু ডাইল আৰু শাক",
+    },
+    shortName: {
+      en: "Rice & Dal",
+      hi: "दाल चावल",
+      as: "ভাত-ডাইল",
     },
     stars: 10,
-    badge: {
-      en: "⭐ 10/10 Gold Brain Food",
-      hi: "⭐ 10/10 उत्तम मस्तिष्क आहार",
-      as: "⭐ ১০/১০ শ্ৰেষ্ঠ মস্তিষ্ক খাদ্য",
-      bn: "⭐ ১০/১০ সেরা মস্তিষ্ক পুষ্টি",
-      mr: "⭐ १०/१० उत्तम पोषण",
-      ne: "⭐ १०/१० उत्कृष्ट मस्तिष्क पोषण",
-      mni: "⭐ ১০/১০ অকনবা পুষ্টি",
-      brx: "⭐ १०/१० गाहाम गोसोनि आदार",
-      grt: "⭐ 10/10 Namgipa cha·ani",
-      kha: "⭐ 10/10 Jingbam ba bha tam",
-      lus: "⭐ 10/10 Chaw tha tak",
-    },
     advice: {
-      en: "Superb plate! Green spinach and lentils nourish memory cells and keep blood sugar very steady. Drink 1 glass of warm water after eating.",
-      hi: "बहुत बढ़िया भोजन! हरी सब्जियां और दाल मस्तिष्क की कोशिकाओं को पोषण देती हैं और शर्करा को स्थिर रखती हैं। खाने के बाद एक गिलास गुनगुना पानी पिएं।",
-      as: "বৰ পুষ্টিকৰ সাজ! সেউজীয়া শাক আৰু মগু ডালে স্মৃতিশক্তি সতেজ ৰাখে আৰু তেজৰ চেনিৰ মাত্ৰা নিয়ন্ত্ৰণত ৰাখে। খোৱাৰ পিছত এগিলাচ কুহুমীয়া পানী খাব।",
-      bn: "চমৎকার খাবার! সবুজ শাক ও ডাল মস্তিষ্কের স্মৃতিশক্তি সতেজ রাখে এবং সুগার নিয়ন্ত্রণে রাখে। খাওয়ার পর এক গ্লাস জল খাবেন।",
-      mr: "उत्कृष्ट आहार! पालेभाज्या आणि डाळ स्मरणशक्ती सुधारतात. जेवणानंतर एक ग्लास पाणी नक्की प्या.",
-      ne: "धेरै राम्रो खाना! हरियो साग र दालले स्मरणशक्ति ताजा राख्छ। खानापछि एक गिलास मनतातो पानी पिउनुहोस्।",
-      mni: "য়াম্না ফবা চানা-থক্নবা! সেউজীয়া শাক অমসুং দালনা ৱাখলবু মপাঙ্গল কনহল্লি। চাবা লোইবা মতমদা ঈশিং গ্লাস অমা থকপীয়ু।",
-      brx: "जोबोद मोजां आदार! दाल आरो साखआ गोसोखौ मोजां लाखियो। जानायनि उनाव गांसे लोटा दै लों।",
-      grt: "Namgipa cha·ani! Sam aro dal gisikko taridapna dakchaka. Cha·a ja·mano chi ringbo.",
-      kha: "Ka jingbam ba shisha bha! U dai bad ki jhur ki pynshait ia ka bor pyrkhat. Dih shiklas ka um hadien ba la dep bam.",
-      lus: "Chaw tha tak a ni! Thlai hnah leh dal hian hriatna a tichak. Chaw ei khamah tui lum no khat in rawh.",
+      en: "Superb plate! Green spinach and lentils nourish memory cells and keep blood sugar steady. Drink a glass of warm water after eating.",
+      hi: "बहुत बढ़िया भोजन! हरी सब्जियां और दाल मस्तिष्क की कोशिकाओं को पोषण देती हैं। खाने के बाद एक गिलास गुनगुना पानी पिएं।",
+      as: "বৰ পুষ্টিকৰ সাজ! সেউজীয়া শাক আৰু মগু ডালে স্মৃতিশক্তি সতেজ ৰাখে। খোৱাৰ পিছত এগিলাচ কুহুমীয়া পানী খাব।",
     },
-    imagePlaceholder: "/sample-images/patient_1_biren_borah/places/02_silpukhuri_daily_market.jpg",
+    imagePlaceholder: "/sample-images/meals/dal_rice_veg.jpg",
   },
   {
     id: "roti_sabji",
@@ -102,43 +66,19 @@ const PRESET_MEALS: MealPreset[] = [
       en: "Roti & Mixed Vegetables",
       hi: "रोटी और ताजी सब्जी",
       as: "ৰুটী আৰু ভাজি",
-      bn: "রুটি ও তরকারি",
-      mr: "पोळी आणि भाजी",
-      ne: "रोटी र तरकारी",
-      mni: "রোতি অমসুং ইঞ্চি",
-      brx: "रुथि आरो बेगर",
-      grt: "Roti aro sam",
-      kha: "Ruti bad jhur",
-      lus: "Chhangpui leh chawhmeh",
+    },
+    shortName: {
+      en: "Roti & Sabji",
+      hi: "रोटी सब्जी",
+      as: "ৰুটী-ভাজি",
     },
     stars: 9,
-    badge: {
-      en: "⭐ 9/10 Steady Energy",
-      hi: "⭐ 9/10 स्थिर ऊर्जा",
-      as: "⭐ ৯/১০ নিৰৱচ্ছিন্ন শক্তি",
-      bn: "⭐ ৯/১০ ধীর ও শান্ত শক্তি",
-      mr: "⭐ ९/१० स्थिर ऊर्जा",
-      ne: "⭐ ९/१० स्थिर ऊर्जा",
-      mni: "⭐ ৯/১০ মপাঙ্গল",
-      brx: "⭐ ९/१० मोजां गोहो",
-      grt: "⭐ 9/10 Bil namgipa",
-      kha: "⭐ 9/10 Ka bor ba neh",
-      lus: "⭐ 9/10 Chakna nghet",
-    },
     advice: {
-      en: "Whole grains and spiced seasonal vegetables support good blood flow to the brain. Take gentle bites and enjoy every flavor.",
-      hi: "साबुत अनाज और मौसमी सब्जियां दिमाग में रक्त संचार को स्वस्थ रखती हैं। धीरे-धीरे चबाकर खाएं और स्वाद का आनंद लें।",
-      as: "আটাৰ ৰুটী আৰু বতৰৰ পাচলি মগজুৰ ৰক্ত চলাচলৰ বাবে অতি হিতকৰ। লাহে লাহে চোবাই খোৱাৰ তৃপ্তি লওক।",
-      bn: "আটার রুটি এবং মরসুমি সবজি মস্তিষ্কের রক্ত সঞ্চালন ভালো রাখে। ধীরে ধীরে চিবিয়ে খান।",
-      mr: "धान्य आणि ताज्या भाज्या मेंदूसाठी उत्तम असतात. शांतपणे खा आणि आनंद घ्या.",
-      ne: "गहुँको रोटी र ताजा तरकारीले दिमागमा रक्तसञ्चार राम्रो बनाउँछ। राम्ररी चपाएर खानुहोस्।",
-      mni: "রোতি অমসুং ইঞ্চি অসিনা হকচাংদা নুংঙাইবা পী। তপ্না চাউ।",
-      brx: "रुथि आरो बेगरा गोसोनि थाखाय गाहाम। लासै लासै जा।",
-      grt: "Roti aro sam gisikna namgipa ong·a. Ka·sinen cha·bo.",
-      kha: "Ka ruti bad ki jhur ki pynkiew ia ka snam sha ka khlieh. Bam suki bad pynhun ia lade.",
-      lus: "Chhangpui leh thlai hian thluak thisen kal a ti tha. Muangchangin ei rawh.",
+      en: "Whole grains and seasonal vegetables support good blood flow to the brain. Take gentle bites and enjoy every flavor.",
+      hi: "साबुत अनाज और मौसमी सब्जियां दिमाग में रक्त संचार को स्वस्थ रखती हैं। धीरे-धीरे चबाकर खाएं।",
+      as: "আটাৰ ৰুটী আৰু পাচলি মগজুৰ ৰক্ত চলাচলৰ বাবে অতি হিতকৰ। লাহে লাহে চোবাই খাওক।",
     },
-    imagePlaceholder: "/sample-images/patient_1_biren_borah/places/01_home_silpukhuri_residence.jpg",
+    imagePlaceholder: "/sample-images/meals/roti_sabji.jpg",
   },
   {
     id: "khichdi_curd",
@@ -146,44 +86,20 @@ const PRESET_MEALS: MealPreset[] = [
     name: {
       en: "Warm Khichdi & Curd",
       hi: "गर्म खिचड़ी और ताजा दही",
-      as: "গৰম খিচিৰি আৰু সতেজ দৈ",
-      bn: "গরম খিচুড়ি ও টক দই",
-      mr: "गरम खिचडी आणि ताजे दही",
-      ne: "तातो खिचडी र दही",
-      mni: "খিচিরি অমসুং দহি",
-      brx: "गोलोम खिस्रि आरो दै",
-      grt: "Khichdi aro dahi",
-      kha: "Khichdi bad dahi",
-      lus: "Khichdi lum leh dahi",
+      as: "গৰম খিচিৰি আৰু দৈ",
+    },
+    shortName: {
+      en: "Khichdi & Curd",
+      hi: "खिचड़ी दही",
+      as: "খিচিৰি-দৈ",
     },
     stars: 9,
-    badge: {
-      en: "⭐ 9/10 Gentle & Calming",
-      hi: "⭐ 9/10 सुपाच्य एवं शांतिकर",
-      as: "⭐ ৯/১০ সুপাচ্য আৰু শান্তিদায়ক",
-      bn: "⭐ ৯/১০ সহজে হজম ও শান্তিময়",
-      mr: "⭐ ९/१० पचनास हलके",
-      ne: "⭐ ९/१० सजिलै पच्ने र शान्त",
-      mni: "⭐ ৯/১০ নুংঙাইবা অমসুং হৌবা",
-      brx: "⭐ ९/१० गोसो गोरोन्थाय",
-      grt: "⭐ 9/10 Ka·sengatgipa",
-      kha: "⭐ 9/10 Jem ban tylliat",
-      lus: "⭐ 9/10 Pumpui tan tha",
-    },
     advice: {
-      en: "Gentle on your stomach! Curd provides friendly probiotics that directly communicate with brain neurotransmitters to reduce anxiety.",
+      en: "Gentle on your stomach! Curd provides probiotics that communicate with the brain to keep you calm and peaceful.",
       hi: "पेट के लिए बहुत हल्का और सुपाच्य! दही के गुण मस्तिष्क को शांत रखते हैं और मन को प्रसन्न करते हैं।",
       as: "পেটৰ বাবে অতি সুচল! দৈৰ প্ৰাকৃতিক উপাদানে মন শান্ত আৰু চিন্তামুক্ত ৰাখিবলৈ সহায় কৰে।",
-      bn: "সহজপাচ্য ও আরামদায়ক! দই মনের উদ্বেগ কমায় এবং মনকে প্রফুল্ল রাখে।",
-      mr: "पोटासाठी हलके! दही मेंदूला शांत ठेवण्यास मदत करते आणि ताण कमी करते.",
-      ne: "पेटको लागि धेरै हल्का! दहीले दिमाग शान्त राख्न र चिन्ता कम गर्न मद्दत गर्छ।",
-      mni: "পুক্কীদমক য়াম্না ফই! দহিনা ৱাখলবু শান্ত ওইহল্লি।",
-      brx: "उदैखौ मोजां लाखियो! दहिया गोसोखौ गोजोन खालामो।",
-      grt: "Okkina namgipa! Dahi gisikko tom·tomata.",
-      kha: "Jem ban tylliat! Ka dahi ka pynjem ia ka jingmut jingpyrkhat.",
-      lus: "Pumpui tan a tha em em! Dahi hian thluak a ti dam sawng sawng thin.",
     },
-    imagePlaceholder: "/sample-images/patient_1_biren_borah/places/03_silpukhuri_hari_namghar.jpg",
+    imagePlaceholder: "/sample-images/meals/khichdi_curd.jpg",
   },
   {
     id: "fruits_milk",
@@ -191,50 +107,26 @@ const PRESET_MEALS: MealPreset[] = [
     name: {
       en: "Fresh Fruit & Warm Milk",
       hi: "ताजे फल और गर्म दूध",
-      as: "পকা ফল আৰু গৰম গাখীৰ",
-      bn: "তাজা ফল ও গরম দুধ",
-      mr: "ताजी फळे आणि गरम दूध",
-      ne: "ताजा फलफूल र तातो दूध",
-      mni: "হৈহৌ অমসুং সঙোম",
-      brx: "गोथां फिथाइ आरो गाइखेर",
-      grt: "Bite gital aro sok",
-      kha: "Ki soh bad ka dud lum",
-      lus: "Thei thar leh hnute lum",
+      as: "পকা ফল আৰু গাখীৰ",
+    },
+    shortName: {
+      en: "Fruit & Milk",
+      hi: "फल व दूध",
+      as: "ফল-গাখীৰ",
     },
     stars: 9,
-    badge: {
-      en: "⭐ 9/10 Antioxidant Glow",
-      hi: "⭐ 9/10 एंटीऑक्सीडेंट से भरपूर",
-      as: "⭐ ৯/১০ এন্টিঅক্সিডেন্ট ভৰপূৰ",
-      bn: "⭐ ৯/১০ অ্যান্টিঅক্সিডেন্টে ভরপুর",
-      mr: "⭐ ९/१० जीवनसत्त्वयुक्त",
-      ne: "⭐ ९/१० भिटामिनयुक्त",
-      mni: "⭐ ৯/১০ পুষ্টি লৈরবা",
-      brx: "⭐ ९/१० गोसो मोजां खालामग्रा",
-      grt: "⭐ 9/10 Namgipa bil",
-      kha: "⭐ 9/10 Ka jingbam pynshait",
-      lus: "⭐ 9/10 Thluak enkawlna",
-    },
     advice: {
-      en: "Antioxidants from fresh fruits protect memory connections. Warm milk relaxes muscles and prepares you for deep, peaceful rest.",
+      en: "Antioxidants from fresh fruits protect memory connections. Warm milk relaxes muscles and prepares you for peaceful rest.",
       hi: "फलों के पोषक तत्व याददाश्त को सुरक्षित रखते हैं। गर्म दूध शरीर को आराम देता है और गहरी शांति लाता है।",
-      as: "ফলৰ ভিটামিনে মগজুৰ স্মৃতিকোষবোৰ সজীৱ কৰে। গৰম গাখীৰে দেহা জুৰাই গভীৰ শান্তি আৰু নিদ্ৰা আনে।",
-      bn: "তাজা ফলের পুষ্টি স্মৃতিশক্তি বাড়ায় এবং গরম দুধ শরীরকে আরাম দিয়ে শান্ত ঘুম এনে দেয়।",
-      mr: "फळे स्मरणशक्ती वाढवतात आणि गरम दूध शरीराला शांत करून गाढ झोप देते.",
-      ne: "फलफूलले स्मरणशक्ति बलियो बनाउँछ। तातो दूधले शरीरलाई आराम दिन्छ।",
-      mni: "হৈহৌ অসিনা নিংশিং মপাঙ্গল পীরি। সঙোম অসিনা হকচাংবু শান্ত ওইহল্লি।",
-      brx: "फिथाइया गोसोखौ मोजां लाखियो आरो गाइखेरा गोसोखौ गोजोन खालामो।",
-      grt: "Biterang gisikko namata aro sok an·sengata.",
-      kha: "Ki soh ki pynshait ia ka bor kynmaw bad ka dud ka pynjem ia ka met.",
-      lus: "Thei hian hriatna a vawng tha a, hnute lum hian taksa a ti hahdam thin.",
+      as: "ফলৰ ভিটামিনে মগজুৰ স্মৃতিকোষবোৰ সজীৱ কৰে। গৰম গাখীৰে দেহা জুৰাই গভীৰ শান্তি আনে।",
     },
-    imagePlaceholder: "/sample-images/patient_1_biren_borah/places/05_dighalipukhuri_lake_park.jpg",
+    imagePlaceholder: "/sample-images/meals/fruits_milk.jpg",
   },
 ];
 
 export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: string }) {
   const locale = useLocale();
-  const normLoc = (locale?.split("-")[0]?.toLowerCase() || "en");
+  const normLoc = locale?.split("-")[0]?.toLowerCase() || "en";
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toggleMealTaken = useCareSyncStore((s) => s.toggleMealTaken);
   const uniqueInputId = useId();
@@ -244,8 +136,8 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
   const [analyzing, setAnalyzing] = useState(false);
 
   const currentName = activeMeal.name[normLoc] || activeMeal.name.en;
-  const currentBadge = activeMeal.badge[normLoc] || activeMeal.badge.en;
   const currentAdvice = activeMeal.advice[normLoc] || activeMeal.advice.en;
+  const currentStars = customPhotoUrl ? 9 : activeMeal.stars;
 
   const handleCapturePhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -259,7 +151,6 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
       if (typeof reader.result === "string") {
         setCustomPhotoUrl(reader.result);
 
-        // Intelligent simulated food score & encouragement
         setTimeout(() => {
           setAnalyzing(false);
           playEncourage();
@@ -267,14 +158,14 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
 
           const praiseMsg =
             normLoc === "hi"
-              ? `शाबाश ${patientName} जी! आपके भोजन की तस्वीर दर्ज हो गई है। इसे याददाश्त के लिए 10 में से 9 स्टार मिले हैं!`
+              ? `शाबाश ${patientName} जी! भोजन की तस्वीर दर्ज हो गई है। इसे 10 में से 9 स्टार मिले हैं!`
               : normLoc === "as"
-              ? `বৰ সুন্দৰ ${patientName}! আপোনাৰ আহাৰৰ ছবিখন সংৰক্ষণ কৰা হ'ল। ই ১০ টাৰ ভিতৰত ৯ টা তৰা পাইছে!`
-              : `Great job ${patientName}! Your meal photo has been saved. It scored 9 out of 10 stars for healthy memory!`;
+              ? `বৰ সুন্দৰ ${patientName}! আহাৰৰ ছবিখন সংৰক্ষণ কৰা হ'ল। ই ১০ টাৰ ভিতৰত ৯ টা তৰা পাইছে!`
+              : `Great job ${patientName}! Your meal photo has been saved with 9 out of 10 stars!`;
 
           unlockAudio();
           speak(praiseMsg, normLoc, 0.85);
-        }, 1200);
+        }, 800);
       }
     };
     reader.readAsDataURL(file);
@@ -291,57 +182,50 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
   const handleListenAdvice = () => {
     unlockAudio();
     playTapFeedback();
-    const currentStars = customPhotoUrl ? 9 : activeMeal.stars;
-    const fullSpeech = `${currentName}. ${currentStars} out of 10 stars. ${currentBadge}. ${currentAdvice}`;
+    const fullSpeech = `${currentName}. ${currentStars} out of 10 stars. ${currentAdvice}`;
     speak(fullSpeech, normLoc, 0.85);
   };
 
-  const handleReset = () => {
-    playTapFeedback();
-    setCustomPhotoUrl(null);
-  };
-
-  const currentStars = customPhotoUrl ? 9 : activeMeal.stars;
-
   return (
-    <div className="border-3 border-black bg-gradient-to-br from-amber-50 via-emerald-50 to-teal-50 rounded-3xl p-5 sm:p-7 shadow-[5px_5px_0px_#000] space-y-5">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3.5">
-          <div className="w-13 h-13 rounded-2xl bg-amber-400 border-2 border-black flex items-center justify-center text-3xl shrink-0 shadow-[2px_2px_0px_#000]">
+    <section
+      aria-label="Simple Meal Check"
+      className="rounded-3xl border-3 border-black bg-surface p-5 sm:p-6 shadow-[4px_4px_0px_#000] space-y-5 text-ink"
+    >
+      {/* ── TOP: Clean Header + Camera Snap Button ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b-2 border-black/10">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-amber-400 border-2 border-black flex items-center justify-center text-2xl shadow-[2px_2px_0px_#000] shrink-0 text-black">
             📸
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider bg-tea text-white px-2 py-0.5 rounded border border-black">
-                {normLoc === "hi" ? "सरल भोजन जांच" : normLoc === "as" ? "আহাৰ পৰীক্ষা" : "Simple Meal Check"}
-              </span>
-              <span className="text-xs font-bold text-amber-800 flex items-center gap-1">
-                <Sparkles className="h-3.5 w-3.5 text-amber-600" />
-                <span>Memory Food</span>
-              </span>
-            </div>
-            <h3 className="font-serif font-black text-2xl sm:text-3xl text-ink mt-0.5">
+            <h3 className="font-serif font-black text-xl sm:text-2xl text-ink leading-tight">
               {normLoc === "hi"
-                ? "थाली की तस्वीर लें"
+                ? "भोजन जांच"
                 : normLoc === "as"
-                ? "আপোনাৰ আহাৰৰ ছবি তোলক"
+                ? "আহাৰ পৰীক্ষা"
                 : "Snap What You Eat"}
             </h3>
+            <p className="text-xs sm:text-sm text-ink-secondary">
+              {normLoc === "hi"
+                ? "तस्वीर लें या भोजन चुनें — याददाश्त के लिए 10 स्टार रेटिंग पाएं"
+                : normLoc === "as"
+                ? "ছবি তোলক বা আহাৰ বাছক — ১০ টা তৰাৰ ৰেটিং পাওক"
+                : "Snap a photo of your plate or tap what you are eating"}
+            </p>
           </div>
         </div>
 
-        {/* Big Camera Snap CTA */}
+        {/* 1-Tap Camera Button */}
         <label
           htmlFor={uniqueInputId}
-          className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-tea text-white font-serif font-black text-sm sm:text-base border-3 border-black shadow-[3px_3px_0px_#000] hover:bg-emerald-800 active:scale-95 cursor-pointer transition-all shrink-0"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-tea text-white font-serif font-black text-xs sm:text-sm border-2 border-black shadow-[2px_2px_0px_#000] hover:bg-emerald-800 active:scale-95 cursor-pointer transition-transform shrink-0"
         >
-          <Camera className="h-5 w-5 text-amber-300 stroke-[2.5]" />
+          <Camera className="h-4 w-4 text-amber-300 stroke-[2.5]" />
           <span>
             {normLoc === "hi"
-              ? "कैमरा खोलें 📸"
+              ? "थाली की तस्वीर लें 📸"
               : normLoc === "as"
-              ? "কেমেৰা তোলক 📸"
+              ? "আহাৰৰ ছবি তোলক 📸"
               : "Take Plate Photo 📸"}
           </span>
           <input
@@ -356,121 +240,104 @@ export function PatientMealSnapCard({ patientName = "Baba" }: { patientName?: st
         </label>
       </div>
 
-      <p className="text-sm font-bold text-ink-secondary">
-        {normLoc === "hi"
-          ? "भोजन की तस्वीर लें या नीचे से चुनें — हम तुरंत बताएंगे यह 10 में से कितने स्टार का है!"
-          : normLoc === "as"
-          ? "আহাৰৰ ছবি তোলক বা তলৰ পৰা বাছক — আমি জনাম ই ১০ টাৰ ভিতৰত কিমান তৰা পাইছে!"
-          : "Snap a photo of your plate or tap what you are eating to get an instant 10-star rating and friendly advice!"}
-      </p>
+      {/* ── MIDDLE: 4 Simple Quick Meal Pills ── */}
+      <div>
+        <span className="text-xs font-bold text-ink-secondary mb-2 block">
+          {normLoc === "hi" ? "या आज का भोजन चुनें:" : normLoc === "as" ? "বা আজিৰ আহাৰ বাছক:" : "Or tap what you're eating today:"}
+        </span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {PRESET_MEALS.map((meal) => {
+            const isSelected = !customPhotoUrl && activeMeal.id === meal.id;
+            const shortTitle = meal.shortName[normLoc] || meal.shortName.en;
 
-      {/* Preset 1-Tap Food Choices */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        {PRESET_MEALS.map((meal) => {
-          const isSelected = !customPhotoUrl && activeMeal.id === meal.id;
-          const label = meal.name[normLoc] || meal.name.en;
-          return (
-            <button
-              key={meal.id}
-              onClick={() => handleSelectPreset(meal)}
-              className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 active:scale-95 ${
-                isSelected
-                  ? "border-black bg-amber-200 shadow-[3px_3px_0px_#000] scale-[1.02]"
-                  : "border-black/20 bg-white hover:border-black/50"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-2xl">{meal.emoji}</span>
-                <span className="text-xs font-mono font-black px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-950/60 border border-amber-500/30 text-amber-950 dark:text-amber-200 flex items-center gap-1 shadow-2xs">
-                  <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                  <span>{meal.stars}/10</span>
-                </span>
-              </div>
-              <span className="text-xs font-bold text-ink leading-tight">
-                {label}
-              </span>
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={meal.id}
+                type="button"
+                onClick={() => handleSelectPreset(meal)}
+                className={`py-2 px-3 rounded-xl border-2 flex items-center gap-2 font-bold text-xs sm:text-sm cursor-pointer transition-all active:scale-95 ${
+                  isSelected
+                    ? "border-black bg-amber-300 text-black shadow-[2px_2px_0px_#000] font-black"
+                    : "border-black/25 bg-surface text-ink hover:bg-amber-50 hover:border-black"
+                }`}
+              >
+                <span className="text-lg">{meal.emoji}</span>
+                <span className="truncate">{shortTitle}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Score & Advice Spotlight Banner */}
-      <div className="border-3 border-black bg-white rounded-3xl p-5 sm:p-6 shadow-[3px_3px_0px_#000] space-y-4">
-        {analyzing ? (
-          <div className="py-8 text-center space-y-3">
-            <div className="w-12 h-12 border-4 border-tea border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="font-serif font-black text-lg text-ink">
-              {normLoc === "hi" ? "भोजन की जांच हो रही है..." : normLoc === "as" ? "আহাৰ পৰীক্ষা কৰা হৈছে..." : "Checking your plate nutrients..."}
-            </p>
+      {/* ── BOTTOM: Result Spotlight (Simple, Single-Card, No Nested Boxes) ── */}
+      {analyzing ? (
+        <div className="py-6 text-center space-y-2 rounded-2xl bg-amber-50/50 border-2 border-black/15">
+          <div className="w-9 h-9 border-3 border-tea border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="font-serif font-black text-sm text-ink">
+            {normLoc === "hi" ? "भोजन की जांच हो रही है..." : normLoc === "as" ? "আহাৰ পৰীক্ষা কৰা হৈছে..." : "Checking your plate nutrients..."}
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pt-1">
+          {/* Plate Image Thumbnail */}
+          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl border-2 border-black overflow-hidden bg-neutral-100 shrink-0 shadow-[2px_2px_0px_#000]">
+            <img
+              src={customPhotoUrl || activeMeal.imagePlaceholder}
+              alt={customPhotoUrl ? "Your Plate" : currentName}
+              className="w-full h-full object-cover"
+            />
           </div>
-        ) : (
-          <div className="flex flex-col md:flex-row items-center justify-between gap-5">
-            {/* Left: Plate Photo Thumbnail */}
-            <div className="w-full md:w-44 h-40 rounded-2xl border-2 border-black overflow-hidden bg-neutral-100 shrink-0 relative shadow-sm">
-              <img
-                src={customPhotoUrl || activeMeal.imagePlaceholder}
-                alt="Meal on Plate"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-2 left-2 bg-black/75 text-white text-[11px] font-mono font-bold px-2 py-0.5 rounded-full backdrop-blur-xs">
-                {customPhotoUrl ? "Your Plate 📸" : activeMeal.emoji + " Today's Plate"}
-              </div>
+
+          {/* Details & Advice */}
+          <div className="flex-1 space-y-2 text-center sm:text-left min-w-0">
+            {/* 10-Star Rating & Pill */}
+            <div className="flex items-center justify-center sm:justify-start gap-2.5 flex-wrap">
+              <StarRating count={currentStars} max={10} />
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-amber-400 text-black font-black text-xs border border-black shadow-2xs">
+                {currentStars} / 10 Stars
+              </span>
             </div>
 
-            {/* Middle: Big 10-Star Rating & Advice */}
-            <div className="flex-1 space-y-2.5 text-center md:text-left">
-              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2.5 flex-wrap">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-black text-sm border-2 border-black shadow-[2px_2px_0px_#000]">
-                  <Star className="h-4.5 w-4.5 fill-black text-black" />
-                  <span>{currentStars} / 10 Stars</span>
-                </div>
-                <StarRating count={currentStars} max={10} />
-                <span className="text-xs font-black uppercase tracking-wider text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded-xl border border-emerald-500">
-                  {currentBadge}
-                </span>
-              </div>
+            {/* Meal Title */}
+            <h4 className="font-serif font-black text-lg sm:text-xl text-ink leading-snug">
+              {customPhotoUrl
+                ? normLoc === "hi" ? "आपकी थाली" : normLoc === "as" ? "আপোনাৰ থালি" : "Your Fresh Plate"
+                : currentName}
+            </h4>
 
-              <h4 className="font-serif font-black text-xl text-ink">
-                {customPhotoUrl ? (normLoc === "hi" ? "आपकी स्वादिष्ट थाली" : normLoc === "as" ? "আপোনাৰ পুষ্টিকৰ থালি" : "Your Fresh Plate") : currentName}
-              </h4>
+            {/* Simple Friendly Advice */}
+            <p className="text-xs sm:text-sm text-ink font-medium leading-relaxed">
+              "{currentAdvice}"
+            </p>
 
-              <p className="text-sm font-medium text-ink leading-relaxed italic bg-amber-50/80 p-3 rounded-xl border border-black/15">
-                "{currentAdvice}"
-              </p>
-            </div>
-
-            {/* Right: Audio Listen Button */}
-            <div className="flex flex-col items-center gap-2 shrink-0">
+            {/* Actions: Listen button + Retake button */}
+            <div className="flex items-center justify-center sm:justify-start gap-3 pt-1">
               <button
                 type="button"
                 onClick={handleListenAdvice}
-                className="w-16 h-16 rounded-2xl bg-amber-400 text-black border-3 border-black shadow-[3px_3px_0px_#000] hover:bg-amber-300 active:scale-95 flex flex-col items-center justify-center cursor-pointer transition-all"
-                title="Listen to advice"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface border-2 border-black text-xs font-bold text-ink shadow-[1.5px_1.5px_0px_#000] hover:bg-surface-muted active:scale-95 cursor-pointer"
               >
-                <Volume2 className="h-6 w-6 text-black stroke-[2.5]" />
-                <span className="text-[10px] font-black uppercase tracking-wider mt-0.5">
-                  {normLoc === "hi" ? "सुनें" : normLoc === "as" ? "শুনক" : "Listen"}
-                </span>
+                <Volume2 className="h-4 w-4 text-tea stroke-[2.5]" />
+                <span>{normLoc === "hi" ? "सुनें" : normLoc === "as" ? "শুনক" : "Listen"}</span>
               </button>
-              <span className="text-[10px] text-ink-secondary font-mono">
-                Tap to hear
-              </span>
+
+              {customPhotoUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTapFeedback();
+                    setCustomPhotoUrl(null);
+                  }}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-ink-secondary hover:text-black cursor-pointer"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  <span>{normLoc === "hi" ? "बदलें" : normLoc === "as" ? "সলনি কৰক" : "Reset"}</span>
+                </button>
+              )}
             </div>
           </div>
-        )}
-
-        {customPhotoUrl && (
-          <div className="pt-2 border-t border-black/10 flex justify-end">
-            <button
-              onClick={handleReset}
-              className="text-xs font-bold text-ink-secondary hover:text-black flex items-center gap-1 cursor-pointer"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              <span>{normLoc === "hi" ? "दूसरी तस्वीर लें" : normLoc === "as" ? "আন এখন তোলক" : "Snap Another Photo"}</span>
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </section>
   );
 }

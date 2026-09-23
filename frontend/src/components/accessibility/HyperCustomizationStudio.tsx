@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Palette,
   Type,
@@ -59,6 +60,7 @@ const SCALE_OPTIONS: { id: TextScaleChoice; label: string; px: string; desc: str
 ];
 
 export function HyperCustomizationStudio({ isOpen, onClose }: Props) {
+  const [mounted, setMounted] = useState(false);
   const locale = useLocale();
   const normLoc = locale?.split("-")[0]?.toLowerCase() || "en";
 
@@ -72,6 +74,21 @@ export function HyperCustomizationStudio({ isOpen, onClose }: Props) {
     applyElderFriendlyPreset,
   } = useHyperCustomizationStore();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Prevent background scrolling while open to keep modal pinned on screen
+  useEffect(() => {
+    if (isOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isOpen]);
+
   // Close on Escape key press
   useEffect(() => {
     if (!isOpen) return;
@@ -84,7 +101,7 @@ export function HyperCustomizationStudio({ isOpen, onClose }: Props) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleSelectTheme = (item: (typeof THEME_OPTIONS)[0]) => {
     playTapFeedback();
@@ -110,7 +127,7 @@ export function HyperCustomizationStudio({ isOpen, onClose }: Props) {
     speak(speechText, normLoc, 0.85);
   };
 
-  return (
+  const modalContent = (
     /* NO BLUR: Clean translucent dark backdrop that lets user see live page behind */
     <div
       onClick={(e) => {
@@ -119,12 +136,12 @@ export function HyperCustomizationStudio({ isOpen, onClose }: Props) {
           onClose();
         }
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-150 select-none"
       role="dialog"
       aria-modal="true"
       aria-labelledby="customization-studio-title"
     >
-      <div className="relative w-full max-w-xl max-h-[92vh] bg-surface rounded-3xl border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden text-ink">
+      <div className="relative w-full max-w-xl max-h-[92vh] my-auto bg-surface rounded-3xl border-4 border-black shadow-[8px_8px_0px_#000] flex flex-col overflow-hidden text-ink animate-in zoom-in-95 duration-150">
         {/* Simple Header */}
         <div className="bg-tea text-white px-5 py-4 border-b-4 border-black flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
@@ -333,4 +350,6 @@ export function HyperCustomizationStudio({ isOpen, onClose }: Props) {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

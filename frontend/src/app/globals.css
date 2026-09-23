@@ -71,12 +71,11 @@ body {
   overscroll-behavior-y: none;
 }
 
-/* ── Paper texture overlay (GPU-accelerated, zero-jank fixed background) ── */
+/* ── Paper texture overlay (fixed background) ── */
 .paper-texture {
   background-image: radial-gradient(rgba(0, 0, 0, 0.028) 1px, transparent 0);
   background-size: 24px 24px;
   background-attachment: fixed;
-  transform: translateZ(0);
 }
 
 /* ══════════════════════════════════════════════════════════════

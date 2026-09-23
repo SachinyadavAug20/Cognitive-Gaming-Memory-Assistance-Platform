@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { useLocale } from "next-intl";
@@ -91,13 +91,6 @@ const INITIAL_PHOTOS: SimplePhoto[] = [
   },
 ];
 
-const QUICK_BLESSINGS = [
-  { text: "☀️ Good Morning! / শুভ প্ৰভাত", emoji: "☀️" },
-  { text: "🙏 Namaste / নমস্কাৰ", emoji: "🙏" },
-  { text: "❤️ Love & Blessings to all!", emoji: "❤️" },
-  { text: "🍵 Finished morning tea & medicine!", emoji: "🍵" },
-];
-
 const SENDER_COLORS: Record<string, string> = {
   "Manash Borah": "text-[#008069] dark:text-[#25D366]",
   "Pratima Devi": "text-[#9C27B0] dark:text-[#CE93D8]",
@@ -113,6 +106,19 @@ export default function PatientCommunityPage() {
   const [messages, setMessages] = useState<SimpleMessage[]>(INITIAL_MESSAGES);
   const [photos, setPhotos] = useState<SimplePhoto[]>(INITIAL_PHOTOS);
   const [inputText, setInputText] = useState("");
+
+  const chatScrollRef = useRef<HTMLDivElement | null>(null);
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-scroll to bottom of WhatsApp chat on initial mount
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, []);
+
+  // Auto-scroll smoothly when new messages are sent or received
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const communityAchievements = useCareSyncStore((s) => s.communityAchievements);
   const cheerAchievement = useCareSyncStore((s) => s.cheerAchievement);
@@ -297,7 +303,10 @@ export default function PatientCommunityPage() {
           </div>
 
           {/* WhatsApp Chat Area (Authentic Wallpaper & Bubbles) */}
-          <div className="bg-[#EFEAE2] dark:bg-[#0B141A] p-4 sm:p-5 space-y-3.5 min-h-[300px] max-h-[480px] overflow-y-auto no-scrollbar relative">
+          <div
+            ref={chatScrollRef}
+            className="bg-[#EFEAE2] dark:bg-[#0B141A] p-4 sm:p-5 space-y-3.5 min-h-[300px] max-h-[480px] overflow-y-auto no-scrollbar relative"
+          >
             {/* WhatsApp Day Separator Pill */}
             <div className="flex justify-center my-1">
               <span className="bg-white/90 dark:bg-[#182229] text-neutral-600 dark:text-neutral-300 text-[11px] font-bold px-3 py-1 rounded-lg shadow-2xs uppercase tracking-wider">
@@ -372,28 +381,12 @@ export default function PatientCommunityPage() {
                 </div>
               );
             })}
+            {/* Auto-scroll anchor */}
+            <div ref={chatEndRef} className="h-0 w-0" />
           </div>
 
-          {/* WhatsApp Bottom 1-Tap Quick Action Bar & Input */}
-          <div className="bg-[#F0F2F5] dark:bg-[#1F2C34] border-t border-black/15 p-3 space-y-2.5">
-            {/* Quick 1-Tap Reply Chips */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-              <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 shrink-0">
-                ⚡ 1-Tap:
-              </span>
-              {QUICK_BLESSINGS.map((qb, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleSendQuickReply(qb.text)}
-                  className="px-3 py-1 rounded-xl bg-white dark:bg-[#2A3942] border border-black/20 text-xs font-bold text-neutral-800 dark:text-neutral-100 whitespace-nowrap hover:bg-neutral-100 dark:hover:bg-[#32444f] cursor-pointer shadow-2xs active:scale-95 shrink-0 transition-transform"
-                >
-                  <span className="mr-1">{qb.emoji}</span>
-                  <span>{qb.text}</span>
-                </button>
-              ))}
-            </div>
-
+          {/* WhatsApp Bottom Input Bar (Clean & Minimal) */}
+          <div className="bg-[#F0F2F5] dark:bg-[#1F2C34] border-t border-black/15 p-3">
             {/* Input Bar Form */}
             <form
               onSubmit={(e) => {
@@ -405,7 +398,7 @@ export default function PatientCommunityPage() {
               }}
               className="flex items-center gap-2"
             >
-              <div className="flex-1 flex items-center gap-2 bg-white dark:bg-[#2A3942] rounded-2xl px-3.5 py-2 border border-black/20 shadow-2xs">
+              <div className="flex-1 flex items-center gap-2 bg-white dark:bg-[#2A3942] rounded-2xl px-3.5 py-2.5 border border-black/20 shadow-2xs">
                 <Smile className="h-5 w-5 text-neutral-400 shrink-0" />
                 <input
                   type="text"
