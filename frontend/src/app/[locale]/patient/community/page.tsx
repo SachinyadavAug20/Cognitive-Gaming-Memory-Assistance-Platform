@@ -92,9 +92,9 @@ const INITIAL_PHOTOS: SimplePhoto[] = [
 ];
 
 const SENDER_COLORS: Record<string, string> = {
-  "Manash Borah": "text-[#008069] dark:text-[#25D366]",
-  "Pratima Devi": "text-[#9C27B0] dark:text-[#CE93D8]",
-  "Arnav": "text-[#D4441C] dark:text-[#FF8A65]",
+  "Manash Borah": "text-tea dark:text-emerald-400",
+  "Pratima Devi": "text-purple-700 dark:text-purple-400",
+  "Arnav": "text-amber-700 dark:text-amber-500",
 };
 
 export default function PatientCommunityPage() {
@@ -243,31 +243,32 @@ export default function PatientCommunityPage() {
 
       {/* ── MAIN CONTENT (SINGLE-STREAM, ZERO CLUTTER) ── */}
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        {/* ── 1. FAMILY WHATSAPP GROUP CHAT (MINIMAL & FAMILIAR) ── */}
+        {/* ── 1. FAMILY WHATSAPP GROUP CHAT (MATCHING AI CHAT BOT PALETTE) ── */}
         <section
           aria-labelledby="family-whatsapp-title"
-          className="rounded-3xl border-3 border-black overflow-hidden shadow-[4px_4px_0px_#000] bg-surface"
+          className="rounded-3xl border-4 border-black overflow-hidden shadow-[6px_6px_0px_#000] bg-[#FAF6F0]"
         >
-          {/* WhatsApp Group Top Header Bar */}
-          <div className="bg-[#075E54] dark:bg-[#1F2C34] text-white px-4 py-3.5 flex items-center justify-between gap-3">
+          {/* Header Bar matching Saathi AI Chat Bot Palette */}
+          <div className="bg-surface px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 border-b-3 border-black/15">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-xl shrink-0">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl border-3 border-black bg-amber-300 text-ink shadow-[2px_2px_0px_#000] flex items-center justify-center text-xl shrink-0">
                 👨‍👩‍👧‍👦
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
-                  <h2 id="family-whatsapp-title" className="font-serif font-black text-base sm:text-lg text-white leading-tight">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <h2 id="family-whatsapp-title" className="font-serif font-black text-base sm:text-xl text-ink leading-tight">
                     {normLoc === "hi"
-                      ? `${patientName} का परिवार (WhatsApp)`
+                      ? `${patientName} का परिवार`
                       : normLoc === "as"
-                      ? `${patientName}ৰ পৰিয়াল গোট (WhatsApp)`
+                      ? `${patientName}ৰ পৰিয়াল গোট`
                       : `${patientName}'s Family Circle`}
                   </h2>
-                  <span className="text-[10px] bg-emerald-400 text-black font-black px-1.5 py-0.5 rounded font-mono">
-                    GROUP
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-700 px-2 py-0.5 text-[10px] font-black uppercase text-white shadow-2xs">
+                    <CheckCircle2 className="h-3 w-3" />
+                    WhatsApp
                   </span>
                 </div>
-                <p className="text-[11px] text-emerald-100 font-medium">
+                <p className="text-xs font-bold text-ink-secondary">
                   Manash, Pratima, Arnav, Baba • active today
                 </p>
               </div>
@@ -282,10 +283,10 @@ export default function PatientCommunityPage() {
                     .join(". ");
                   handleListen(chatNarration);
                 }}
-                className="px-2.5 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold flex items-center gap-1 cursor-pointer transition-all active:scale-95"
+                className="btn-tactile px-3 py-1.5 rounded-xl border-2 border-black bg-surface hover:bg-amber-100 text-ink text-xs font-black flex items-center gap-1.5 shadow-[2px_2px_0px_#000] cursor-pointer transition-all active:translate-y-0.5"
                 title="Listen to full chat"
               >
-                <Volume2 className="h-4 w-4" />
+                <Volume2 className="h-4 w-4 text-tea" />
                 <span className="hidden sm:inline">Listen</span>
               </button>
               <a
@@ -293,23 +294,23 @@ export default function PatientCommunityPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => playTapFeedback()}
-                className="px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-black flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+                className="btn-tactile px-3 py-1.5 rounded-xl border-2 border-black bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 shadow-[2px_2px_0px_#000] cursor-pointer transition-all active:translate-y-0.5"
                 title="Open in WhatsApp"
               >
                 <MessageCircle className="h-4 w-4 fill-white" />
-                <span>Open in WhatsApp</span>
+                <span className="hidden sm:inline">Open WhatsApp</span>
               </a>
             </div>
           </div>
 
-          {/* WhatsApp Chat Area (Authentic Wallpaper & Bubbles) */}
+          {/* Chat Stream Area matching Saathi AI Chat Bot Palette */}
           <div
             ref={chatScrollRef}
-            className="bg-[#EFEAE2] dark:bg-[#0B141A] p-4 sm:p-5 space-y-3.5 min-h-[300px] max-h-[480px] overflow-y-auto no-scrollbar relative"
+            className="bg-[#FAF6F0] p-4 sm:p-5 space-y-3.5 min-h-[320px] max-h-[480px] overflow-y-auto no-scrollbar relative"
           >
             {/* WhatsApp Day Separator Pill */}
             <div className="flex justify-center my-1">
-              <span className="bg-white/90 dark:bg-[#182229] text-neutral-600 dark:text-neutral-300 text-[11px] font-bold px-3 py-1 rounded-lg shadow-2xs uppercase tracking-wider">
+              <span className="bg-surface border-2 border-black text-ink-secondary text-[11px] font-black px-3.5 py-1 rounded-full shadow-[2px_2px_0px_#000] uppercase tracking-wider">
                 {normLoc === "hi" ? "आज" : normLoc === "as" ? "আজি" : "TODAY"}
               </span>
             </div>
@@ -317,7 +318,7 @@ export default function PatientCommunityPage() {
             {/* Chat Bubbles Stream */}
             {messages.map((m) => {
               const isMe = m.isMe || m.sender.includes("You");
-              const senderColor = SENDER_COLORS[m.sender] || "text-[#008069] dark:text-[#25D366]";
+              const senderColor = SENDER_COLORS[m.sender] || "text-amber-800";
 
               return (
                 <div
@@ -325,10 +326,10 @@ export default function PatientCommunityPage() {
                   className={`flex ${isMe ? "justify-end" : "justify-start"} animate-fadeIn`}
                 >
                   <div
-                    className={`relative max-w-[88%] sm:max-w-[78%] rounded-2xl px-3.5 py-2.5 shadow-xs ${
+                    className={`relative max-w-[88%] sm:max-w-[80%] rounded-2xl px-4 py-3 shadow-[3px_3px_0px_#000] border-3 border-black ${
                       isMe
-                        ? "bg-[#D9FDD3] dark:bg-[#005C4B] rounded-tr-xs text-neutral-900 dark:text-white"
-                        : "bg-white dark:bg-[#202C33] rounded-tl-xs text-neutral-900 dark:text-neutral-100"
+                        ? "bg-amber-300 text-ink rounded-tr-xs"
+                        : "bg-surface text-ink rounded-tl-xs"
                     }`}
                   >
                     {/* Incoming sender name header */}
@@ -338,23 +339,23 @@ export default function PatientCommunityPage() {
                         <span className={`text-xs font-black ${senderColor}`}>
                           {m.sender}
                         </span>
-                        <span className="text-[10px] text-neutral-400 font-medium">
+                        <span className="text-[10px] text-ink-secondary font-bold">
                           ({m.relation})
                         </span>
                       </div>
                     )}
 
                     {/* Message text */}
-                    <p className="text-sm sm:text-base font-medium leading-relaxed break-words">
+                    <p className="text-sm sm:text-base font-bold leading-relaxed break-words text-ink">
                       {m.text}
                     </p>
 
                     {/* Bubble footer: Time, listen, heart reactions, double checks */}
-                    <div className="flex items-center justify-end gap-2 mt-1.5 pt-0.5 text-[10px] text-neutral-500 dark:text-neutral-300 font-mono select-none">
+                    <div className="flex items-center justify-end gap-2 mt-1.5 pt-0.5 text-[11px] font-bold text-ink-secondary font-mono select-none">
                       <button
                         type="button"
                         onClick={() => handleListen(m.text)}
-                        className="hover:text-tea p-0.5 rounded cursor-pointer"
+                        className="hover:text-amber-800 p-0.5 rounded cursor-pointer transition-colors"
                         title="Listen to this message"
                       >
                         <Volume2 className="h-3.5 w-3.5 text-tea" />
@@ -363,7 +364,7 @@ export default function PatientCommunityPage() {
                       <button
                         type="button"
                         onClick={() => handleCheerMessage(m.id)}
-                        className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 font-bold hover:scale-105 active:scale-95 cursor-pointer"
+                        className="flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-rose-50 border-2 border-black text-rose-700 font-black hover:scale-105 active:scale-95 cursor-pointer shadow-[1px_1px_0px_#000] transition-all"
                         title="Give love"
                       >
                         <Heart className="h-3 w-3 fill-rose-600 text-rose-600" />
@@ -372,8 +373,8 @@ export default function PatientCommunityPage() {
 
                       <span>{m.time}</span>
 
-                      {/* WhatsApp Double Blue Checkmarks */}
-                      <span className="text-[#53BDEB] font-bold text-[11px] leading-none">
+                      {/* WhatsApp Double Blue / Tactile Checkmarks */}
+                      <span className={isMe ? "text-black font-black text-[12px] leading-none" : "text-tea font-black text-[12px] leading-none"}>
                         ✓✓
                       </span>
                     </div>
@@ -385,8 +386,8 @@ export default function PatientCommunityPage() {
             <div ref={chatEndRef} className="h-0 w-0" />
           </div>
 
-          {/* WhatsApp Bottom Input Bar (Clean & Minimal) */}
-          <div className="bg-[#F0F2F5] dark:bg-[#1F2C34] border-t border-black/15 p-3">
+          {/* Bottom Input Bar matching Saathi AI Chat Bot Palette */}
+          <div className="bg-surface border-t-3 border-black/15 p-3 sm:p-4">
             {/* Input Bar Form */}
             <form
               onSubmit={(e) => {
@@ -398,8 +399,8 @@ export default function PatientCommunityPage() {
               }}
               className="flex items-center gap-2"
             >
-              <div className="flex-1 flex items-center gap-2 bg-white dark:bg-[#2A3942] rounded-2xl px-3.5 py-2.5 border border-black/20 shadow-2xs">
-                <Smile className="h-5 w-5 text-neutral-400 shrink-0" />
+              <div className="flex-1 flex items-center gap-2 bg-[#FAF6F0] rounded-2xl px-3.5 py-2.5 border-2 border-black shadow-[2px_2px_0px_#000]">
+                <Smile className="h-5 w-5 text-ink-secondary shrink-0" />
                 <input
                   type="text"
                   value={inputText}
@@ -411,17 +412,17 @@ export default function PatientCommunityPage() {
                       ? "পৰিয়াললৈ বাৰ্তা লিখক..."
                       : "Type a warm message to family..."
                   }
-                  className="w-full bg-transparent text-sm font-medium text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 focus:outline-none"
+                  className="w-full bg-transparent text-sm font-bold text-ink placeholder:text-ink-secondary/70 focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={!inputText.trim()}
-                className="w-10 h-10 rounded-full bg-[#00A884] hover:bg-[#008f70] disabled:opacity-40 text-white flex items-center justify-center shadow-xs cursor-pointer active:scale-90 transition-all shrink-0"
+                className="w-11 h-11 rounded-2xl border-3 border-black bg-amber-400 hover:bg-amber-300 disabled:opacity-40 text-black flex items-center justify-center shadow-[3px_3px_0px_#000] cursor-pointer active:translate-y-0.5 transition-all shrink-0"
                 title="Send"
               >
-                <Send className="h-4.5 w-4.5 stroke-[2.5]" />
+                <Send className="h-5 w-5 stroke-[2.5]" />
               </button>
             </form>
           </div>
