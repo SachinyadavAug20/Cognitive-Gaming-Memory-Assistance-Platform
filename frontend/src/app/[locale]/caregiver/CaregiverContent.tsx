@@ -232,15 +232,27 @@ export function CaregiverContent() {
 
   return (
     <>
-      <div className="bg-ink border-b-4 border-border px-4 py-2.5 md:px-6">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="font-[family-name:var(--font-serif)] font-bold text-xl md:text-2xl text-ink-inverse">
-              {t("title")}
-            </h1>
-            <p className="text-ink-inverse/60 text-xs mt-0.5">{t("subtitle")}</p>
+      <div className="bg-ink border-b-4 border-border px-3 py-3 md:px-6 md:py-3.5">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-[family-name:var(--font-serif)] font-bold text-lg md:text-2xl text-ink-inverse">
+                {t("title")}
+              </h1>
+              <p className="text-ink-inverse/60 text-xs mt-0.5">{t("subtitle")}</p>
+            </div>
+            <div className="flex items-center gap-2 sm:hidden">
+              <AudioToggle />
+              <Link
+                href="/caregiver/add-patient"
+                className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-marigold px-3 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-amber-600 transition-colors"
+              >
+                + {t("addPatient")}
+              </Link>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2.5 flex-wrap">
             <div className="hidden md:flex items-center gap-2">
               <div
                 suppressHydrationWarning
@@ -260,23 +272,25 @@ export function CaregiverContent() {
               </div>
             </div>
 
-            <AudioToggle />
-            <Link
-              href="/clinical-evidence"
-              className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-white/30 bg-white/10 hover:bg-white/20 px-3 py-2 text-xs font-black text-white shadow-xs"
-              title="Clinical Evidence & Neuropsychological R&D Dossier"
-            >
-              <FileText className="h-4 w-4 text-amber-300" />
-              <span className="hidden sm:inline">{c18n.clinicalRd}</span>
-            </Link>
-            <Link href="/caregiver/add-patient">
-              <ChunkyButton variant="marigold" size="xl">
-                {t("addPatient")}
-              </ChunkyButton>
-            </Link>
+            <div className="hidden sm:flex items-center gap-2">
+              <AudioToggle />
+              <Link
+                href="/clinical-evidence"
+                className="btn-tactile inline-flex items-center gap-1.5 rounded-xl border-2 border-white/30 bg-white/10 hover:bg-white/20 px-3 py-2 text-xs font-black text-white shadow-xs"
+                title="Clinical Evidence & Neuropsychological R&D Dossier"
+              >
+                <FileText className="h-4 w-4 text-amber-300" />
+                <span className="hidden sm:inline">{c18n.clinicalRd}</span>
+              </Link>
+              <Link href="/caregiver/add-patient">
+                <ChunkyButton variant="marigold" size="xl">
+                  {t("addPatient")}
+                </ChunkyButton>
+              </Link>
+            </div>
             <Link
               href="/"
-              className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-sm transition-colors"
+              className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-xs sm:text-sm transition-colors ml-auto sm:ml-0"
             >
               ← {t("home")}
             </Link>
@@ -284,7 +298,7 @@ export function CaregiverContent() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 mt-3 space-y-3 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
+      <div className="max-w-5xl mx-auto px-4 mt-3 pb-24 md:pb-8 space-y-3 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
         <div>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-lg text-ink mb-2">
             {t("yourPatients")}

@@ -34,7 +34,7 @@ export function GameClient() {
 
   const Game = game.component;
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen pb-24 md:pb-6">
       {/* Discreet floating Clinical R&D & Evidence trigger */}
       <div className="fixed top-3 right-3 z-40 print:hidden">
         <GameClinicalDrawer gameId={params.gameId} gameTitle={game.domain} />

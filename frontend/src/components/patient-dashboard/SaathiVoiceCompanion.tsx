@@ -638,8 +638,8 @@ export function SaathiVoiceCompanion({
 
   return (
     <>
-      {/* Floating Pill on Patient Dashboard */}
-      <div className="fixed bottom-5 right-5 z-40">
+      {/* Floating Pill on Patient Dashboard (Offset on mobile so it doesn't overlap MobileBottomNav) */}
+      <div className="fixed bottom-20 md:bottom-5 right-4 md:right-5 z-40">
         <button
           type="button"
           onClick={() => {

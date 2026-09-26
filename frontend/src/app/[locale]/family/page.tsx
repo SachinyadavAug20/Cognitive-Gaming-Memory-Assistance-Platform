@@ -170,7 +170,7 @@ export default function FamilyPortalPage() {
                   required
                 />
               </div>
-              <div className="flex items-end gap-2">
+              <div className="flex items-end gap-2 flex-wrap">
                 {["Dadu you are the best! ❤️", "Proud of you Ma! 🌸", "See you this Sunday! 🏡"].map((quick) => (
                   <button
                     key={quick}

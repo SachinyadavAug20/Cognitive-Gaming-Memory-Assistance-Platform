@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useEffect } from "react";
 import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -20,8 +20,11 @@ import {
   UtensilsCrossed,
   Heart,
   Users,
+  Menu,
 } from "lucide-react";
 import { useSystemStatus } from "@/hooks/useSystemStatus";
+import { ResponsiveNavDrawer } from "./ResponsiveNavDrawer";
+import { playTapFeedback } from "@/lib/sound";
 
 interface AppHeaderProps {
   isOnline?: boolean;
@@ -177,133 +180,164 @@ export function AppHeader({ isOnline: forcedOnline }: AppHeaderProps) {
         { href: "/family", label: normLoc === "hi" ? "परिवार" : normLoc === "as" ? "পৰিয়াল" : "Family", icon: Heart, exact: false },
       ];
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpen = () => setDrawerOpen(true);
+    window.addEventListener("cognicare_open_nav_drawer", handleOpen);
+    return () => window.removeEventListener("cognicare_open_nav_drawer", handleOpen);
+  }, []);
+
   return (
-    <nav
-      aria-label="Main Navigation"
-      className="w-full border-b-3 border-border bg-surface/95 px-2 sm:px-4 md:px-6 py-2 shadow-sm backdrop-blur-md overflow-x-clip"
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-3 flex-nowrap">
-        {/* Left: Brand Identity */}
-        <Link href="/" className={`flex items-center group shrink-0 ${isPatientRoute ? "gap-2.5" : "gap-2"}`}>
-          <div
-            className={`flex items-center justify-center rounded-xl border-2 border-border bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors ${
-              isPatientRoute ? "h-10 w-10 sm:h-11 sm:w-11" : "h-8 w-8 sm:h-9 sm:w-9"
-            }`}
-          >
-            <Brain className={isPatientRoute ? "h-6 w-6 sm:h-6.5 sm:w-6.5" : "h-4.5 w-4.5 sm:h-5 sm:w-5"} />
-          </div>
-          <div>
-            <div className="flex items-center gap-1">
-              <span
-                className={`font-serif font-black leading-tight text-ink ${
-                  isPatientRoute ? "text-xl sm:text-2xl" : "text-base sm:text-lg"
-                }`}
-              >
-                CogniCare
-              </span>
+    <>
+      <nav
+        aria-label="Main Navigation"
+        className="w-full border-b-3 border-border bg-surface/95 px-2 sm:px-4 md:px-6 py-2 shadow-sm backdrop-blur-md overflow-x-clip"
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-3 flex-nowrap">
+          {/* Left: Brand Identity */}
+          <Link href="/" className={`flex items-center group shrink-0 ${isPatientRoute ? "gap-2 sm:gap-2.5" : "gap-1.5 sm:gap-2"}`}>
+            <div
+              className={`flex items-center justify-center rounded-xl border-2 border-border bg-tea text-white shadow-[2px_2px_0px_#000] group-hover:bg-emerald-800 transition-colors ${
+                isPatientRoute ? "h-9 w-9 sm:h-11 sm:w-11" : "h-8 w-8 sm:h-9 sm:w-9"
+              }`}
+            >
+              <Brain className={isPatientRoute ? "h-5 w-5 sm:h-6.5 sm:w-6.5" : "h-4.5 w-4.5 sm:h-5 sm:w-5"} />
             </div>
-            {!isPatientRoute && (
-              <p className="hidden sm:block font-bold text-ink-secondary whitespace-nowrap text-[8.5px] sm:text-[9px]">
-                {mNav.tagline}
-              </p>
-            )}
-          </div>
-        </Link>
+            <div>
+              <div className="flex items-center gap-1">
+                <span
+                  className={`font-serif font-black leading-tight text-ink ${
+                    isPatientRoute ? "text-lg sm:text-2xl" : "text-base sm:text-lg"
+                  }`}
+                >
+                  CogniCare
+                </span>
+              </div>
+              {!isPatientRoute && (
+                <p className="hidden sm:block font-bold text-ink-secondary whitespace-nowrap text-[8.5px] sm:text-[9px]">
+                  {mNav.tagline}
+                </p>
+              )}
+            </div>
+          </Link>
 
-        {/* Center: Quick Primary Page Navigation */}
-        <div
-          suppressHydrationWarning
-          className={`${
-            isPatientRoute ? "flex gap-2 sm:gap-2.5" : "hidden 2xl:flex gap-1.5 sm:gap-2"
-          } items-center font-sans`}
-        >
-          {navLinks.map((item) => {
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
-            const Icon = item.icon;
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center transition-all cursor-pointer ${
-                  isPatientRoute
-                    ? "gap-2 rounded-xl px-3.5 sm:px-4.5 py-2 text-sm sm:text-base font-black"
-                    : "gap-1.5 sm:gap-2 rounded-xl px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-black"
-                } ${
-                  isActive
-                    ? "border-2 border-border bg-tea text-white shadow-[2px_2px_0px_#000]"
-                    : "border-2 border-transparent text-ink hover:border-border/30 hover:bg-surface-muted"
-                }`}
-              >
-                <Icon className={isPatientRoute ? "h-4.5 w-4.5" : "h-4 w-4"} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Right: Actions, Language, Caregiver Portal, and Emergency SOS */}
-        <div className={`flex items-center shrink-0 ${isPatientRoute ? "gap-1.5 sm:gap-2.5" : "gap-1 sm:gap-2"}`}>
-          {/* Live Spring Backend Connectivity Badge */}
+          {/* Center: Quick Primary Page Navigation (Visible on tablet/desktop lg: 1024px+; on smaller screens, Hamburger & bottom bar handle navigation) */}
           <div
             suppressHydrationWarning
-            className={`flex items-center rounded-xl border-2 border-black shadow-[2px_2px_0px_#000] shrink-0 ${
-              isPatientRoute
-                ? "gap-1.5 px-2.5 py-1.5 text-xs sm:text-sm font-black"
-                : "gap-1.5 px-2 py-1 text-xs font-black"
-            } ${
-              online ? "bg-tea-light text-tea" : "bg-rose-100 text-rose-800"
-            }`}
-            title={
-              online
-                ? `Spring Backend Online (${systemStatus.springLatencyMs ? `${systemStatus.springLatencyMs}ms` : "Port 8080"})`
-                : "Spring Backend Offline (Service Unreachable)"
-            }
+            className={`${
+              isPatientRoute ? "hidden md:flex gap-2 sm:gap-2.5" : "hidden lg:flex gap-1.5 xl:gap-2"
+            } items-center font-sans`}
           >
-            {online ? (
-              <Radio className={`${isPatientRoute ? "h-3.5 w-3.5" : "h-3 w-3"} animate-pulse`} />
-            ) : (
-              <WifiOff className={`${isPatientRoute ? "h-3.5 w-3.5" : "h-3 w-3"} text-rose-700`} />
-            )}
-            <span suppressHydrationWarning>{online ? t("online") : t("offline")}</span>
+            {navLinks.map((item) => {
+              const isActive = item.exact
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center transition-all cursor-pointer ${
+                    isPatientRoute
+                      ? "gap-2 rounded-xl px-3.5 sm:px-4.5 py-2 text-sm sm:text-base font-black"
+                      : "gap-1.5 sm:gap-2 rounded-xl px-2.5 xl:px-3.5 py-1.5 sm:py-2 text-xs xl:text-sm font-black"
+                  } ${
+                    isActive
+                      ? "border-2 border-border bg-tea text-white shadow-[2px_2px_0px_#000]"
+                      : "border-2 border-transparent text-ink hover:border-border/30 hover:bg-surface-muted"
+                  }`}
+                >
+                  <Icon className={isPatientRoute ? "h-4.5 w-4.5" : "h-4 w-4"} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Multilingual Selector */}
-          <LanguageSelector size={isPatientRoute ? "large" : "default"} className="shrink-0" />
-
-          {/* Caregiver & Healthcare Worker Portal Link (Hidden on patient routes to prevent cognitive confusion) */}
-          {!isPatientRoute && (
-            <Link
-              href="/caregiver"
+          {/* Right: Actions, Language, Caregiver Portal, Emergency SOS, and Hamburger Menu */}
+          <div className={`flex items-center shrink-0 ${isPatientRoute ? "gap-1 sm:gap-2" : "gap-1 sm:gap-2"}`}>
+            {/* Live Spring Backend Connectivity Badge */}
+            <div
               suppressHydrationWarning
-              className="flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-surface hover:bg-tea-light hover:border-tea px-2 sm:px-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] shrink-0"
-              title="Caregiver & Healthcare Worker Portal"
+              className={`flex items-center rounded-xl border-2 border-black shadow-[1.5px_1.5px_0px_#000] shrink-0 ${
+                isPatientRoute
+                  ? "gap-1 px-1.5 sm:px-2.5 py-1 sm:py-1.5 text-[11px] sm:text-sm font-black"
+                  : "gap-1 px-1.5 sm:px-2 py-1 text-[11px] sm:text-xs font-black"
+              } ${
+                online ? "bg-tea-light text-tea" : "bg-rose-100 text-rose-800"
+              }`}
+              title={
+                online
+                  ? `Spring Backend Online (${systemStatus.springLatencyMs ? `${systemStatus.springLatencyMs}ms` : "Port 8080"})`
+                  : "Spring Backend Offline (Service Unreachable)"
+              }
             >
-              <ShieldCheck className="h-3.5 w-3.5 text-tea shrink-0" />
-              <span className="hidden lg:inline">{mNav.caregiver}</span>
-              <span className="lg:hidden">{mNav.caregiver.split(" ")[0]}</span>
-            </Link>
-          )}
+              {online ? (
+                <Radio className={`${isPatientRoute ? "h-3 w-3 sm:h-3.5 sm:w-3.5" : "h-3 w-3"} animate-pulse`} />
+              ) : (
+                <WifiOff className={`${isPatientRoute ? "h-3 w-3 sm:h-3.5 sm:w-3.5" : "h-3 w-3"} text-rose-700`} />
+              )}
+              <span suppressHydrationWarning className="hidden xs:inline">{online ? t("online") : t("offline")}</span>
+            </div>
 
-          {/* Emergency SOS Button */}
-          <Link href="tel:108" className="shrink-0">
+            {/* Multilingual Selector */}
+            <LanguageSelector size={isPatientRoute ? "large" : "default"} className="shrink-0" />
+
+            {/* Caregiver & Healthcare Worker Portal Link (Hidden on patient routes to prevent cognitive confusion) */}
+            {!isPatientRoute && (
+              <Link
+                href="/caregiver"
+                suppressHydrationWarning
+                className="hidden sm:flex min-h-[34px] sm:min-h-[38px] cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-surface hover:bg-tea-light hover:border-tea px-2 sm:px-2.5 text-xs font-black text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] shrink-0"
+                title="Caregiver & Healthcare Worker Portal"
+              >
+                <ShieldCheck className="h-3.5 w-3.5 text-tea shrink-0" />
+                <span className="hidden xl:inline">{mNav.caregiver}</span>
+                <span className="xl:hidden">{mNav.caregiver.split(" ")[0]}</span>
+              </Link>
+            )}
+
+            {/* Emergency SOS Button */}
+            <Link href="tel:108" className="shrink-0">
+              <button
+                type="button"
+                className={`pulse-gentle flex cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick hover:bg-red-700 font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] ${
+                  isPatientRoute
+                    ? "min-h-[36px] sm:min-h-[40px] px-2.5 sm:px-3.5 text-xs sm:text-sm"
+                    : "min-h-[34px] sm:min-h-[38px] px-2 sm:px-3 text-xs"
+                }`}
+                title="Emergency Tele-MANAS / Ambulance SOS Call (108)"
+              >
+                <PhoneCall className={isPatientRoute ? "h-4 w-4" : "h-3.5 w-3.5"} />
+                <span>{t("sos")}</span>
+              </button>
+            </Link>
+
+            {/* Hamburger Navigation Menu Button */}
             <button
               type="button"
-              className={`pulse-gentle flex cursor-pointer items-center gap-1.5 rounded-xl border-2 border-black bg-brick hover:bg-red-700 font-black text-white shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] ${
-                isPatientRoute
-                  ? "min-h-[36px] sm:min-h-[40px] px-3 sm:px-3.5 text-xs sm:text-sm"
-                  : "min-h-[34px] sm:min-h-[38px] px-2 sm:px-3 text-xs"
-              }`}
-              title="Emergency Tele-MANAS / Ambulance SOS Call (108)"
+              onClick={() => {
+                playTapFeedback();
+                setDrawerOpen(true);
+              }}
+              aria-label="Open Navigation Menu"
+              aria-expanded={drawerOpen}
+              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl border-2 border-black bg-surface hover:bg-amber-100 text-ink shadow-[2px_2px_0px_#000] transition-all active:translate-y-[1px] cursor-pointer shrink-0"
+              title="All Portals & Menu"
             >
-              <PhoneCall className={isPatientRoute ? "h-4 w-4" : "h-3.5 w-3.5"} />
-              <span>{t("sos")}</span>
+              <Menu className="h-5 w-5 stroke-[2.4]" />
             </button>
-          </Link>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Slide-out Off-Canvas Navigation Drawer */}
+      <ResponsiveNavDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
+    </>
   );
 }

@@ -161,7 +161,7 @@ export default function GamesHubPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6">
+    <div className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-6 pb-24 md:pb-8">
       {/* Active Modal Fullscreen Game Overlay with Clear Elderly-Friendly Exit Button */}
       {activeModalGame && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/85 backdrop-blur-md p-2 sm:p-6 animate-fade-in flex flex-col items-center justify-start">
@@ -198,7 +198,7 @@ export default function GamesHubPage() {
 
       {/* ── Minimal Cognitive Domain Filter Tabs ── */}
       <div
-        className="mb-5 flex flex-wrap items-center gap-2 sm:gap-2.5"
+        className="mb-5 flex flex-wrap items-center gap-1.5 sm:gap-2.5"
         role="tablist"
         aria-label="Filter games by cognitive domain"
       >
@@ -218,7 +218,7 @@ export default function GamesHubPage() {
                 unlockAudio();
                 setSelectedDomain(domain.key);
               }}
-              className={`btn-tactile inline-flex min-h-[46px] sm:min-h-[50px] items-center gap-2.5 px-4 py-2 rounded-2xl border-2 font-black text-xs sm:text-sm transition-all cursor-pointer ${
+              className={`btn-tactile inline-flex min-h-[42px] sm:min-h-[50px] items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl border-2 font-black text-xs sm:text-sm transition-all cursor-pointer ${
                 isSelected
                   ? "border-black bg-tea text-white shadow-[3px_3px_0px_#000] scale-[1.02]"
                   : "border-black/25 bg-white hover:border-black hover:bg-amber-50 text-ink shadow-xs"

@@ -719,27 +719,28 @@ export function AccessibilityToolbar() {
       {isPatientRoute ? (
         <div
           suppressHydrationWarning
-          className="w-full border-b-2 border-black/20 bg-surface px-3 sm:px-6 py-2 text-xs sm:text-sm text-ink select-none"
+          className="w-full border-b-2 border-black/20 bg-surface px-2 sm:px-6 py-1 sm:py-2 text-xs sm:text-sm text-ink select-none overflow-x-clip"
         >
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-2 flex-nowrap">
             {/* Senior Label */}
-            <div className="flex items-center gap-2 font-bold shrink-0">
-              <span className="flex items-center gap-2 text-sm sm:text-base font-black text-tea whitespace-nowrap">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-tea" />
-                {a11y.seniorLabel}
+            <div className="flex items-center gap-1.5 font-bold shrink-0">
+              <span className="flex items-center gap-1.5 text-xs sm:text-base font-black text-tea whitespace-nowrap">
+                <span className="inline-block h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-tea" />
+                <span className="hidden sm:inline">{a11y.seniorLabel}</span>
+                <span className="sm:hidden text-xs">Accessibility</span>
               </span>
             </div>
 
             {/* Clean Senior Controls */}
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
               {/* Font Size Scaler */}
-              <div className="flex items-center gap-1 rounded-xl border-2 border-black/40 bg-surface p-1 shadow-xs shrink-0">
-                <span className="text-xs sm:text-sm font-black px-2 text-ink hidden sm:inline">{a11y.textSize}</span>
+              <div className="flex items-center gap-0.5 sm:gap-1 rounded-xl border-2 border-black/40 bg-surface p-0.5 sm:p-1 shadow-xs shrink-0">
+                <span className="text-xs sm:text-sm font-black px-1.5 text-ink hidden sm:inline">{a11y.textSize}</span>
                 <button
                   type="button"
                   onClick={() => setFontSize("sm")}
-                  className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
-                    activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-[2px_2px_0px_#000] border-2 border-black" : "border-2 border-transparent hover:bg-surface-muted text-ink"
+                  className={`px-2 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
+                    activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-[1.5px_1.5px_0px_#000] border-2 border-black" : "border-2 border-transparent hover:bg-surface-muted text-ink"
                   }`}
                   title="Smaller Text (15px)"
                   aria-label="Set smaller text"
@@ -749,8 +750,8 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("md")}
-                  className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
-                    activeFontSizeLevel === "md" ? "bg-tea text-white shadow-[2px_2px_0px_#000] border-2 border-black" : "border-2 border-transparent hover:bg-surface-muted text-ink"
+                  className={`px-2 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
+                    activeFontSizeLevel === "md" ? "bg-tea text-white shadow-[1.5px_1.5px_0px_#000] border-2 border-black" : "border-2 border-transparent hover:bg-surface-muted text-ink"
                   }`}
                   title="Standard Text (18px)"
                   aria-label="Set standard text"
@@ -760,8 +761,8 @@ export function AccessibilityToolbar() {
                 <button
                   type="button"
                   onClick={() => setFontSize("lg")}
-                  className={`px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
-                    activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-[2px_2px_0px_#000] border-2 border-black ring-1 ring-amber-400" : "border-2 border-transparent hover:bg-surface-muted text-ink"
+                  className={`px-2 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-black rounded-lg cursor-pointer transition-all active:scale-95 ${
+                    activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-[1.5px_1.5px_0px_#000] border-2 border-black ring-1 ring-amber-400" : "border-2 border-transparent hover:bg-surface-muted text-ink"
                   }`}
                   title="Large Text for Elders (25px)"
                   aria-label="Set large text"
@@ -778,15 +779,15 @@ export function AccessibilityToolbar() {
                   toggleListenFirst();
                 }}
                 aria-pressed={activeListenFirst}
-                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-black border-2 transition-all cursor-pointer shrink-0 ${
+                className={`flex items-center gap-1 rounded-xl px-2 sm:px-3.5 py-1 sm:py-1.5 text-xs sm:text-sm font-black border-2 transition-all cursor-pointer shrink-0 ${
                   activeListenFirst
                     ? "bg-emerald-400 text-black border-black shadow-xs ring-1 ring-emerald-500"
                     : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
                 }`}
                 title="Toggle Voice Read Aloud on Hover or Touch"
               >
-                <Volume2 className="h-4.5 w-4.5 stroke-[2.5]" />
-                <span>{activeListenFirst ? a11y.audioOn : a11y.readAloud}</span>
+                <Volume2 className="h-4 w-4 sm:h-4.5 sm:w-4.5 stroke-[2.5]" />
+                <span className="hidden sm:inline">{activeListenFirst ? a11y.audioOn : a11y.readAloud}</span>
               </button>
 
               {/* Circadian Night Mode Toggle */}
@@ -794,15 +795,15 @@ export function AccessibilityToolbar() {
                 type="button"
                 onClick={toggleHighContrast}
                 aria-pressed={activeHighContrast}
-                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-black border-2 transition-all cursor-pointer shrink-0 ${
+                className={`flex items-center gap-1 rounded-xl px-2 sm:px-3.5 py-1 sm:py-1.5 text-xs sm:text-sm font-black border-2 transition-all cursor-pointer shrink-0 ${
                   activeHighContrast
                     ? "bg-amber-400 text-black border-black shadow-xs"
                     : "bg-surface text-ink border-black/40 hover:border-black shadow-xs"
                 }`}
                 title="Toggle High Contrast Night Mode"
               >
-                <Moon className="h-4.5 w-4.5" />
-                <span>{activeHighContrast ? a11y.nightOn : a11y.nightMode}</span>
+                <Moon className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+                <span className="hidden sm:inline">{activeHighContrast ? a11y.nightOn : a11y.nightMode}</span>
               </button>
             </div>
           </div>
@@ -810,14 +811,15 @@ export function AccessibilityToolbar() {
       ) : (
       <div
         suppressHydrationWarning
-        className="w-full border-b border-black/15 bg-surface px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-auto"
+        className="w-full border-b border-black/15 bg-surface px-2 sm:px-4 md:px-6 py-1 text-xs text-ink select-none overflow-x-clip"
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-1.5 sm:gap-2 flex-nowrap">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-1 sm:gap-2 flex-nowrap">
           {/* Government of India / MDoNER Mandate Badge */}
           <div className="flex items-center gap-1.5 font-bold shrink-0">
             <span className="flex items-center gap-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-tea whitespace-nowrap">
               <span className="inline-block h-2 w-2 rounded-full bg-tea animate-pulse" />
-              MoHFW &bull; MDoNER
+              <span className="hidden xs:inline">MoHFW &bull; MDoNER</span>
+              <span className="xs:hidden">MDoNER</span>
             </span>
             <span className="text-black/30 hidden 2xl:inline">|</span>
             <span className="text-[11px] text-ink-secondary hidden 2xl:inline whitespace-nowrap">
@@ -866,9 +868,6 @@ export function AccessibilityToolbar() {
               >
                 <Hand className="h-3 w-3 stroke-[2.5]" />
                 <span className="hidden md:inline">
-                  {activeInputMode === "virtual" ? a11y.airOn : a11y.airMouse}
-                </span>
-                <span className="md:hidden">
                   {activeInputMode === "virtual" ? a11y.airOn : a11y.airMouse}
                 </span>
               </button>
@@ -940,11 +939,11 @@ export function AccessibilityToolbar() {
             </button>
 
             {/* Font Size Scaler */}
-            <div className="flex items-center gap-1 rounded border-2 border-black/30 bg-surface p-0.5 shrink-0">
+            <div className="flex items-center gap-0.5 rounded border-2 border-black/30 bg-surface p-0.5 shrink-0">
               <button
                 type="button"
                 onClick={() => setFontSize("sm")}
-                className={`px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
+                className={`px-1.5 sm:px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
                   activeFontSizeLevel === "sm" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Small Text (15px)"
@@ -954,7 +953,7 @@ export function AccessibilityToolbar() {
               <button
                 type="button"
                 onClick={() => setFontSize("md")}
-                className={`px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
+                className={`px-1.5 sm:px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
                   activeFontSizeLevel === "md" ? "bg-tea text-white shadow-xs" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Standard Text (18px)"
@@ -964,7 +963,7 @@ export function AccessibilityToolbar() {
               <button
                 type="button"
                 onClick={() => setFontSize("lg")}
-                className={`px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
+                className={`px-1.5 sm:px-2 py-0.5 text-xs font-black rounded cursor-pointer transition-all active:scale-95 ${
                   activeFontSizeLevel === "lg" ? "bg-tea text-white shadow-xs ring-1 ring-amber-400" : "hover:bg-surface-muted text-ink"
                 }`}
                 title="Large Text for Elders (25px)"

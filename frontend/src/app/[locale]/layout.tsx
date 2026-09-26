@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 import { hasLocale } from "next-intl";
@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { Fraunces, Atkinson_Hyperlegible, JetBrains_Mono } from "next/font/google";
 import { AccessibilityToolbar } from "@/components/layout/AccessibilityToolbar";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { HyperCustomizationProvider } from "@/components/accessibility/HyperCustomizationProvider";
 import Script from "next/script";
 import { StructuredData } from "@/components/seo/StructuredData";
@@ -126,6 +127,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#15803D",
+  viewportFit: "cover",
+};
+
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
 
@@ -142,7 +152,6 @@ export default async function LocaleLayout({ children, params }: Props) {
       suppressHydrationWarning
     >
       <head>
-        <meta name="theme-color" content="#15803D" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="dns-prefetch" href="http://localhost:8080" />
@@ -156,6 +165,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               <AppHeader />
             </div>
             {children}
+            <MobileBottomNav />
           </HyperCustomizationProvider>
         </NextIntlClientProvider>
       </body>

@@ -43,7 +43,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col bg-canvas paper-texture">
-      <main className="flex-1 px-4 py-6 md:px-8 md:py-8 overflow-y-auto">
+      <main className="flex-1 px-4 py-6 pb-24 md:px-8 md:py-8 md:pb-8 overflow-y-auto">
         <div className="max-w-5xl mx-auto space-y-8">
           <HomeClient />
 

@@ -300,7 +300,7 @@ export function KioskLoginClient() {
   };
 
   return (
-    <main className="min-h-screen bg-canvas paper-texture flex flex-col justify-between px-4 py-5 md:py-8">
+    <main className="min-h-screen bg-canvas paper-texture flex flex-col justify-between px-4 pt-5 pb-24 md:py-8">
       {/* Top Header Navigation */}
       <div className="w-full max-w-3xl mx-auto flex items-center justify-between pb-3 border-b-2 border-black/10">
         <div className="flex items-center gap-2">

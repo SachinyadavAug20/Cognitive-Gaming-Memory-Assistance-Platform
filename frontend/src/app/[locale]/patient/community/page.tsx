@@ -184,7 +184,7 @@ export default function PatientCommunityPage() {
   );
 
   return (
-    <div className="min-h-screen bg-canvas pb-20 text-ink">
+    <div className="min-h-screen bg-canvas pb-28 md:pb-20 text-ink">
       {/* ── SIMPLE MINIMAL HEADER ── */}
       <header className="bg-surface border-b-2 border-border/20 px-4 py-5 shadow-xs">
         <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
