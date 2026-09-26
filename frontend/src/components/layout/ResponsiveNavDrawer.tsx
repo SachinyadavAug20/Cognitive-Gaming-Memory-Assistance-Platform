@@ -239,17 +239,19 @@ export function ResponsiveNavDrawer({ isOpen, onClose }: ResponsiveNavDrawerProp
   const systemStatus = useSystemStatus();
   const setStudioOpen = useHyperCustomizationStore((s) => s.setStudioOpen);
 
-  // Close drawer on Escape key
+  // Close drawer on Escape key and manage body scroll lock safely
   useEffect(() => {
+    if (!isOpen) {
+      document.body.style.overflow = "";
+      return;
+    }
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === "Escape") {
         onClose();
       }
     };
-    if (isOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-    }
+    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";

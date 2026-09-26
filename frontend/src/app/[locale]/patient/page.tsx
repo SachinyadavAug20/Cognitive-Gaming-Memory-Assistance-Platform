@@ -547,35 +547,38 @@ export default function PatientHome() {
   return (
     <div className="min-h-[100vh] pb-32 flex flex-col bg-canvas">
       {/* Patient Header Banner */}
-      <div className="bg-tea border-b-4 border-black px-4 pt-6 pb-6 md:px-8 text-white shadow-sm">
-        <div className="max-w-3xl mx-auto flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
+      <div className="bg-tea border-b-4 border-black px-3.5 pt-5 pb-5 sm:px-6 md:px-8 text-white shadow-sm">
+        <div className="max-w-3xl mx-auto flex flex-col gap-3.5 sm:gap-4">
+          {/* Top Bar: Date & Theme Studio */}
+          <div className="flex items-center justify-between gap-2">
             <span
               suppressHydrationWarning
-              className="inline-flex items-center gap-2 bg-black/25 px-3 py-1 rounded-xl border border-white/25 text-xs sm:text-sm font-black text-amber-300"
+              className="inline-flex items-center gap-1.5 sm:gap-2 bg-black/25 px-2.5 sm:px-3 py-1 rounded-xl border border-white/25 text-xs sm:text-sm font-black text-amber-300 min-w-0 truncate"
             >
-              <Calendar className="h-4 w-4 text-amber-400" />
-              <span suppressHydrationWarning>{todayDateStr}</span>
+              <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400 shrink-0" />
+              <span suppressHydrationWarning className="truncate">{todayDateStr}</span>
             </span>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   playTapFeedback();
                   setStudioOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 bg-black/25 hover:bg-black/35 px-3.5 py-1.5 rounded-xl border border-white/25 text-xs sm:text-sm font-bold text-amber-200 cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-1.5 bg-black/25 hover:bg-black/35 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl border border-white/25 text-xs sm:text-sm font-bold text-amber-200 cursor-pointer active:scale-95"
                 title="Theme & Display Settings"
               >
                 <span>🎨</span>
-                <span>Theme & Style</span>
+                <span className="hidden xs:inline">Theme & Style</span>
+                <span className="xs:hidden">Theme</span>
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 sm:gap-5">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl border-3 border-black bg-surface overflow-hidden flex items-center justify-center shrink-0 shadow-[4px_4px_0px_#000]">
+          {/* Patient Portrait & Greeting */}
+          <div className="flex items-center gap-3.5 sm:gap-5">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl sm:rounded-3xl border-3 border-black bg-surface overflow-hidden flex items-center justify-center shrink-0 shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]">
               {avatarPhoto ? (
                 <Image
                   src={avatarPhoto}
@@ -587,7 +590,7 @@ export default function PatientHome() {
                   priority
                 />
               ) : (
-                <span className="text-2xl sm:text-3xl font-black text-tea">
+                <span className="text-xl sm:text-2xl md:text-3xl font-black text-tea">
                   {avatarInitials || "P"}
                 </span>
               )}
@@ -595,17 +598,18 @@ export default function PatientHome() {
             <div className="flex-1 min-w-0">
               <h1
                 suppressHydrationWarning
-                className="font-serif font-black text-3xl sm:text-4xl text-white leading-tight"
+                className="font-serif font-black text-2xl sm:text-3xl md:text-4xl text-white leading-tight"
               >
                 {greeting}
               </h1>
-              <p className="text-white text-base sm:text-lg font-bold mt-1 leading-snug">
+              <p className="text-white/90 text-xs sm:text-base font-bold mt-1 leading-snug">
                 {t("orientation")}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 flex-wrap pt-2">
+          {/* Action Row: Read For Me + Audio Toggle (Side-by-side on mobile) */}
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3.5 pt-1">
             <button
               type="button"
               onClick={() => {
@@ -613,12 +617,17 @@ export default function PatientHome() {
                 unlockAudio();
                 speak(heroText, locale || langCode, rate);
               }}
-              className="btn-tactile inline-flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-border bg-surface px-6 sm:px-7 py-3 sm:py-3.5 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-surface-muted cursor-pointer active:scale-95 transition-all"
+              className="btn-tactile flex w-full items-center justify-center gap-2 sm:gap-3 min-h-[46px] sm:min-h-[56px] rounded-xl sm:rounded-2xl border-3 border-border bg-surface px-2.5 sm:px-7 py-2 sm:py-3.5 text-xs sm:text-base md:text-lg font-black text-ink shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000] hover:bg-surface-muted cursor-pointer active:scale-95 transition-all"
             >
-              <Volume2 className="h-6 w-6 sm:h-7 sm:w-7 text-tea shrink-0 stroke-[2.5]" />
+              <Volume2 className="h-5 w-5 sm:h-7 sm:w-7 text-tea shrink-0 stroke-[2.5]" />
               <span>{t("listen")}</span>
             </button>
-            <AudioToggle size="lg" />
+            <div className="w-full sm:w-auto">
+              <AudioToggle
+                size="lg"
+                className="w-full justify-center min-h-[46px] sm:min-h-[56px] !px-2.5 sm:!px-6 !py-2 sm:!py-3.5 !text-xs sm:!text-base md:!text-lg !rounded-xl sm:!rounded-2xl shadow-[3px_3px_0px_#000] sm:shadow-[4px_4px_0px_#000]"
+              />
+            </div>
           </div>
         </div>
       </div>

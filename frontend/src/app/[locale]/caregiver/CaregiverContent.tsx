@@ -233,27 +233,37 @@ export function CaregiverContent() {
   return (
     <>
       <div className="bg-ink border-b-4 border-border px-3 py-3 md:px-6 md:py-3.5">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="font-[family-name:var(--font-serif)] font-bold text-lg md:text-2xl text-ink-inverse">
-                {t("title")}
-              </h1>
-              <p className="text-ink-inverse/60 text-xs mt-0.5">{t("subtitle")}</p>
-            </div>
-            <div className="flex items-center gap-2 sm:hidden">
-              <AudioToggle />
+        <div className="max-w-5xl mx-auto flex flex-col gap-2.5 sm:gap-3">
+          {/* Mobile Top Action Row: Back to Home + Audio + Add Patient */}
+          <div className="flex items-center justify-between sm:hidden">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1 text-ink-inverse/70 hover:text-ink-inverse font-bold text-xs transition-colors cursor-pointer"
+            >
+              ← {t("home")}
+            </Link>
+            <div className="flex items-center gap-2">
+              <AudioToggle size="md" />
               <Link
                 href="/caregiver/add-patient"
-                className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-marigold px-3 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-amber-600 transition-colors"
+                className="btn-tactile inline-flex items-center gap-1 rounded-xl border-2 border-black bg-marigold px-3 py-1.5 text-xs font-black text-white shadow-[2px_2px_0px_#000] hover:bg-amber-600 transition-colors shrink-0"
               >
-                + {t("addPatient")}
+                {t("addPatient")}
               </Link>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="hidden md:flex items-center gap-2">
+          {/* Desktop & Mobile Main Heading Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h1 className="font-serif font-black text-xl md:text-2xl text-ink-inverse leading-tight">
+                {t("title")}
+              </h1>
+              <p className="text-ink-inverse/60 text-xs mt-0.5">{t("subtitle")}</p>
+            </div>
+
+            {/* Desktop Actions */}
+            <div className="hidden sm:flex items-center gap-2.5">
               <div
                 suppressHydrationWarning
                 className={`inline-flex items-center gap-1.5 rounded-xl border-2 border-black px-2.5 py-1 text-xs font-black shadow-[2px_2px_0px_#000] ${
@@ -270,9 +280,7 @@ export function CaregiverContent() {
                 )}
                 <span>{systemStatus.isSpringOnline ? "Spring Online" : "Spring Offline"}</span>
               </div>
-            </div>
 
-            <div className="hidden sm:flex items-center gap-2">
               <AudioToggle />
               <Link
                 href="/clinical-evidence"
@@ -287,18 +295,18 @@ export function CaregiverContent() {
                   {t("addPatient")}
                 </ChunkyButton>
               </Link>
+              <Link
+                href="/"
+                className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-xs sm:text-sm transition-colors ml-2"
+              >
+                ← {t("home")}
+              </Link>
             </div>
-            <Link
-              href="/"
-              className="text-ink-inverse/60 hover:text-ink-inverse font-bold text-xs sm:text-sm transition-colors ml-auto sm:ml-0"
-            >
-              ← {t("home")}
-            </Link>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 mt-3 pb-24 md:pb-8 space-y-3 flex-1 overflow-y-auto md:overflow-y-hidden w-full">
+      <div className="max-w-5xl mx-auto px-4 mt-3 pb-32 sm:pb-24 space-y-3 flex-1 w-full">
         <div>
           <h2 className="font-[family-name:var(--font-serif)] font-bold text-lg text-ink mb-2">
             {t("yourPatients")}

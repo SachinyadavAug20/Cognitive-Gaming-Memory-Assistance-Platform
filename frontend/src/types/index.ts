@@ -5,6 +5,7 @@ export interface PatientSummary {
   name: string;
   languagePreference: string | null;
   dob: string | null;
+  photoUrl?: string | null;
 }
 
 export function ageFromDob(dob: string | null): number | null {

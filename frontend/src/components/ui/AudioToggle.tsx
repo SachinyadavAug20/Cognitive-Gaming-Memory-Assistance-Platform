@@ -32,9 +32,10 @@ const CARD =
 
 interface AudioToggleProps {
   size?: "md" | "lg";
+  className?: string;
 }
 
-export function AudioToggle({ size = "md" }: AudioToggleProps = {}) {
+export function AudioToggle({ size = "md", className = "" }: AudioToggleProps = {}) {
   const locale = useLocale();
   const normLocale = (locale?.split("-")[0]?.toLowerCase() || "en") as SupportedLocale;
   const hub = getHubStrings(normLocale);
@@ -74,11 +75,11 @@ export function AudioToggle({ size = "md" }: AudioToggleProps = {}) {
         type="button"
         onClick={toggle}
         aria-label={enabled ? hub.soundOff : hub.soundOn}
-        className={
+        className={`${
           size === "lg"
             ? "btn-tactile flex min-h-[56px] items-center gap-3 rounded-2xl border-3 border-border bg-surface px-5 sm:px-6 text-base sm:text-lg font-black text-ink shadow-[4px_4px_0px_#000] hover:bg-surface-muted cursor-pointer"
             : `${CARD} btn-tactile flex min-h-[48px] items-center gap-2 rounded-xl bg-surface px-3 text-base font-extrabold text-ink`
-        }
+        } ${className}`}
       >
         <span className="flex items-center" aria-hidden="true">
           {enabled ? (

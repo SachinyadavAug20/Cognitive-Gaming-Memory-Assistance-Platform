@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function CaregiverDashboard() {
   return (
-    <div className="min-h-[100vh] pb-4 md:overflow-hidden flex flex-col">
+    <div className="min-h-screen pb-4 flex flex-col">
       <CaregiverContent />
     </div>
   );

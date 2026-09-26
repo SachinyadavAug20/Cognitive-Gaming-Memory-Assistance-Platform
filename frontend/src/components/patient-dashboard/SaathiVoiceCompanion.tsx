@@ -638,29 +638,26 @@ export function SaathiVoiceCompanion({
 
   return (
     <>
-      {/* Floating Pill on Patient Dashboard (Offset on mobile so it doesn't overlap MobileBottomNav) */}
-      <div className="fixed bottom-20 md:bottom-5 right-4 md:right-5 z-40">
+      {/* Floating Action Button / Pill on Patient Dashboard (Offset on mobile so it doesn't overlap MobileBottomNav) */}
+      <div className="fixed bottom-[74px] sm:bottom-6 right-3.5 sm:right-6 z-40">
         <button
           type="button"
           onClick={() => {
             playTapFeedback();
             setIsOpen(true);
           }}
-          className="btn-tactile flex items-center gap-2.5 rounded-full border-3 border-black bg-amber-400 px-4 py-2.5 sm:px-5 sm:py-3 text-ink shadow-[4px_4px_0px_#000] hover:bg-amber-300 transition-transform active:translate-y-0.5 cursor-pointer group"
+          className="btn-tactile flex items-center justify-center gap-2.5 rounded-full border-3 border-black bg-amber-400 w-[52px] h-[52px] sm:w-auto sm:h-auto sm:px-5 sm:py-3 text-ink shadow-[4px_4px_0px_#000] hover:bg-amber-300 transition-transform active:translate-y-0.5 cursor-pointer group"
           aria-label="Open Saathi Voice Companion"
         >
-          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-black text-amber-300 group-hover:scale-105 transition-transform">
+          <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-black text-amber-300 group-hover:scale-105 transition-transform shrink-0">
             <Bot className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
           <div className="text-left hidden sm:block">
-            <span className="flex items-center gap-1.5 font-serif text-sm font-black text-ink">
+            <span className="flex items-center gap-1.5 font-serif text-sm font-black text-ink whitespace-nowrap">
               {SAATHI_TRIGGER_LABELS[selectedLang] || SAATHI_TRIGGER_LABELS[currentLocale] || SAATHI_TRIGGER_LABELS.en}{" "}
               <Speech className="h-4 w-4 text-tea inline" />
             </span>
           </div>
-          <span className="sm:hidden flex items-center gap-1 font-serif text-xs font-black text-ink">
-            Saathi <Speech className="h-3.5 w-3.5 text-tea inline" />
-          </span>
         </button>
       </div>
 

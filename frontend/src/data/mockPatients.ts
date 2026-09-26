@@ -8,12 +8,14 @@ export const DEFAULT_PATIENT_SUMMARIES: PatientSummary[] = [
     name: "Mary Nongrum",
     languagePreference: "en",
     dob: "1957-11-10",
+    photoUrl: "/sample-images/patient_2_mary_nongrum/patient_profile_photo_mary_nongrum.jpg",
   },
   {
     id: 2,
     name: "Biren Borah",
     languagePreference: "as",
     dob: "1954-05-15",
+    photoUrl: "/sample-images/patient_1_biren_borah/patient_profile_photo_biren_borah.jpg",
   },
 ];
 
@@ -515,6 +517,7 @@ export function getAllPatientSummaries(): PatientSummary[] {
     name: p.name,
     languagePreference: p.preferredLanguage,
     dob: p.dob,
+    photoUrl: p.photoUrl ?? null,
   }));
 
   const seenNames = new Set<string>();

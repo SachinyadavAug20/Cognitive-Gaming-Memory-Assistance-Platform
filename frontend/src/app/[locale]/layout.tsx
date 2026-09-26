@@ -157,7 +157,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link rel="dns-prefetch" href="http://localhost:8080" />
         <StructuredData locale={locale} />
       </head>
-      <body className="min-h-screen bg-canvas text-ink paper-texture overflow-x-hidden">
+      <body className="min-h-screen bg-canvas text-ink paper-texture overflow-x-clip">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <HyperCustomizationProvider>
             <div className="sticky top-0 z-50 w-full select-none shadow-[0_4px_20px_rgba(0,0,0,0.06)] overflow-x-clip">
